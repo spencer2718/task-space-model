@@ -1,0 +1,314 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{amsthm}
+\usepackage{bm}
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{assumption}{Assumption}[section]
+\newtheorem{remark}{Remark}[section]
+
+\begin{document}
+
+\section{Theory}
+\label{sec:theory}
+
+This section develops a geometric model of task-level technological change.
+We first define the task manifold and the representation of occupations as distributions over tasks (Sections~\ref{subsec:task-manifold}--\ref{subsec:tech-fields}), then specify how technology diffuses across tasks as a function of the manifold geometry (Section~\ref{subsec:diffusion}).
+Subsequent subsections (not written here) derive occupation-level exposure indices and show how they aggregate to labor share dynamics, connecting the model to the macro patterns documented by Jacobson and Occhino (2012), and propose an identification strategy based on the invariance of diffusion parameters across distinct historical shock regimes.
+
+\subsection{The Task Manifold}
+\label{subsec:task-manifold}
+
+We start from the premise that production in a modern economy is organized around a large and heterogeneous set of \emph{tasks}, rather than a small number of discrete ``occupations'' or sectors.
+To capture this idea, we model the space of tasks as a continuous geometric object.
+
+\begin{definition}[Task domain]
+\label{def:task-domain}
+The \emph{task domain} is a compact metric-measure space
+\[
+\mathcal{T} = (T,d,\mu),
+\]
+where:
+\begin{itemize}
+    \item $T$ is a compact set representing the continuum of technologically feasible tasks;
+    \item $d : T \times T \to \mathbb{R}_{\ge 0}$ is a metric that encodes the \emph{frictional cost} or difficulty of reallocating capabilities between tasks;
+    \item $\mu$ is a finite Borel measure on $T$ that serves as a reference measure, representing the potential economic mass or value density of tasks.
+\end{itemize}
+\end{definition}
+
+The metric $d$ provides the basic notion of \emph{closeness} between tasks.
+Intuitively, two tasks $x,y \in T$ are close (have small $d(x,y)$) if existing skills, institutional arrangements, and capital stocks allow capabilities developed at $x$ to be redeployed at $y$ at low cost.
+Conversely, a large distance $d(x,y)$ indicates that reallocation of capacity between $x$ and $y$ is difficult or rare.
+
+A key interpretive device in what follows is to view the distance $d(x,y)$ as inversely related to the probability that a technology shock affecting the marginal product of labor at $x$ transmits to $y$, conditional on aggregate factor prices.
+The manifold geometry thus encodes a prior on patterns of technological spillovers and labor substitutability.
+
+In this framework, occupations are not primitive objects; they are aggregates of tasks.
+
+\begin{definition}[Occupations as measures]
+\label{def:occupations}
+Let $\mathcal{P}(T)$ denote the set of Borel probability measures on $T$ that are absolutely continuous with respect to $\mu$.
+An occupation $j \in \{1,\dots,J\}$ is represented by a measure $\rho_j \in \mathcal{P}(T)$, with density
+\[
+f_j(x) = \frac{d \rho_j}{d\mu}(x)
+\]
+interpreted as the intensity with which occupation $j$ supplies labor to an infinitesimal neighborhood of task $x$.
+\end{definition}
+
+In words, each occupation corresponds to a distribution of effort and time across the underlying task manifold.
+Two occupations may have overlapping support on $T$ even if they belong to distinct industry or sector classifications.
+The representation in Definition~\ref{def:occupations} is flexible enough to allow occupations to be narrow (mass concentrated on a small region of $T$) or broad (mass spread over many tasks).
+
+\begin{remark}[Task-level versus occupation-level observables]
+\label{rem:shadow-task-wage}
+In the theoretical development, we will sometimes refer to \emph{task-level} objects such as the ``shadow wage'' at a point $x \in T$.
+Empirically, we do not observe task-level wages; we observe occupation-level wages and employment.
+The link between theoretical task-level variables and observed occupation-level variables is provided by the occupation measures $\{\rho_j\}_{j=1}^J$.
+In the identification strategy, the exclusion restrictions are ultimately imposed on \emph{occupation-pair} covariances constructed from these measures, not on task pairs directly.
+We return to this mapping in the empirical section.
+\end{remark}
+
+\subsection{Technological Fields}
+\label{subsec:tech-fields}
+
+Technology affects labor demand along two conceptually distinct dimensions: displacement, where capital substitutes for labor in performing a task, and augmentation, where capital raises the productivity of labor without fully replacing it.
+We represent these effects as fields defined over the task manifold.
+
+\begin{definition}[Technological state]
+\label{def:tech-state}
+At time $t$, the technological state on the task manifold is given by a pair of bounded, measurable functions
+\[
+A_t, C_t : T \to \mathbb{R},
+\]
+where:
+\begin{itemize}
+    \item $A_t(x)$ is the \emph{displacement intensity} at task $x$, capturing the degree to which capital can substitute for labor at that task;
+    \item $C_t(x)$ is the \emph{complementarity factor} at task $x$, capturing the extent to which capital augments the marginal product of labor at that task.
+\end{itemize}
+We normalize $A_t(x) \ge 0$ and $C_t(x) > 0$ for all $x \in T$ and $t$.
+\end{definition}
+
+Higher values of $A_t(x)$ indicate that, at time $t$, a larger fraction of the work at task $x$ can in principle be automated or performed by capital with minimal human input.
+Higher values of $C_t(x)$ indicate that capital deepening or new technologies raise the productivity of labor at $x$ relative to a baseline.
+
+The fields $(A_t,C_t)$ are shaped by both exogenous technological opportunities (the ``frontier'') and endogenous investment decisions.
+We model the former through an exogenous input field.
+
+\begin{definition}[Technological shock field]
+\label{def:shock-field}
+Let $I_t \in L^2(T,\mu)$ denote the exogenous investment or innovation input at time $t$.
+The field $I_t(x)$ represents the intensity with which the technological frontier is pushed forward at task $x$ by R\&D, capital investment, or other innovation activities at time $t$.
+\end{definition}
+
+In applications, $I_t$ can be constructed as the projection of high-dimensional technology descriptors (such as patent text embeddings, benchmark performance vectors, or investment flows) onto the coordinates of the task manifold.
+The geometric structure of $T$ and the metric $d$ will then determine how localized innovations propagate across tasks.
+
+\subsection{Diffusion Dynamics on the Manifold}
+\label{subsec:diffusion}
+
+We now specify how technological shocks diffuse across the task manifold as a function of the metric $d$.
+The key object is a diffusion operator whose kernel depends on task distances.
+
+\begin{definition}[Diffusion operator]
+\label{def:diffusion-operator}
+Given the metric $d$ on $T$ and a vector of kernel parameters $\theta$, define the integral operator $\mathcal{K}_d : L^2(T,\mu) \to L^2(T,\mu)$ by
+\[
+[\mathcal{K}_d f](x)
+=
+\int_T k\bigl(d(x,y); \theta\bigr)\, f(y)\, d\mu(y),
+\]
+where $k : \mathbb{R}_{\ge 0} \times \Theta \to \mathbb{R}_{\ge 0}$ is a nonnegative, monotonically decreasing kernel function in its first argument.
+\end{definition}
+
+For empirical implementation we adopt a simple exponential kernel with a single characteristic diffusion length:
+\begin{equation}
+\label{eq:exp-kernel}
+k\bigl(d(x,y); \theta\bigr)
+=
+\exp\!\left(- \frac{d(x,y)}{\sigma}\right),
+\qquad
+\theta = \sigma > 0.
+\end{equation}
+The parameter $\sigma$ controls how far shocks travel on the manifold.
+When $\sigma$ is small, the kernel is sharply peaked and shocks remain highly localized; when $\sigma$ is large, shocks spread more broadly across distant tasks.
+In robustness checks, one can consider alternative specifications (e.g.\ Gaussian kernels or power-law decay), but \eqref{eq:exp-kernel} provides a parsimonious baseline with a clear interpretation.
+
+We use $\mathcal{K}_d$ to model the evolution of the displacement field $A_t$ as a diffusion process driven by the exogenous innovation input $I_t$.
+
+\begin{definition}[Displacement dynamics]
+\label{def:displacement-dynamics}
+The displacement field $\{A_t\}_{t \ge 0}$ evolves according to
+\begin{equation}
+\label{eq:displacement-diffusion}
+\frac{\partial A_t(x)}{\partial t}
+\in
+[\mathcal{K}_d I_t](x) + \varepsilon_t(x),
+\qquad x \in T,
+\end{equation}
+where
+\begin{itemize}
+    \item $\mathcal{K}_d$ is the diffusion operator defined in Definition~\ref{def:diffusion-operator} with kernel \eqref{eq:exp-kernel};
+    \item $\varepsilon_t \in L^2(T,\mu)$ is an idiosynric disturbance capturing unmodeled forces and measurement error;
+    \item we impose a \emph{monotonicity constraint}
+    \begin{equation}
+    \label{eq:monotonicity}
+    \frac{\partial A_t(x)}{\partial t} \ge 0
+    \quad\text{for $\mu$-almost every $x \in T$ and all $t$,}
+    \end{equation}
+    ruling out reductions in automation potential over time.
+\end{itemize}
+\end{definition}
+
+Equation~\eqref{eq:displacement-diffusion} states that innovation activity $I_t$ in a region of the manifold not only increases displacement intensity in that region, but also spills over to nearby tasks with an intensity governed by the kernel $k(\cdot;\theta)$ and the metric $d$.
+The monotonicity condition \eqref{eq:monotonicity} formalizes the idea that, over the time scales of interest, novel automation capabilities are rarely unlearned or fully reversed.
+
+\begin{remark}[Interpretation and scope of monotonicity]
+\label{rem:monotonicity}
+The constraint $\partial_t A_t(x) \ge 0$ abstracts from several real-world phenomena: technological forgetting, regulatory interventions that restrict automation, or shifts in comparative advantage that make previously automated tasks revert to manual performance.
+We view \eqref{eq:monotonicity} as a reasonable approximation over medium-run horizons in which the technological frontier is advancing and outright reversal is rare.
+In principle, the framework could be extended to allow $\partial_t A_t(x) < 0$ on a subset of tasks by relaxing the constraint and modeling such reversals explicitly; this extension is left for future work.
+\end{remark}
+
+A similar diffusion equation could be specified for the complementarity field $C_t$ if augmentation effects are also thought to propagate locally on the manifold.
+For the identification strategy developed later, the central object is the displacement field $A_t$ and its diffusion, but the operator $\mathcal{K}_d$ provides a generic template for modeling the spatial propagation of any task-level technological characteristic.
+
+\begin{remark}[From localized shocks to neighborhoods]
+\label{rem:delta-neighborhood}
+To build intuition, suppose the shock field $I_t$ is concentrated on a measurable subset $\Omega \subset T$ at some date $t_0$, in the sense that $I_{t_0}(x)$ is large for $x \in \Omega$ and negligible elsewhere.
+Under \eqref{eq:displacement-diffusion} with the exponential kernel \eqref{eq:exp-kernel}, the induced change in $A_t$ will be largest on $\Omega$ and will decay with distance $d(x,\Omega)$.
+In particular, tasks in the $\delta$--neighborhood
+\[
+B_\delta(\Omega) = \{ x \in T : d(x,\Omega) \le \delta \}
+\]
+will experience the strongest spillovers, with the characteristic spatial scale governed by $\sigma$.
+This captures, in a tractable way, the idea that the impact of a technology shock radiates outward along the geometry of the task space.
+\end{remark}
+
+\bigskip
+
+\section{Updated Research Plan and Empirical Strategy}
+\label{sec:research-plan}
+
+This section summarizes the research program and incorporates several clarifications that are important for interpretation and implementation:
+(i) the role of the elasticity parameter $\lambda$ in the occupation-level exposure formula,
+(ii) the choice of kernel functional form and robustness,
+(iii) the mapping from task-level ``shadow'' objects to occupation-level observables,
+(iv) the monotonicity assumption on automation, and
+(v) a quantitative success criterion for the Phase~I test.
+
+\subsection*{Phase I: Minimal Feasible Model (Weeks 1--4)}
+
+\paragraph{Objective.}
+Test whether an O*NET-based geometry of tasks passes a strict covariance-based identification test.
+This is the \emph{go/no-go} decision point for further development.
+
+\paragraph{Geometry.}
+\begin{itemize}
+    \item Construct a task graph $G$ using O*NET ``Work Activities'' or similar task descriptors.
+    \item Embed tasks into a low-dimensional Euclidean space via PCA or a related dimensionality reduction method.
+    \item Define the empirical metric $d(x,y)$ as Euclidean distance in this embedding, yielding an operational counterpart to the theoretical distance in Definition~\ref{def:task-domain}.
+\end{itemize}
+
+\paragraph{Shocks and diffusion.}
+\begin{itemize}
+    \item Construct two shock profiles $I_t$ corresponding to:
+    \begin{enumerate}
+        \item a ``Robotics/Manufacturing'' regime (emphasizing manual and routine tasks),
+        \item a ``Software/Cognitive'' regime (emphasizing analytic and cognitive tasks).
+    \end{enumerate}
+    \item Use the exponential kernel $k(d;\sigma) = \exp(-d/\sigma)$ as in \eqref{eq:exp-kernel} to define the diffusion operator $\mathcal{K}_d$.
+    \item For each epoch, compute the model-implied structure of co-movement in displacement intensity $A_t$ and, via the occupation measures $\{\rho_j\}$, the implied structure of wage co-movement across occupations.
+\end{itemize}
+
+\paragraph{Empirical covariance and observables.}
+\begin{itemize}
+    \item Using O*NET--SOC crosswalks, map tasks to occupations and construct occupation-level exposures from the underlying fields.
+    \item Compute empirical residual covariance matrices of occupation-level wage changes, controlling for sector fixed effects and local labor market shocks.
+    \item Make explicit that ``task-level'' shadow wages are theoretical constructs; the empirical objects are occupation-level wages, with the mapping provided by the occupation measures as in Remark~\ref{rem:shadow-task-wage}.
+\end{itemize}
+
+\paragraph{Main test and success criterion.}
+\begin{itemize}
+    \item Regress off-diagonal elements of the empirical covariance matrix on off-diagonal elements of the model-implied covariance matrix, and compare to a naive discrete-category baseline (e.g.\ routine/non-routine, manual/cognitive).
+    \item The geometry is deemed informative if:
+    \begin{enumerate}
+        \item the coefficient on the model-implied covariance is positive and statistically significant, and
+        \item the $R^2$ of the manifold-based specification exceeds the naive baseline by an \emph{economically meaningful} margin (e.g.\ an improvement of at least 5--10 percentage points).
+    \end{enumerate}
+    \item If these conditions fail, the O*NET-based geometry is treated as rejected: survey-based task similarity does not appear to capture structural economic transmission channels in the sense required by the model.
+\end{itemize}
+
+\subsection*{Next steps when O*NET data are available}
+
+Once access to the O*NET microdata is secured, several implementation choices must be resolved before running the Phase~I tests:
+
+\begin{itemize}
+    \item \textbf{Choice of descriptor tables.}
+    A natural starting point is the ``Work Activities'' table (41 items), which directly characterizes what workers do on the job.
+    However, the ``Abilities'' table (52 items) provides a complementary view of underlying worker capabilities.
+    A combined descriptor vector that stacks or otherwise fuses Work Activities and Abilities may offer greater resolution at the cost of additional noise.
+    Phase~I can adopt Work Activities alone as the baseline representation, with Abilities and the combined vector used for robustness.
+    \item \textbf{Dimensionality reduction.}
+    Regardless of the chosen descriptor set, the raw O*NET vectors are high-dimensional and noisy.
+    Applying PCA (or a similar technique) to reduce the descriptor space to approximately 10--20 principal components should preserve most of the economically relevant structure while attenuating idiosyncratic variation.
+    The empirical metric $d(x,y)$ is then defined as Euclidean distance in this reduced space.
+    \item \textbf{Sensitivity analysis.}
+    The Phase~I covariance tests should be repeated across:
+    (i) Work Activities only,
+    (ii) Abilities only, and
+    (iii) the combined descriptor vector,
+    and across several choices of retained PCA dimensions (e.g.\ 10, 15, 20) to assess how sensitive the estimated diffusion structure and explanatory power are to these modeling choices.
+\end{itemize}
+
+\subsection*{Extended 12-Month Program}
+
+Conditioned on Phase~I success, the extended program has three components.
+
+\paragraph{Q1: Historical calibration (``The Force'').}
+\begin{itemize}
+    \item Train a text-to-task encoder $\mathcal{E} : \text{Text} \to T$ mapping patent text (1980--2020) onto the task manifold.
+    \item Use $\mathcal{E}$ to construct time series of shock fields $I_t$ from patent flows.
+    \item Calibrate the diffusion parameter $\sigma$ and related structural quantities to match observed patterns of labor share decline and wage polarization.
+    \item In the occupation-level exposure formula
+    \[
+    \Delta \ln w_j(t) \approx U_j(t) - \lambda D_j(t),
+    \]
+    treat $\lambda$ as a reduced-form parameter capturing the \emph{net displacement effect per unit of automation exposure}.
+    Its magnitude depends on the underlying aggregate production structure (capital-labor substitution, within-occupation task reallocation, and firm adjustment).
+    In this phase, $\lambda$ is treated as a calibration target; future work may derive it from a more primitive production function.
+\end{itemize}
+
+\paragraph{Q2: Refined topology (``The Space'').}
+\begin{itemize}
+    \item Replace O*NET vectors with embeddings derived from large-scale job postings (e.g.\ Lightcast, Greenhouse), yielding a revealed-preference-based task geometry.
+    \item Reestimate the empirical metric $d$ and re-run the Phase~I covariance tests.
+    \item Compare the explanatory power of the survey-based and revealed-preference-based manifolds; ask whether the refined geometry materially improves the fit to wage covariance and labor share dynamics.
+\end{itemize}
+
+\paragraph{Q3: Forecasting AI shocks (``The Bitter Lesson'').}
+\begin{itemize}
+    \item Embed current AI benchmark tasks (e.g.\ SWE-bench, MMLU) into the task manifold to construct a forward-looking shock profile $I_{2025}$.
+    \item Propagate $I_{2025}$ through the calibrated diffusion dynamics to obtain predicted paths for displacement and augmentation exposures $(D_j(t+5), U_j(t+5))$ across occupations.
+    \item Aggregate these predictions to generate conditional forecasts of changes in the aggregate labor share and its cross-occupational distribution.
+    \item Emphasize that these forecasts are \emph{conditional} on the structural stability of the estimated diffusion parameters and on the maintained assumptions (including the monotonicity of automation in Remark~\ref{rem:monotonicity}).
+\end{itemize}
+
+\subsection*{Planned Theoretical Sections Beyond 3.3}
+
+For completeness, we summarize the planned content of the remaining theoretical subsections, which will be written after initial data work:
+
+\begin{itemize}
+    \item \textbf{Section 3.4 (Labor flows and equilibrium remark).} Introduce a reduced-form continuity equation for occupational measures on the manifold and explicitly state that the flow operator is treated as a reduced-form representation of equilibrium adjustment, not derived from a full search-and-matching model.
+    \item \textbf{Section 3.5 (Exposure indices and labor share).} Define displacement and augmentation exposure indices for each occupation as integrals of $A_t$ and $\ln C_t$ against $\rho_j$, and derive the aggregation formula
+    \[
+    \Delta s_L(t) \approx \sum_j \omega_j(t)\bigl[U_j(t) - \lambda D_j(t)\bigr]
+    \]
+    linking micro-level task exposures to changes in the aggregate labor share, with an explicit discussion of the interpretation of $\lambda$ as a reduced-form parameter.
+    This subsection will include a brief derivation sketch starting from wages equal marginal products at the task level, aggregating across occupations, and linearizing around a baseline allocation to obtain the above first-order approximation.
+    \item \textbf{Section 3.6 (Identification via historical shocks).} Formalize the overidentification test based on the invariance of the diffusion parameter $\sigma$ (and any additional kernel parameters) across the Robotics/Manufacturing and Software/Cognitive epochs, now carefully phrased in terms of occupation-level covariances constructed from the task manifold.
+\end{itemize}
+
+\end{document}
