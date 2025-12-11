@@ -1,5 +1,9 @@
 import abc
+import hashlib
+import json
 import os
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import requests
@@ -75,6 +79,9 @@ class OnetManifold(TaskManifold):
     """
     Realization using live O*NET Web Services data.
     Fetches Work Activities and Abilities to construct task vectors.
+
+    Supports disk caching to avoid repeated API calls (~15 min -> instant).
+    Cache is stored in .cache/onet/ and keyed by config hash.
     """
 
     # Default diverse occupation sample for testing
@@ -91,6 +98,8 @@ class OnetManifold(TaskManifold):
         '43-4051.00',  # Customer Service Representatives
     ]
 
+    CACHE_DIR = Path(".cache") / "onet"
+
     def __init__(self, api_key=None):
         super().__init__()
         load_dotenv()
@@ -102,6 +111,59 @@ class OnetManifold(TaskManifold):
         self.occupation_data = {}  # Raw data keyed by SOC code
         self.element_ids = []      # Ordered list of all element IDs (feature names)
         self.occupation_codes = []  # Ordered list of occupation codes
+
+    # ---- Cache helpers -------------------------------------------------------
+
+    def _cache_key_and_config(self, occupation_codes, n_components, include_level, score_mode):
+        """
+        Build a deterministic cache key from the effective configuration.
+        Occupation codes are sorted so different orderings share the same cache.
+        """
+        config = {
+            "occupation_codes": sorted(list(occupation_codes)),
+            "n_components": n_components,
+            "include_level": include_level,
+            "score_mode": score_mode,
+            "api_version": "v2",
+        }
+        config_json = json.dumps(config, sort_keys=True)
+        key = hashlib.sha256(config_json.encode("utf-8")).hexdigest()[:12]
+        return key, config_json
+
+    def _cache_path(self, cache_key):
+        """Return path to cache file for given key."""
+        return self.CACHE_DIR / f"{cache_key}.npz"
+
+    def _load_from_cache(self, cache_path):
+        """
+        Load cached manifold geometry.
+        Returns (task_vectors, task_ids, element_ids) or None on failure.
+        """
+        try:
+            data = np.load(cache_path, allow_pickle=True)
+            task_vectors = data["task_vectors"]
+            task_ids = data["task_ids"].tolist()
+            element_ids = data["element_ids"].tolist()
+            return task_vectors, task_ids, element_ids
+        except Exception as e:
+            print(f"  Cache load failed ({cache_path}): {e}")
+            return None
+
+    def _save_to_cache(self, cache_path, config_json):
+        """
+        Save current manifold geometry to cache.
+        """
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+        np.savez_compressed(
+            cache_path,
+            task_vectors=self.task_vectors,
+            task_ids=np.array(self.task_ids, dtype=object),
+            element_ids=np.array(self.element_ids, dtype=object),
+            config_json=config_json,
+        )
+        print(f"  Saved to cache: {cache_path}")
+
+    # ---- API helpers ---------------------------------------------------------
 
     def _fetch_endpoint(self, soc_code, endpoint):
         """
@@ -275,9 +337,9 @@ class OnetManifold(TaskManifold):
         print("    Level enrichment complete.")
 
     def load_data(self, occupation_codes=None, n_components=None,
-                  include_level=False, score_mode='importance'):
+                  include_level=False, score_mode='importance', use_cache=True):
         """
-        Load O*NET data for specified occupations.
+        Load O*NET data for specified occupations, with optional disk caching.
 
         Args:
             occupation_codes: List of SOC codes (e.g., ['15-1252.00', '51-4041.00'])
@@ -290,18 +352,46 @@ class OnetManifold(TaskManifold):
                 - 'importance': Use Importance only (how frequently performed)
                 - 'level': Use Level only (how complex/difficult)
                 - 'combined': Importance * Level / 100 (default when include_level=True)
+            use_cache: If True, try to load/save cached geometry on disk.
+                      Cache lives in .cache/onet/ and is keyed by config hash.
 
         The distinction between Importance and Level is critical:
         - A Data Entry Clerk has high Importance but low Level for "Working with Computers"
         - A Software Developer has high Importance AND high Level for the same task
         Using only Importance would incorrectly place these occupations close together.
+
+        Note: Cache only stores task_vectors, task_ids, element_ids.
+        It does NOT restore occupation_data (raw element details) or pca_model.
         """
         occupation_codes = occupation_codes or self.DEFAULT_OCCUPATIONS
-        self.occupation_codes = occupation_codes
 
-        # If including level, default to combined score mode
+        # Apply include_level logic BEFORE computing cache key
         if include_level and score_mode == 'importance':
             score_mode = 'combined'
+
+        # ---- Cache lookup ----------------------------------------------------
+        cache_key, config_json = self._cache_key_and_config(
+            occupation_codes=occupation_codes,
+            n_components=n_components,
+            include_level=include_level,
+            score_mode=score_mode,
+        )
+        cache_path = self._cache_path(cache_key)
+
+        if use_cache and cache_path.exists():
+            print(f"Loading OnetManifold from cache: {cache_path}")
+            cached = self._load_from_cache(cache_path)
+            if cached is not None:
+                self.task_vectors, self.task_ids, self.element_ids = cached
+                self.n_tasks = len(self.task_ids)
+                self.occupation_codes = list(self.task_ids)
+                print(f"  Loaded {self.n_tasks} occupations with {len(self.element_ids)} features from cache.")
+                return
+            else:
+                print("  Cache invalid, recomputing from API...")
+
+        # ---- Fetch from API --------------------------------------------------
+        self.occupation_codes = occupation_codes
 
         print(f"Fetching O*NET data for {len(occupation_codes)} occupations...")
         print(f"  Score mode: {score_mode}" + (" (with Level)" if include_level else ""))
@@ -339,7 +429,7 @@ class OnetManifold(TaskManifold):
         self.task_vectors = np.zeros((n_occupations, n_features))
         valid_codes = []
 
-        for i, soc_code in enumerate(occupation_codes):
+        for soc_code in occupation_codes:
             if soc_code not in self.occupation_data:
                 continue
             valid_codes.append(soc_code)
@@ -364,6 +454,10 @@ class OnetManifold(TaskManifold):
             print(f"Variance explained: {sum(pca.explained_variance_ratio_):.2%}")
 
         print("O*NET data loaded successfully.")
+
+        # ---- Save to cache ---------------------------------------------------
+        if use_cache:
+            self._save_to_cache(cache_path, config_json)
 
     def get_element_name(self, element_id):
         """Get human-readable name for an element ID."""

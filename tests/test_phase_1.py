@@ -193,6 +193,9 @@ def main():
     # NOTE: include_level=True provides better discrimination but is slow (~4000 API calls)
     # For quick testing, use include_level=False (importance only)
     # For production/research, cache Level data or use include_level=True
+    #
+    # NOTE: use_cache=False because we need occupation_data for find_elements_by_name().
+    # The cache only stores task_vectors/task_ids/element_ids, not the raw element details.
     print("\n[Step A] Loading O*NET manifold...")
     include_level = False  # Set True for better accuracy (slower)
     if include_level:
@@ -201,7 +204,7 @@ def main():
         print("  Using Importance-only scoring (fast)")
     try:
         manifold = OnetManifold()
-        manifold.load_data(include_level=include_level)
+        manifold.load_data(include_level=include_level, use_cache=False)
     except Exception as e:
         print(f"ERROR: Failed to load O*NET data: {e}")
         print("\nMake sure .env contains valid ONET_API_KEY")
