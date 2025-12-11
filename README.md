@@ -1,79 +1,129 @@
-# Task Space Model (Numerical Realization)
+# Task Space Model
 
-A computational implementation of the task-based labor economics framework. This repository provides the discrete numerical realization of the continuous mathematical structures defined in the theoretical paper.
+A computational framework for modeling how technological shocks propagate through labor markets via task-level dynamics.
 
-**Phase I Status: PASSED** - O*NET geometry produces sensible shock propagation patterns.
+**Phase I Status: PASSED** -- O*NET-based task geometry correctly separates robotics vs software automation shocks.
 
-## Theory-to-Code Mapping
+## Overview
 
-| Module | Paper Section | Mathematical Object |
-|--------|---------------|---------------------|
-| `manifold.py` | Section 3.1 Task Domain | Metric-measure space (T, d, mu) |
-| `dynamics.py` | Section 3.4 Differential Inclusions | Evolution operators, diffusion kernel |
-| `analysis.py` | Section 3.3 Exposure Functionals | Linear functionals D_j(t) = <A_t, rho_j> |
+This project implements a geometric model of task-level technological change. The core insight: occupations are not primitive objects but *distributions over an underlying task manifold*. When automation hits a region of task space, the impact diffuses outward according to the manifold geometry, affecting nearby occupations proportionally to their exposure.
 
-## Architecture
+### The Model in Three Parts
 
-The codebase uses an **Abstract Base Class** pattern to decouple mathematical operators from data sources:
+1. **Task Manifold** (`manifold.py`): The space of all tasks, equipped with a metric that captures "how similar" two tasks are. We construct this empirically from O*NET Work Activities and Abilities data. Each occupation is a probability distribution over this space.
 
-```
-TaskManifold (ABC)
-   SyntheticManifold    # sklearn blobs for testing
-   OnetManifold         # O*NET V2 API
-```
+2. **Diffusion Dynamics** (`dynamics.py`): Technology shocks propagate via a heat equation on the manifold. A robotics shock centered on "Handling and Moving Objects" diffuses to nearby manual tasks; a software shock centered on "Analyzing Data" diffuses to nearby cognitive tasks. The dynamics follow:
+   ```
+   A_{t+1} = A_t + K_d[I_t]
+   ```
+   where K_d is an exponential diffusion kernel and I_t is the shock field.
 
-This allows the dynamics engine and analysis module to operate identically regardless of whether the underlying task space is synthetic (for rapid prototyping) or derived from empirical O*NET data.
+3. **Exposure Measurement** (`analysis.py`): Each occupation's displacement exposure is the integral of the automation field against its task distribution: `D_j = <A_t, rho_j>`. High exposure means the occupation sits in a heavily-automated region of task space.
 
-## API Configuration
+### Why This Matters
 
-1. Get an API key from https://services.onetcenter.org/developer/
-2. Create a `.env` file in the project root:
+Traditional labor economics models (routine/non-routine, manual/cognitive) use discrete categories. This model treats task space as *continuous*, allowing:
+- Smooth gradients of automation exposure across occupations
+- Spillover effects: automating one task affects nearby tasks
+- Empirical identification: the diffusion parameter sigma can be estimated from wage covariance data
 
-```bash
-ONET_API_KEY=your_api_key_here
-```
-
-**Note on Level vs Importance scores:**
-- `Importance`: How frequently a task is performed (fast to fetch)
-- `Level`: How complex/difficult the task is (slow, ~4000 API calls)
-
-Use `include_level=True` for better manifold discrimination, but expect longer load times.
+---
 
 ## Quick Start
 
 ```bash
-# 1. Install dependencies
+# Install dependencies
 pip install -r requirements.txt
 
-# 2. Configure O*NET credentials (see above)
+# Set up O*NET API credentials
+echo "ONET_API_KEY=your_key_here" > .env
 
-# 3. Run Phase I validation
+# Run the Phase I validation test
 PYTHONPATH=src python tests/test_phase_1.py
 ```
 
-## Repository Structure
+Expected output: Robotics shocks primarily affect Electricians, Machinists, Truck Drivers; Software shocks primarily affect Software Developers, Accountants.
+
+---
+
+## Developer Guide
+
+### Repository Structure
 
 ```
 task-space-model/
-   src/task_space/
-      manifold.py      # Task domain construction (O*NET V2 API)
-      dynamics.py      # State evolution engine (Definition 1.5-1.6)
-      analysis.py      # Occupation exposure computation
-   tests/
-      test_auth.py     # API connectivity probe
-      test_phase_1.py  # Shock propagation validation
-   paper/
-      main.tex         # Theoretical foundations
-   data/
-      raw/             # Cached API responses
-      processed/       # Adjacency matrices, embeddings
-   notebooks/          # Exploration and visualization
-   outputs/            # Generated plots and tables
+    src/task_space/
+        manifold.py      # Task domain: O*NET API + manifold construction
+        dynamics.py      # Diffusion operator and state evolution
+        analysis.py      # Occupation exposure computation
+    tests/
+        test_auth.py     # API connectivity probe
+        test_phase_1.py  # Shock propagation sanity check
+        probe_level.py   # Level vs Importance investigation
+    paper/
+        main.tex         # Theoretical foundations (Definitions 1.1-1.6)
+    notebooks/           # Visualization scripts
+    outputs/             # Generated plots
+    .cache/              # Disk cache for API responses (git-ignored)
 ```
 
-## Remark on Data Sources
+### Key Classes
 
-> **Remark 4.1 (Coordinate Charts).** The O*NET database provides one specific *coordinate chart* for the abstract task manifold T -- it is a measurement instrument, not the territory itself. The mathematical structures (metric d, measure mu, operators T_z) are defined independently of any particular empirical realization. Alternative coordinate charts could be constructed from job postings, time-use surveys, or direct task elicitation. The theorems hold for the abstract space; O*NET merely provides convenient numerical handles.
+**`OnetManifold`** -- Fetches Work Activities and Abilities from O*NET V2 API, constructs task vectors.
+```python
+from task_space.manifold import OnetManifold
+
+m = OnetManifold()
+m.load_data()  # Fetches 10 default occupations
+# m.task_vectors: (n_occupations, n_features) matrix
+# m.task_ids: list of SOC codes
+```
+
+**`DynamicsEngine`** -- Builds diffusion kernel, propagates shocks.
+```python
+from task_space.dynamics import DynamicsEngine
+
+engine = DynamicsEngine(sigma=2.0)  # Diffusion length scale
+kernel = engine.build_diffusion_kernel(m.task_vectors)
+A_t, C_t = engine.evolve(A_t, C_t, kernel, shock_vector)
+```
+
+### API Configuration
+
+1. Register at https://services.onetcenter.org/developer/
+2. Generate an API key
+3. Create `.env` in project root:
+   ```
+   ONET_API_KEY=your_key_here
+   ```
+
+**Importance vs Level scores:**
+- *Importance* (0-100): How frequently a task is performed
+- *Level* (0-100): How complex/difficult the task is
+
+Use `include_level=True` for better discrimination (e.g., Software Developer vs Data Entry Clerk both have high Importance for "Working with Computers", but very different Levels). Note: Level enrichment requires ~4000 additional API calls.
+
+### Caching
+
+API responses are cached to `.cache/onet/` on first load. Subsequent runs with the same config load instantly. Use `use_cache=False` to force refresh.
+
+### Theory-to-Code Mapping
+
+| Paper Section | Code | Mathematical Object |
+|---------------|------|---------------------|
+| Definition 1.1 (Task Domain) | `OnetManifold` | Metric-measure space (T, d, mu) |
+| Definition 1.4 (Shock Field) | `DynamicsEngine.create_shock_vector()` | Innovation input I_t |
+| Definition 1.5 (Diffusion Operator) | `DynamicsEngine.build_diffusion_kernel()` | Integral operator K_d with kernel exp(-d/sigma) |
+| Definition 1.6 (Displacement Dynamics) | `DynamicsEngine.evolve()` | dA/dt = K_d[I_t], monotonicity enforced |
+| Section 3.3 (Exposure Functionals) | `Nowcaster.compute_exposures()` | D_j = <A_t, rho_j> |
+
+---
+
+## Remark on Coordinate Charts
+
+> The O*NET database provides one specific *coordinate chart* for the abstract task manifold -- it is a measurement instrument, not the territory itself. The mathematical structures (metric, measure, operators) are defined independently of any particular empirical realization. Alternative charts could be constructed from job postings, time-use surveys, or direct task elicitation. The theorems hold for the abstract space; O*NET merely provides convenient numerical handles.
+
+---
 
 ## License
 
