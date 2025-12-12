@@ -12,6 +12,33 @@
 
 \begin{document}
 
+\section{Introduction}
+\label{sec:introduction}
+
+This paper develops and tests a geometric framework for task-level technological change.
+The starting point is that many empirical approaches in labor economics rely on discrete taxonomies---for example, ``routine'' versus ``non-routine,'' or sector and industry classifications.
+These partitions are useful summaries, but they do not directly represent how technological capability transfers across economically similar tasks that span occupations and industries.
+We therefore model the economy's task structure as a metric space and represent occupations as distributions over that space, so that technology shocks can generate spillovers as a function of task proximity.
+
+\textit{Placeholder: Expand the introduction by (i) stating the concrete empirical objects to be explained (wages, employment, labor share, and cross-occupation covariance patterns), (ii) summarizing the key modeling primitives (task manifold, shock field, diffusion operator, occupation measures), and (iii) previewing the main tests and decision rules used to evaluate the framework.}
+
+\textit{Placeholder: Add a brief ``contributions'' paragraph distinguishing (a) the measurement contribution (a continuous task geometry constructed from O*NET descriptors) from (b) the identification contribution (covariance restrictions and shock-regime comparisons) and (c) the substantive contribution (exposure indices that incorporate neighborhood spillovers).}
+
+
+\section{Literature Review}
+\label{sec:literature}
+
+\textit{Placeholder: Situate the paper in three literatures.}
+
+\textit{(1) Task-based labor economics and routine-biased technological change: summarize how task content enters wage and employment analysis, and why discrete routine/manual/cognitive classifications are a coarse representation of similarity and substitution.}
+
+\textit{(2) Technology shocks and local labor market exposure measures: discuss industry- and occupation-exposure designs (including robot adoption and related ``shift-share'' approaches), emphasizing what they can and cannot capture about cross-industry spillovers.}
+
+\textit{(3) Recent AI exposure measurement: summarize rubric-based or label-based exposure indices for generative AI and related technologies, and motivate why continuous (distance-based) exposure may better capture gradients and heterogeneity within broad ``exposed'' groups.}
+
+\textit{Placeholder: Include a short paragraph on related ``diffusion'' or network approaches (e.g., propagation on graphs or similarity networks), clarifying how the present model differs by explicitly defining a metric-measure space and a diffusion operator tied to that metric.}
+
+
 \section{Theory}
 \label{sec:theory}
 
@@ -187,128 +214,77 @@ will experience the strongest spillovers, with the characteristic spatial scale 
 This captures, in a tractable way, the idea that the impact of a technology shock radiates outward along the geometry of the task space.
 \end{remark}
 
-\bigskip
 
-\section{Updated Research Plan and Empirical Strategy}
-\label{sec:research-plan}
 
-This section summarizes the research program and incorporates several clarifications that are important for interpretation and implementation:
-(i) the role of the elasticity parameter $\lambda$ in the occupation-level exposure formula,
-(ii) the choice of kernel functional form and robustness,
-(iii) the mapping from task-level ``shadow'' objects to occupation-level observables,
-(iv) the monotonicity assumption on automation, and
-(v) a quantitative success criterion for the Phase~I test.
+\section{Empirical Strategy}
+\label{sec:empirics}
 
-\subsection*{Phase I: Minimal Feasible Model (Weeks 1--4)}
+This section outlines how the abstract objects introduced in Section~\ref{sec:theory} are operationalized and how the core empirical tests are organized.
+The guiding principle is to treat the task geometry and diffusion dynamics as falsifiable components: if they do not add explanatory power beyond standard discrete baselines, the framework should be revised or abandoned rather than elaborated.
 
-\paragraph{Objective.}
-Test whether an O*NET-based geometry of tasks passes a strict covariance-based identification test.
-This is the \emph{go/no-go} decision point for further development.
+\subsection{Constructing an empirical task manifold from O*NET}
+\label{subsec:empirical-manifold}
 
-\paragraph{Geometry.}
-\begin{itemize}
-    \item Construct a task graph $G$ using O*NET ``Work Activities'' or similar task descriptors.
-    \item Embed tasks into a low-dimensional Euclidean space via PCA or a related dimensionality reduction method.
-    \item Define the empirical metric $d(x,y)$ as Euclidean distance in this embedding, yielding an operational counterpart to the theoretical distance in Definition~\ref{def:task-domain}.
-\end{itemize}
+We construct an empirical proxy for the task manifold using O*NET descriptors.
+The baseline representation stacks O*NET ``Work Activities'' and ``Abilities'' measures at the occupation level, using both \emph{importance} and (where available) \emph{level} scores to improve discrimination among occupations with similar task lists but different complexity profiles.
+We apply a dimensionality reduction method (baseline: PCA) and define the empirical distance $d(x,y)$ as Euclidean distance in the reduced space.
 
-\paragraph{Shocks and diffusion.}
-\begin{itemize}
-    \item Construct two shock profiles $I_t$ corresponding to:
-    \begin{enumerate}
-        \item a ``Robotics/Manufacturing'' regime (emphasizing manual and routine tasks),
-        \item a ``Software/Cognitive'' regime (emphasizing analytic and cognitive tasks).
-    \end{enumerate}
-    \item Use the exponential kernel $k(d;\sigma) = \exp(-d/\sigma)$ as in \eqref{eq:exp-kernel} to define the diffusion operator $\mathcal{K}_d$.
-    \item For each epoch, compute the model-implied structure of co-movement in displacement intensity $A_t$ and, via the occupation measures $\{\rho_j\}$, the implied structure of wage co-movement across occupations.
-\end{itemize}
+\textit{Placeholder: Specify the exact O*NET tables and release/version used; document the SOC codes included; and describe preprocessing choices (standardization, missingness handling, and any weighting between importance and level).}
 
-\paragraph{Empirical covariance and observables.}
-\begin{itemize}
-    \item Using O*NET--SOC crosswalks, map tasks to occupations and construct occupation-level exposures from the underlying fields.
-    \item Compute empirical residual covariance matrices of occupation-level wage changes, controlling for sector fixed effects and local labor market shocks.
-    \item Make explicit that ``task-level'' shadow wages are theoretical constructs; the empirical objects are occupation-level wages, with the mapping provided by the occupation measures as in Remark~\ref{rem:shadow-task-wage}.
-\end{itemize}
+\textit{Placeholder: Report basic descriptive diagnostics for the geometry (e.g., nearest-neighbor occupation lists, clustering stability across PCA dimensions, and robustness of distances to alternative normalizations).}
 
-\paragraph{Main test and success criterion.}
-\begin{itemize}
-    \item Regress off-diagonal elements of the empirical covariance matrix on off-diagonal elements of the model-implied covariance matrix, and compare to a naive discrete-category baseline (e.g.\ routine/non-routine, manual/cognitive).
-    \item The geometry is deemed informative if:
-    \begin{enumerate}
-        \item the coefficient on the model-implied covariance is positive and statistically significant, and
-        \item the $R^2$ of the manifold-based specification exceeds the naive baseline by an \emph{economically meaningful} margin (e.g.\ an improvement of at least 5--10 percentage points).
-    \end{enumerate}
-    \item If these conditions fail, the O*NET-based geometry is treated as rejected: survey-based task similarity does not appear to capture structural economic transmission channels in the sense required by the model.
-\end{itemize}
+\subsection{Phase I validation and identification diagnostics}
+\label{subsec:phase1}
 
-\subsection*{Next steps when O*NET data are available}
+The first set of tests evaluates whether an O*NET-based geometry produces economically meaningful structure before introducing external datasets.
+The key identification diagnostic is covariance-based: the model implies that occupation-level wage changes should exhibit stronger co-movement for occupations with overlapping task distributions and small manifold distances, conditional on standard controls.
 
-Once access to the O*NET microdata is secured, several implementation choices must be resolved before running the Phase~I tests:
+In current implementation, preliminary checks using O*NET data indicate that the constructed geometry separates prototypical ``robotics/manual'' shocks from ``software/cognitive'' shocks in the expected direction.
+These checks are treated as a feasibility result rather than as a substitute for the formal empirical tests described below.
 
-\begin{itemize}
-    \item \textbf{Choice of descriptor tables.}
-    A natural starting point is the ``Work Activities'' table (41 items), which directly characterizes what workers do on the job.
-    However, the ``Abilities'' table (52 items) provides a complementary view of underlying worker capabilities.
-    A combined descriptor vector that stacks or otherwise fuses Work Activities and Abilities may offer greater resolution at the cost of additional noise.
-    Phase~I can adopt Work Activities alone as the baseline representation, with Abilities and the combined vector used for robustness.
-    \item \textbf{Dimensionality reduction.}
-    Regardless of the chosen descriptor set, the raw O*NET vectors are high-dimensional and noisy.
-    Applying PCA (or a similar technique) to reduce the descriptor space to approximately 10--20 principal components should preserve most of the economically relevant structure while attenuating idiosyncratic variation.
-    The empirical metric $d(x,y)$ is then defined as Euclidean distance in this reduced space.
-    \item \textbf{Sensitivity analysis.}
-    The Phase~I covariance tests should be repeated across:
-    (i) Work Activities only,
-    (ii) Abilities only, and
-    (iii) the combined descriptor vector,
-    and across several choices of retained PCA dimensions (e.g.\ 10, 15, 20) to assess how sensitive the estimated diffusion structure and explanatory power are to these modeling choices.
-\end{itemize}
+\textit{Placeholder: Replace the qualitative ``feasibility'' statement with a small table/figure summarizing the Phase~I sanity check (e.g., top-ranked occupations by exposure under two shock profiles) and document the exact parameter settings used to produce it.}
 
-\subsection*{Extended 12-Month Program}
+\textit{Placeholder: In the covariance test, state the precise regression specification (unit of observation, controls, fixed effects, and standard error structure). Include the discrete baselines (routine/non-routine, manual/cognitive, and any commonly used exposure indices) and report incremental $R^2$ and out-of-sample performance where feasible.}
 
-Conditioned on Phase~I success, the extended program has three components.
+\subsection{Experiment A: Retrospective evaluation (1990--2007)}
+\label{subsec:experimentA}
 
-\paragraph{Q1: Historical calibration (``The Force'').}
-\begin{itemize}
-    \item Train a text-to-task encoder $\mathcal{E} : \text{Text} \to T$ mapping patent text (1980--2020) onto the task manifold.
-    \item Use $\mathcal{E}$ to construct time series of shock fields $I_t$ from patent flows.
-    \item Calibrate the diffusion parameter $\sigma$ and related structural quantities to match observed patterns of labor share decline and wage polarization.
-    \item In the occupation-level exposure formula
-    \[
-    \Delta \ln w_j(t) \approx U_j(t) - \lambda D_j(t),
-    \]
-    treat $\lambda$ as a reduced-form parameter capturing the \emph{net displacement effect per unit of automation exposure}.
-    Its magnitude depends on the underlying aggregate production structure (capital-labor substitution, within-occupation task reallocation, and firm adjustment).
-    In this phase, $\lambda$ is treated as a calibration target; future work may derive it from a more primitive production function.
-\end{itemize}
+The retrospective evaluation compares task-proximity exposure measures to industry-mix exposure designs in the context of late-20th-century automation and robot adoption.
+The benchmark is a local labor market design in which regional outcomes are related to predicted exposure constructed from the local industrial or occupational composition.
 
-\paragraph{Q2: Refined topology (``The Space'').}
-\begin{itemize}
-    \item Replace O*NET vectors with embeddings derived from large-scale job postings (e.g.\ Lightcast, Greenhouse), yielding a revealed-preference-based task geometry.
-    \item Reestimate the empirical metric $d$ and re-run the Phase~I covariance tests.
-    \item Compare the explanatory power of the survey-based and revealed-preference-based manifolds; ask whether the refined geometry materially improves the fit to wage covariance and labor share dynamics.
-\end{itemize}
+\textit{Placeholder: Implement a direct comparison to a standard robot-exposure specification by constructing (i) an industry-mix exposure measure and (ii) a geometric exposure measure based on the local density of tasks proximate to a ``manual/routine'' shock region on the manifold.}
 
-\paragraph{Q3: Forecasting AI shocks (``The Bitter Lesson'').}
-\begin{itemize}
-    \item Embed current AI benchmark tasks (e.g.\ SWE-bench, MMLU) into the task manifold to construct a forward-looking shock profile $I_{2025}$.
-    \item Propagate $I_{2025}$ through the calibrated diffusion dynamics to obtain predicted paths for displacement and augmentation exposures $(D_j(t+5), U_j(t+5))$ across occupations.
-    \item Aggregate these predictions to generate conditional forecasts of changes in the aggregate labor share and its cross-occupational distribution.
-    \item Emphasize that these forecasts are \emph{conditional} on the structural stability of the estimated diffusion parameters and on the maintained assumptions (including the monotonicity of automation in Remark~\ref{rem:monotonicity}).
-\end{itemize}
+\textit{Placeholder: Define the outcome variables (wage changes, employment changes, labor share proxies) and the geographic unit (e.g., commuting zones). State the sample period, baseline controls, and the specification used to evaluate incremental explanatory power.}
 
-\subsection*{Planned Theoretical Sections Beyond 3.3}
+\textit{Placeholder: Report whether the geometric exposure term explains variation not captured by industry exposure, and whether estimated effects are robust to alternative definitions of the shock region and to reasonable variation in the diffusion length scale $\sigma$.}
 
-For completeness, we summarize the planned content of the remaining theoretical subsections, which will be written after initial data work:
+\subsection{Experiment B: Prospective evaluation (2022--present)}
+\label{subsec:experimentB}
 
-\begin{itemize}
-    \item \textbf{Section 3.4 (Labor flows and equilibrium remark).} Introduce a reduced-form continuity equation for occupational measures on the manifold and explicitly state that the flow operator is treated as a reduced-form representation of equilibrium adjustment, not derived from a full search-and-matching model.
-    \item \textbf{Section 3.5 (Exposure indices and labor share).} Define displacement and augmentation exposure indices for each occupation as integrals of $A_t$ and $\ln C_t$ against $\rho_j$, and derive the aggregation formula
-    \[
-    \Delta s_L(t) \approx \sum_j \omega_j(t)\bigl[U_j(t) - \lambda D_j(t)\bigr]
-    \]
-    linking micro-level task exposures to changes in the aggregate labor share, with an explicit discussion of the interpretation of $\lambda$ as a reduced-form parameter.
-    This subsection will include a brief derivation sketch starting from wages equal marginal products at the task level, aggregating across occupations, and linearizing around a baseline allocation to obtain the above first-order approximation.
-    \item \textbf{Section 3.6 (Identification via historical shocks).} Formalize the overidentification test based on the invariance of the diffusion parameter $\sigma$ (and any additional kernel parameters) across the Robotics/Manufacturing and Software/Cognitive epochs, now carefully phrased in terms of occupation-level covariances constructed from the task manifold.
-\end{itemize}
+The prospective evaluation compares gradient, distance-based exposure to rubric-based or binary exposure classifications used in recent generative-AI studies.
+The key object is a shock profile concentrated in a region of the task manifold associated with analytic and generative text production, with effects that decay with distance.
+
+\textit{Placeholder: Choose a concrete labor-market dataset with high-frequency wage information for remote or freelance work (or an alternative dataset with suitable granularity). Define a mapping from observed job categories to SOC occupations (or to task distributions) and document the crosswalk.}
+
+\textit{Placeholder: Construct two exposure measures: (i) a baseline rubric/binary measure following the benchmark study, and (ii) a distance-based measure generated by a localized shock and diffusion on the manifold. Compare their ability to predict heterogeneous wage and employment responses within broadly ``exposed'' groups.}
+
+\textit{Placeholder: Pre-register (at least informally, within the paper) a small set of outcomes and time windows (e.g., 2022--2024) and report robustness to alternative shock centroids and to inclusion/exclusion of particular occupation families.}
+
+\subsection{Decision rules and kill criteria}
+\label{subsec:kill}
+
+Across the empirical program, we adopt explicit decision rules to determine whether the manifold-based approach adds value beyond simpler baselines.
+
+\begin{enumerate}
+    \item \textbf{Incremental explanatory power.}
+    In each main specification, the geometric exposure term should be statistically distinguishable from zero and should increase adjusted $R^2$ by an economically meaningful margin relative to standard discrete baselines.
+    \item \textbf{Parameter stability and plausibility.}
+    The estimated diffusion scale $\sigma$ should lie in a reasonable range and should not require extreme tuning across closely related specifications.
+    \item \textbf{Non-redundancy.}
+    If manifold-based exposures are nearly collinear with standard routine/manual indicators (e.g., correlations above 0.95), the additional complexity is unlikely to be justified absent clear out-of-sample gains.
+\end{enumerate}
+
+\textit{Placeholder: If any of these criteria fail in the primary tests, the appropriate next step is to revisit the measurement ``chart'' for the task manifold (e.g., alternative O*NET descriptor sets, job-posting embeddings, or other elicited task representations) rather than to add additional layers of model structure.}
+
 
 \end{document}
