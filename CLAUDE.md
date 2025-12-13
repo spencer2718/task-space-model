@@ -8,33 +8,29 @@ This document contains working conventions, version control rules, and quality-o
 
 **Paper and codebase versions must always match.**
 
-- Versions are bumped when entering a new phase of the research program
-- Current: v0.4.2.1 (Phase I validation FAILED after robustness checks)
-- Previous: v0.4.2 (appeared to pass, but robustness checks revealed spurious result)
+- Current: **v0.5.0** (Binary overlap validated, SAE marginal improvement)
+- Previous: v0.4.2.1 (robustness audit revealed v0.4.2 was spurious)
+- Previous: v0.4.2 (appeared to pass, but random distances outperformed)
 - Previous: v0.4.1 (GWA + Recipe X validation failed)
 
 When updating either paper or code, ensure the other stays in sync or is updated together.
 
 ---
 
-## Current Status: Validation FAILED
+## Current Status: Binary Overlap Validated
 
-**v0.4.2.1 Result:** The initial v0.4.2 validation result was spurious. Robustness checks revealed:
+**v0.5.0 Result:** The labor market signal is **discrete, not continuous**.
 
-| Check | Status | Finding |
-|-------|--------|---------|
-| Distance Distribution | ✓ PASS | CV = 0.18, reasonable spread |
-| Diagonal Dominance | ✓ PASS | t = 4.85 without diagonal |
-| σ-Collinearity | ✗ FAIL | r = 0.999 across bandwidths |
-| Permutation Test | ✗ FAIL | p = 0.31, not different from null |
-| Placebo Test | ✗ FAIL | Random distances work 2.5x better |
-| Jackknife Stability | ✓ PASS | CV = 0.09, all positive |
+| Phase | What We Tested | Result |
+|-------|----------------|--------|
+| A | Binary Jaccard overlap | **PASS** — β = 0.471, t = 8.00 |
+| B | SAE training (768 → 16384) | Converged, L0 ≈ 28 |
+| C | Feature interpretability | **PASS** — 17/20 coherent |
+| D | SAE vs Binary comparison | **SAE marginal** — +11.5% β (needed +20%) |
 
-**Key finding:** The correlation between overlap and wage comovement is driven by occupation-activity matrix structure, NOT the semantic geometry of activities. Random distance matrices produce a stronger effect than the actual text embeddings.
+**Key finding:** Occupations that share activities have correlated wages. Semantic similarity between activities adds little beyond binary counting.
 
-**What this means:** The validation tested "occupations that share activities have correlated wages" (trivially true) rather than "spillover through activity geometry matters" (what the theory claims).
-
-See README.md for full results and interpretation.
+**Recommendation:** Use Binary Jaccard for Phase II. SAE is available for robustness checks.
 
 ---
 
@@ -77,9 +73,7 @@ Do not proceed with large implementations without this planning step.
 
 ---
 
-## O*NET Data Reference (v0.4.2)
-
-This section documents O*NET database structure based on architect research (December 2025).
+## O*NET Data Reference
 
 ### Data Source
 
@@ -95,7 +89,7 @@ Place extracted files in `data/onet/db_30_0_excel/` directory.
 | Domain | Dimension | Source | Status |
 |--------|-----------|--------|--------|
 | GWA (Generalized Work Activities) | 41 | Direct ratings | v0.4.1: FAILED |
-| DWA (Detailed Work Activities) | 2,087 | Derived via tasks | v0.4.2.1: FAILED (spurious) |
+| DWA (Detailed Work Activities) | 2,087 | Derived via tasks | v0.5.0: Binary validated |
 
 ### Key Files
 
@@ -105,24 +99,6 @@ Place extracted files in `data/onet/db_30_0_excel/` directory.
 | `DWA Reference.xlsx` | DWA hierarchy (GWA→IWA→DWA) | 2,087 DWAs |
 | `Tasks to DWAs.xlsx` | Task-DWA mappings | ~23,000 linkages |
 | `Task Ratings.xlsx` | Task importance ratings | Used to derive DWA importance |
-| `Content Model Reference.xlsx` | GWA descriptions | For embeddings |
-
-### DWA Matrix Construction (v0.4.2)
-
-```python
-# DWA importance derived via task linkages
-# Per O*NET methodology: max task importance per DWA
-
-task_ratings = load_task_ratings()  # Scale ID = 'IM'
-tasks_to_dwas = load_tasks_to_dwas()
-merged = tasks_to_dwas.merge(task_ratings, on=['O*NET-SOC Code', 'Task ID'])
-
-# Aggregate: max importance per (occupation, DWA)
-dwa_importance = merged.groupby(['O*NET-SOC Code', 'DWA ID'])['Data Value'].max()
-
-# Pivot and normalize
-# Result: 894 occupations × 2,087 DWAs
-```
 
 ### O*NET-SOC Code Format
 
@@ -133,7 +109,7 @@ Format: `XX-XXXX.XX`
 
 ---
 
-## OES Data Reference (v0.4.2)
+## OES Data Reference
 
 ### Data Source
 
@@ -141,17 +117,6 @@ Format: `XX-XXXX.XX`
 - URL: https://www.bls.gov/oes/tables.htm
 - Years used: 2019-2023 (5 years for wage comovement)
 - **Note:** BLS blocks automated downloads. Must download manually via browser.
-
-### File Structure
-
-```
-data/external/oes/
-├── oesm19nat/
-│   └── national_M2019_dl.xlsx
-├── oesm20nat/
-│   └── national_M2020_dl.xlsx
-...
-```
 
 ### Crosswalk: O*NET-SOC to OES
 
@@ -161,71 +126,97 @@ def onet_to_soc(onet_code: str) -> str:
     return onet_code[:7]
 ```
 
-Coverage statistics (v0.4.2):
+Coverage statistics:
 - 894 O*NET occupations → 774 unique SOC codes
-- 702 SOC codes usable for validation (present in both O*NET and comovement matrix)
+- 702 SOC codes usable for validation
 - 246,051 occupation pairs in validation dataset
 
 ---
 
-## Module Structure (v0.4.2)
+## Module Structure (v0.5.0)
 
 ```
 src/task_space/
     __init__.py      # Exports all public APIs
     data.py          # O*NET file loading and filtering
-    domain.py        # Activity domain + occupation measures (GWA and DWA)
-    distances.py     # Recipe X (PCA) and Recipe Y (embeddings) distances
-    kernel.py        # Kernel matrix, propagation, and exposure computation
-    diagnostics.py   # Phase I coherence checks + geometry comparison
+    domain.py        # Activity domain + occupation measures
+    distances.py     # Recipe X (PCA) and Recipe Y (embeddings)
+    kernel.py        # Kernel matrix, propagation, exposure
+    baseline.py      # Binary Jaccard overlap (NEW in v0.5.0)
+    sae.py           # Sparse Autoencoder (NEW in v0.5.0)
+    diagnostics.py   # Phase I coherence checks
     validation.py    # Phase I external validation
     crosswalk.py     # O*NET-SOC to OES crosswalk
 ```
 
-### New in v0.4.2
+### New in v0.5.0
 
-**domain.py:**
-- `build_dwa_activity_domain()` — Build 2,087-activity DWA domain
-- `build_dwa_occupation_measures()` — Build occupation × DWA matrix via task linkages
+**baseline.py:**
+- `compute_binary_overlap()` — Binary Jaccard overlap
+- `run_baseline_regression()` — Validation with clustered SEs
+- `save_baseline_results()` — Output to JSON
 
-**distances.py:**
-- `compute_text_embedding_distances()` — Recipe Y using sentence-transformers
-
-**diagnostics.py:**
-- `DWASparsityReport` — Dataclass for DWA sparsity statistics
-- `GeometryComparison` — Dataclass for geometry comparison results
-- `diagnose_dwa_sparsity()` — Compute DWA sparsity/coverage statistics
-- `compare_geometries()` — Compare two distance matrices (Recipe X vs Y)
+**sae.py:**
+- `SparseAutoencoder` — 768 → 16384 → 768 architecture
+- `train_sae()` — Training with L1 penalty and adaptive λ
+- `extract_sparse_features()` — Feature extraction with thresholding
 
 ---
 
-## Validation Results Reference (v0.4.2.1)
+## Validation Results Reference (v0.5.0)
 
-### Initial v0.4.2 Results (Appeared to Pass)
+### Phase A: Binary Baseline
 
-| σ Percentile | σ Value | β | SE | t | p-value |
-|--------------|---------|------|------|------|---------|
-| p10 | 0.559 | 441.25 | 85.33 | 5.17 | <0.0001 |
-| p50 | 0.744 | 606.40 | 117.37 | 5.17 | <0.0001 |
-| p90 | 0.896 | 742.13 | 143.59 | 5.17 | <0.0001 |
+| Metric | Value |
+|--------|-------|
+| β | 0.471 |
+| SE | 0.059 |
+| t | 8.00 |
+| p | < 10⁻¹⁵ |
+| R² | 0.00167 |
+| n_pairs | 246,051 |
 
-### v0.4.2.1 Robustness Checks (FAILED)
+### Phase D: Binary vs SAE
 
-| Check | Result | Implication |
-|-------|--------|-------------|
-| σ-Collinearity | r = 0.999 | σ parameter is inert, only 1 effective specification |
-| Permutation Test | p = 0.31 | Effect not different from shuffled measures |
-| Placebo Test | ratio = 0.4x | Random distances work 2.5x better than semantic |
+| Metric | Binary | SAE | Δ | Target | Status |
+|--------|--------|-----|---|--------|--------|
+| β | 0.471 | 0.526 | +11.5% | >20% | ✗ FAIL |
+| R² | 0.00167 | 0.00292 | +75% | >30% | ✓ PASS |
+| Correlation | — | r = 0.824 | — | <0.9 | ✓ OK |
 
-**Bottom Line:** The overlap-comovement correlation exists but is NOT due to activity geometry. It's driven by the occupation-activity matrix structure (occupations that share activities have correlated wages).
+### SAE Training Metrics
+
+| Metric | Value |
+|--------|-------|
+| Training time | 20.4 minutes (CPU) |
+| Final L0 | 28.1 (target: 10-20) |
+| Dead features | 12,603 / 16,384 (77%) |
+| Coherent features | 17/20 inspected |
 
 ### Output Files
 
 ```
-outputs/phase_i_dwa/
-    validation_results.json   # Initial v0.4.2 results
-    robustness_results.json   # v0.4.2.1 robustness checks
-    audit_results.json        # Combined audit findings
+outputs/phase_a/
+    baseline_results.json     # Binary validation results
+    binary_overlap.npy        # Overlap matrix
+
+outputs/phase_b/
+    dwa_embeddings.npy        # MPNet embeddings (2087 × 768)
+    dwa_sparse_features.npy   # SAE features (2087 × 16384)
+    phase_b_summary.json      # Training summary
+
+outputs/phase_c/
+    feature_inspection.json   # Top 20 features analysis
+    feature_interpretability.txt  # Human-readable audit
+
+outputs/phase_d/
+    validation_comparison.json    # Binary vs SAE results
+    sae_overlap.npy              # SAE overlap matrix
+    occupation_features.npy       # Aggregated occupation features
+
+models/
+    sae_v1.pt                    # Trained SAE checkpoint
+    sae_v1_training_log.json     # Training metrics
 ```
 
 ---
@@ -233,21 +224,22 @@ outputs/phase_i_dwa/
 ## File Conventions
 
 ```
-paper/main.tex           # Source of truth for theory and empirical strategy
-paper/references.bib     # Bibliography (BibTeX)
+paper/main.tex           # Source of truth for theory
+paper/references.bib     # Bibliography
 src/task_space/          # Implementation modules
 data/onet/               # O*NET database files (not in git)
 data/external/oes/       # OES wage data (not in git)
-tests/                   # Test scripts
-outputs/                 # Generated figures and tables (not in git)
-spec_*.md                # Implementation specifications (may be in git)
+tests/                   # Test and validation scripts
+outputs/                 # Generated outputs (not in git)
+models/                  # Trained models (not in git)
+spec_*.md                # Implementation specifications
 ```
 
 ---
 
-## Lessons Learned (v0.4.2.1)
+## Lessons Learned
 
-### From v0.4.1 (Inherited)
+### From v0.4.x (Inherited)
 
 1. **BLS blocks automated downloads** — Must download OES data manually via browser.
 
@@ -255,46 +247,45 @@ spec_*.md                # Implementation specifications (may be in git)
 
 3. **Numpy booleans aren't JSON serializable** — Wrap in `bool()`.
 
-4. **KernelMatrix attribute is `.matrix` not `.kernel_matrix`** — Check dataclass attributes.
+4. **Identical t-stats across σ values is a red flag** — Indicates σ is inert.
 
-### From v0.4.2
+5. **ALWAYS run permutation/placebo tests** — A significant coefficient means nothing if random data produces the same result.
 
-5. **DWA domain has incomplete coverage** — 7 DWAs have no task linkages. The `build_dwa_occupation_measures()` function adds all DWAs from reference to ensure alignment with `build_dwa_activity_domain()`.
+### From v0.5.0 (Current)
 
-6. **Sentence-transformers downloads models on first use** — First run downloads ~420 MB model weights to `~/.cache/torch/sentence_transformers/`. Document this for users.
+6. **The labor market signal is discrete** — Binary activity overlap captures most of the predictive power. Continuous semantic similarity adds noise (v0.4.2.1) or marginal value (v0.5.0 SAE).
 
-7. **Cosine distance range is [0, 2]** — Not [0, 1]. Cosine distance = 1 - cosine_similarity, where similarity ∈ [-1, 1].
+7. **SAE finds coherent structure but it's fine-grained** — 17/20 features were interpretable, but activation was uniform across ~2,066 effective features. No dominant cross-cutting dimensions.
 
-8. **Text embeddings produce very small overlaps** — With 2,087 activities, occupation measure weights are small (~1/2087 per activity). Overlap values are ~0.0005. This is expected and doesn't affect validation (coefficients adjust accordingly).
+8. **R² can improve even when β improvement is modest** — SAE R² nearly doubled (+75%) while β only improved +11.5%. This suggests SAE captures signal more efficiently but the magnitude is similar.
 
-9. **Domain and measures must be built from same reference** — Ensure activity_ids align between domain, measures, and distances.
+9. **Correlation between measures is diagnostic** — r(Binary, SAE) = 0.824 indicates moderate overlap. If r > 0.9, the measures are redundant. If r < 0.7, they capture different structure.
 
-### From v0.4.2.1 (Critical)
+10. **Training SAE on small data (2,087 samples) works** — ~20 minutes on CPU, converges well. The bottleneck is conceptual (what structure to find), not computational.
 
-10. **Identical t-stats across σ values is a red flag** — When t ≈ 5.17 for ALL 5 σ percentiles, this indicates σ is inert. Overlap correlation r > 0.99 confirms the kernel bandwidth has no effect.
+11. **Feature coherence ≠ economic value** — Features can be semantically interpretable ("software", "healthcare", "construction") without adding predictive power beyond binary counting.
 
-11. **ALWAYS run permutation/placebo tests** — A significant coefficient means nothing if it survives when you (a) shuffle the occupation-activity structure, or (b) replace real distances with random ones.
+12. **Wage comovement may not be the right validation target** — It might be driven by industry/geographic shocks that don't respect activity geometry. Worker mobility could show more geometric structure.
 
-12. **Overlap captures measure structure, not geometry** — The overlap O_ij = ρ_i^T K ρ_j is dominated by whether occupations share activities, not how those activities are geometrically related. This is the fundamental issue with the current validation approach.
+### Theoretical Implications
 
-13. **Random distances can produce stronger effects** — In the placebo test, random distance matrices gave β ≈ 1842 vs true β ≈ 728. The semantic structure is counterproductive. This suggests the validation target (wage comovement) may not be appropriate for testing geometric spillover.
+13. **The manifold abstraction may be wrong** — Activities behave more like discrete tokens than points on a smooth manifold. Kernel-weighted overlap reduces to counting shared nodes.
 
-14. **"Occupations that share activities have correlated wages" ≠ "Geometry matters"** — The validation inadvertently tested the former (trivially true) rather than the latter (what the theory claims). A better validation would test spillover effects between non-overlapping occupations.
+14. **Dense embeddings add noise to economic signals** — Random distances outperformed MPNet in v0.4.2.1. The semantic structure of language doesn't align with economic substitutability.
+
+15. **Supervised probing may be the path forward** — If we have theoretical priors (routine/cognitive, automatable, etc.), extracting those dimensions directly from a large language model might capture economic structure that unsupervised methods miss.
 
 ---
 
 ## Recipe Comparison
 
-| Aspect | Recipe X (v0.4.1) | Recipe Y (v0.4.2.1) |
-|--------|-------------------|---------------------|
-| Input | Occupation importance profiles | Activity titles/descriptions |
-| Method | Transpose → PCA → Euclidean | Sentence encoder → Cosine |
-| Dependencies | sklearn | sentence-transformers |
-| Captures | Rating cooccurrence patterns | Semantic similarity |
-| Initial Validation | FAIL (wrong sign) | Appeared to PASS |
-| Robustness Checks | N/A | FAIL (spurious) |
-
-**Conclusion:** Neither recipe validates the geometric spillover hypothesis. The overlap-comovement correlation is driven by occupation measure structure, not activity geometry.
+| Aspect | Recipe X (v0.4.1) | Recipe Y (v0.4.2) | Binary (v0.5.0) | SAE (v0.5.0) |
+|--------|-------------------|-------------------|-----------------|--------------|
+| Input | Importance profiles | Activity titles | Activity weights | MPNet embeddings |
+| Method | PCA → Euclidean | Sentence encoder → Cosine | Binarize → Jaccard | Encode → Binarize → Jaccard |
+| Validation | FAIL (wrong sign) | FAIL (spurious) | **PASS** (t=8.00) | Marginal (+11.5% β) |
+| Complexity | Medium | Medium | **Low** | High |
+| Recommended | No | No | **Yes** | For robustness |
 
 ---
 
@@ -303,8 +294,8 @@ spec_*.md                # Implementation specifications (may be in git)
 When making changes:
 
 1. **Code changes** — Update `__init__.py` version comment if version bumps
-2. **README.md** — Keep user-facing; update status, usage instructions, results
-3. **CLAUDE.md** — Keep developer-facing; update conventions, roadmap, lessons learned
+2. **README.md** — Keep user-facing; update status, usage, results
+3. **CLAUDE.md** — Keep developer-facing; update conventions, lessons learned
 4. **Paper placeholders** — Fill with empirical outputs when available
 
 If you discover something that would have helped you work faster, add it to this file.

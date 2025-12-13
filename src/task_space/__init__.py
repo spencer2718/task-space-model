@@ -1,6 +1,7 @@
-# task_space v0.4.2
-# Phase I external validation pivot: DWA domain + Recipe Y (text embeddings)
-# See spec_0.4.2.md for implementation details
+# task_space v0.5.0
+# Binary overlap validated (t=8.00), SAE marginal improvement (+11.5% β)
+# The labor market signal is discrete, not continuous.
+# See spec_0.5.md for implementation details
 
 from .data import (
     load_work_activities,
@@ -89,6 +90,26 @@ from .crosswalk import (
     aggregate_occupation_measures,
 )
 
+from .baseline import (
+    BinaryOverlapResult,
+    BaselineRegressionResult,
+    compute_binary_overlap,
+    run_baseline_regression,
+    save_baseline_results,
+)
+
+from .sae import (
+    SAEConfig,
+    TrainingLog,
+    SparseAutoencoder,
+    sae_loss,
+    compute_l0,
+    train_sae,
+    save_sae,
+    load_sae,
+    extract_sparse_features,
+)
+
 __all__ = [
     # Data loading
     "load_work_activities",
@@ -163,4 +184,20 @@ __all__ = [
     "load_oes_panel",
     "compute_wage_comovement",
     "aggregate_occupation_measures",
+    # Baseline (Phase A)
+    "BinaryOverlapResult",
+    "BaselineRegressionResult",
+    "compute_binary_overlap",
+    "run_baseline_regression",
+    "save_baseline_results",
+    # SAE (Phase B)
+    "SAEConfig",
+    "TrainingLog",
+    "SparseAutoencoder",
+    "sae_loss",
+    "compute_l0",
+    "train_sae",
+    "save_sae",
+    "load_sae",
+    "extract_sparse_features",
 ]

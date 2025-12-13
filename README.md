@@ -2,63 +2,62 @@
 
 A geometric framework for measuring labor market exposure to technological shocks.
 
-**Version 0.4.2.1**
+**Version 0.5.0**
 
 ---
 
 ## What This Is
 
-This project develops a measurement framework for studying how technological change affects labor markets. The key idea: occupations are probability distributions over an underlying space of work activities. When automation affects certain activities, the impact propagates through the geometry of that space, affecting occupations proportionally to their overlap with the shock.
-
-This approach allows for:
-- Continuous gradients of exposure across occupations (vs binary "exposed/unexposed")
-- Spillover effects between related activities
-- Empirical validation against external economic data
+This project develops a measurement framework for studying how technological change affects labor markets. The key idea: occupations are probability distributions over an underlying space of work activities. When automation affects certain activities, the impact propagates through shared structure.
 
 ---
 
-## Current Status: Validation FAILED (Robustness Checks)
+## Current Status: Binary Overlap Validated
 
-**v0.4.2.1** reveals that the initial v0.4.2 validation result was spurious. While the regression showed significant positive coefficients, robustness checks demonstrate the effect is driven by occupation-activity matrix structure, not the geometric properties of the activity space.
+**v0.5.0 Result:** The labor market signal is **discrete, not continuous**.
 
-### What Happened
+Binary activity overlap (Jaccard similarity) strongly predicts wage comovement:
+- β = 0.471, t = 8.00, p < 10⁻¹⁵
 
-**v0.4.2** appeared to pass validation:
-- DWA domain (2,087 activities) + Recipe Y (text embeddings)
-- Regression of wage comovement on overlap: β > 0, t ≈ 5.17, p < 0.0001
-- 5/5 σ values passed
+Sparse Autoencoder (SAE) decomposition found semantically coherent features (17/20 interpretable) but added only marginal value beyond binary counting:
+- SAE β = 0.526 (+11.5%, target was +20%)
+- SAE R² = 0.00292 (+75%, target was +30%)
 
-**v0.4.2.1 audit revealed problems:**
-- Identical t-stats across all σ values (suspicious)
-- Overlap correlation r = 0.999 across σ values (σ is inert)
-- Permutation test: p = 0.31 (effect not different from shuffled measures)
-- **Placebo test: Random distances produce 2.5x stronger effect**
+**Bottom line:** Occupations that share activities have correlated wages. But the *semantic similarity* between activities adds little beyond binary overlap. The signal is in "do they share activities?" not "how similar are their activities?"
 
-### Robustness Check Results
+---
 
-| Check | Status | Finding |
-|-------|--------|---------|
-| Distance Distribution | ✓ PASS | CV = 0.18, reasonable spread |
-| Diagonal Dominance | ✓ PASS | t = 4.85 without diagonal |
-| σ-Collinearity | ✗ FAIL | r = 0.999 across bandwidths |
-| Permutation Test | ✗ FAIL | p = 0.31, effect not significant |
-| Placebo Test | ✗ FAIL | Random distances work better (ratio = 0.4x) |
-| Jackknife Stability | ✓ PASS | CV = 0.09, all positive |
+## Version History
 
-**Bottom line:** The correlation between overlap and wage comovement exists but is NOT due to the semantic geometry of activities. Occupations that share activities have correlated wages regardless of how those activities are geometrically related. The kernel structure is irrelevant.
+| Version | Approach | Result |
+|---------|----------|--------|
+| v0.5.0 | Binary Jaccard + SAE comparison | **Binary validated**, SAE marginal |
+| v0.4.2.1 | Robustness audit of v0.4.2 | FAIL — random distances outperformed |
+| v0.4.2 | DWA + Recipe Y (text embeddings) | Appeared to pass, spurious |
+| v0.4.1 | GWA + Recipe X (PCA) | FAIL — wrong sign |
 
-### Interpretation
+### Key Findings
 
-The validation tested whether "occupations that share activities have correlated wages" — which is trivially true but not what the theory claims. The theory claims that **spillover through activity geometry** matters (occupations connected through similar activities, even if not identical). This was not validated.
+| Finding | Evidence |
+|---------|----------|
+| Dense embeddings add noise | Random > MPNet in v0.4.2.1 |
+| Binary overlap is predictive | t = 8.00 in v0.5.0 |
+| SAE finds real structure | 17/20 coherent features |
+| Structure is fine-grained | ~2,066 effective features, no power law |
+| Marginal SAE improvement | +11.5% β, +75% R² |
 
-**What this means for Phase II:** Do not proceed with shock propagation experiments until the validation methodology is reconsidered.
+---
 
-### Possible Paths Forward
+## Theoretical Implications
 
-1. **Different validation target**: Test spillover structure more directly (e.g., occupation transition probabilities)
-2. **Activity-level outcomes**: Test on activity-level variation rather than occupation pairs
-3. **Instrumental variation**: Use natural experiments that shock specific parts of the activity space
-4. **Different measure construction**: Build occupation measures with less activity sharing
+The paper's theory posits occupations as distributions over a *continuous* activity manifold. Today's evidence suggests the manifold may be better modeled as a **discrete graph**:
+
+| Theoretical Claim | Empirical Reality |
+|-------------------|-------------------|
+| Activities live on smooth manifold | Activities are discrete tokens |
+| Kernels K(a,b) capture spillover | Binary indicators capture most signal |
+| σ bandwidth matters | σ is inert (r = 0.999 across values) |
+| Geometry enables prediction | Counting suffices |
 
 ---
 
@@ -68,7 +67,7 @@ The validation tested whether "occupations that share activities have correlated
 Download `db_30_0_excel.zip` from https://www.onetcenter.org/database.html and extract to `data/onet/db_30_0_excel/`.
 
 ### OES Wage Data (For Validation)
-Download national OES files from https://www.bls.gov/oes/tables.htm for years 2019-2023. Extract to `data/external/oes/`. See `data/external/oes/README.md` for detailed instructions.
+Download national OES files from https://www.bls.gov/oes/tables.htm for years 2019-2023. Extract to `data/external/oes/`.
 
 **Note:** BLS blocks automated downloads. You must download manually via browser.
 
@@ -82,16 +81,24 @@ paper/
     references.bib        # Bibliography
 src/task_space/
     data.py               # O*NET file loading
-    domain.py             # Activity domain and occupation measures (GWA + DWA)
-    distances.py          # Recipe X (PCA) and Recipe Y (embeddings) distances
+    domain.py             # Activity domain and occupation measures
+    distances.py          # Recipe X (PCA) and Recipe Y (embeddings)
     kernel.py             # Kernel matrix and exposure computation
-    diagnostics.py        # Phase I coherence checks and geometry comparison
+    baseline.py           # Binary Jaccard overlap (v0.5.0)
+    sae.py                # Sparse Autoencoder (v0.5.0)
+    diagnostics.py        # Phase I coherence checks
     validation.py         # Phase I external validation
     crosswalk.py          # O*NET-SOC to OES crosswalk
+tests/
+    run_phase_a.py        # Binary baseline validation
+    run_phase_b.py        # SAE training
+    run_phase_c.py        # Feature inspection
+    run_phase_d.py        # SAE vs Binary comparison
 data/
     onet/                 # O*NET database files (not in git)
     external/oes/         # OES wage data (not in git)
-tests/                    # Test scripts
+models/
+    sae_v1.pt             # Trained SAE checkpoint
 outputs/                  # Validation outputs (not in git)
 ```
 
@@ -107,133 +114,116 @@ source .venv/bin/activate
 # Install dependencies
 pip install numpy pandas scipy scikit-learn openpyxl matplotlib sentence-transformers torch
 
-# Download O*NET database (required)
-# Get db_30_0_excel.zip from https://www.onetcenter.org/database.html
-# Extract to data/onet/db_30_0_excel/
+# Run binary baseline validation (Phase A)
+PYTHONPATH=src python tests/run_phase_a.py
 
-# Run DWA pipeline test
-PYTHONPATH=src python tests/test_dwa.py
+# Train SAE (Phase B) - ~20 minutes on CPU
+PYTHONPATH=src python tests/run_phase_b.py
 
-# Run full validation (requires OES data)
-PYTHONPATH=src python tests/run_dwa_validation.py
+# Inspect features (Phase C)
+PYTHONPATH=src python tests/run_phase_c.py
+
+# Compare Binary vs SAE (Phase D)
+PYTHONPATH=src python tests/run_phase_d.py
 ```
 
 ---
 
 ## Usage
 
-### DWA + Recipe Y Pipeline (Recommended)
+### Binary Overlap (Recommended)
+
+```python
+from task_space import (
+    build_dwa_occupation_measures,
+    compute_binary_overlap,
+)
+
+# Build occupation measures
+measures = build_dwa_occupation_measures()
+
+# Compute binary Jaccard overlap
+result = compute_binary_overlap(measures, threshold=0.0)
+
+# result.overlap_matrix contains pairwise Jaccard similarities
+# result.sparsity_stats contains activity coverage statistics
+```
+
+### SAE Pipeline (For Research)
 
 ```python
 from task_space import (
     build_dwa_activity_domain,
-    build_dwa_occupation_measures,
-    compute_text_embedding_distances,
-    build_kernel_matrix,
-    compute_occupation_exposure,
-    create_shock_profile,
-    distance_percentiles,
+    train_sae,
+    extract_sparse_features,
+    SAEConfig,
 )
 
-# Build the DWA manifold
-domain = build_dwa_activity_domain()       # 2,087 DWAs
-measures = build_dwa_occupation_measures() # 894 occupations × 2,087 activities
+# Get embeddings
+from sentence_transformers import SentenceTransformer
+domain = build_dwa_activity_domain()
+model = SentenceTransformer('all-mpnet-base-v2')
+titles = [domain.activity_names[aid] for aid in domain.activity_ids]
+embeddings = model.encode(titles)
 
-# Compute text embedding distances (Recipe Y)
-titles = list(domain.activity_names.values())
-distances = compute_text_embedding_distances(titles, domain.activity_ids)
+# Train SAE
+config = SAEConfig(hidden_dim=16384, lambda_l1=0.005)
+sae, log = train_sae(embeddings, config)
 
-# Set up kernel with median distance as bandwidth
-sigma = distance_percentiles(distances)['p50']
-kernel = build_kernel_matrix(distances, sigma=sigma)
-
-# Create a shock profile and compute exposures
-shock = create_shock_profile(
-    activity_ids=distances.activity_ids,
-    target_activities={'4.A.1.a.1.I01.D01': 1.0},  # Target a specific DWA
-)
-result = compute_occupation_exposure(measures, kernel, shock)
-
-# result.exposures contains E_j for each occupation
-```
-
-### GWA + Recipe X Pipeline (Legacy, v0.4.1)
-
-```python
-from task_space import (
-    build_activity_domain,
-    build_occupation_measures,
-    compute_activity_distances,
-    build_kernel_matrix,
-    compute_occupation_exposure,
-    create_shock_profile,
-    distance_percentiles,
-)
-
-# Build the GWA manifold (41 activities)
-domain = build_activity_domain()
-measures = build_occupation_measures()
-distances = compute_activity_distances(measures)  # Recipe X
-
-# Rest of pipeline same as above
-```
-
-### Diagnostics
-
-```python
-from task_space import (
-    diagnose_dwa_sparsity,
-    diagnose_measure_coherence,
-    compare_geometries,
-)
-
-# Check DWA sparsity (recommended for DWA domain)
-measures = build_dwa_occupation_measures()
-sparsity = diagnose_dwa_sparsity(measures)
-print(f"Median effective support: {sparsity.effective_support_percentiles['p50']}")
-print(f"DWA coverage: {sparsity.dwa_coverage:.1%}")
-
-# Compare Recipe X vs Recipe Y geometries
-dist_x = compute_activity_distances(measures)
-dist_y = compute_text_embedding_distances(titles, domain.activity_ids)
-comparison = compare_geometries(dist_x, dist_y)
-print(f"Spearman correlation: {comparison.spearman_r:.3f}")
-print(f"Interpretation: {comparison.interpretation}")
+# Extract sparse features
+features = extract_sparse_features(sae, embeddings)
 ```
 
 ---
 
 ## The Framework in Brief
 
-1. **Activity Domain**: 2,087 DWAs form a metric space where distance encodes semantic similarity between activities.
+1. **Activity Domain**: 2,087 DWAs form a discrete set of work activities.
 
-2. **Occupation Measures**: Each occupation is a probability distribution over activities, constructed from O*NET task importance ratings aggregated to DWA level.
+2. **Occupation Measures**: Each occupation is a probability distribution over activities, constructed from O*NET task importance ratings.
 
-3. **Shock Propagation**: Technology shocks spread via exponential kernel: k(d) = exp(-d/σ).
+3. **Binary Overlap**: Jaccard similarity = |A ∩ B| / |A ∪ B| where A, B are activity sets.
 
-4. **Exposure Measurement**: E_j = Σ_a ρ_j(a) × A(a), where A is the propagated shock field.
-
-5. **Overlap**: Occupation-pair overlap O_{i,j} = ρ_i^T K ρ_j measures shared activity exposure.
+4. **Validation**: Regress wage comovement on overlap with clustered SEs.
 
 See `paper/main.tex` Section 3 for formal definitions and Section 4 for empirical strategy.
 
 ---
 
-## Validation Outputs
+## Validation Results (v0.5.0)
 
-When validation runs, it produces:
+### Phase A: Binary Baseline
 
-- `outputs/phase_i_dwa/validation_results.json` — Full validation results for DWA + Recipe Y
+| Metric | Value |
+|--------|-------|
+| β | 0.471 |
+| SE | 0.059 |
+| t | 8.00 |
+| p | < 10⁻¹⁵ |
+| R² | 0.00167 |
+| n_pairs | 246,051 |
+
+### Phase D: Binary vs SAE Comparison
+
+| Metric | Binary | SAE | Δ |
+|--------|--------|-----|---|
+| β | 0.471 | 0.526 | +11.5% |
+| R² | 0.00167 | 0.00292 | +75% |
+| Correlation | — | r = 0.824 | — |
+
+SAE passed 2/3 criteria but missed the 20% β improvement threshold.
 
 ---
 
-## Version History
+## Next Steps
 
-- **v0.4.2.1** (Current): Robustness audit reveals v0.4.2 result spurious. Validation: **FAIL** (placebo test).
-- **v0.4.2**: DWA domain + Recipe Y (text embeddings). Initial validation appeared to pass (5/5 σ), but robustness checks failed.
-- **v0.4.1**: GWA domain + Recipe X (rating-cooccurrence PCA). Validation: FAIL (0/5 σ values).
-- **v0.4.0**: Core empirical pipeline with Phase I coherence diagnostics.
-- **v0.3.7**: Theoretical framework complete.
+### Recommended Path
+Use **Binary Jaccard** for Phase II exposure calculations. The simplicity of "count shared activities" is a feature—interpretable, reproducible, and validated.
+
+### Alternative Directions
+1. **Worker mobility validation** — test if overlap predicts CPS transitions
+2. **Supervised probing** — extract economic dimensions (routine/cognitive) directly
+3. **Hierarchical structure** — use GWA→IWA→DWA taxonomy
 
 ---
 
