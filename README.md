@@ -1,127 +1,72 @@
 # Task Space Model
 
-A computational framework for modeling how technological shocks propagate through labor markets via task-level dynamics.
+A geometric framework for measuring labor market exposure to technological shocks.
 
-**Phase I Status: PASSED** -- O*NET-based task geometry correctly separates robotics vs software automation shocks.
+**Version 0.3.7**
 
-## Overview
+---
 
-This project implements a geometric model of task-level technological change. The core insight: occupations are not primitive objects but *distributions over an underlying task manifold*. When automation hits a region of task space, the impact diffuses outward according to the manifold geometry, affecting nearby occupations proportionally to their exposure.
+## What This Is
 
-### The Model in Three Parts
+This project develops a measurement framework for studying how technological change affects labor markets. The key idea: occupations are probability distributions over an underlying space of work activities. When automation affects certain activities, the impact propagates through the geometry of that space, affecting occupations proportionally to their overlap with the shock.
 
-1. **Task Manifold** (`manifold.py`): The space of all tasks, equipped with a metric that captures "how similar" two tasks are. We construct this empirically from O*NET Work Activities and Abilities data. Each occupation is a probability distribution over this space.
+This approach allows for:
+- Continuous gradients of exposure across occupations (vs binary "exposed/unexposed")
+- Spillover effects between related activities
+- Empirical validation against worker mobility and wage data
 
-2. **Diffusion Dynamics** (`dynamics.py`): Technology shocks propagate via a heat equation on the manifold. A robotics shock centered on "Handling and Moving Objects" diffuses to nearby manual tasks; a software shock centered on "Analyzing Data" diffuses to nearby cognitive tasks. The dynamics follow:
-   ```
-   A_{t+1} = A_t + K_d[I_t]
-   ```
-   where K_d is an exponential diffusion kernel and I_t is the shock field.
+---
 
-3. **Exposure Measurement** (`analysis.py`): Each occupation's displacement exposure is the integral of the automation field against its task distribution: `D_j = <A_t, rho_j>`. High exposure means the occupation sits in a heavily-automated region of task space.
+## Current Status
 
-### Why This Matters
+**v0.3.7**: Theoretical framework complete. The paper (`paper/main.tex`) contains:
+- Mathematical definitions (Section 3)
+- Empirical strategy with O*NET operationalization (Section 4)
+- Phase I/II evaluation plan
+- Literature review and extensions
 
-Traditional labor economics models (routine/non-routine, manual/cognitive) use discrete categories. This model treats task space as *continuous*, allowing:
-- Smooth gradients of automation exposure across occupations
-- Spillover effects: automating one task affects nearby tasks
-- Empirical identification: the diffusion parameter sigma can be estimated from wage covariance data
+**Next (v0.4)**: Empirical implementation of Section 4 pipeline.
+
+---
+
+## Repository Structure
+
+```
+paper/
+    main.tex         # Theoretical framework and empirical strategy
+    references.bib   # Bibliography
+src/task_space/      # Implementation (v0.4)
+tests/               # API probes and test scripts
+outputs/             # Generated figures and tables
+```
 
 ---
 
 ## Quick Start
 
+The theoretical framework is in `paper/main.tex`. Compile with:
 ```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Set up O*NET API credentials
-echo "ONET_API_KEY=your_key_here" > .env
-
-# Run the Phase I validation test
-PYTHONPATH=src python tests/test_phase_1.py
+cd paper && pdflatex main && bibtex main && pdflatex main && pdflatex main
 ```
 
-Expected output: Robotics shocks primarily affect Electricians, Machinists, Truck Drivers; Software shocks primarily affect Software Developers, Accountants.
-
----
-
-## Developer Guide
-
-### Repository Structure
-
-```
-task-space-model/
-    src/task_space/
-        manifold.py      # Task domain: O*NET API + manifold construction
-        dynamics.py      # Diffusion operator and state evolution
-        analysis.py      # Occupation exposure computation
-    tests/
-        test_auth.py     # API connectivity probe
-        test_phase_1.py  # Shock propagation sanity check
-        probe_level.py   # Level vs Importance investigation
-    paper/
-        main.tex         # Theoretical foundations (Definitions 1.1-1.6)
-    notebooks/           # Visualization scripts
-    outputs/             # Generated plots
-    .cache/              # Disk cache for API responses (git-ignored)
-```
-
-### Key Classes
-
-**`OnetManifold`** -- Fetches Work Activities and Abilities from O*NET V2 API, constructs task vectors.
-```python
-from task_space.manifold import OnetManifold
-
-m = OnetManifold()
-m.load_data()  # Fetches 10 default occupations
-# m.task_vectors: (n_occupations, n_features) matrix
-# m.task_ids: list of SOC codes
-```
-
-**`DynamicsEngine`** -- Builds diffusion kernel, propagates shocks.
-```python
-from task_space.dynamics import DynamicsEngine
-
-engine = DynamicsEngine(sigma=2.0)  # Diffusion length scale
-kernel = engine.build_diffusion_kernel(m.task_vectors)
-A_t, C_t = engine.evolve(A_t, C_t, kernel, shock_vector)
-```
-
-### API Configuration
-
+For the v0.4 implementation, you'll need O*NET API access:
 1. Register at https://services.onetcenter.org/developer/
-2. Generate an API key
-3. Create `.env` in project root:
-   ```
-   ONET_API_KEY=your_key_here
-   ```
-
-**Importance vs Level scores:**
-- *Importance* (0-100): How frequently a task is performed
-- *Level* (0-100): How complex/difficult the task is
-
-Use `include_level=True` for better discrimination (e.g., Software Developer vs Data Entry Clerk both have high Importance for "Working with Computers", but very different Levels). Note: Level enrichment requires ~4000 additional API calls.
-
-### Caching
-
-API responses are cached to `.cache/onet/` on first load. Subsequent runs with the same config load instantly. Use `use_cache=False` to force refresh.
-
-### Theory-to-Code Mapping
-
-| Paper Section | Code | Mathematical Object |
-|---------------|------|---------------------|
-| Definition 1.1 (Task Domain) | `OnetManifold` | Metric-measure space (T, d, mu) |
-| Definition 1.4 (Shock Field) | `DynamicsEngine.create_shock_vector()` | Innovation input I_t |
-| Definition 1.5 (Diffusion Operator) | `DynamicsEngine.build_diffusion_kernel()` | Integral operator K_d with kernel exp(-d/sigma) |
-| Definition 1.6 (Displacement Dynamics) | `DynamicsEngine.evolve()` | dA/dt = K_d[I_t], monotonicity enforced |
-| Section 3.3 (Exposure Functionals) | `Nowcaster.compute_exposures()` | D_j = <A_t, rho_j> |
+2. Create `.env` with `ONET_API_KEY=your_key_here`
+3. Test connectivity: `PYTHONPATH=src python tests/test_auth.py`
 
 ---
 
-## Remark on Coordinate Charts
+## The Framework in Brief
 
-> The O*NET database provides one specific *coordinate chart* for the abstract task manifold -- it is a measurement instrument, not the territory itself. The mathematical structures (metric, measure, operators) are defined independently of any particular empirical realization. Alternative charts could be constructed from job postings, time-use surveys, or direct task elicitation. The theorems hold for the abstract space; O*NET merely provides convenient numerical handles.
+1. **Activity Domain**: Work activities form a metric space where distance encodes reallocation friction.
+
+2. **Occupation Measures**: Each occupation is a probability distribution over activities, constructed from O*NET importance and level ratings.
+
+3. **Shock Propagation**: Technology shocks are activity-level profiles that spread via a distance-based kernel.
+
+4. **Exposure Measurement**: Occupation exposure is the integral of the propagated shock against the occupation's activity distribution.
+
+See `paper/main.tex` Section 3 for formal definitions and Section 4 for empirical operationalization.
 
 ---
 
