@@ -8,29 +8,59 @@ This document contains working conventions, version control rules, and quality-o
 
 **Paper and codebase versions must always match.**
 
-- Current: **v0.5.0** (Binary overlap validated, SAE marginal improvement)
-- Previous: v0.4.2.1 (robustness audit revealed v0.4.2 was spurious)
-- Previous: v0.4.2 (appeared to pass, but random distances outperformed)
+- Current: **v0.6.1** (Kernel fix validated, continuous structure confirmed)
+- Previous: v0.5.0 (Binary overlap validated, SAE marginal — **artifact**)
+- Previous: v0.4.2.1 (random > semantic — **artifact, kernel collapse**)
+- Previous: v0.4.2 (appeared to pass, spurious)
 - Previous: v0.4.1 (GWA + Recipe X validation failed)
 
 When updating either paper or code, ensure the other stays in sync or is updated together.
 
 ---
 
-## Current Status: Binary Overlap Validated
+## Current Status: Continuous Structure Validated
 
-**v0.5.0 Result:** The labor market signal is **discrete, not continuous**.
+**v0.6.1 Result:** Kernel-weighted semantic overlap **strongly outperforms** binary Jaccard.
 
-| Phase | What We Tested | Result |
-|-------|----------------|--------|
-| A | Binary Jaccard overlap | **PASS** — β = 0.471, t = 8.00 |
-| B | SAE training (768 → 16384) | Converged, L0 ≈ 28 |
-| C | Feature interpretability | **PASS** — 17/20 coherent |
-| D | SAE vs Binary comparison | **SAE marginal** — +11.5% β (needed +20%) |
+| Measure | t-stat | R² | Status |
+|---------|--------|-----|--------|
+| Kernel (semantic, fixed) | **27.65** | **0.00310** | Best |
+| Binary Jaccard | 8.00 | 0.00167 | Baseline |
+| Random (best of 100) | 15.09 | 0.00052 | Noise |
 
-**Key finding:** Occupations that share activities have correlated wages. Semantic similarity between activities adds little beyond binary counting.
+**Key finding:** The v0.5.0 "discrete dominates continuous" was an **artifact** caused by kernel collapse. With proper σ calibration, semantic structure is highly predictive.
 
-**Recommendation:** Use Binary Jaccard for Phase II. SAE is available for robustness checks.
+**Recommendation:** Use kernel-weighted overlap with σ = 0.2230 (median NN distance), unnormalized.
+
+---
+
+## The v0.6.1 Fix
+
+### Root Cause of v0.5.0 Bug
+
+Kernel weights collapsed because:
+1. σ calibrated to global distance distribution (median = 0.74)
+2. With σ = 0.74, discrimination ratio was only 1.6x
+3. Row-normalization over 2,087 activities made all weights ≈ 0.0005
+
+### The Fix
+
+```python
+sigma = 0.2230  # Median of NEAREST-NEIGHBOR distances, not overall
+normalize_kernel = False  # Skip row-normalization
+
+K = np.exp(-dist_matrix / sigma)  # Unnormalized
+overlap = occ_measures @ K @ occ_measures.T
+```
+
+### Critical Insight
+
+**σ must be calibrated to local neighborhood structure (nearest-neighbor distances), not global distance distribution.**
+
+| σ Source | Value | Discrimination | Status |
+|----------|-------|----------------|--------|
+| NN median | 0.22 | 4.5x | **Works** |
+| Overall median | 0.74 | 1.6x | Collapsed |
 
 ---
 
@@ -89,7 +119,7 @@ Place extracted files in `data/onet/db_30_0_excel/` directory.
 | Domain | Dimension | Source | Status |
 |--------|-----------|--------|--------|
 | GWA (Generalized Work Activities) | 41 | Direct ratings | v0.4.1: FAILED |
-| DWA (Detailed Work Activities) | 2,087 | Derived via tasks | v0.5.0: Binary validated |
+| DWA (Detailed Work Activities) | 2,087 | Derived via tasks | v0.6.1: **Continuous validated** |
 
 ### Key Files
 
@@ -133,90 +163,75 @@ Coverage statistics:
 
 ---
 
-## Module Structure (v0.5.0)
+## Module Structure (v0.6.1)
 
 ```
 src/task_space/
-    __init__.py      # Exports all public APIs
-    data.py          # O*NET file loading and filtering
-    domain.py        # Activity domain + occupation measures
-    distances.py     # Recipe X (PCA) and Recipe Y (embeddings)
-    kernel.py        # Kernel matrix, propagation, exposure
-    baseline.py      # Binary Jaccard overlap (NEW in v0.5.0)
-    sae.py           # Sparse Autoencoder (NEW in v0.5.0)
-    diagnostics.py   # Phase I coherence checks
-    validation.py    # Phase I external validation
-    crosswalk.py     # O*NET-SOC to OES crosswalk
+    __init__.py        # Exports all public APIs
+    data.py            # O*NET file loading and filtering
+    domain.py          # Activity domain + occupation measures
+    distances.py       # Recipe X (PCA) and Recipe Y (embeddings)
+    kernel.py          # Kernel matrix, propagation, exposure
+    baseline.py        # Binary Jaccard overlap
+    sae.py             # Sparse Autoencoder
+    diagnostics.py     # Phase I coherence checks
+    diagnostics_v061.py  # v0.6.1 kernel diagnostics and fix (NEW)
+    validation.py      # Phase I external validation
+    crosswalk.py       # O*NET-SOC to OES crosswalk
 ```
 
-### New in v0.5.0
+### New in v0.6.1
 
-**baseline.py:**
-- `compute_binary_overlap()` — Binary Jaccard overlap
-- `run_baseline_regression()` — Validation with clustered SEs
-- `save_baseline_results()` — Output to JSON
-
-**sae.py:**
-- `SparseAutoencoder` — 768 → 16384 → 768 architecture
-- `train_sae()` — Training with L1 penalty and adaptive λ
-- `extract_sparse_features()` — Feature extraction with thresholding
+**diagnostics_v061.py:**
+- `diagnose_distance_distribution()` — Check for degenerate distances
+- `verify_similarity_orientation()` — Confirm similar > dissimilar
+- `diagnose_kernel_weights()` — Detect kernel collapse
+- `diagnose_nearest_neighbor_distances()` — Compute NN-based σ candidates
+- `test_sigma_discrimination()` — Verify discrimination ratio
+- `compute_kernel_overlap()` — Fixed overlap computation
+- `run_kernel_validation()` — Regression with proper σ
 
 ---
 
-## Validation Results Reference (v0.5.0)
+## Validation Results Reference (v0.6.1)
 
-### Phase A: Binary Baseline
+### Kernel vs Jaccard
 
-| Metric | Value |
-|--------|-------|
-| β | 0.471 |
-| SE | 0.059 |
-| t | 8.00 |
-| p | < 10⁻¹⁵ |
-| R² | 0.00167 |
-| n_pairs | 246,051 |
+| Measure | t-stat | R² | Improvement |
+|---------|--------|-----|-------------|
+| Kernel (σ=0.22, unnorm) | **27.65** | **0.00310** | — |
+| Binary Jaccard | 8.00 | 0.00167 | +245% t, +86% R² |
 
-### Phase D: Binary vs SAE
+### Semantic vs Random (100 seeds)
 
-| Metric | Binary | SAE | Δ | Target | Status |
-|--------|--------|-----|---|--------|--------|
-| β | 0.471 | 0.526 | +11.5% | >20% | ✗ FAIL |
-| R² | 0.00167 | 0.00292 | +75% | >30% | ✓ PASS |
-| Correlation | — | r = 0.824 | — | <0.9 | ✓ OK |
+| Metric | Semantic | Random Mean | Random Max | Percentile |
+|--------|----------|-------------|------------|------------|
+| t-stat | **27.65** | 5.67 | 15.09 | **100%** |
+| R² | **0.00310** | 0.00017 | 0.00052 | **100%** |
 
-### SAE Training Metrics
+### Sigma Discrimination
 
-| Metric | Value |
-|--------|-------|
-| Training time | 20.4 minutes (CPU) |
-| Final L0 | 28.1 (target: 10-20) |
-| Dead features | 12,603 / 16,384 (77%) |
-| Coherent features | 17/20 inspected |
+| σ Source | Value | Discrimination | Status |
+|----------|-------|----------------|--------|
+| NN p10 | 0.127 | 14.2x | OK |
+| NN p25 | 0.167 | 7.6x | OK |
+| **NN median** | **0.223** | **4.5x** | **Best** |
+| Overall median | 0.744 | 1.6x | Collapsed |
 
 ### Output Files
 
 ```
-outputs/phase_a/
-    baseline_results.json     # Binary validation results
-    binary_overlap.npy        # Overlap matrix
-
-outputs/phase_b/
-    dwa_embeddings.npy        # MPNet embeddings (2087 × 768)
-    dwa_sparse_features.npy   # SAE features (2087 × 16384)
-    phase_b_summary.json      # Training summary
-
-outputs/phase_c/
-    feature_inspection.json   # Top 20 features analysis
-    feature_interpretability.txt  # Human-readable audit
-
-outputs/phase_d/
-    validation_comparison.json    # Binary vs SAE results
-    sae_overlap.npy              # SAE overlap matrix
-    occupation_features.npy       # Aggregated occupation features
-
-models/
-    sae_v1.pt                    # Trained SAE checkpoint
-    sae_v1_training_log.json     # Training metrics
+outputs/phase1/
+    phase1_summary.md              # Initial diagnostic results
+    phase1_addendum.md             # Fix documentation
+    phase1_fix_results.json        # Kernel fix validation
+    semantic_vs_random_fixed.json  # Critical confirmation
+    distance_distribution.json     # Task 1.1.1
+    similarity_orientation.json    # Task 1.1.2
+    kernel_weights.json            # Task 1.1.3 (bug identified)
+    jaccard_semantic_correlation.json  # Task 1.1.4
+    activity_embeddings.npy        # MPNet embeddings
+    jaccard_semantic_scatter.png   # Correlation plot
 ```
 
 ---
@@ -247,45 +262,52 @@ spec_*.md                # Implementation specifications
 
 3. **Numpy booleans aren't JSON serializable** — Wrap in `bool()`.
 
-4. **Identical t-stats across σ values is a red flag** — Indicates σ is inert.
+4. **Identical t-stats across σ values is a red flag** — Indicates σ is inert (or kernel collapsed).
 
 5. **ALWAYS run permutation/placebo tests** — A significant coefficient means nothing if random data produces the same result.
 
-### From v0.5.0 (Current)
+### From v0.5.0 (Superseded by v0.6.1)
 
-6. **The labor market signal is discrete** — Binary activity overlap captures most of the predictive power. Continuous semantic similarity adds noise (v0.4.2.1) or marginal value (v0.5.0 SAE).
+~~6. The labor market signal is discrete~~ — **WRONG.** This was an artifact of kernel collapse.
 
-7. **SAE finds coherent structure but it's fine-grained** — 17/20 features were interpretable, but activation was uniform across ~2,066 effective features. No dominant cross-cutting dimensions.
+~~7. Dense embeddings add noise~~ — **WRONG.** Random > semantic was caused by kernel collapse, not semantic noise.
 
-8. **R² can improve even when β improvement is modest** — SAE R² nearly doubled (+75%) while β only improved +11.5%. This suggests SAE captures signal more efficiently but the magnitude is similar.
+### From v0.6.1 (Current)
 
-9. **Correlation between measures is diagnostic** — r(Binary, SAE) = 0.824 indicates moderate overlap. If r > 0.9, the measures are redundant. If r < 0.7, they capture different structure.
+6. **σ must be calibrated to nearest-neighbor distances** — Global distance percentiles (median = 0.74) cause kernel collapse. Use NN median (≈ 0.22) instead.
 
-10. **Training SAE on small data (2,087 samples) works** — ~20 minutes on CPU, converges well. The bottleneck is conceptual (what structure to find), not computational.
+7. **Row-normalization can destroy signal** — With 2,087 activities and near-uniform kernel weights, normalization washes out structure. Skip it.
 
-11. **Feature coherence ≠ economic value** — Features can be semantically interpretable ("software", "healthcare", "construction") without adding predictive power beyond binary counting.
+8. **Discrimination ratio > 4x is necessary** — Check `exp(-d_p10/σ) / exp(-d_p90/σ)`. If < 2x, kernel is collapsed.
 
-12. **Wage comovement may not be the right validation target** — It might be driven by industry/geographic shocks that don't respect activity geometry. Worker mobility could show more geometric structure.
+9. **Semantic structure IS predictive** — t = 27.65, 100th percentile vs random. The manifold representation is vindicated.
 
-### Theoretical Implications
+10. **Always diagnose before concluding** — The "discrete dominates" finding seemed robust but was an artifact. Run full diagnostics (distance distribution, orientation, kernel weights, correlation) before drawing conclusions.
 
-13. **The manifold abstraction may be wrong** — Activities behave more like discrete tokens than points on a smooth manifold. Kernel-weighted overlap reduces to counting shared nodes.
+11. **Unnormalized kernel overlap works best** — For validation, use raw `exp(-d/σ)` weights without row-normalization.
 
-14. **Dense embeddings add noise to economic signals** — Random distances outperformed MPNet in v0.4.2.1. The semantic structure of language doesn't align with economic substitutability.
+12. **Correlation r = 0.377 between Jaccard and semantic was diagnostic** — It told us the measures captured similar structure. The bug was in the kernel, not the embedding.
 
-15. **Supervised probing may be the path forward** — If we have theoretical priors (routine/cognitive, automatable, etc.), extracting those dimensions directly from a large language model might capture economic structure that unsupervised methods miss.
+### Theoretical Implications (Revised)
+
+13. **The manifold abstraction is vindicated** — Tasks DO live on a continuous similarity space. Kernel-weighted overlap significantly improves prediction.
+
+14. **Kernel bandwidth selection is critical** — The key methodological insight: calibrate to local structure (NN distances), not global distribution.
+
+15. **Geometry enables prediction beyond counting** — +86% R² over binary Jaccard. Semantic similarity adds real value.
 
 ---
 
-## Recipe Comparison
+## Recipe Comparison (Updated v0.6.1)
 
-| Aspect | Recipe X (v0.4.1) | Recipe Y (v0.4.2) | Binary (v0.5.0) | SAE (v0.5.0) |
-|--------|-------------------|-------------------|-----------------|--------------|
-| Input | Importance profiles | Activity titles | Activity weights | MPNet embeddings |
-| Method | PCA → Euclidean | Sentence encoder → Cosine | Binarize → Jaccard | Encode → Binarize → Jaccard |
-| Validation | FAIL (wrong sign) | FAIL (spurious) | **PASS** (t=8.00) | Marginal (+11.5% β) |
-| Complexity | Medium | Medium | **Low** | High |
-| Recommended | No | No | **Yes** | For robustness |
+| Aspect | Recipe X (v0.4.1) | Recipe Y (v0.4.2) | Binary (v0.5.0) | Kernel (v0.6.1) |
+|--------|-------------------|-------------------|-----------------|-----------------|
+| Input | Importance profiles | Activity titles | Activity weights | Activity embeddings |
+| Method | PCA → Euclidean | Sentence → Cosine | Binarize → Jaccard | Embed → Kernel → Overlap |
+| σ | Various | Various | N/A | **NN median (0.22)** |
+| Normalized | Yes | Yes | N/A | **No** |
+| Validation | FAIL (wrong sign) | FAIL (spurious) | PASS (t=8.00) | **PASS (t=27.65)** |
+| Recommended | No | No | Baseline | **Yes** |
 
 ---
 
