@@ -2,7 +2,7 @@
 
 A geometric framework for measuring labor market exposure to technological shocks.
 
-**Version 0.3.7**
+**Version 0.4.0**
 
 ---
 
@@ -19,13 +19,31 @@ This approach allows for:
 
 ## Current Status
 
-**v0.3.7**: Theoretical framework complete. The paper (`paper/main.tex`) contains:
-- Mathematical definitions (Section 3)
-- Empirical strategy with O*NET operationalization (Section 4)
-- Phase I/II evaluation plan
-- Literature review and extensions
+**v0.4.0** (Current): Core empirical pipeline implemented.
+- Activity domain: 41 Generalized Work Activities (GWAs) from O*NET 30.0
+- Occupation measures: 894 occupations as probability distributions over activities
+- Activity distances: Recipe X (rating-cooccurrence geometry with PCA)
+- Kernel matrix: Row-normalized exponential kernel for shock propagation
+- Exposure computation: Occupation-level exposure functionals
+- Phase I diagnostics: Measure coherence, distance statistics
 
-**Next (v0.4)**: Empirical implementation of Section 4 pipeline.
+**Next**: External validation (worker mobility, wage comovement), Phase II experiments.
+
+---
+
+## Quick Start
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Download O*NET database (required)
+# Get db_30_0_excel.zip from https://www.onetcenter.org/database.html
+# Extract to data/onet/db_30_0_excel/
+
+# Run pipeline test
+PYTHONPATH=src python tests/test_pipeline.py
+```
 
 ---
 
@@ -35,38 +53,64 @@ This approach allows for:
 paper/
     main.tex         # Theoretical framework and empirical strategy
     references.bib   # Bibliography
-src/task_space/      # Implementation (v0.4)
-tests/               # API probes and test scripts
+src/task_space/
+    data.py          # O*NET file loading
+    domain.py        # Activity domain and occupation measures
+    distances.py     # Recipe X activity distances
+    kernel.py        # Kernel matrix and exposure computation
+    diagnostics.py   # Phase I coherence checks
+data/onet/           # O*NET database files (not in git)
+tests/               # Test scripts
 outputs/             # Generated figures and tables
 ```
 
 ---
 
-## Quick Start
+## Usage
 
-The theoretical framework is in `paper/main.tex`. Compile with:
-```bash
-cd paper && pdflatex main && bibtex main && pdflatex main && pdflatex main
+```python
+from task_space import (
+    build_activity_domain,
+    build_occupation_measures,
+    compute_activity_distances,
+    build_kernel_matrix,
+    compute_occupation_exposure,
+    create_shock_profile,
+)
+
+# Build the manifold
+domain = build_activity_domain()
+measures = build_occupation_measures()
+distances = compute_activity_distances(measures)
+
+# Set up kernel with median distance as bandwidth
+from task_space import distance_percentiles
+sigma = distance_percentiles(distances)['p50']
+kernel = build_kernel_matrix(distances, sigma=sigma)
+
+# Create a shock profile and compute exposures
+shock = create_shock_profile(
+    activity_ids=distances.activity_ids,
+    target_activities={'4.A.1.a.1': 1.0},  # Target "Getting Information"
+)
+result = compute_occupation_exposure(measures, kernel, shock)
+
+# result.exposures contains E_j for each occupation
 ```
-
-For the v0.4 implementation, you'll need O*NET API access:
-1. Register at https://services.onetcenter.org/developer/
-2. Create `.env` with `ONET_API_KEY=your_key_here`
-3. Test connectivity: `PYTHONPATH=src python tests/test_auth.py`
 
 ---
 
 ## The Framework in Brief
 
-1. **Activity Domain**: Work activities form a metric space where distance encodes reallocation friction.
+1. **Activity Domain**: 41 GWAs form a metric space where distance encodes reallocation friction.
 
-2. **Occupation Measures**: Each occupation is a probability distribution over activities, constructed from O*NET importance and level ratings.
+2. **Occupation Measures**: Each occupation is a probability distribution over activities, constructed from O*NET Importance ratings.
 
-3. **Shock Propagation**: Technology shocks are activity-level profiles that spread via a distance-based kernel.
+3. **Shock Propagation**: Technology shocks spread via exponential kernel: k(d) = exp(-d/sigma).
 
-4. **Exposure Measurement**: Occupation exposure is the integral of the propagated shock against the occupation's activity distribution.
+4. **Exposure Measurement**: E_j = sum_a rho_j(a) * A(a), where A is the propagated shock field.
 
-See `paper/main.tex` Section 3 for formal definitions and Section 4 for empirical operationalization.
+See `paper/main.tex` Section 3 for formal definitions and Section 4 for empirical strategy.
 
 ---
 

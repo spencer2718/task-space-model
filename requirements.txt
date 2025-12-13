@@ -5,3 +5,4 @@ scipy
 requests
 matplotlib
 python-dotenv
+openpyxl

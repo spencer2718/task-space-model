@@ -36,8 +36,10 @@ wheels/
 # Data (keep structure, ignore contents)
 data/raw/*
 data/processed/*
+data/onet/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
+!data/onet/.gitkeep
 
 # Outputs
 outputs/*
