@@ -60,6 +60,17 @@ from .validation import (
     load_overlap_grid,
 )
 
+from .crosswalk import (
+    OnetOesCrosswalk,
+    WageComovement,
+    onet_to_soc,
+    build_onet_oes_crosswalk,
+    load_oes_year,
+    load_oes_panel,
+    compute_wage_comovement,
+    aggregate_occupation_measures,
+)
+
 __all__ = [
     # Data loading
     "load_work_activities",
@@ -108,4 +119,13 @@ __all__ = [
     "load_overlap_result",
     "save_overlap_grid",
     "load_overlap_grid",
+    # Crosswalk and OES
+    "OnetOesCrosswalk",
+    "WageComovement",
+    "onet_to_soc",
+    "build_onet_oes_crosswalk",
+    "load_oes_year",
+    "load_oes_panel",
+    "compute_wage_comovement",
+    "aggregate_occupation_measures",
 ]
