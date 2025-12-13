@@ -1,5 +1,5 @@
-# task_space v0.4.0
-# Empirical implementation of Section 4 (GWA-based activity domain, Recipe X distances)
+# task_space v0.4.1
+# Phase I external validation (Diagnostic B from Section 4.4)
 
 from .data import (
     load_work_activities,
@@ -47,6 +47,19 @@ from .diagnostics import (
     generate_diagnostic_report,
 )
 
+from .validation import (
+    OverlapResult,
+    OverlapGrid,
+    SIGMA_PERCENTILES,
+    compute_overlap_stats,
+    compute_validation_overlap,
+    compute_overlap_grid,
+    save_overlap_result,
+    load_overlap_result,
+    save_overlap_grid,
+    load_overlap_grid,
+)
+
 __all__ = [
     # Data loading
     "load_work_activities",
@@ -84,4 +97,15 @@ __all__ = [
     "spot_check_occupations",
     "diagnose_distances",
     "generate_diagnostic_report",
+    # Validation (Phase I)
+    "OverlapResult",
+    "OverlapGrid",
+    "SIGMA_PERCENTILES",
+    "compute_overlap_stats",
+    "compute_validation_overlap",
+    "compute_overlap_grid",
+    "save_overlap_result",
+    "load_overlap_result",
+    "save_overlap_grid",
+    "load_overlap_grid",
 ]
