@@ -9,10 +9,27 @@ This document contains working conventions, version control rules, and quality-o
 **Paper and codebase versions must always match.**
 
 - Versions are bumped when entering a new phase of the research program
-- Current: v0.4.0 (empirical implementation of Section 4)
-- Previous: v0.3.7 (theoretical framework complete)
+- Current: v0.4.1 (Phase I external validation complete — FAIL result)
+- Previous: v0.4.0 (core empirical pipeline)
 
 When updating either paper or code, ensure the other stays in sync or is updated together.
+
+---
+
+## Current Status: Validation Failed
+
+**v0.4.1 Result:** The GWA-based geometry (Recipe X) failed external validation against wage comovement.
+
+- All 5 σ values show negative (wrong sign) coefficients
+- R² ≈ 0, no predictive power
+- Monotonicity test fails (Spearman ρ = -0.13)
+
+**Next steps per Section 4.4:**
+1. Try Recipe Y (text-embedding geometry)
+2. Try DWA domain (2,087 activities instead of 41)
+3. Try alternative validation targets (worker mobility from CPS/SIPP)
+
+See README.md for full results and interpretation.
 
 ---
 
@@ -70,12 +87,10 @@ Place extracted files in `data/onet/` directory.
 
 ### Activity Domain Options
 
-| Domain | Dimension | Source | Recommended |
-|--------|-----------|--------|-------------|
-| GWA (Generalized Work Activities) | 41 | Direct ratings | Yes (v0.4) |
-| DWA (Detailed Work Activities) | 2,087 | Derived via tasks | Later |
-
-**v0.4 uses GWA-based domain** (simpler, direct ratings, well-validated).
+| Domain | Dimension | Source | Status |
+|--------|-----------|--------|--------|
+| GWA (Generalized Work Activities) | 41 | Direct ratings | v0.4.1: FAILED validation |
+| DWA (Detailed Work Activities) | 2,087 | Derived via tasks | Recommended next |
 
 ### Key Files
 
@@ -112,19 +127,6 @@ Place extracted files in `data/onet/` directory.
 - Level=0 when Importance=1
 - Normalize: `value / 7` → [0, 1]
 
-**v0.4 uses Importance only** (consistent anchors, available for both GWA and tasks).
-
-### Suppression Rules
-
-**Always filter:** `Recommend Suppress = 'N'`
-
-Suppression criteria (for reference):
-- N < 10
-- Variance = 0 AND N < 15
-- Relative Standard Error > 0.5
-
-**Not Relevant flag** (Level only): When >75% rated Importance=1. Handle by assigning Level=0 or excluding.
-
 ### GWA Matrix Construction
 
 ```python
@@ -144,78 +146,145 @@ matrix = df.pivot_table(
 # Normalize to [0,1]
 matrix = (matrix - 1) / 4
 
-# Result: ~923 occupations × 41 GWAs
+# Result: 894 occupations × 41 GWAs
 ```
 
 ### O*NET-SOC Code Format
 
 Format: `XX-XXXX.XX`
-- First 6 chars: Standard SOC code
+- First 7 chars (`XX-XXXX`): Standard SOC code (for OES matching)
 - Suffix `.00`, `.01`, `.02`: O*NET subdivisions
-- 1,016 total occupations (923 with full data)
+- 894 occupations with full GWA data
 
 ---
 
-## Implementation Roadmap (v0.4.0)
+## OES Data Reference (v0.4.1)
 
-**Scope:** Core pipeline with GWA-based domain, Recipe X distances, Phase I coherence diagnostics.
+### Data Source
 
-**Not in scope:** External validation (mobility/wages), Phase II experiments, Recipe Y embeddings.
+**BLS Occupational Employment and Wage Statistics**
+- URL: https://www.bls.gov/oes/tables.htm
+- Years used: 2019-2023 (5 years for wage comovement)
+- **Note:** BLS blocks automated downloads. Must download manually via browser.
 
-### Build Order
+### File Structure
 
-1. **Data loading** - Load Work Activities.xlsx, apply filters
-2. **Activity domain T_n** - 41 GWAs as discrete activity space
-3. **Occupation measures ρ_j** - Normalized importance vectors (923 × 41)
-4. **Activity distances d(a,b)** - Recipe X: transpose to activity profiles, PCA, Euclidean
-5. **Kernel matrix K** - Row-normalized exponential kernel on activities
-6. **Propagation** - A = K @ I for shock profile I
-7. **Exposure computation** - E_j = ρ_j @ A
-8. **Phase I diagnostics** - Entropy, effective support, face validity
+```
+data/external/oes/
+├── oesm19nat/
+│   └── national_M2019_dl.xlsx
+├── oesm20nat/
+│   └── national_M2020_dl.xlsx
+...
+```
 
-### Module Structure
+### Crosswalk: O*NET-SOC to OES
+
+```python
+def onet_to_soc(onet_code: str) -> str:
+    """Strip .XX suffix: '15-1252.00' → '15-1252'"""
+    return onet_code[:7]
+```
+
+Coverage statistics (v0.4.1):
+- 894 O*NET occupations → 774 unique SOC codes
+- 747 SOC codes matched in OES (96.4% coverage)
+- 702 SOC codes usable for validation (present in both O*NET and comovement matrix)
+
+---
+
+## Module Structure (v0.4.1)
 
 ```
 src/task_space/
-    __init__.py
+    __init__.py      # Exports all public APIs
     data.py          # O*NET file loading and filtering
     domain.py        # Activity domain + occupation measure construction
     distances.py     # Activity distance computation (Recipe X)
     kernel.py        # Kernel matrix, propagation, and exposure computation
     diagnostics.py   # Phase I coherence checks
+    validation.py    # Phase I external validation (NEW)
+    crosswalk.py     # O*NET-SOC to OES crosswalk (NEW)
 ```
+
+### New in v0.4.1
+
+**validation.py:**
+- `OverlapResult`, `OverlapGrid` — Overlap computation results
+- `ValidationDataset` — Pair-level dataset for regression
+- `RegressionResult`, `ValidationResults` — Regression outputs
+- `MonotonicityResult` — Binned overlap-outcome relationship
+- `compute_overlap_grid()` — Compute overlaps for all 5 σ values
+- `build_validation_dataset()` — Merge overlap with wage comovement
+- `run_validation_regression()` — OLS with cluster-robust SEs
+- `run_full_validation()` — Run for all 5 σ values
+- `check_monotonicity()` — Bin overlap and test monotonicity
+- `plot_monotonicity()` — Generate binned scatterplot
+
+**crosswalk.py:**
+- `OnetOesCrosswalk` — Crosswalk with coverage statistics
+- `WageComovement` — Pairwise wage correlation matrix
+- `onet_to_soc()` — Code conversion
+- `load_oes_year()`, `load_oes_panel()` — OES data loading
+- `compute_wage_comovement()` — Log wage change correlations
+- `aggregate_occupation_measures()` — Average O*NET measures to SOC level
 
 ---
 
-## Paper Placeholders
+## Validation Results Reference (v0.4.1)
 
-The paper contains placeholders like `[PLACEHOLDER PH0]`, `[PLACEHOLDER PH1]`, etc.
+### Headline Numbers
 
-- These are filled with empirical outputs (tables, statistics, diagnostic results)
-- Code should generate outputs that can be pasted into these sections
-- Automating this transfer is not a priority; manual paste is fine
+| σ Percentile | β | SE | p-value | Passes |
+|--------------|---|-----|---------|--------|
+| p10 | -2.30 | 7.05 | 0.74 | No |
+| p25 | -2.83 | 8.88 | 0.75 | No |
+| p50 | -3.27 | 12.20 | 0.79 | No |
+| p75 | -3.54 | 15.22 | 0.82 | No |
+| p90 | -3.76 | 17.72 | 0.83 | No |
+
+- Dataset: 246,051 occupation pairs, 702 occupations
+- Clusters: 701 (origin occupation)
+- Monotonicity: Spearman ρ = -0.13 (p = 0.73)
+
+### Output Files
+
+```
+outputs/phase_i/
+    overlap_p{10,25,50,75,90}.npz   # Overlap matrices
+    overlap_p{10,25,50,75,90}.json  # Overlap metadata
+    overlap_stats.json               # Distribution statistics
+    regression_results.json          # Full validation results
+    monotonicity_plot.png            # Binned scatterplot
+```
 
 ---
 
 ## File Conventions
 
 ```
-paper/main.tex       # Source of truth for theory and empirical strategy
-paper/references.bib # Bibliography (BibTeX)
-src/task_space/      # Implementation modules
-data/onet/           # O*NET database files (not in git)
-tests/               # Test scripts
-outputs/             # Generated figures and tables
+paper/main.tex           # Source of truth for theory and empirical strategy
+paper/references.bib     # Bibliography (BibTeX)
+src/task_space/          # Implementation modules
+data/onet/               # O*NET database files (not in git)
+data/external/oes/       # OES wage data (not in git)
+tests/                   # Test scripts
+outputs/                 # Generated figures and tables (not in git)
 ```
 
 ---
 
-## Existing Utilities
+## Lessons Learned (v0.4.1)
 
-- `tests/test_auth.py` - O*NET V2 API connectivity probe (may be useful for spot-checks)
-- `tests/probe_level.py` - Investigation of Importance vs Level score availability
+1. **BLS blocks automated downloads** — Must download OES data manually via browser. Document this clearly for future users.
 
-Note: v0.4 uses downloaded database files, not API. These probes remain for reference.
+2. **Pandas diff().dropna() drops all rows** — When computing year-over-year wage changes, use `.iloc[1:]` instead of `.dropna()` to avoid dropping all rows due to ANY column having NaN.
+
+3. **Numpy booleans aren't JSON serializable** — Wrap in `bool()` when saving to JSON.
+
+4. **KernelMatrix attribute is `.matrix` not `.kernel_matrix`** — Check dataclass attributes when reusing objects.
+
+5. **Negative coefficients are informative** — The validation didn't just fail to find a relationship; it found the wrong sign. This suggests systematic structure worth investigating (e.g., high-overlap pairs may be in different industries with different cycle sensitivities).
 
 ---
 
@@ -223,9 +292,9 @@ Note: v0.4 uses downloaded database files, not API. These probes remain for refe
 
 When making changes:
 
-1. **Code changes** - Update `__init__.py` version comment if version bumps
-2. **README.md** - Keep user-facing; update status, usage instructions
-3. **CLAUDE.md** - Keep developer-facing; update conventions, roadmap, lessons learned
-4. **Paper placeholders** - Fill with empirical outputs when available
+1. **Code changes** — Update `__init__.py` version comment if version bumps
+2. **README.md** — Keep user-facing; update status, usage instructions, results
+3. **CLAUDE.md** — Keep developer-facing; update conventions, roadmap, lessons learned
+4. **Paper placeholders** — Fill with empirical outputs when available
 
 If you discover something that would have helped you work faster, add it to this file.

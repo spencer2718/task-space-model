@@ -1,5 +1,6 @@
 # task_space v0.4.1
-# Phase I external validation (Diagnostic B from Section 4.4)
+# Phase I external validation complete (Diagnostic B from Section 4.4)
+# Result: FAIL - GWA-based geometry does not predict wage comovement
 
 from .data import (
     load_work_activities,
