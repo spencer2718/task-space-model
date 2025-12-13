@@ -9,24 +9,30 @@ This document contains working conventions, version control rules, and quality-o
 **Paper and codebase versions must always match.**
 
 - Versions are bumped when entering a new phase of the research program
-- Current: v0.4.2 (Phase I external validation complete — **PASS** with DWA + Recipe Y)
+- Current: v0.4.2.1 (Phase I validation FAILED after robustness checks)
+- Previous: v0.4.2 (appeared to pass, but robustness checks revealed spurious result)
 - Previous: v0.4.1 (GWA + Recipe X validation failed)
 
 When updating either paper or code, ensure the other stays in sync or is updated together.
 
 ---
 
-## Current Status: Validation Passed
+## Current Status: Validation FAILED
 
-**v0.4.2 Result:** The DWA-based geometry with Recipe Y (text embeddings) passed external validation against wage comovement.
+**v0.4.2.1 Result:** The initial v0.4.2 validation result was spurious. Robustness checks revealed:
 
-- All 5 σ values show positive coefficients with p < 0.0001
-- R² ≈ 0.15% (small but typical for occupation pair data)
-- t-statistics ≈ 5.17 across all specifications
+| Check | Status | Finding |
+|-------|--------|---------|
+| Distance Distribution | ✓ PASS | CV = 0.18, reasonable spread |
+| Diagonal Dominance | ✓ PASS | t = 4.85 without diagonal |
+| σ-Collinearity | ✗ FAIL | r = 0.999 across bandwidths |
+| Permutation Test | ✗ FAIL | p = 0.31, not different from null |
+| Placebo Test | ✗ FAIL | Random distances work 2.5x better |
+| Jackknife Stability | ✓ PASS | CV = 0.09, all positive |
 
-**What worked:**
-1. **DWA domain** (2,087 activities) instead of GWA (41 activities)
-2. **Recipe Y** (text embeddings) instead of Recipe X (rating-cooccurrence PCA)
+**Key finding:** The correlation between overlap and wage comovement is driven by occupation-activity matrix structure, NOT the semantic geometry of activities. Random distance matrices produce a stronger effect than the actual text embeddings.
+
+**What this means:** The validation tested "occupations that share activities have correlated wages" (trivially true) rather than "spillover through activity geometry matters" (what the theory claims).
 
 See README.md for full results and interpretation.
 
@@ -89,7 +95,7 @@ Place extracted files in `data/onet/db_30_0_excel/` directory.
 | Domain | Dimension | Source | Status |
 |--------|-----------|--------|--------|
 | GWA (Generalized Work Activities) | 41 | Direct ratings | v0.4.1: FAILED |
-| DWA (Detailed Work Activities) | 2,087 | Derived via tasks | v0.4.2: **PASSED** |
+| DWA (Detailed Work Activities) | 2,087 | Derived via tasks | v0.4.2.1: FAILED (spurious) |
 
 ### Key Files
 
@@ -193,27 +199,33 @@ src/task_space/
 
 ---
 
-## Validation Results Reference (v0.4.2)
+## Validation Results Reference (v0.4.2.1)
 
-### Headline Numbers
+### Initial v0.4.2 Results (Appeared to Pass)
 
-| σ Percentile | σ Value | β | SE | t | p-value | Passes |
-|--------------|---------|------|------|------|---------|--------|
-| p10 | 0.559 | 441.25 | 85.33 | 5.17 | <0.0001 | Yes |
-| p25 | 0.651 | 523.22 | 101.26 | 5.17 | <0.0001 | Yes |
-| p50 | 0.744 | 606.40 | 117.37 | 5.17 | <0.0001 | Yes |
-| p75 | 0.828 | 681.52 | 131.89 | 5.17 | <0.0001 | Yes |
-| p90 | 0.896 | 742.13 | 143.59 | 5.17 | <0.0001 | Yes |
+| σ Percentile | σ Value | β | SE | t | p-value |
+|--------------|---------|------|------|------|---------|
+| p10 | 0.559 | 441.25 | 85.33 | 5.17 | <0.0001 |
+| p50 | 0.744 | 606.40 | 117.37 | 5.17 | <0.0001 |
+| p90 | 0.896 | 742.13 | 143.59 | 5.17 | <0.0001 |
 
-- Dataset: 246,051 occupation pairs, 702 occupations
-- Clusters: 701 (origin occupation)
-- **Overall: PASS (5/5)**
+### v0.4.2.1 Robustness Checks (FAILED)
+
+| Check | Result | Implication |
+|-------|--------|-------------|
+| σ-Collinearity | r = 0.999 | σ parameter is inert, only 1 effective specification |
+| Permutation Test | p = 0.31 | Effect not different from shuffled measures |
+| Placebo Test | ratio = 0.4x | Random distances work 2.5x better than semantic |
+
+**Bottom Line:** The overlap-comovement correlation exists but is NOT due to activity geometry. It's driven by the occupation-activity matrix structure (occupations that share activities have correlated wages).
 
 ### Output Files
 
 ```
 outputs/phase_i_dwa/
-    validation_results.json   # Full validation results
+    validation_results.json   # Initial v0.4.2 results
+    robustness_results.json   # v0.4.2.1 robustness checks
+    audit_results.json        # Combined audit findings
 ```
 
 ---
@@ -233,7 +245,7 @@ spec_*.md                # Implementation specifications (may be in git)
 
 ---
 
-## Lessons Learned (v0.4.2)
+## Lessons Learned (v0.4.2.1)
 
 ### From v0.4.1 (Inherited)
 
@@ -245,7 +257,7 @@ spec_*.md                # Implementation specifications (may be in git)
 
 4. **KernelMatrix attribute is `.matrix` not `.kernel_matrix`** — Check dataclass attributes.
 
-### From v0.4.2 (New)
+### From v0.4.2
 
 5. **DWA domain has incomplete coverage** — 7 DWAs have no task linkages. The `build_dwa_occupation_measures()` function adds all DWAs from reference to ensure alignment with `build_dwa_activity_domain()`.
 
@@ -255,19 +267,34 @@ spec_*.md                # Implementation specifications (may be in git)
 
 8. **Text embeddings produce very small overlaps** — With 2,087 activities, occupation measure weights are small (~1/2087 per activity). Overlap values are ~0.0005. This is expected and doesn't affect validation (coefficients adjust accordingly).
 
-9. **Domain and measures must be built from same reference** — Ensure activity_ids align between domain, measures, and distances. The fix in v0.4.2 ensures `build_dwa_occupation_measures()` includes all DWAs from `DWA Reference.xlsx`.
+9. **Domain and measures must be built from same reference** — Ensure activity_ids align between domain, measures, and distances.
+
+### From v0.4.2.1 (Critical)
+
+10. **Identical t-stats across σ values is a red flag** — When t ≈ 5.17 for ALL 5 σ percentiles, this indicates σ is inert. Overlap correlation r > 0.99 confirms the kernel bandwidth has no effect.
+
+11. **ALWAYS run permutation/placebo tests** — A significant coefficient means nothing if it survives when you (a) shuffle the occupation-activity structure, or (b) replace real distances with random ones.
+
+12. **Overlap captures measure structure, not geometry** — The overlap O_ij = ρ_i^T K ρ_j is dominated by whether occupations share activities, not how those activities are geometrically related. This is the fundamental issue with the current validation approach.
+
+13. **Random distances can produce stronger effects** — In the placebo test, random distance matrices gave β ≈ 1842 vs true β ≈ 728. The semantic structure is counterproductive. This suggests the validation target (wage comovement) may not be appropriate for testing geometric spillover.
+
+14. **"Occupations that share activities have correlated wages" ≠ "Geometry matters"** — The validation inadvertently tested the former (trivially true) rather than the latter (what the theory claims). A better validation would test spillover effects between non-overlapping occupations.
 
 ---
 
 ## Recipe Comparison
 
-| Aspect | Recipe X (v0.4.1) | Recipe Y (v0.4.2) |
-|--------|-------------------|-------------------|
+| Aspect | Recipe X (v0.4.1) | Recipe Y (v0.4.2.1) |
+|--------|-------------------|---------------------|
 | Input | Occupation importance profiles | Activity titles/descriptions |
 | Method | Transpose → PCA → Euclidean | Sentence encoder → Cosine |
 | Dependencies | sklearn | sentence-transformers |
 | Captures | Rating cooccurrence patterns | Semantic similarity |
-| Validation | FAIL | **PASS** |
+| Initial Validation | FAIL (wrong sign) | Appeared to PASS |
+| Robustness Checks | N/A | FAIL (spurious) |
+
+**Conclusion:** Neither recipe validates the geometric spillover hypothesis. The overlap-comovement correlation is driven by occupation measure structure, not activity geometry.
 
 ---
 

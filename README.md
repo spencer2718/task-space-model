@@ -2,7 +2,7 @@
 
 A geometric framework for measuring labor market exposure to technological shocks.
 
-**Version 0.4.2**
+**Version 0.4.2.1**
 
 ---
 
@@ -17,49 +17,48 @@ This approach allows for:
 
 ---
 
-## Current Status: External Validation PASSED
+## Current Status: Validation FAILED (Robustness Checks)
 
-**v0.4.2** implements the pre-committed pivot from Section 4.4 of the paper after v0.4.1 validation failed. The new geometry uses:
+**v0.4.2.1** reveals that the initial v0.4.2 validation result was spurious. While the regression showed significant positive coefficients, robustness checks demonstrate the effect is driven by occupation-activity matrix structure, not the geometric properties of the activity space.
 
-- **DWA domain**: 2,087 Detailed Work Activities (instead of 41 GWAs)
-- **Recipe Y distances**: Text embeddings via sentence-transformers (instead of rating-cooccurrence PCA)
+### What Happened
 
-### Validation Design
+**v0.4.2** appeared to pass validation:
+- DWA domain (2,087 activities) + Recipe Y (text embeddings)
+- Regression of wage comovement on overlap: β > 0, t ≈ 5.17, p < 0.0001
+- 5/5 σ values passed
 
-We test whether occupation pairs with higher **overlap** in our activity space also have higher **wage comovement** (correlation of year-over-year log wage changes). The regression specification:
+**v0.4.2.1 audit revealed problems:**
+- Identical t-stats across all σ values (suspicious)
+- Overlap correlation r = 0.999 across σ values (σ is inert)
+- Permutation test: p = 0.31 (effect not different from shuffled measures)
+- **Placebo test: Random distances produce 2.5x stronger effect**
 
-```
-WageComovement_{i,j} = α + β × Overlap_{i,j}(σ) + ε_{i,j}
-```
+### Robustness Check Results
 
-Standard errors are clustered by origin occupation. We run this for 5 different kernel bandwidths (σ at the 10th, 25th, 50th, 75th, and 90th percentiles of pairwise activity distances).
+| Check | Status | Finding |
+|-------|--------|---------|
+| Distance Distribution | ✓ PASS | CV = 0.18, reasonable spread |
+| Diagonal Dominance | ✓ PASS | t = 4.85 without diagonal |
+| σ-Collinearity | ✗ FAIL | r = 0.999 across bandwidths |
+| Permutation Test | ✗ FAIL | p = 0.31, effect not significant |
+| Placebo Test | ✗ FAIL | Random distances work better (ratio = 0.4x) |
+| Jackknife Stability | ✓ PASS | CV = 0.09, all positive |
 
-**Pass criterion:** β > 0 with p < 0.10
-
-### Results: PASS (5/5)
-
-| σ Percentile | σ Value | β | SE | t | p-value | Status |
-|--------------|---------|---|-----|---|---------|--------|
-| p10 | 0.559 | 441.25 | 85.33 | 5.17 | <0.0001 | PASS |
-| p25 | 0.651 | 523.22 | 101.26 | 5.17 | <0.0001 | PASS |
-| p50 | 0.744 | 606.40 | 117.37 | 5.17 | <0.0001 | PASS |
-| p75 | 0.828 | 681.52 | 131.89 | 5.17 | <0.0001 | PASS |
-| p90 | 0.896 | 742.13 | 143.59 | 5.17 | <0.0001 | PASS |
-
-**Key findings:**
-- **All coefficients are positive** — higher overlap is associated with higher wage comovement
-- **Highly significant** — t ≈ 5.17, p < 0.0001 across all specifications
-- **R² ≈ 0.15%** — small but typical for cross-sectional occupation pair data
-- **5 of 5 σ values pass** the validation criterion
+**Bottom line:** The correlation between overlap and wage comovement exists but is NOT due to the semantic geometry of activities. Occupations that share activities have correlated wages regardless of how those activities are geometrically related. The kernel structure is irrelevant.
 
 ### Interpretation
 
-The DWA + Recipe Y geometry captures economically meaningful structure. Occupation pairs that share more activity exposure (as measured by kernel-weighted overlap) exhibit higher wage comovement over business cycles.
+The validation tested whether "occupations that share activities have correlated wages" — which is trivially true but not what the theory claims. The theory claims that **spillover through activity geometry** matters (occupations connected through similar activities, even if not identical). This was not validated.
 
-**What changed from v0.4.1:**
-1. **Domain granularity**: 41 GWAs → 2,087 DWAs provides finer resolution
-2. **Distance metric**: Rating-cooccurrence PCA → text embeddings captures semantic similarity
-3. **Result**: Coefficients flipped from negative (wrong sign) to strongly positive
+**What this means for Phase II:** Do not proceed with shock propagation experiments until the validation methodology is reconsidered.
+
+### Possible Paths Forward
+
+1. **Different validation target**: Test spillover structure more directly (e.g., occupation transition probabilities)
+2. **Activity-level outcomes**: Test on activity-level variation rather than occupation pairs
+3. **Instrumental variation**: Use natural experiments that shock specific parts of the activity space
+4. **Different measure construction**: Build occupation measures with less activity sharing
 
 ---
 
@@ -230,7 +229,8 @@ When validation runs, it produces:
 
 ## Version History
 
-- **v0.4.2** (Current): DWA domain + Recipe Y (text embeddings). Validation: **PASS** (5/5 σ values).
+- **v0.4.2.1** (Current): Robustness audit reveals v0.4.2 result spurious. Validation: **FAIL** (placebo test).
+- **v0.4.2**: DWA domain + Recipe Y (text embeddings). Initial validation appeared to pass (5/5 σ), but robustness checks failed.
 - **v0.4.1**: GWA domain + Recipe X (rating-cooccurrence PCA). Validation: FAIL (0/5 σ values).
 - **v0.4.0**: Core empirical pipeline with Phase I coherence diagnostics.
 - **v0.3.7**: Theoretical framework complete.
