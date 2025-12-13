@@ -1,6 +1,6 @@
-# task_space v0.4.1
-# Phase I external validation complete (Diagnostic B from Section 4.4)
-# Result: FAIL - GWA-based geometry does not predict wage comovement
+# task_space v0.4.2
+# Phase I external validation pivot: DWA domain + Recipe Y (text embeddings)
+# See spec_0.4.2.md for implementation details
 
 from .data import (
     load_work_activities,
@@ -16,12 +16,15 @@ from .domain import (
     ActivityDomain,
     OccupationMeasures,
     build_activity_domain,
+    build_dwa_activity_domain,
     build_occupation_measures,
+    build_dwa_occupation_measures,
 )
 
 from .distances import (
     ActivityDistances,
     compute_activity_distances,
+    compute_text_embedding_distances,
     get_nearest_activities,
     distance_percentiles,
 )
@@ -41,10 +44,14 @@ from .diagnostics import (
     MeasureCoherence,
     FaceValidityCheck,
     DistanceCoherence,
+    DWASparsityReport,
+    GeometryComparison,
     diagnose_measure_coherence,
     spot_check_occupation,
     spot_check_occupations,
     diagnose_distances,
+    diagnose_dwa_sparsity,
+    compare_geometries,
     generate_diagnostic_report,
 )
 
@@ -95,10 +102,13 @@ __all__ = [
     "ActivityDomain",
     "OccupationMeasures",
     "build_activity_domain",
+    "build_dwa_activity_domain",
     "build_occupation_measures",
+    "build_dwa_occupation_measures",
     # Distances
     "ActivityDistances",
     "compute_activity_distances",
+    "compute_text_embedding_distances",
     "get_nearest_activities",
     "distance_percentiles",
     # Kernel and exposure
@@ -114,10 +124,14 @@ __all__ = [
     "MeasureCoherence",
     "FaceValidityCheck",
     "DistanceCoherence",
+    "DWASparsityReport",
+    "GeometryComparison",
     "diagnose_measure_coherence",
     "spot_check_occupation",
     "spot_check_occupations",
     "diagnose_distances",
+    "diagnose_dwa_sparsity",
+    "compare_geometries",
     "generate_diagnostic_report",
     # Validation (Phase I)
     "OverlapResult",

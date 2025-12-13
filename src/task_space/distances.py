@@ -178,3 +178,76 @@ def distance_percentiles(distances: ActivityDistances) -> dict[str, float]:
     }
 
     return percentiles
+
+
+def compute_text_embedding_distances(
+    activity_titles: list[str],
+    activity_ids: list[str],
+    model_name: str = "all-mpnet-base-v2",
+    metric: str = "cosine",
+) -> ActivityDistances:
+    """
+    Compute activity-to-activity distances using text embeddings (Recipe Y).
+
+    Each activity is represented by its title/description embedded via a
+    sentence transformer model. Distance is cosine distance (1 - cosine similarity).
+
+    This provides a semantic similarity metric independent of the rating-cooccurrence
+    patterns used in Recipe X.
+
+    Args:
+        activity_titles: List of activity description strings (e.g., DWA titles)
+        activity_ids: List of activity IDs (for alignment with domain)
+        model_name: sentence-transformers model identifier.
+                   Default: "all-mpnet-base-v2" (768-dim, best quality)
+                   Alternative: "all-MiniLM-L6-v2" (384-dim, 5x faster)
+        metric: "cosine" (recommended) or "euclidean"
+
+    Returns:
+        ActivityDistances with embedding-based distance matrix.
+        - pca_variance_explained is None (no PCA in this recipe)
+        - n_components is None
+        - activity_profiles contains raw embeddings
+
+    Paper reference: Section 4.1.1 Recipe Y
+
+    Note:
+        First run will download model weights (~420 MB for all-mpnet-base-v2)
+        to ~/.cache/torch/sentence_transformers/
+    """
+    if len(activity_titles) != len(activity_ids):
+        raise ValueError(
+            f"Length mismatch: {len(activity_titles)} titles vs {len(activity_ids)} IDs"
+        )
+
+    # Import here to avoid requiring sentence-transformers for Recipe X users
+    try:
+        from sentence_transformers import SentenceTransformer
+    except ImportError:
+        raise ImportError(
+            "sentence-transformers required for Recipe Y. "
+            "Install via: pip install sentence-transformers"
+        )
+
+    # Load model
+    model = SentenceTransformer(model_name)
+
+    # Encode all activity titles
+    print(f"Encoding {len(activity_titles)} activities with {model_name}...")
+    embeddings = model.encode(
+        activity_titles,
+        show_progress_bar=True,
+        convert_to_numpy=True,
+    )
+
+    # Compute pairwise distances
+    distances_condensed = pdist(embeddings, metric=metric)
+    distance_matrix = squareform(distances_condensed)
+
+    return ActivityDistances(
+        distance_matrix=distance_matrix,
+        activity_ids=activity_ids,
+        activity_profiles=embeddings,
+        pca_variance_explained=None,
+        n_components=None,
+    )

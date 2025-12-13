@@ -9,25 +9,24 @@ This document contains working conventions, version control rules, and quality-o
 **Paper and codebase versions must always match.**
 
 - Versions are bumped when entering a new phase of the research program
-- Current: v0.4.1 (Phase I external validation complete — FAIL result)
-- Previous: v0.4.0 (core empirical pipeline)
+- Current: v0.4.2 (Phase I external validation complete — **PASS** with DWA + Recipe Y)
+- Previous: v0.4.1 (GWA + Recipe X validation failed)
 
 When updating either paper or code, ensure the other stays in sync or is updated together.
 
 ---
 
-## Current Status: Validation Failed
+## Current Status: Validation Passed
 
-**v0.4.1 Result:** The GWA-based geometry (Recipe X) failed external validation against wage comovement.
+**v0.4.2 Result:** The DWA-based geometry with Recipe Y (text embeddings) passed external validation against wage comovement.
 
-- All 5 σ values show negative (wrong sign) coefficients
-- R² ≈ 0, no predictive power
-- Monotonicity test fails (Spearman ρ = -0.13)
+- All 5 σ values show positive coefficients with p < 0.0001
+- R² ≈ 0.15% (small but typical for occupation pair data)
+- t-statistics ≈ 5.17 across all specifications
 
-**Next steps per Section 4.4:**
-1. Try Recipe Y (text-embedding geometry)
-2. Try DWA domain (2,087 activities instead of 41)
-3. Try alternative validation targets (worker mobility from CPS/SIPP)
+**What worked:**
+1. **DWA domain** (2,087 activities) instead of GWA (41 activities)
+2. **Recipe Y** (text embeddings) instead of Recipe X (rating-cooccurrence PCA)
 
 See README.md for full results and interpretation.
 
@@ -72,7 +71,7 @@ Do not proceed with large implementations without this planning step.
 
 ---
 
-## O*NET Data Reference (v0.4)
+## O*NET Data Reference (v0.4.2)
 
 This section documents O*NET database structure based on architect research (December 2025).
 
@@ -83,70 +82,40 @@ This section documents O*NET database structure based on architect research (Dec
 - License: Creative Commons Attribution 4.0
 - Version: 30.0 (current as of December 2025)
 
-Place extracted files in `data/onet/` directory.
+Place extracted files in `data/onet/db_30_0_excel/` directory.
 
 ### Activity Domain Options
 
 | Domain | Dimension | Source | Status |
 |--------|-----------|--------|--------|
-| GWA (Generalized Work Activities) | 41 | Direct ratings | v0.4.1: FAILED validation |
-| DWA (Detailed Work Activities) | 2,087 | Derived via tasks | Recommended next |
+| GWA (Generalized Work Activities) | 41 | Direct ratings | v0.4.1: FAILED |
+| DWA (Detailed Work Activities) | 2,087 | Derived via tasks | v0.4.2: **PASSED** |
 
 ### Key Files
 
-| File | Purpose | Rows |
-|------|---------|------|
-| `Work Activities.xlsx` | GWA ratings by occupation | ~79,376 |
-| `Tasks to DWAs.xlsx` | Task-DWA mappings | ~23,000 |
-| `Task Ratings.xlsx` | Task importance ratings | varies |
-| `DWA Reference.xlsx` | DWA hierarchy (GWA→IWA→DWA) | 2,087 |
-| `Content Model Reference.xlsx` | GWA descriptions for embeddings | ~580 |
+| File | Purpose | Notes |
+|------|---------|-------|
+| `Work Activities.xlsx` | GWA ratings by occupation | Direct Likert ratings |
+| `DWA Reference.xlsx` | DWA hierarchy (GWA→IWA→DWA) | 2,087 DWAs |
+| `Tasks to DWAs.xlsx` | Task-DWA mappings | ~23,000 linkages |
+| `Task Ratings.xlsx` | Task importance ratings | Used to derive DWA importance |
+| `Content Model Reference.xlsx` | GWA descriptions | For embeddings |
 
-### Work Activities.xlsx Schema
-
-| Column | Type | Notes |
-|--------|------|-------|
-| O*NET-SOC Code | Char(10) | Format: `XX-XXXX.XX` |
-| Element ID | Varchar(20) | GWA ID (e.g., `4.A.1.a.1`) |
-| Scale ID | Varchar(3) | `IM` = Importance, `LV` = Level |
-| Data Value | Float | Raw rating |
-| N | Integer | Sample size |
-| Standard Error | Float | SEM |
-| Recommend Suppress | Char(1) | `Y` or `N` |
-| Not Relevant | Char(1) | `Y` or `N` (Level only) |
-
-### Rating Scales
-
-**Importance (Scale ID = `IM`):**
-- Range: 1-5
-- Anchors: 1=Not Important, 2=Somewhat, 3=Important, 4=Very, 5=Extremely
-- Normalize: `(value - 1) / 4` → [0, 1]
-
-**Level (Scale ID = `LV`):**
-- Range: 0-7
-- Level=0 when Importance=1
-- Normalize: `value / 7` → [0, 1]
-
-### GWA Matrix Construction
+### DWA Matrix Construction (v0.4.2)
 
 ```python
-# Filter to Importance scale, non-suppressed
-df = work_activities[
-    (work_activities['Scale ID'] == 'IM') &
-    (work_activities['Recommend Suppress'] == 'N')
-]
+# DWA importance derived via task linkages
+# Per O*NET methodology: max task importance per DWA
 
-# Pivot to occupation × GWA matrix
-matrix = df.pivot_table(
-    index='O*NET-SOC Code',
-    columns='Element ID',
-    values='Data Value'
-)
+task_ratings = load_task_ratings()  # Scale ID = 'IM'
+tasks_to_dwas = load_tasks_to_dwas()
+merged = tasks_to_dwas.merge(task_ratings, on=['O*NET-SOC Code', 'Task ID'])
 
-# Normalize to [0,1]
-matrix = (matrix - 1) / 4
+# Aggregate: max importance per (occupation, DWA)
+dwa_importance = merged.groupby(['O*NET-SOC Code', 'DWA ID'])['Data Value'].max()
 
-# Result: 894 occupations × 41 GWAs
+# Pivot and normalize
+# Result: 894 occupations × 2,087 DWAs
 ```
 
 ### O*NET-SOC Code Format
@@ -154,11 +123,11 @@ matrix = (matrix - 1) / 4
 Format: `XX-XXXX.XX`
 - First 7 chars (`XX-XXXX`): Standard SOC code (for OES matching)
 - Suffix `.00`, `.01`, `.02`: O*NET subdivisions
-- 894 occupations with full GWA data
+- 894 occupations with full data
 
 ---
 
-## OES Data Reference (v0.4.1)
+## OES Data Reference (v0.4.2)
 
 ### Data Source
 
@@ -186,76 +155,65 @@ def onet_to_soc(onet_code: str) -> str:
     return onet_code[:7]
 ```
 
-Coverage statistics (v0.4.1):
+Coverage statistics (v0.4.2):
 - 894 O*NET occupations → 774 unique SOC codes
-- 747 SOC codes matched in OES (96.4% coverage)
 - 702 SOC codes usable for validation (present in both O*NET and comovement matrix)
+- 246,051 occupation pairs in validation dataset
 
 ---
 
-## Module Structure (v0.4.1)
+## Module Structure (v0.4.2)
 
 ```
 src/task_space/
     __init__.py      # Exports all public APIs
     data.py          # O*NET file loading and filtering
-    domain.py        # Activity domain + occupation measure construction
-    distances.py     # Activity distance computation (Recipe X)
+    domain.py        # Activity domain + occupation measures (GWA and DWA)
+    distances.py     # Recipe X (PCA) and Recipe Y (embeddings) distances
     kernel.py        # Kernel matrix, propagation, and exposure computation
-    diagnostics.py   # Phase I coherence checks
-    validation.py    # Phase I external validation (NEW)
-    crosswalk.py     # O*NET-SOC to OES crosswalk (NEW)
+    diagnostics.py   # Phase I coherence checks + geometry comparison
+    validation.py    # Phase I external validation
+    crosswalk.py     # O*NET-SOC to OES crosswalk
 ```
 
-### New in v0.4.1
+### New in v0.4.2
 
-**validation.py:**
-- `OverlapResult`, `OverlapGrid` — Overlap computation results
-- `ValidationDataset` — Pair-level dataset for regression
-- `RegressionResult`, `ValidationResults` — Regression outputs
-- `MonotonicityResult` — Binned overlap-outcome relationship
-- `compute_overlap_grid()` — Compute overlaps for all 5 σ values
-- `build_validation_dataset()` — Merge overlap with wage comovement
-- `run_validation_regression()` — OLS with cluster-robust SEs
-- `run_full_validation()` — Run for all 5 σ values
-- `check_monotonicity()` — Bin overlap and test monotonicity
-- `plot_monotonicity()` — Generate binned scatterplot
+**domain.py:**
+- `build_dwa_activity_domain()` — Build 2,087-activity DWA domain
+- `build_dwa_occupation_measures()` — Build occupation × DWA matrix via task linkages
 
-**crosswalk.py:**
-- `OnetOesCrosswalk` — Crosswalk with coverage statistics
-- `WageComovement` — Pairwise wage correlation matrix
-- `onet_to_soc()` — Code conversion
-- `load_oes_year()`, `load_oes_panel()` — OES data loading
-- `compute_wage_comovement()` — Log wage change correlations
-- `aggregate_occupation_measures()` — Average O*NET measures to SOC level
+**distances.py:**
+- `compute_text_embedding_distances()` — Recipe Y using sentence-transformers
+
+**diagnostics.py:**
+- `DWASparsityReport` — Dataclass for DWA sparsity statistics
+- `GeometryComparison` — Dataclass for geometry comparison results
+- `diagnose_dwa_sparsity()` — Compute DWA sparsity/coverage statistics
+- `compare_geometries()` — Compare two distance matrices (Recipe X vs Y)
 
 ---
 
-## Validation Results Reference (v0.4.1)
+## Validation Results Reference (v0.4.2)
 
 ### Headline Numbers
 
-| σ Percentile | β | SE | p-value | Passes |
-|--------------|---|-----|---------|--------|
-| p10 | -2.30 | 7.05 | 0.74 | No |
-| p25 | -2.83 | 8.88 | 0.75 | No |
-| p50 | -3.27 | 12.20 | 0.79 | No |
-| p75 | -3.54 | 15.22 | 0.82 | No |
-| p90 | -3.76 | 17.72 | 0.83 | No |
+| σ Percentile | σ Value | β | SE | t | p-value | Passes |
+|--------------|---------|------|------|------|---------|--------|
+| p10 | 0.559 | 441.25 | 85.33 | 5.17 | <0.0001 | Yes |
+| p25 | 0.651 | 523.22 | 101.26 | 5.17 | <0.0001 | Yes |
+| p50 | 0.744 | 606.40 | 117.37 | 5.17 | <0.0001 | Yes |
+| p75 | 0.828 | 681.52 | 131.89 | 5.17 | <0.0001 | Yes |
+| p90 | 0.896 | 742.13 | 143.59 | 5.17 | <0.0001 | Yes |
 
 - Dataset: 246,051 occupation pairs, 702 occupations
 - Clusters: 701 (origin occupation)
-- Monotonicity: Spearman ρ = -0.13 (p = 0.73)
+- **Overall: PASS (5/5)**
 
 ### Output Files
 
 ```
-outputs/phase_i/
-    overlap_p{10,25,50,75,90}.npz   # Overlap matrices
-    overlap_p{10,25,50,75,90}.json  # Overlap metadata
-    overlap_stats.json               # Distribution statistics
-    regression_results.json          # Full validation results
-    monotonicity_plot.png            # Binned scatterplot
+outputs/phase_i_dwa/
+    validation_results.json   # Full validation results
 ```
 
 ---
@@ -270,21 +228,46 @@ data/onet/               # O*NET database files (not in git)
 data/external/oes/       # OES wage data (not in git)
 tests/                   # Test scripts
 outputs/                 # Generated figures and tables (not in git)
+spec_*.md                # Implementation specifications (may be in git)
 ```
 
 ---
 
-## Lessons Learned (v0.4.1)
+## Lessons Learned (v0.4.2)
 
-1. **BLS blocks automated downloads** — Must download OES data manually via browser. Document this clearly for future users.
+### From v0.4.1 (Inherited)
 
-2. **Pandas diff().dropna() drops all rows** — When computing year-over-year wage changes, use `.iloc[1:]` instead of `.dropna()` to avoid dropping all rows due to ANY column having NaN.
+1. **BLS blocks automated downloads** — Must download OES data manually via browser.
 
-3. **Numpy booleans aren't JSON serializable** — Wrap in `bool()` when saving to JSON.
+2. **Pandas diff().dropna() drops all rows** — Use `.iloc[1:]` instead.
 
-4. **KernelMatrix attribute is `.matrix` not `.kernel_matrix`** — Check dataclass attributes when reusing objects.
+3. **Numpy booleans aren't JSON serializable** — Wrap in `bool()`.
 
-5. **Negative coefficients are informative** — The validation didn't just fail to find a relationship; it found the wrong sign. This suggests systematic structure worth investigating (e.g., high-overlap pairs may be in different industries with different cycle sensitivities).
+4. **KernelMatrix attribute is `.matrix` not `.kernel_matrix`** — Check dataclass attributes.
+
+### From v0.4.2 (New)
+
+5. **DWA domain has incomplete coverage** — 7 DWAs have no task linkages. The `build_dwa_occupation_measures()` function adds all DWAs from reference to ensure alignment with `build_dwa_activity_domain()`.
+
+6. **Sentence-transformers downloads models on first use** — First run downloads ~420 MB model weights to `~/.cache/torch/sentence_transformers/`. Document this for users.
+
+7. **Cosine distance range is [0, 2]** — Not [0, 1]. Cosine distance = 1 - cosine_similarity, where similarity ∈ [-1, 1].
+
+8. **Text embeddings produce very small overlaps** — With 2,087 activities, occupation measure weights are small (~1/2087 per activity). Overlap values are ~0.0005. This is expected and doesn't affect validation (coefficients adjust accordingly).
+
+9. **Domain and measures must be built from same reference** — Ensure activity_ids align between domain, measures, and distances. The fix in v0.4.2 ensures `build_dwa_occupation_measures()` includes all DWAs from `DWA Reference.xlsx`.
+
+---
+
+## Recipe Comparison
+
+| Aspect | Recipe X (v0.4.1) | Recipe Y (v0.4.2) |
+|--------|-------------------|-------------------|
+| Input | Occupation importance profiles | Activity titles/descriptions |
+| Method | Transpose → PCA → Euclidean | Sentence encoder → Cosine |
+| Dependencies | sklearn | sentence-transformers |
+| Captures | Rating cooccurrence patterns | Semantic similarity |
+| Validation | FAIL | **PASS** |
 
 ---
 

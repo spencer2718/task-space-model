@@ -2,7 +2,7 @@
 
 A geometric framework for measuring labor market exposure to technological shocks.
 
-**Version 0.4.1**
+**Version 0.4.2**
 
 ---
 
@@ -17,9 +17,12 @@ This approach allows for:
 
 ---
 
-## Current Status: External Validation Failed
+## Current Status: External Validation PASSED
 
-**v0.4.1** implements Phase I external validation (Diagnostic B from Section 4.4 of the paper). The validation tests whether our constructed task geometry predicts real economic relationships between occupations.
+**v0.4.2** implements the pre-committed pivot from Section 4.4 of the paper after v0.4.1 validation failed. The new geometry uses:
+
+- **DWA domain**: 2,087 Detailed Work Activities (instead of 41 GWAs)
+- **Recipe Y distances**: Text embeddings via sentence-transformers (instead of rating-cooccurrence PCA)
 
 ### Validation Design
 
@@ -33,49 +36,30 @@ Standard errors are clustered by origin occupation. We run this for 5 different 
 
 **Pass criterion:** β > 0 with p < 0.10
 
-### Results: FAIL
+### Results: PASS (5/5)
 
-| σ Percentile | σ Value | β | SE | p-value | Status |
-|--------------|---------|---|-----|---------|--------|
-| p10 | 19.24 | -2.30 | 7.05 | 0.74 | FAIL |
-| p25 | 25.59 | -2.83 | 8.88 | 0.75 | FAIL |
-| p50 | 37.50 | -3.27 | 12.20 | 0.79 | FAIL |
-| p75 | 48.41 | -3.54 | 15.22 | 0.82 | FAIL |
-| p90 | 57.34 | -3.76 | 17.72 | 0.83 | FAIL |
+| σ Percentile | σ Value | β | SE | t | p-value | Status |
+|--------------|---------|---|-----|---|---------|--------|
+| p10 | 0.559 | 441.25 | 85.33 | 5.17 | <0.0001 | PASS |
+| p25 | 0.651 | 523.22 | 101.26 | 5.17 | <0.0001 | PASS |
+| p50 | 0.744 | 606.40 | 117.37 | 5.17 | <0.0001 | PASS |
+| p75 | 0.828 | 681.52 | 131.89 | 5.17 | <0.0001 | PASS |
+| p90 | 0.896 | 742.13 | 143.59 | 5.17 | <0.0001 | PASS |
 
 **Key findings:**
-- **All coefficients are negative** (wrong sign) — higher overlap is associated with *lower* wage comovement
-- **R² ≈ 0** across all specifications — overlap explains essentially none of the variance
-- **Monotonicity test fails** — Spearman ρ = -0.13 (p = 0.73) across decile bins
-- **0 of 5 σ values pass** the validation criterion
+- **All coefficients are positive** — higher overlap is associated with higher wage comovement
+- **Highly significant** — t ≈ 5.17, p < 0.0001 across all specifications
+- **R² ≈ 0.15%** — small but typical for cross-sectional occupation pair data
+- **5 of 5 σ values pass** the validation criterion
 
 ### Interpretation
 
-This is a **rejection diagnostic working as intended**. The GWA-based geometry constructed via Recipe X (rating-cooccurrence with PCA) does not capture the economic structure that generates wage comovement across occupations.
+The DWA + Recipe Y geometry captures economically meaningful structure. Occupation pairs that share more activity exposure (as measured by kernel-weighted overlap) exhibit higher wage comovement over business cycles.
 
-**What this means:**
-1. The current 41-dimensional GWA space may be too coarse to capture meaningful activity relationships
-2. The Recipe X distance construction (transpose → PCA → Euclidean) may not encode economically relevant similarity
-3. Wage comovement may not be the right validation target (confounded by industry exposure, business cycles, etc.)
-
-**What this does NOT mean:**
-- The framework is wrong — only this specific geometry failed
-- Geometric approaches cannot work — alternative constructions may succeed
-- External validation is impossible — different targets may reveal structure
-
-### Recommended Next Steps
-
-Per Section 4.4 of the paper, when the baseline geometry fails validation:
-
-1. **Try Recipe Y (text-embedding geometry)**: Embed GWA titles/descriptions using a sentence encoder, compute cosine distances. This captures semantic rather than rating-cooccurrence similarity.
-
-2. **Try the DWA domain**: Use 2,087 Detailed Work Activities instead of 41 GWAs. Higher dimensional but may capture finer-grained activity relationships.
-
-3. **Try alternative validation targets**:
-   - **Worker mobility** (CPS/SIPP): Transition rates between occupations may better capture the "reallocation friction" that distances are meant to encode
-   - **Skill transferability scores**: Direct measures of how easily workers move between occupations
-
-4. **Investigate wage comovement structure**: The negative (though insignificant) coefficients suggest something systematic. Are high-overlap occupation pairs in different industries? Different business cycle sensitivities?
+**What changed from v0.4.1:**
+1. **Domain granularity**: 41 GWAs → 2,087 DWAs provides finer resolution
+2. **Distance metric**: Rating-cooccurrence PCA → text embeddings captures semantic similarity
+3. **Result**: Coefficients flipped from negative (wrong sign) to strongly positive
 
 ---
 
@@ -99,17 +83,17 @@ paper/
     references.bib        # Bibliography
 src/task_space/
     data.py               # O*NET file loading
-    domain.py             # Activity domain and occupation measures
-    distances.py          # Recipe X activity distances
+    domain.py             # Activity domain and occupation measures (GWA + DWA)
+    distances.py          # Recipe X (PCA) and Recipe Y (embeddings) distances
     kernel.py             # Kernel matrix and exposure computation
-    diagnostics.py        # Phase I coherence checks
-    validation.py         # Phase I external validation (NEW in v0.4.1)
-    crosswalk.py          # O*NET-SOC to OES crosswalk (NEW in v0.4.1)
+    diagnostics.py        # Phase I coherence checks and geometry comparison
+    validation.py         # Phase I external validation
+    crosswalk.py          # O*NET-SOC to OES crosswalk
 data/
     onet/                 # O*NET database files (not in git)
     external/oes/         # OES wage data (not in git)
 tests/                    # Test scripts
-outputs/phase_i/          # Validation outputs (not in git)
+outputs/                  # Validation outputs (not in git)
 ```
 
 ---
@@ -122,46 +106,59 @@ python3 -m venv .venv
 source .venv/bin/activate
 
 # Install dependencies
-pip install numpy pandas scipy openpyxl matplotlib
+pip install numpy pandas scipy scikit-learn openpyxl matplotlib sentence-transformers torch
 
 # Download O*NET database (required)
 # Get db_30_0_excel.zip from https://www.onetcenter.org/database.html
 # Extract to data/onet/db_30_0_excel/
 
-# Run pipeline test
-PYTHONPATH=src python tests/test_pipeline.py
+# Run DWA pipeline test
+PYTHONPATH=src python tests/test_dwa.py
 
-# Run validation (requires OES data)
-PYTHONPATH=src python -c "
-from pathlib import Path
-from task_space import (
-    build_occupation_measures,
-    load_overlap_grid,
-    run_full_validation,
-)
-from task_space.crosswalk import (
-    build_onet_oes_crosswalk,
-    load_oes_panel,
-    compute_wage_comovement,
-)
-
-measures = build_occupation_measures()
-overlap_grid = load_overlap_grid(Path('outputs/phase_i'))
-panel = load_oes_panel([2019, 2020, 2021, 2022, 2023], Path('data/external/oes'))
-comovement = compute_wage_comovement(panel, min_years=3)
-crosswalk = build_onet_oes_crosswalk(measures.occupation_codes, panel['OCC_CODE'].unique().tolist())
-
-results = run_full_validation(overlap_grid, comovement, crosswalk, measures)
-print(f'Overall: {results.overall_decision}')
-print(f'Headline beta: {results.headline.beta:.4f} (p={results.headline.pvalue:.4f})')
-"
+# Run full validation (requires OES data)
+PYTHONPATH=src python tests/run_dwa_validation.py
 ```
 
 ---
 
 ## Usage
 
-### Basic Pipeline
+### DWA + Recipe Y Pipeline (Recommended)
+
+```python
+from task_space import (
+    build_dwa_activity_domain,
+    build_dwa_occupation_measures,
+    compute_text_embedding_distances,
+    build_kernel_matrix,
+    compute_occupation_exposure,
+    create_shock_profile,
+    distance_percentiles,
+)
+
+# Build the DWA manifold
+domain = build_dwa_activity_domain()       # 2,087 DWAs
+measures = build_dwa_occupation_measures() # 894 occupations × 2,087 activities
+
+# Compute text embedding distances (Recipe Y)
+titles = list(domain.activity_names.values())
+distances = compute_text_embedding_distances(titles, domain.activity_ids)
+
+# Set up kernel with median distance as bandwidth
+sigma = distance_percentiles(distances)['p50']
+kernel = build_kernel_matrix(distances, sigma=sigma)
+
+# Create a shock profile and compute exposures
+shock = create_shock_profile(
+    activity_ids=distances.activity_ids,
+    target_activities={'4.A.1.a.1.I01.D01': 1.0},  # Target a specific DWA
+)
+result = compute_occupation_exposure(measures, kernel, shock)
+
+# result.exposures contains E_j for each occupation
+```
+
+### GWA + Recipe X Pipeline (Legacy, v0.4.1)
 
 ```python
 from task_space import (
@@ -174,85 +171,44 @@ from task_space import (
     distance_percentiles,
 )
 
-# Build the manifold
+# Build the GWA manifold (41 activities)
 domain = build_activity_domain()
 measures = build_occupation_measures()
-distances = compute_activity_distances(measures)
+distances = compute_activity_distances(measures)  # Recipe X
 
-# Set up kernel with median distance as bandwidth
-sigma = distance_percentiles(distances)['p50']
-kernel = build_kernel_matrix(distances, sigma=sigma)
-
-# Create a shock profile and compute exposures
-shock = create_shock_profile(
-    activity_ids=distances.activity_ids,
-    target_activities={'4.A.1.a.1': 1.0},  # Target "Getting Information"
-)
-result = compute_occupation_exposure(measures, kernel, shock)
-
-# result.exposures contains E_j for each occupation
+# Rest of pipeline same as above
 ```
 
-### Validation Pipeline
+### Diagnostics
 
 ```python
-from pathlib import Path
 from task_space import (
-    build_occupation_measures,
-    compute_activity_distances,
-    compute_overlap_grid,
-    save_overlap_grid,
-    build_validation_dataset,
-    run_full_validation,
-    check_monotonicity,
-    plot_monotonicity,
-    save_validation_results,
-)
-from task_space.crosswalk import (
-    build_onet_oes_crosswalk,
-    load_oes_panel,
-    compute_wage_comovement,
+    diagnose_dwa_sparsity,
+    diagnose_measure_coherence,
+    compare_geometries,
 )
 
-# Build manifold
-measures = build_occupation_measures()
-distances = compute_activity_distances(measures)
+# Check DWA sparsity (recommended for DWA domain)
+measures = build_dwa_occupation_measures()
+sparsity = diagnose_dwa_sparsity(measures)
+print(f"Median effective support: {sparsity.effective_support_percentiles['p50']}")
+print(f"DWA coverage: {sparsity.dwa_coverage:.1%}")
 
-# Compute overlap grid for all 5 sigma values
-overlap_grid = compute_overlap_grid(measures, distances)
-save_overlap_grid(overlap_grid, Path('outputs/phase_i'))
-
-# Load external validation data
-panel = load_oes_panel([2019, 2020, 2021, 2022, 2023], Path('data/external/oes'))
-comovement = compute_wage_comovement(panel, min_years=3)
-
-# Build crosswalk
-crosswalk = build_onet_oes_crosswalk(
-    measures.occupation_codes,
-    panel['OCC_CODE'].unique().tolist()
-)
-
-# Run validation
-results = run_full_validation(overlap_grid, comovement, crosswalk, measures)
-
-# Check monotonicity at p50
-dataset = build_validation_dataset(
-    overlap_grid.results['p50'], comovement, crosswalk, measures
-)
-mono = check_monotonicity(dataset)
-plot_monotonicity(mono, Path('outputs/phase_i/monotonicity_plot.png'))
-
-# Save results
-save_validation_results(results, mono, Path('outputs/phase_i'))
+# Compare Recipe X vs Recipe Y geometries
+dist_x = compute_activity_distances(measures)
+dist_y = compute_text_embedding_distances(titles, domain.activity_ids)
+comparison = compare_geometries(dist_x, dist_y)
+print(f"Spearman correlation: {comparison.spearman_r:.3f}")
+print(f"Interpretation: {comparison.interpretation}")
 ```
 
 ---
 
 ## The Framework in Brief
 
-1. **Activity Domain**: 41 GWAs form a metric space where distance encodes reallocation friction.
+1. **Activity Domain**: 2,087 DWAs form a metric space where distance encodes semantic similarity between activities.
 
-2. **Occupation Measures**: Each occupation is a probability distribution over activities, constructed from O*NET Importance ratings.
+2. **Occupation Measures**: Each occupation is a probability distribution over activities, constructed from O*NET task importance ratings aggregated to DWA level.
 
 3. **Shock Propagation**: Technology shocks spread via exponential kernel: k(d) = exp(-d/σ).
 
@@ -268,17 +224,15 @@ See `paper/main.tex` Section 3 for formal definitions and Section 4 for empirica
 
 When validation runs, it produces:
 
-- `outputs/phase_i/overlap_p{10,25,50,75,90}.{npz,json}` — Overlap matrices for each σ
-- `outputs/phase_i/overlap_stats.json` — Overlap distribution statistics
-- `outputs/phase_i/regression_results.json` — Full validation regression results
-- `outputs/phase_i/monotonicity_plot.png` — Binned overlap vs wage comovement
+- `outputs/phase_i_dwa/validation_results.json` — Full validation results for DWA + Recipe Y
 
 ---
 
 ## Version History
 
-- **v0.4.1** (Current): Phase I external validation. Result: FAIL. GWA-based geometry does not predict wage comovement.
-- **v0.4.0**: Core empirical pipeline with Recipe X distances and Phase I coherence diagnostics.
+- **v0.4.2** (Current): DWA domain + Recipe Y (text embeddings). Validation: **PASS** (5/5 σ values).
+- **v0.4.1**: GWA domain + Recipe X (rating-cooccurrence PCA). Validation: FAIL (0/5 σ values).
+- **v0.4.0**: Core empirical pipeline with Phase I coherence diagnostics.
 - **v0.3.7**: Theoretical framework complete.
 
 ---

@@ -12,7 +12,14 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
-from .data import load_work_activities, get_gwa_ids, get_occupation_codes
+from .data import (
+    load_work_activities,
+    load_dwa_reference,
+    load_tasks_to_dwas,
+    load_task_ratings,
+    get_gwa_ids,
+    get_occupation_codes,
+)
 
 
 @dataclass
@@ -84,6 +91,40 @@ def build_activity_domain(onet_path: Optional[Path] = None) -> ActivityDomain:
     )
 
 
+def build_dwa_activity_domain(onet_path: Optional[Path] = None) -> ActivityDomain:
+    """
+    Construct the DWA-based activity domain T_n.
+
+    Uses Detailed Work Activities (~2,087 activities) as the discrete approximation
+    of the continuous task manifold, providing finer granularity than GWA (41).
+
+    Args:
+        onet_path: Path to O*NET database directory.
+
+    Returns:
+        ActivityDomain with DWA IDs, titles, and uniform reference measure.
+    """
+    df = load_dwa_reference(onet_path)
+
+    # Get unique DWAs (DWA ID, DWA Title)
+    dwa_df = df[["DWA ID", "DWA Title"]].drop_duplicates()
+    dwa_df = dwa_df.sort_values("DWA ID")
+
+    activity_ids = dwa_df["DWA ID"].tolist()
+    activity_names = dict(zip(dwa_df["DWA ID"], dwa_df["DWA Title"]))
+    n_activities = len(activity_ids)
+
+    # Uniform reference measure (baseline per paper Section 4)
+    reference_measure = np.ones(n_activities) / n_activities
+
+    return ActivityDomain(
+        activity_ids=activity_ids,
+        activity_names=activity_names,
+        n_activities=n_activities,
+        reference_measure=reference_measure,
+    )
+
+
 def build_occupation_measures(
     onet_path: Optional[Path] = None,
     normalize: bool = True,
@@ -138,6 +179,108 @@ def build_occupation_measures(
     occupation_codes = matrix.index.tolist()
     activity_ids = matrix.columns.tolist()
     raw_matrix = matrix.values.copy()
+
+    # Normalize rows to probability measures
+    if normalize:
+        row_sums = raw_matrix.sum(axis=1, keepdims=True)
+        row_sums[row_sums == 0] = 1  # Avoid division by zero
+        normalized_matrix = raw_matrix / row_sums
+    else:
+        normalized_matrix = raw_matrix
+
+    return OccupationMeasures(
+        occupation_codes=occupation_codes,
+        occupation_matrix=normalized_matrix,
+        activity_ids=activity_ids,
+        raw_matrix=raw_matrix,
+    )
+
+
+def build_dwa_occupation_measures(
+    onet_path: Optional[Path] = None,
+    aggregator: str = "max",
+    normalize: bool = True,
+) -> OccupationMeasures:
+    """
+    Construct occupation probability measures ρ_j over the DWA activity domain.
+
+    DWAs are not directly rated—importance is derived through task linkages.
+    Per O*NET methodology ("Ranking Detailed Work Activities", April 2015),
+    we aggregate task importance to DWA level.
+
+    Args:
+        onet_path: Path to O*NET database directory.
+        aggregator: How to aggregate task importance to DWA level.
+                   "max" (O*NET default) or "mean".
+        normalize: If True, normalize each row to sum to 1 (probability measure).
+
+    Returns:
+        OccupationMeasures with ~900 occupations × ~2,087 DWAs.
+
+    Algorithm:
+        1. Load task importance ratings (Scale ID = 'IM')
+        2. Load task-DWA mappings
+        3. Join on (O*NET-SOC Code, Task ID)
+        4. Aggregate to (O*NET-SOC Code, DWA ID) using max importance
+        5. Pivot to matrix, normalize to [0,1], normalize rows to probabilities
+    """
+    # Load task importance ratings
+    task_ratings = load_task_ratings(onet_path, scale_id="IM", filter_suppressed=True)
+
+    # Load task-DWA mappings
+    tasks_to_dwas = load_tasks_to_dwas(onet_path)
+
+    # Load ALL DWA IDs from reference to ensure complete coverage
+    dwa_ref = load_dwa_reference(onet_path)
+    all_dwa_ids = sorted(dwa_ref["DWA ID"].unique().tolist())
+
+    # Join: get DWA ID for each (occupation, task) pair with importance
+    merged = tasks_to_dwas.merge(
+        task_ratings,
+        on=["O*NET-SOC Code", "Task ID"],
+        how="inner",
+    )
+
+    # Aggregate to occupation-DWA level
+    if aggregator == "max":
+        # O*NET default: max importance across linked tasks
+        dwa_importance = merged.groupby(
+            ["O*NET-SOC Code", "DWA ID"]
+        )["Data Value"].max().reset_index()
+    elif aggregator == "mean":
+        dwa_importance = merged.groupby(
+            ["O*NET-SOC Code", "DWA ID"]
+        )["Data Value"].mean().reset_index()
+    else:
+        raise ValueError(f"Unknown aggregator: {aggregator}. Use 'max' or 'mean'.")
+
+    # Pivot to matrix form
+    matrix = dwa_importance.pivot_table(
+        index="O*NET-SOC Code",
+        columns="DWA ID",
+        values="Data Value",
+        aggfunc="first",
+    )
+
+    # Ensure ALL DWAs are included (even those with no task linkages)
+    # This ensures alignment with build_dwa_activity_domain()
+    for dwa_id in all_dwa_ids:
+        if dwa_id not in matrix.columns:
+            matrix[dwa_id] = np.nan
+
+    # Fill missing with minimum importance (1.0 on raw scale)
+    # DWAs not linked to any task for an occupation get minimum importance
+    matrix = matrix.fillna(1.0)
+
+    # Sort columns by DWA ID for consistency
+    matrix = matrix.reindex(sorted(matrix.columns), axis=1)
+
+    occupation_codes = matrix.index.tolist()
+    activity_ids = matrix.columns.tolist()
+
+    # Normalize importance to [0, 1]: (value - 1) / 4
+    # Importance scale is 1-5
+    raw_matrix = (matrix.values - 1) / 4
 
     # Normalize rows to probability measures
     if normalize:

@@ -359,3 +359,161 @@ def generate_diagnostic_report(
     lines.append("\n" + "=" * 60)
 
     return "\n".join(lines)
+
+
+@dataclass
+class DWASparsityReport:
+    """
+    DWA-specific sparsity statistics.
+
+    Attributes:
+        n_occupations: Total occupations
+        n_dwas: Total DWAs in domain
+        effective_support_percentiles: p10, p25, p50, p75, p90 of support
+        dwa_coverage: Fraction of DWAs linked to at least one occupation
+        flagged_occupations: Occupations with effective support < threshold
+        n_flagged: Count of flagged occupations
+    """
+    n_occupations: int
+    n_dwas: int
+    effective_support_percentiles: dict[str, float]
+    dwa_coverage: float
+    flagged_occupations: list[str]
+    n_flagged: int
+
+
+def diagnose_dwa_sparsity(
+    occupation_measures: OccupationMeasures,
+    support_threshold: float = 0.01,
+    min_support: int = 30,
+) -> DWASparsityReport:
+    """
+    Compute DWA-specific sparsity statistics.
+
+    DWA domain (~2,087 activities) is much larger than GWA (41), so occupations
+    will have sparser profiles. This diagnostic helps assess coverage.
+
+    Args:
+        occupation_measures: OccupationMeasures from DWA domain
+        support_threshold: Minimum weight to count activity as in support
+        min_support: Minimum acceptable effective support (flag if below)
+
+    Returns:
+        DWASparsityReport with sparsity statistics.
+    """
+    rho = occupation_measures.occupation_matrix
+    occupation_codes = occupation_measures.occupation_codes
+    n_occupations, n_dwas = rho.shape
+
+    # Effective support per occupation
+    effective_support = compute_effective_support(rho, support_threshold)
+
+    percentiles = {
+        "p10": float(np.percentile(effective_support, 10)),
+        "p25": float(np.percentile(effective_support, 25)),
+        "p50": float(np.percentile(effective_support, 50)),
+        "p75": float(np.percentile(effective_support, 75)),
+        "p90": float(np.percentile(effective_support, 90)),
+        "min": float(effective_support.min()),
+        "max": float(effective_support.max()),
+        "mean": float(effective_support.mean()),
+    }
+
+    # DWA coverage: fraction of DWAs with at least one occupation linkage
+    dwa_max_weights = rho.max(axis=0)  # Max weight for each DWA across occupations
+    dwa_coverage = float((dwa_max_weights > support_threshold).sum() / n_dwas)
+
+    # Flag occupations with low support
+    flagged_mask = effective_support < min_support
+    flagged_occupations = [
+        occupation_codes[i] for i in range(n_occupations) if flagged_mask[i]
+    ]
+
+    return DWASparsityReport(
+        n_occupations=n_occupations,
+        n_dwas=n_dwas,
+        effective_support_percentiles=percentiles,
+        dwa_coverage=dwa_coverage,
+        flagged_occupations=flagged_occupations,
+        n_flagged=len(flagged_occupations),
+    )
+
+
+@dataclass
+class GeometryComparison:
+    """
+    Comparison of two activity distance geometries.
+
+    Attributes:
+        pearson_r: Pearson correlation of flattened distance matrices
+        spearman_r: Spearman rank correlation
+        interpretation: 'redundant' (>0.9), 'related' (0.3-0.9), or 'distinct' (<0.3)
+        n_pairs: Number of activity pairs compared
+    """
+    pearson_r: float
+    spearman_r: float
+    interpretation: str
+    n_pairs: int
+
+
+def compare_geometries(
+    dist_x: ActivityDistances,
+    dist_y: ActivityDistances,
+) -> GeometryComparison:
+    """
+    Compare two distance matrices (e.g., Recipe X vs Recipe Y).
+
+    Useful for checking whether alternative geometries capture the same or
+    different structure.
+
+    Args:
+        dist_x: First ActivityDistances (e.g., Recipe X)
+        dist_y: Second ActivityDistances (e.g., Recipe Y)
+
+    Returns:
+        GeometryComparison with correlation statistics.
+
+    Interpretation:
+        - >0.9: Geometries are redundant (Recipe Y won't add information)
+        - 0.3-0.9: Geometries are related but capture different aspects
+        - <0.3: Geometries are distinct (investigate if one is pathological)
+
+    Note:
+        Both distance matrices must have the same activity IDs in the same order.
+        If activity sets differ, raises ValueError.
+    """
+    from scipy.stats import pearsonr, spearmanr
+
+    # Check alignment
+    if dist_x.activity_ids != dist_y.activity_ids:
+        raise ValueError(
+            "Activity IDs do not match. Ensure both distances cover the same domain."
+        )
+
+    n = len(dist_x.activity_ids)
+
+    # Flatten upper triangles (excluding diagonal)
+    triu_idx = np.triu_indices(n, k=1)
+    flat_x = dist_x.distance_matrix[triu_idx]
+    flat_y = dist_y.distance_matrix[triu_idx]
+
+    n_pairs = len(flat_x)
+
+    # Compute correlations
+    pearson_r, _ = pearsonr(flat_x, flat_y)
+    spearman_r, _ = spearmanr(flat_x, flat_y)
+
+    # Interpret
+    if spearman_r > 0.9:
+        interpretation = "redundant"
+    elif spearman_r < 0.3:
+        interpretation = "distinct"
+    else:
+        interpretation = "related"
+
+    return GeometryComparison(
+        pearson_r=float(pearson_r),
+        spearman_r=float(spearman_r),
+        interpretation=interpretation,
+        n_pairs=n_pairs,
+    )
