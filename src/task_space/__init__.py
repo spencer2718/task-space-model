@@ -50,6 +50,10 @@ from .diagnostics import (
 from .validation import (
     OverlapResult,
     OverlapGrid,
+    ValidationDataset,
+    RegressionResult,
+    ValidationResults,
+    MonotonicityResult,
     SIGMA_PERCENTILES,
     compute_overlap_stats,
     compute_validation_overlap,
@@ -58,6 +62,12 @@ from .validation import (
     load_overlap_result,
     save_overlap_grid,
     load_overlap_grid,
+    build_validation_dataset,
+    run_validation_regression,
+    run_full_validation,
+    check_monotonicity,
+    plot_monotonicity,
+    save_validation_results,
 )
 
 from .crosswalk import (
@@ -111,6 +121,10 @@ __all__ = [
     # Validation (Phase I)
     "OverlapResult",
     "OverlapGrid",
+    "ValidationDataset",
+    "RegressionResult",
+    "ValidationResults",
+    "MonotonicityResult",
     "SIGMA_PERCENTILES",
     "compute_overlap_stats",
     "compute_validation_overlap",
@@ -119,6 +133,12 @@ __all__ = [
     "load_overlap_result",
     "save_overlap_grid",
     "load_overlap_grid",
+    "build_validation_dataset",
+    "run_validation_regression",
+    "run_full_validation",
+    "check_monotonicity",
+    "plot_monotonicity",
+    "save_validation_results",
     # Crosswalk and OES
     "OnetOesCrosswalk",
     "WageComovement",
