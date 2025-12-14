@@ -8,7 +8,8 @@ This document contains working conventions, version control rules, and quality-o
 
 **Paper and codebase versions must always match.**
 
-- Current: **v0.6.3** (Infrastructure Consolidation — Phase II ready)
+- Current: **v0.6.3.1** (Classification Infrastructure + Architecture Tests)
+- Previous: v0.6.3 (Infrastructure Consolidation — Phase II ready)
 - Previous: v0.6.2 (Phase 2 Complete — semantic signal validated)
 - Previous: v0.6.1 (Kernel fix validated, continuous structure confirmed)
 - Previous: v0.5.0 (Binary overlap validated, SAE marginal — **artifact**)
@@ -22,9 +23,9 @@ When updating either paper or code, ensure the other stays in sync or is updated
 
 ---
 
-## Current Status: v0.6.3 (Infrastructure Complete)
+## Current Status: v0.6.3.1 (Classification Infrastructure)
 
-**Phase I validation complete. Infrastructure ready for Phase II.**
+**Phase I complete. Classification infrastructure for Phase II shock profiles.**
 
 | Measure | t-stat (clustered) | R² | Status |
 |---------|-------------------|-----|--------|
@@ -32,11 +33,15 @@ When updating either paper or code, ensure the other stays in sync or is updated
 | Unnormalized kernel | 5.90 | 0.00310 | Robustness |
 | Binary Jaccard | 8.00 | 0.00167 | Baseline |
 
-**What Phase I established:**
-- Continuous semantic structure predicts wage comovement
-- 191% R² improvement over binary Jaccard
-- Robust to concentration controls (t = 5.29)
-- Not artifact (100th percentile vs random)
+**What v0.6.3.1 added:**
+- Activity classification infrastructure (`data/classifications.py`)
+- GWA/DWA classification via O*NET element ID parsing (dot-separated, not fixed-width)
+- Routine scores from Work Context 4.C.3.b.7
+- Projected routine scores with ENDOGENEITY warning
+- Updated shock profiles (`capability_v1`, `capability_v2`) using classifications
+- Registry testing infrastructure (`_reset_registry()`, `_restore_default_shocks()`)
+- Removed `sigma` parameter from `propagate_shock()` (K already encodes σ)
+- Architecture tests (46 tests in unit/ + integration/)
 
 **What Phase II will test:**
 - Shock profile construction (v1, v2, v3)
@@ -188,7 +193,7 @@ Coverage statistics:
 
 ---
 
-## Architecture (v0.6.3)
+## Architecture (v0.6.3.1)
 
 ### Package Structure
 
@@ -197,6 +202,7 @@ src/task_space/
     domain.py              # Activity domain, occupation measures
     data/                  # Data loading
         onet.py, oes.py, crosswalk.py, artifacts.py
+        classifications.py # GWA/DWA classification, routine scores
     similarity/            # Similarity computation
         kernel.py, overlap.py, embeddings.py, distances.py
     shocks/                # Shock profiles (Phase II)
@@ -205,6 +211,11 @@ src/task_space/
         regression.py, diagnostics.py, permutation.py
     experiments/           # Experiment infrastructure
         config.py, runner.py
+
+tests/
+    unit/                  # Fast unit tests
+    integration/           # Slower integration tests
+    archive/               # Legacy scripts (not run by pytest)
 ```
 
 ### Key Concepts
@@ -343,6 +354,18 @@ spec_*.md                # Implementation specifications
 18. **Config-driven experiments** — New experiments = YAML config + registered function, not new script.
 
 19. **Overlap ≠ Exposure** — Phase I validated overlap (O = ρKρ^T). Phase II computes exposure (E = ρKI).
+
+### From v0.6.3.1 (Classification Infrastructure)
+
+20. **Use dot-parsing for O*NET IDs** — Element IDs like `4.A.3.b.4` are hierarchical with variable-length segments. Use `.split('.')`, not fixed-width slicing.
+
+21. **Projected routine scores are ENDOGENOUS** — `get_activity_projected_routine_scores()` computes "Task X is routine" from "Routine occupations do Task X." This is tautological for exposure regressions without controls.
+
+22. **Classification is EXOGENOUS** — GWA categories (cognitive/physical/technical/interpersonal) are derived from O*NET hierarchy structure, independent of occupation characteristics.
+
+23. **Remove redundant parameters** — `propagate_shock()` no longer takes `sigma` since the kernel matrix already encodes it. One source of truth.
+
+24. **Test registry isolation requires module reload** — `importlib.reload(profiles)` is needed to re-register shocks after `_reset_registry()`.
 
 ---
 

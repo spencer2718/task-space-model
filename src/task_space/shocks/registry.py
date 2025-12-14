@@ -69,3 +69,25 @@ def describe_shock(name: str) -> dict:
         'required_args': shock.required_args,
         'optional_args': shock.optional_args,
     }
+
+
+def _reset_registry():
+    """
+    Clear all registered shocks.
+
+    FOR TESTING ONLY. Do not use in production code.
+    """
+    SHOCK_REGISTRY.clear()
+
+
+def _restore_default_shocks():
+    """
+    Reset registry and reload default shocks.
+
+    FOR TESTING ONLY.
+    """
+    _reset_registry()
+    # Force reload profiles to re-register defaults
+    import importlib
+    from . import profiles
+    importlib.reload(profiles)

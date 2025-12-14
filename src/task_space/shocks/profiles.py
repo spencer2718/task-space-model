@@ -10,6 +10,7 @@ These implement the candidate profiles from the paper:
 """
 
 import numpy as np
+from pathlib import Path
 from .registry import register_shock
 
 
@@ -55,77 +56,92 @@ def shock_gaussian_directed(
 
 @register_shock(
     name="capability_v1",
-    description="AI capability-only: positive cognitive/language, negative manual",
-    required_args=["activity_classifications"],
-    optional_args={"cognitive_weight": 1.0, "manual_weight": -0.5},
+    description="AI capability shock: cognitive positive, physical negative",
+    required_args=["onet_path"],
+    optional_args={"cognitive_weight": 1.0, "physical_weight": -0.5, "technical_weight": 0.5},
 )
 def shock_capability_v1(
     domain,
-    activity_classifications: dict[str, str],
+    onet_path: Path,
     cognitive_weight: float = 1.0,
-    manual_weight: float = -0.5,
+    physical_weight: float = -0.5,
+    technical_weight: float = 0.5,
     **kwargs,
 ) -> np.ndarray:
     """
-    v1 shock profile: capability-only.
+    v1 shock: capability-only based on GWA classification.
 
-    Positive loading on cognitive/language activities.
-    Negative loading on manual/physical activities.
-    Neutral (0) on unclassified activities.
+    - Cognitive activities (4.A.1.*, 4.A.2.*): positive
+    - Physical activities (4.A.3.a.*): negative
+    - Technical activities (4.A.3.b.*): moderate positive
+    - Interpersonal (4.A.4.*): neutral
 
-    Args:
-        domain: Activity domain
-        activity_classifications: Map activity_id -> classification
-            Classifications: 'cognitive', 'language', 'manual', 'physical', etc.
+    Classification is EXOGENOUS — derived from O*NET hierarchy structure,
+    not from occupation characteristics.
     """
+    from ..data.classifications import get_dwa_classifications
+
+    dwa_classes = get_dwa_classifications(Path(onet_path))
+
+    weights = {
+        'cognitive': cognitive_weight,
+        'physical': physical_weight,
+        'technical': technical_weight,
+        'interpersonal': 0.0,
+    }
+
     I = np.zeros(len(domain.activity_ids))
-
-    cognitive_tags = {'cognitive', 'language', 'information_processing', 'analytical'}
-    manual_tags = {'manual', 'physical', 'motor'}
-
     for i, act_id in enumerate(domain.activity_ids):
-        classification = activity_classifications.get(act_id, '').lower()
-        if classification in cognitive_tags:
-            I[i] = cognitive_weight
-        elif classification in manual_tags:
-            I[i] = manual_weight
+        category = dwa_classes.get(act_id, 'interpersonal')
+        I[i] = weights.get(category, 0.0)
 
     return I
 
 
 @register_shock(
     name="capability_v2",
-    description="AI capability + structure: v1 plus routine amplification",
-    required_args=["activity_classifications", "routine_scores"],
-    optional_args={"cognitive_weight": 1.0, "manual_weight": -0.5, "routine_amplifier": 0.5},
+    description="AI capability + projected routine amplification",
+    required_args=["onet_path", "occupation_matrix", "occupation_codes"],
+    optional_args={"cognitive_weight": 1.0, "physical_weight": -0.5, "routine_amplifier": 0.5},
 )
 def shock_capability_v2(
     domain,
-    activity_classifications: dict[str, str],
-    routine_scores: np.ndarray,
+    onet_path: Path,
+    occupation_matrix: np.ndarray,
+    occupation_codes: list[str],
     cognitive_weight: float = 1.0,
-    manual_weight: float = -0.5,
+    physical_weight: float = -0.5,
     routine_amplifier: float = 0.5,
     **kwargs,
 ) -> np.ndarray:
     """
-    v2 shock profile: capability + structure.
+    v2 shock: v1 + PROJECTED routine amplification.
 
-    v1 loadings plus additional weight on structured/routine activities.
-    Hypothesis: structure amplifies AI exposure beyond raw capability.
+    ============================================================================
+    ENDOGENEITY WARNING: The routine component is PROJECTED from occupation
+    routine scores, not an exogenous task attribute. See docstring in
+    get_activity_projected_routine_scores() for implications.
+
+    When validating this shock, you MUST control for raw occupation routine
+    scores to avoid tautological results.
+    ============================================================================
+
+    Hypothesis: Structured/routine tasks more susceptible to AI automation.
     """
+    from ..data.classifications import get_activity_projected_routine_scores
+
     I_v1 = shock_capability_v1(
-        domain, activity_classifications, cognitive_weight, manual_weight
+        domain, onet_path, cognitive_weight, physical_weight, **kwargs
     )
 
-    # Amplify where routine score is high
-    routine_range = routine_scores.max() - routine_scores.min()
-    if routine_range > 0:
-        routine_normalized = (routine_scores - routine_scores.min()) / routine_range
-    else:
-        routine_normalized = np.zeros_like(routine_scores)
+    projected_routine = get_activity_projected_routine_scores(
+        Path(onet_path), domain.activity_ids, occupation_matrix, occupation_codes
+    )
 
-    return I_v1 + routine_amplifier * routine_normalized
+    # Normalize projected routine to [0, 1]
+    routine_norm = (projected_routine - projected_routine.min()) / (projected_routine.max() - projected_routine.min() + 1e-10)
+
+    return I_v1 + routine_amplifier * routine_norm
 
 
 @register_shock(

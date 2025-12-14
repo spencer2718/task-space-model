@@ -2,7 +2,7 @@
 
 A geometric framework for measuring labor market exposure to technological shocks.
 
-**Version 0.6.3** (Infrastructure Consolidation)
+**Version 0.6.3.1** (Classification Infrastructure)
 
 **Paper sync:** `paper/main.tex` is updated in chunks after empirical milestones. Current paper version: v0.6.2. Code may be ahead of paper. Canonical empirical results are in `outputs/` JSON files.
 
@@ -35,12 +35,12 @@ This project develops a measurement framework for studying how technological cha
 
 | Version | Approach | Result |
 |---------|----------|--------|
-| **v0.6.2** | **Robustness checks + controls** | **Semantic signal robust (t=7.14 normalized, t=5.29 with entropy control)** |
+| **v0.6.3.1** | **Classification infrastructure** | **GWA/DWA classification, shock profiles ready for Phase II** |
+| v0.6.3 | Infrastructure consolidation | Codebase reorganized, experiments framework |
+| v0.6.2 | Robustness checks + controls | Semantic signal robust (t=7.14 normalized) |
 | v0.6.1 | Kernel fix + semantic vs random | Semantic >> Jaccard >> Random |
 | v0.5.0 | Binary Jaccard + SAE comparison | Binary validated, SAE marginal |
-| v0.4.2.1 | Robustness audit of v0.4.2 | FAIL — random > semantic (artifact) |
-| v0.4.2 | DWA + Recipe Y (text embeddings) | Appeared to pass, spurious |
-| v0.4.1 | GWA + Recipe X (PCA) | FAIL — wrong sign |
+| v0.4.x | Various approaches | Failed validation |
 
 ---
 
@@ -90,43 +90,42 @@ Download national OES files from https://www.bls.gov/oes/tables.htm for years 20
 
 ---
 
-## Repository Structure (v0.6.3)
+## Repository Structure (v0.6.3.1)
 
 ```
 src/task_space/
     domain.py                 # Core: Activity domain, occupation measures
-    data/                     # Data loading and caching
+    data/                     # Data loading, caching, classifications
     similarity/               # Kernel, overlap, embeddings
-    shocks/                   # Shock profiles and propagation
+    shocks/                   # Shock profiles and propagation (Phase II)
     validation/               # Regression, diagnostics, tests
     experiments/              # Config-driven experiment runner
 
 tests/
-    unit/                     # pytest unit tests
-    integration/              # Pipeline tests
-
-experiments/
-    configs/                  # YAML experiment configurations
-    scripts/                  # CLI runners
+    unit/                     # Fast unit tests
+    integration/              # Integration tests (some marked @slow)
+    archive/                  # Legacy scripts
 
 notebooks/
     prototyping/              # Exploratory notebooks
     analysis/                 # Result analysis
 ```
 
+See `CLAUDE.md` for detailed architecture documentation.
+
 ---
 
-## Quick Start (v0.6.3)
+## Quick Start
 
 ```bash
 # Install
 pip install -e ".[dev,notebooks]"
 
 # Run tests
-pytest tests/unit/ -v
+pytest tests/unit tests/integration -v
 
-# Run experiment
-python experiments/scripts/run_experiment.py experiments/configs/phase1_normalized.yaml
+# Run only fast tests (skip @slow)
+pytest tests/unit tests/integration -v -m "not slow"
 ```
 
 ---

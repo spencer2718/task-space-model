@@ -33,6 +33,17 @@ def _get_cache_path(artifact_type: str, identifier: str) -> Path:
     return cache_dir / f"{identifier}.npz"
 
 
+def _compute_embeddings_impl(texts: list[str], model: str) -> np.ndarray:
+    """
+    Internal function to compute embeddings.
+
+    Separated for testability (allows mocking to verify cache behavior).
+    """
+    from sentence_transformers import SentenceTransformer
+    encoder = SentenceTransformer(model)
+    return encoder.encode(texts, show_progress_bar=True, convert_to_numpy=True)
+
+
 def get_embeddings(
     texts: list[str],
     model: str = "all-mpnet-base-v2",
@@ -58,10 +69,8 @@ def get_embeddings(
         data = np.load(cache_path)
         return data['embeddings']
 
-    # Compute
-    from sentence_transformers import SentenceTransformer
-    encoder = SentenceTransformer(model)
-    embeddings = encoder.encode(texts, show_progress_bar=True, convert_to_numpy=True)
+    # Compute using internal function (testable)
+    embeddings = _compute_embeddings_impl(texts, model)
 
     # Cache
     np.savez_compressed(cache_path, embeddings=embeddings, model=model, n_texts=len(texts))
