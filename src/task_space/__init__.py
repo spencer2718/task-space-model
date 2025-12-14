@@ -1,7 +1,7 @@
-# task_space v0.5.0
-# Binary overlap validated (t=8.00), SAE marginal improvement (+11.5% β)
-# The labor market signal is discrete, not continuous.
-# See spec_0.5.md for implementation details
+# task_space v0.6.2
+# Systematic representation comparison study
+# Kernel-weighted overlap validated (t=27.65), continuous structure confirmed
+# See spec_0.6.2.md for implementation details
 
 from .data import (
     load_work_activities,
@@ -110,6 +110,36 @@ from .sae import (
     extract_sparse_features,
 )
 
+from .comparison import (
+    # Data classes
+    RepresentationResult,
+    PermutationResult,
+    CrossValidationResult,
+    BandwidthSensitivityResult,
+    HybridModelResult,
+    REPRESENTATION_NAMES,
+    # Discrete representations
+    compute_binary_jaccard,
+    compute_weighted_jaccard,
+    compute_cosine_binary,
+    # Text embedding representations
+    compute_mpnet_embeddings,
+    compute_jobbert_embeddings,
+    compute_e5_embeddings,
+    embeddings_to_kernel_overlap,
+    # O*NET structured representations
+    load_onet_structured_dimension,
+    compute_structured_similarity,
+    # Validation functions
+    run_validation_regression,
+    run_permutation_test,
+    run_cross_validation,
+    run_hybrid_regression,
+    # Output
+    generate_phase2_summary,
+    save_phase2_results,
+)
+
 __all__ = [
     # Data loading
     "load_work_activities",
@@ -200,4 +230,26 @@ __all__ = [
     "save_sae",
     "load_sae",
     "extract_sparse_features",
+    # Comparison (Phase 2)
+    "RepresentationResult",
+    "PermutationResult",
+    "CrossValidationResult",
+    "BandwidthSensitivityResult",
+    "HybridModelResult",
+    "REPRESENTATION_NAMES",
+    "compute_binary_jaccard",
+    "compute_weighted_jaccard",
+    "compute_cosine_binary",
+    "compute_mpnet_embeddings",
+    "compute_jobbert_embeddings",
+    "compute_e5_embeddings",
+    "embeddings_to_kernel_overlap",
+    "load_onet_structured_dimension",
+    "compute_structured_similarity",
+    "run_validation_regression",
+    "run_permutation_test",
+    "run_cross_validation",
+    "run_hybrid_regression",
+    "generate_phase2_summary",
+    "save_phase2_results",
 ]

@@ -6,6 +6,8 @@
 \usepackage{bm}
 \usepackage{geometry}
 \usepackage[numbers,super,sort&compress]{natbib}
+\usepackage{booktabs}
+\usepackage{multirow}
 \geometry{margin=1in}
 
 
@@ -46,22 +48,25 @@ Public discussion of automation and AI is surrounded by anxiety about job loss a
 Empirical work on technological change and labor markets often relies on discrete task taxonomies---routine versus non-routine, manual versus cognitive, or coarse ``exposed'' versus ``unexposed'' categories. These partitions are useful summaries, but they do not directly encode graded similarity across tasks or spillovers from a shock that originates in one region of the task space and affects nearby tasks.
 
 
-This paper develops a geometric measurement framework intended to make that structure explicit. We model the task structure as a metric-measure space and represent occupations as probability measures over tasks. A technology shock is represented as a task-level input profile, and its effects propagate through a distance-based kernel. The output is a continuous occupation-level exposure index with neighborhood spillovers: an occupation is exposed to the extent that its task distribution lies near the shock in the task geometry.
+This paper develops a geometric measurement framework intended to make that structure explicit and tests whether continuous structure adds predictive value beyond discrete activity classification. We model the task structure as a metric-measure space and represent occupations as probability measures over tasks. A technology shock is represented as a task-level input profile, and its effects can propagate through a distance-based kernel. The output is a continuous occupation-level exposure index with potential neighborhood spillovers: an occupation is exposed to the extent that its task distribution lies near the shock in the task geometry.
 
 
 The empirical goal is to evaluate exposure measurement in reduced form. The framework earns its keep only if the resulting exposure indices are non-redundant relative to standard discrete baselines and if the task geometry passes non-tautological diagnostics. The empirical program therefore emphasizes (i) external validation of the geometry, (ii) covariance restrictions implied by proximity and overlap, and (iii) incremental predictive content for wage and employment changes.
 
 
-The empirical program has two evaluations. First, a retrospective exercise (1990--2007) compares manifold-based exposure to standard industry- or occupation-mix exposure designs in settings associated with late-20th-century automation and routine-biased technological change. Second, a prospective exercise (2022--present) applies the framework to generative AI but treats the shock profile as an empirical object: multiple candidate profiles over activities are constructed and compared against rubric- or label-based baselines. This design is intended to be informative even if no single candidate profile dominates.
+A central empirical finding of this paper is that discrete activity sharing strongly predicts wage comovement, but continuous semantic similarity does not improve prediction. Specifically, Phase~I validation shows that binary activity overlap (Jaccard index) produces robust predictive relationships (t~$= 8.00$, p~$< 10^{-15}$), while kernel-weighted overlap using text embeddings fails permutation testing (p~$= 0.31$) and is outperformed by random distance matrices. This constrains the class of models that can explain labor market structure: the economic frictions relevant to wage dynamics appear to be threshold-based rather than continuously graded.
 
 
-The paper's contribution is a mechanically implementable exposure construction paired with explicit diagnostics: (i) a continuous task geometry from observable descriptors, with alternative constructions for robustness; (ii) a validation strategy that avoids circularity by pairing each geometry with external targets and covariance checks; and (iii) exposure indices that incorporate neighborhood spillovers through a parsimonious propagation rule.
+The empirical program has two evaluations. First, a retrospective exercise (1990--2007) compares activity-based exposure to standard industry- or occupation-mix exposure designs in settings associated with late-20th-century automation and routine-biased technological change. Second, a prospective exercise (2022--present) applies the framework to generative AI but treats the shock profile as an empirical object: multiple candidate profiles over activities are constructed and compared against rubric- or label-based baselines. This design is intended to be informative even if no single candidate profile dominates.
+
+
+The paper's contribution is threefold: (i) a principled construction of occupation-activity measures from O*NET data with explicit diagnostics; (ii) a testable formalization that distinguishes continuous from discrete representations of the task domain; and (iii) an empirical finding that discrete activity sharing dominates continuous semantic similarity for predicting wage comovement.
 
 
 Finally, wage outcomes are conditional on institutions. Productivity effects need not pass through one-for-one into wages; wage-setting and pass-through environments can introduce occupation-specific wedges. We treat this as a scope condition (\cref{subsec:wedge}) and record a ``new tasks'' extension (\cref{subsec:newtasks}), while keeping the baseline empirical focus on evaluating exposure measurement.
 
 
-\cref{sec:literature} reviews related literatures. \cref{sec:theory} develops the theoretical framework in continuous form. \cref{sec:empirics} operationalizes each component using O*NET data and specifies the evaluation plan. \cref{sec:extensions} records extensions and historical regime signatures. \cref{sec:conclusion} concludes.
+\cref{sec:literature} reviews related literatures. \cref{sec:theory} develops the theoretical framework, presenting both continuous and discrete representations as alternatives to be tested empirically. \cref{sec:empirics} operationalizes each component using O*NET data, reports Phase~I validation results, and specifies the Phase~II evaluation plan. \cref{sec:extensions} records extensions and historical regime signatures. \cref{sec:conclusion} concludes.
 
 
 \section{Literature Review}
@@ -71,7 +76,7 @@ Finally, wage outcomes are conditional on institutions. Productivity effects nee
 Research on automation and labor markets has increasingly adopted a task-based framework, analyzing how technologies complement or displace specific activities within occupations. In the routine-biased technological change (RBTC) paradigm, computerization disproportionately substitutes for routine, rule-based tasks while complementing non-routine analytic and interactive tasks \citep{AutorLevyMurnane2003}. Subsequent work formalized task assignment and emphasized that technological change acts on tasks, with equilibrium implications for employment reallocation and wages that cannot be recovered from a two-skill canonical model alone \citep{AcemogluAutor2011}. Empirically, this perspective underlies prominent exposure designs in which local labor markets more specialized in routine task work experienced larger subsequent declines in routine employment and a reallocation toward service work \citep{AutorDorn2013}, with cross-country evidence documenting related polarization patterns \citep{GoosManning2007}.
 
 
-The limitation, for measurement, is that many task-based implementations operationalize exposure through discrete partitions (routine/non-routine; exposed/unexposed). Those partitions capture first-order patterns, but they obscure two objects that matter for reduced-form exposure regressions. First, within-category heterogeneity can be large: occupations classified as ``routine'' differ in how close their actual task bundles are to the frontier of a given technology, and ``non-routine'' occupations can still contain pockets of tasks that are technologically adjacent to the shock. Second, substitution and complementarity are naturally graded: effects propagate most strongly to nearby tasks, not only to tasks that share a label. Existing task-based exposure measures typically aggregate task-level indicators to occupations without modeling explicit spillovers across related tasks. Our distinct contribution is to define a metric on the task/activity domain itself and represent occupations as distributions over that domain, so that proximity and overlap in task space determine exposure propagation. The measurement target of this paper is therefore continuous similarity---a task geometry that encodes graded relatedness and supports a distance-based propagation rule, so that exposure varies smoothly with proximity and overlap rather than jumping at taxonomy boundaries.
+The limitation, for measurement, is that many task-based implementations operationalize exposure through discrete partitions (routine/non-routine; exposed/unexposed). Those partitions capture first-order patterns, but they obscure two objects that matter for reduced-form exposure regressions. First, within-category heterogeneity can be large: occupations classified as ``routine'' differ in how close their actual task bundles are to the frontier of a given technology, and ``non-routine'' occupations can still contain pockets of tasks that are technologically adjacent to the shock. Second, substitution and complementarity are naturally graded: effects propagate most strongly to nearby tasks, not only to tasks that share a label. Existing task-based exposure measures typically aggregate task-level indicators to occupations without modeling explicit spillovers across related tasks. A potential contribution of this framework is to define a metric on the task/activity domain itself and represent occupations as distributions over that domain, so that proximity and overlap in task space determine exposure propagation. Whether this continuous structure predicts outcomes better than discrete classification is an empirical question we address in Phase~I validation.
 
 
 This concern is not purely conceptual. Work using richer task detail documents economically meaningful variation within occupations and within broad task categories \citep{AutorHandel2013,SpitzOener2006}. Related evidence in the automation-risk literature shows that occupation-level exposure measures can substantially overstate the share of employment at high risk when they ignore within-occupation task heterogeneity \citep{ArntzGregoryZierahn2016}.
@@ -80,10 +85,13 @@ This concern is not purely conceptual. Work using richer task detail documents e
 Historical episodes motivate the same object, while clarifying the scope of the analogy. Electrification illustrates how a general-purpose technology can shift the demand for task bundles in heterogeneous ways, with task-based evidence in early twentieth-century manufacturing consistent with reweighting across skill-relevant activities \citep{Gray2013}. Classic accounts emphasize the emergence of technology--skill complementarity under electrification through reorganized production, capital deepening, and the rising importance of skilled maintenance and management \citep{GoldinKatz1998,GoldinKatz2008}. Technological change has heterogeneous intensity across related activities, indicating representing exposure as a continuous function of task similarity may have advantages over binary classification.
 
 
-A separate literature studies exposure measurement in shift-share and related designs. The baseline empirical object is composition-predicted exposure: pre-period shares (industries, occupations, or tasks) interacted with common shocks. Work on Bartik instruments clarifies when such designs identify causal effects and how their weighting structure maps local exposure to national shocks \citep{GoldsmithPinkhamSorkinSwift2020}. More recent econometric treatments emphasize conditions under which identification can be obtained from shock variation rather than from the exogeneity of shares, along with practical guidance for inference and diagnostic checks at the shock level \citep{BorusyakHullJaravel2022}. This paper does not propose a new identification strategy; it proposes a different exposure regressor (a distance-propagated, task-geometry-based measure) and tests whether it adds content beyond standard discrete and composition-based baselines under familiar identifying assumptions.
+A separate literature studies exposure measurement in shift-share and related designs. The baseline empirical object is composition-predicted exposure: pre-period shares (industries, occupations, or tasks) interacted with common shocks. Work on Bartik instruments clarifies when such designs identify causal effects and how their weighting structure maps local exposure to national shocks \citep{GoldsmithPinkhamSorkinSwift2020}. More recent econometric treatments emphasize conditions under which identification can be obtained from shock variation rather than from the exogeneity of shares, along with practical guidance for inference and diagnostic checks at the shock level \citep{BorusyakHullJaravel2022}. This paper does not propose a new identification strategy; it proposes a different exposure regressor (potentially distance-propagated, task-geometry-based) and tests whether it adds content beyond standard discrete and composition-based baselines under familiar identifying assumptions.
 
 
-Recent work on generative AI provides transparent, task-level occupation exposure indices that score tasks by model capability and aggregate to the occupation level \citep{EloundouEtAl2024}. Their approach operates at high task granularity, but the exposure signal is categorical (e.g., ordered classes) and aggregated via a fixed linear formula. The gap we target is different: we model exposure as a continuous function of proximity in a capability/task space and allow ``nearby'' tasks to receive partial exposure weight under an explicit kernel, rather than assigning zero weight to tasks just outside a discrete capability class.
+Recent work on generative AI provides transparent, task-level occupation exposure indices that score tasks by model capability and aggregate to the occupation level \citep{EloundouEtAl2024}. Their approach operates at high task granularity, but the exposure signal is categorical (e.g., ordered classes) and aggregated via a fixed linear formula. The gap we target is different: we model exposure as a continuous function of proximity in a capability/task space and allow ``nearby'' tasks to receive partial exposure weight under an explicit kernel, rather than assigning zero weight to tasks just outside a discrete capability class. Whether this continuous propagation mechanism improves prediction is the core empirical question of Phase~I.
+
+
+A growing literature on the mismatch between linguistic similarity and economic substitutability is relevant to interpreting our findings. Text embeddings capture semantic relatedness---words that appear in similar contexts---but economic substitutability depends on whether workers can actually perform different tasks, whether employers consider credentials interchangeable, and whether institutional factors constrain mobility. The distinction between ``linguistically similar'' and ``economically substitutable'' may explain why continuous semantic structure does not improve prediction: hiring operates through threshold checks (``can you do X?'') rather than continuous similarity assessments (``how close can you get to X?''). This connects to evidence on threshold effects in hiring and the checkbox-based nature of credential screening.
 
 
 Finally, measured technological exposure should be separated from distribution and pass-through. Classic and modern evidence documents that productivity growth and compensation growth can diverge for measurement and institutional reasons, including differences in deflators, changes in non-wage compensation, and shifts in labor's share \citep{BosworthPerry1994,FleckGlaserSprague2011}. More recent work argues that institutional changes affecting bargaining and rents play a first-order role in wage dynamics and in the productivity--pay relationship \citep{StansburySummers2020}. Consistent with this, evidence on automation and productivity growth shows that displacement effects can be offset in employment by downstream and general-equilibrium channels even when the labor share falls, highlighting that propagation and pass-through may differ across outcomes \citep{AutorSalomons2018}. In our framework, exposure coefficients are interpreted as reduced-form effects conditional on pass-through.
@@ -95,13 +103,16 @@ Methodologically, the framework sits alongside propagation approaches that model
 The construction of the task geometry is also related to text-based matching approaches that map technologies to occupations using semantic similarity between technology descriptions and job/task text \citep{Webb2020}. Longer-run adjustment through task creation remains central but is not the baseline object of estimation: automation and reinstatement via new tasks \citep{AcemogluRestrepo2018} are recorded as an extension path when the task domain must evolve.
 
 
+The literature on measurement in economics values negative results that constrain future work. If continuous structure does not improve prediction, this finding informs subsequent research designs and suggests that the marginal return to more sophisticated embedding approaches may be low for labor-market applications.
+
+
 
 
 \section{Theory}
 \label{sec:theory}
 
 
-This section defines the theoretical objects in continuous form: (i) the task domain as a metric-measure space; (ii) occupations as probability measures over tasks; (iii) technological shocks as task-level profiles; and (iv) a propagation operator that spreads shocks across nearby tasks. Throughout, we develop a one-dimensional toy model to build intuition before the empirical implementation in \cref{sec:empirics}.
+This section defines the theoretical objects in continuous form: (i) the task domain as a metric-measure space; (ii) occupations as probability measures over tasks; (iii) technological shocks as task-level profiles; and (iv) propagation mechanisms that may or may not spread shocks across nearby tasks. Throughout, we develop a one-dimensional toy model to build intuition before the empirical implementation in \cref{sec:empirics}.
 
 
 \subsection{The Task Manifold}
@@ -121,25 +132,36 @@ where $T$ is a compact set of technologically feasible tasks, $d : T \times T \t
 Distance is the primitive notion of similarity: tasks $x,y$ are close if capabilities and complements transfer at low friction. The framework uses this geometry to encode a prior on spillovers: shocks affect nearby tasks more strongly.
 
 
+\begin{remark}[Graph vs Manifold]
+\label{rem:graph-vs-manifold}
+The manifold representation assumes continuous similarity: tasks $x, y$ at small distance $d(x,y)$ are economically interchangeable at low friction. An alternative representation treats activities as discrete nodes in a graph, where adjacency (shared occupation usage) rather than continuous distance determines relatedness. Under the graph representation, two activities are ``related'' if occupations that use one tend to use the other; continuous interpolation between activities is not meaningful. The empirical program tests which representation better predicts economic outcomes.
+\end{remark}
+
+
 \begin{example}[The Task Line]
 \label{ex:task-line}
 Consider a simple task domain $T = [0, 1]$ representing a single dimension of complexity (e.g., ``manual'' to ``cognitive''). The metric $d(x, y) = |x - y|$ captures the cost of retooling from task $x$ to task $y$. The reference measure $\mu$ is uniform, representing an equal density of economic value across the complexity spectrum. This one-dimensional model captures the essential structure: tasks have positions, distances matter, and mass is distributed across the space.
 \end{example}
 
 
-\begin{assumption}[Admissible task distance]
-\label{assump:admissible-metric}
-An empirical distance $\widehat d$ is admissible if:
+\begin{remark}[Empirical caveat on continuous structure]
+\label{rem:empirical-caveat}
+The task line example assumes continuous interpolation between manual and cognitive tasks. Empirical validation (\cref{sec:empirics}) finds that discrete activity sharing predicts wage comovement, but continuous distance does not improve prediction beyond binary overlap. This suggests the economic structure may be graph-like (nodes with edges) rather than manifold-like (points with distances). The continuous formalism is retained for generality, but the discrete special case may be empirically dominant.
+\end{remark}
+
+
+\begin{assumption}[Admissible task representation]
+\label{assump:admissible-representation}
+An empirical representation of the task domain is admissible if, for at least one validation target not used in construction (e.g., wage comovement, worker mobility), occupation-pair relatedness in activity space predicts stronger observed relatedness. The representation may be continuous (distance-based) or discrete (overlap-based). Specifically:
 \begin{enumerate}
-    \item \textbf{Metric axioms.} $\widehat d$ satisfies the metric axioms on its domain.
-    \item \textbf{Scale robustness.} $\widehat d$ is invariant to irrelevant rescalings of inputs (e.g., via standardization).
-    \item \textbf{Local stability.} Small perturbations of descriptors rarely change nearest-neighbor sets materially.
-    \item \textbf{External diagnostic.} For at least one validation target not used to construct $\widehat d$ (e.g., worker mobility across occupations, wage comovement), smaller activity-level distances---aggregated to occupation pairs via the occupation measures $\rho_j$---predict stronger observed relatedness.
+    \item \textbf{Metric axioms (if continuous).} The distance $\widehat d$ satisfies the metric axioms on its domain.
+    \item \textbf{Scale robustness.} The representation is invariant to irrelevant rescalings of inputs (e.g., via standardization).
+    \item \textbf{External diagnostic.} For at least one validation target not used in construction, greater activity-space relatedness---measured via continuous distance or discrete overlap---predicts stronger observed economic relatedness.
 \end{enumerate}
 \end{assumption}
 
 
-The last item is a rejection diagnostic: it is used to rule out poor geometries, not to bake success into the definition.
+The external diagnostic is a rejection criterion: it is used to rule out poor representations, not to bake success into the definition. Phase~I validation implements this diagnostic using wage comovement as the target.
 
 
 \subsection{Occupations as Measures}
@@ -190,7 +212,7 @@ The profile $I_t(x)$ represents the intensity with which the frontier is pushed 
 \end{definition}
 
 
-In applications, $I_t$ is constructed and then propagated through a measured geometry. In the prospective evaluation, multiple candidate $I_t$ are compared; the shock mapping is treated as a testable component of measurement rather than as a structural primitive. Inferring $I_t$ from labor-market outcomes is a different identification problem and is not pursued here.
+In applications, $I_t$ is constructed and then potentially propagated through a measured geometry. In the prospective evaluation, multiple candidate $I_t$ are compared; the shock mapping is treated as a testable component of measurement rather than as a structural primitive. Inferring $I_t$ from labor-market outcomes is a different identification problem and is not pursued here.
 
 
 We carry the complementarity field $C_t$ for notational symmetry. Baseline empirics focus on the displacement channel $(A, E^A)$; estimation of the augmentation channel $(C, E^C)$ is recorded as an extension (\cref{sec:extensions}).
@@ -206,19 +228,24 @@ A new technology enters as a shock profile $I_t(x)$ concentrated at $x=0.25$ on 
 \label{subsec:propagation}
 
 
-\begin{definition}[Normalized spillover operator]
-\label{def:spillover-operator}
-Given metric $d$ and kernel parameters $\theta$, define $\widetilde{\mathcal{K}}_d : L^2(T,\mu) \to L^2(T,\mu)$ by
+Shocks may affect only directly-targeted activities, or they may propagate to nearby activities. We present two mechanisms as alternatives to be tested empirically.
+
+
+\begin{definition}[Propagation mechanisms]
+\label{def:propagation-mechanisms}
+\textbf{(A) Kernel propagation (continuous).} Given metric $d$ and kernel parameters $\theta$, define the normalized spillover operator $\widetilde{\mathcal{K}}_d : L^2(T,\mu) \to L^2(T,\mu)$ by
 \[
 [\widetilde{\mathcal{K}}_d f](x)
 =
 \frac{\int_T k\bigl(d(x,y); \theta\bigr)\, f(y)\, d\mu(y)}{\int_T k\bigl(d(x,y); \theta\bigr)\, d\mu(y)},
 \]
 where $k(\cdot;\theta)$ is nonnegative and decreasing in distance.
+
+\textbf{(B) Identity propagation (discrete).} Define identity propagation by $[\mathcal{I} f](x) = f(x)$. Under this mechanism, shocks affect only directly-targeted activities; propagation to occupations occurs through activity sharing, not through geometric proximity.
 \end{definition}
 
 
-Baseline implementation uses an exponential kernel with a single spillover scale:
+Baseline implementation of kernel propagation uses an exponential kernel with a single spillover scale:
 \begin{equation}
 \label{eq:exp-kernel}
 k\bigl(d(x,y); \sigma\bigr)
@@ -228,6 +255,12 @@ k\bigl(d(x,y); \sigma\bigr)
 \theta = \sigma > 0.
 \end{equation}
 The normalization ensures the operator is a local averaging operator whose output scale is determined by $f$, not by $\mu$.
+
+
+\begin{remark}[Selection criterion]
+\label{rem:selection-criterion}
+The choice between continuous and discrete propagation is empirical. If kernel-weighted overlap predicts outcomes better than binary overlap, the continuous mechanism adds value. If not, the simpler discrete mechanism is preferred. Phase~I validation (\cref{subsec:phase1}) tests this by comparing kernel-weighted occupation-pair overlap against binary Jaccard overlap as predictors of wage comovement.
+\end{remark}
 
 
 Kernel family (exponential vs Gaussian) and bandwidth $\sigma$ are treated as tuning dimensions evaluated via out-of-sample prediction, not derived from theory.
@@ -245,7 +278,7 @@ captures this tail risk as a positive but small exposure. This creates the conti
 
 \begin{remark}[Spillover decay]
 \label{rem:spillover-decay}
-Under the exponential kernel, $[\widetilde{\mathcal{K}}_d I](x)$ is decreasing in $d(x, \mathrm{supp}(I))$ for fixed $I$ and $\sigma$. This is immediate from the kernel definition and motivates the interpretation of $\sigma$ as a ``spillover range'' parameter.
+Under the exponential kernel, $[\widetilde{\mathcal{K}}_d I](x)$ is decreasing in $d(x, \mathrm{supp}(I))$ for fixed $I$ and $\sigma$. This is immediate from the kernel definition and motivates the interpretation of $\sigma$ as a ``spillover range'' parameter. However, if the decay structure does not improve prediction beyond binary activity inclusion, the additional complexity is unwarranted.
 \end{remark}
 
 
@@ -253,9 +286,9 @@ Under the exponential kernel, $[\widetilde{\mathcal{K}}_d I](x)$ is decreasing i
 \label{def:baseline-exposure}
 The displacement field at time $t$ is
 \[
-A_t := \widetilde{\mathcal{K}}_d I_t,
+A_t := \mathcal{P} I_t,
 \]
-where $I_t$ is the exogenous shock profile over tasks. For time-aggregated exercises (e.g., retrospective 1990--2007), define $A := \widetilde{\mathcal{K}}_d I$ with a fixed profile $I$ representing the cumulative shock direction.
+where $\mathcal{P}$ is either the kernel operator $\widetilde{\mathcal{K}}_d$ (continuous propagation) or the identity operator $\mathcal{I}$ (discrete propagation), and $I_t$ is the exogenous shock profile over tasks. For time-aggregated exercises (e.g., retrospective 1990--2007), define $A := \mathcal{P} I$ with a fixed profile $I$ representing the cumulative shock direction.
 \end{definition}
 
 
@@ -271,7 +304,21 @@ E^{A}_{j,t} \equiv \int_T A_t(x)\, d\rho_j(x),
 \qquad
 E^{C}_{j,t} \equiv \int_T \log C_t(x)\, d\rho_j(x).
 \]
-The three-step pipeline is: (i) shock profile $I_t$ on tasks, (ii) propagation $A_t = \widetilde{\mathcal{K}}_d I_t$ across tasks, (iii) aggregation via $\rho_j$ to occupation-level exposure.
+The pipeline is: (i) shock profile $I_t$ on tasks, (ii) propagation $A_t = \mathcal{P} I_t$ across tasks (continuous or discrete), (iii) aggregation via $\rho_j$ to occupation-level exposure.
+\end{definition}
+
+
+\begin{definition}[Discrete exposure]
+\label{def:discrete-exposure}
+Under identity propagation ($\mathcal{P} = \mathcal{I}$), occupation-level exposure reduces to:
+\[
+E^A_j = \sum_{a \in T_n} I(a) \cdot \rho_j(a),
+\]
+which is a weighted sum of shock intensity over the occupation's activity distribution. This is equivalent to:
+\[
+E^A_j = \sum_{a \in T_n} I(a) \cdot \mathbb{1}[\rho_j(a) > 0] \cdot \rho_j(a),
+\]
+where $\mathbb{1}[\cdot]$ is the indicator function. Exposure depends only on which activities the occupation uses and how intensively it uses them, not on distances between activities.
 \end{definition}
 
 
@@ -296,11 +343,54 @@ The reduced form abstracts from general-equilibrium feedbacks and re-sorting. Th
 
 \begin{remark}[Implied covariance structure---diagnostic target]
 \label{rem:covariance}
-If outcomes load on exposure with common sign and shocks are spatially concentrated in task space, then occupation pairs with greater task-distribution overlap should exhibit stronger outcome comovement. Formally, define occupation-pair proximity as
+If outcomes load on exposure with common sign and shocks are spatially concentrated in task space, then occupation pairs with greater task-distribution overlap should exhibit stronger outcome comovement.
+
+\textbf{Kernel-weighted overlap.} Define occupation-pair proximity as
 \[
-\mathrm{Overlap}(i,j) = \int_T \int_T \rho_i(x)\, \rho_j(y)\, k(d(x,y); \sigma)\, d\mu(x)\, d\mu(y),
+\mathrm{Overlap}_K(i,j) = \int_T \int_T \rho_i(x)\, \rho_j(y)\, k(d(x,y); \sigma)\, d\mu(x)\, d\mu(y).
 \]
-and test whether $\mathrm{Overlap}$ predicts wage or employment comovement conditional on controls. This is a coherence diagnostic, not a structural test.
+
+\textbf{Binary overlap.} Define binary overlap as the Jaccard index:
+\[
+\mathrm{Overlap}_B(i,j) = \frac{|A_i \cap A_j|}{|A_i \cup A_j|},
+\]
+where $A_j = \{a : \rho_j(a) > 0\}$ is the activity support of occupation $j$.
+
+Phase~I tests whether kernel-weighted overlap improves prediction of wage comovement beyond binary overlap.
+\end{remark}
+
+
+\subsection{Why Discrete Structure May Dominate}
+\label{subsec:threshold}
+
+
+The manifold representation assumes that economic frictions vary smoothly with task distance. An alternative microfoundation, consistent with discrete dominance, models hiring and production as threshold-based processes.
+
+
+\begin{definition}[Threshold production]
+\label{def:threshold-production}
+Occupation $j$ produces output using activities in its support $A_j = \{a : \rho_j(a) > 0\}$. For each activity $a \in A_j$, the worker either can perform $a$ (contributing to output) or cannot (contributing zero). There is no ``partial credit'' for performing a similar activity $a'$ with small $d(a, a')$.
+\end{definition}
+
+
+Under this model, a technology shock to activity $a$ affects occupation $j$ if and only if $a \in A_j$. The kernel-weighted propagation mechanism, which assigns positive exposure to occupations with $a' \approx a$ in their support, would overstate exposure by treating ``nearby but not identical'' as economically relevant.
+
+
+\begin{remark}[Hiring as checkbox verification]
+\label{rem:checkbox}
+The threshold interpretation is consistent with how hiring actually works: employers verify whether candidates can perform specific required tasks, not whether they can perform ``similar'' tasks. A job posting for a Python developer requires Python proficiency; proficiency in a ``nearby'' language (say, Ruby) does not substitute, even if the semantic distance $d(\text{Python}, \text{Ruby})$ is small. The resulting labor market structure is a bipartite graph (occupations and activities as nodes, with edges indicating ``occupation uses activity'') rather than a metric space.
+\end{remark}
+
+
+\begin{remark}[Empirical implications]
+\label{rem:threshold-implications}
+The threshold model predicts:
+\begin{enumerate}
+    \item Binary activity overlap should predict wage comovement.
+    \item Continuous distance weighting should not improve prediction beyond binary overlap.
+    \item The spillover bandwidth $\sigma$ should be inert (all effects are captured by the indicator, not by distance decay).
+\end{enumerate}
+Phase~I validation tests these predictions.
 \end{remark}
 
 
@@ -353,7 +443,7 @@ The theoretical objects of \cref{sec:theory} are instantiated on a finite activi
 \label{def:empirical-activity-domain}
 Let $T_n = \{a_1, \ldots, a_n\}$ be a finite set of work activities. In baseline implementation:
 \begin{itemize}
-    \item $T_n$ is the set of O*NET Detailed Work Activities (DWA; $n \approx 2{,}000$), with Generalized Work Activities (GWA; $n \approx 41$) as a robustness domain \citep{onet2024database,onet2024content}.
+    \item $T_n$ is the set of O*NET Detailed Work Activities (DWA; $n = 2{,}087$), with Generalized Work Activities (GWA; $n \approx 41$) as a robustness domain \citep{onet2024database,onet2024content}.
     \item The reference measure $\mu$ is a probability mass function on $T_n$. Baseline: uniform ($\mu(a) = 1/n$ for all $a$).
     \item All integrals $\int_T f(x)\, d\mu(x)$ reduce to finite sums $\sum_{a \in T_n} f(a)\, \mu(a)$.
 \end{itemize}
@@ -411,11 +501,24 @@ Under non-uniform $\mu$ (robustness variants), use $f_j(a) = \rho_j(a)/\mu(a)$ d
 
 
 \medskip
-\noindent\textbf{(D) Required diagnostic outputs (before proceeding to Phase I):}
+\noindent\textbf{(D) Implementation summary (O*NET 30.0):}
+
+The baseline implementation uses:
 \begin{itemize}
-    \item Distribution of $\rho_j$ entropy across occupations (flag if median entropy is below threshold indicating excessive sparsity).
-    \item Distribution of ``effective support'' $|\{a : \rho_j(a) > 0.01\}|$ across occupations.
-    \item Spot-check: for 10 occupations spanning different sectors, list top-5 activities by $\rho_j(a)$ and verify face validity.
+    \item Files: Task Ratings.xlsx (task importance by occupation), Tasks to DWAs.xlsx (task-to-DWA linkages), DWA Reference.xlsx (DWA definitions).
+    \item Scale handling: IM scale $[1,5]$ rescaled to $[0,1]$ via $(x-1)/4$; LV scale $[0,7]$ rescaled to $[0,1]$ via $x/7$.
+    \item Suppression: drop if Recommend Suppress $=$ ``Y'' or $N < 5$.
+    \item Aggregation: MAX importance over linked tasks per O*NET methodology.
+    \item Coverage: 702 occupations with valid measures after filtering.
+\end{itemize}
+
+\medskip
+\noindent\textbf{(E) Distribution statistics:}
+\begin{itemize}
+    \item Sparsity: 99.1\% of occupation-activity weights are zero.
+    \item Median activities per occupation: approximately 20 (of 2,087 possible).
+    \item Effective support distribution: most occupations use a small fraction of the activity space.
+    \item This extreme sparsity is a key structural feature: the activity-sharing graph is sparse and fragmented.
 \end{itemize}
 \end{remark}
 
@@ -434,9 +537,9 @@ where $k$ is the kernel function (exponential or Gaussian). The propagated field
 \label{rem:discrete-overlap}
 The occupation-pair overlap from \cref{rem:covariance} has discrete form:
 \[
-\mathrm{Overlap}(i,j) = \rho_i^\top K \rho_j = \sum_{a,b \in T_n} \rho_i(a)\, K_{ab}\, \rho_j(b),
+\mathrm{Overlap}_K(i,j) = \rho_i^\top K \rho_j = \sum_{a,b \in T_n} \rho_i(a)\, K_{ab}\, \rho_j(b),
 \]
-where $K$ is the row-normalized kernel matrix from \cref{rem:matrix-notation}.
+where $K$ is the row-normalized kernel matrix from \cref{rem:matrix-notation}. Under identity propagation ($K = I$), this reduces to the weighted inner product $\rho_i^\top \rho_j$.
 \end{remark}
 
 
@@ -448,40 +551,48 @@ where $K$ is the row-normalized kernel matrix from \cref{rem:matrix-notation}.
 \label{rem:recipes}
 Instantiate $T$ as a finite set of activities (GWA or DWA). Occupations are probability measures over activities, not points in $T$.
 \begin{enumerate}
-    \item \textbf{Recipe X (rating-cooccurrence geometry).} Represent each activity $a \in T_n$ by its importance profile across occupations: $v(a) = (w_1(a), \ldots, w_J(a))$, where $w_j(a)$ is occupation $j$'s weight on activity $a$ (defined in \cref{rem:rho-construction}). Standardize, reduce dimension (PCA), and define $\widehat d(a,b)$ as Euclidean distance in the reduced space.
+    \item \textbf{Recipe X (rating-cooccurrence geometry).} Represent each activity $a \in T_n$ by its importance profile across occupations: $v(a) = (w_1(a), \ldots, w_J(a))$, where $w_j(a)$ is occupation $j$'s weight on activity $a$ (defined in \cref{rem:rho-construction}). Standardize, reduce dimension (PCA retaining 90\% variance), and define $\widehat d(a,b)$ as Euclidean distance in the reduced space.
     
     \emph{Interpretation:} activities are close if they co-occur with similar importance across the occupation distribution.
     
-    \emph{Validation targets:} worker mobility, wage comovement (external to O*NET ratings). Note: this geometry encodes occupation-activity co-occurrence; validation tests the composite of $d$ and $\{\rho_j\}$.
+    \emph{Validation targets:} worker mobility, wage comovement (external to O*NET ratings).
     
-    \item \textbf{Recipe Y (text-embedding geometry).} Embed activity titles/descriptions (GWA definitions or DWA titles) using a sentence encoder. Define $\widehat d(a,b)$ as cosine distance in embedding space.
+    \emph{Phase~I outcome:} Failed validation---permutation test $p = 0.31$, indicating effect indistinguishable from shuffled data.
     
-    \emph{Validation targets:} mobility, wage comovement, and partial concordance with Recipe X as a consistency (not validation) check.
+    \item \textbf{Recipe Y (text-embedding geometry).} Embed activity titles/descriptions (GWA definitions or DWA titles) using a sentence encoder (all-mpnet-base-v2, 768 dimensions). Define $\widehat d(a,b)$ as cosine distance in embedding space.
     
-    \item \textbf{Recipe Z (revealed-mobility geometry).} Construct activity-level distances from worker transitions via occupation measures: infer which activities ``connect'' based on transitions between occupations with overlapping $\rho_j$. This requires additional structure and is deferred to robustness/appendix.
+    \emph{Validation targets:} mobility, wage comovement.
     
-    \emph{Validation targets:} text similarity (Recipe Y), descriptor concordance.
+    \emph{Phase~I outcome:} Failed validation---random distance matrices produced stronger effects ($\beta \approx 1842$) than semantic distances ($\beta \approx 728$). The semantic structure is actively anti-correlated with economic outcomes.
+    
+    \item \textbf{Binary Jaccard (no distance).} Define activity-space relatedness via set intersection without any distance weighting:
+    \[
+    \mathrm{Jaccard}(i,j) = \frac{|A_i \cap A_j|}{|A_i \cup A_j|},
+    \]
+    where $A_j = \{a : \rho_j(a) > 0\}$.
+    
+    \emph{Phase~I outcome:} Passed validation---$t = 8.00$, $p < 10^{-15}$, robust to permutation testing.
 \end{enumerate}
 \end{remark}
 
 
-\cref{tab:validation-matrix} summarizes the non-tautological principle used in Phase~I.
+\cref{tab:validation-matrix} summarizes the non-tautological principle used in Phase~I and the validation outcomes.
 
 
 \begin{table}[h!]
 \centering
-\begin{tabular}{|l|l|l|}
+\begin{tabular}{|l|l|l|l|}
 \hline
-\textbf{Distance construction} & \textbf{What it uses} & \textbf{Valid Phase I targets} \\
+\textbf{Distance construction} & \textbf{What it uses} & \textbf{Valid targets} & \textbf{Phase I result} \\
 \hline
-Recipe X (rating-cooccurrence) & O*NET importance profiles & mobility; wage comovement \\
+Recipe X (rating-cooccurrence) & O*NET importance & mobility; wage & Failed ($p = 0.31$) \\
 \hline
-Recipe Y (text embedding) & activity text & mobility; wage comovement; Recipe X concordance \\
+Recipe Y (text embedding) & activity text & mobility; wage & Failed (random $>$ semantic) \\
 \hline
-Recipe Z (mobility-induced) & worker transitions & text similarity; O*NET concordance \\
+Binary Jaccard & activity support & mobility; wage & Passed ($t = 8.00$) \\
 \hline
 \end{tabular}
-\caption{Validation targets by activity-distance recipe. Avoid validating a metric against the same signal used to construct it.}
+\caption{Validation targets by activity-distance recipe and Phase~I outcomes. Continuous distance constructions fail; binary overlap passes.}
 \label{tab:validation-matrix}
 \end{table}
 
@@ -500,7 +611,7 @@ This subsection summarizes the design axes that define the empirical pipeline. E
 \medskip
 \noindent$\square$ \textbf{Activity domain $T_n$}
 \begin{itemize}
-    \item Baseline: DWA (Detailed Work Activities; $n \approx 2{,}000$)
+    \item Baseline: DWA (Detailed Work Activities; $n = 2{,}087$)
     \item Robustness: GWA (Generalized Work Activities; $n \approx 41$)
     \item Stress test (optional): Task statements ($n \approx 19{,}000$)
 \end{itemize}
@@ -523,22 +634,22 @@ This subsection summarizes the design axes that define the empirical pipeline. E
 
 \noindent$\square$ \textbf{Activity distance recipe}
 \begin{itemize}
-    \item Baseline: Recipe X (rating-cooccurrence, PCA, Euclidean)
-    \item Robustness: Recipe Y (text embedding, cosine)
-    \item Distance metric: Euclidean (baseline) vs cosine
-    \item Dimension reduction: PCA retaining 90\% variance (baseline); robustness at 80\%, 95\%
+    \item Baseline (revised after Phase~I): Binary Jaccard (no distance weighting)
+    \item Robustness: Recipe X (rating-cooccurrence); Recipe Y (text embedding)
+    \item Phase~I finding: continuous distance constructions do not improve prediction
 \end{itemize}
 
 
-\noindent$\square$ \textbf{Kernel specification}
+\noindent$\square$ \textbf{Kernel specification (for robustness checks)}
 \begin{itemize}
     \item Baseline: exponential, $k(d;\sigma) = \exp(-d/\sigma)$
     \item Robustness: Gaussian, $k(d;\sigma) = \exp(-d^2/2\sigma^2)$
     \item $\sigma$ grid: $\{p10, p25, p50, p75, p90\}$ of pairwise activity distances (pre-committed)
+    \item Phase~I finding: $\sigma$ is inert ($r = 0.999$ across grid values)
 \end{itemize}
 
 
-\noindent$\square$ \textbf{Shock profiles (Experiment B)}
+\noindent$\square$ \textbf{Shock profiles (Phase~II)}
 \begin{itemize}
     \item Primary: $v_3$ (external anchor)
     \item Robustness/hypothesis tests: $v_1$ (capability-only), $v_2$ (capability $+$ structure)
@@ -548,9 +659,9 @@ This subsection summarizes the design axes that define the empirical pipeline. E
 
 \noindent$\square$ \textbf{Validation targets (Phase I)}
 \begin{itemize}
-    \item External monotonicity: worker mobility (CPS or SIPP transitions)
-    \item Covariance: wage comovement (ACS or OES)
+    \item External monotonicity: wage comovement (ACS or OES)
     \item Baselines: routine/manual indicators; categorical AI-exposure scores
+    \item Alternative target (extension): worker mobility (CPS or SIPP transitions)
 \end{itemize}
 
 
@@ -559,19 +670,6 @@ This subsection summarizes the design axes that define the empirical pipeline. E
     \item Held-out structure: by time window (training: pre-period; test: post-period) or by region (training: subset of CZs; test: remainder)
     \item Headline metric: incremental $R^2$ vs discrete baselines
 \end{itemize}
-
-
-\begin{quote}
-\textit{[PLACEHOLDER PH0---O*NET object construction audit]}
-To be completed in v0.4:
-\begin{itemize}
-    \item Final domain choice (GWA vs DWA) with justification
-    \item Exact O*NET files and columns used (file names, scale IDs)
-    \item Suppression/missingness handling rules applied
-    \item $\rho_j$ distribution statistics (entropy, effective support, coverage)
-    \item Spot-check face validity table (10 occupations $\times$ top-5 activities)
-\end{itemize}
-\end{quote}
 
 
 \subsection{Constructing the activity geometry and occupation measures}
@@ -584,7 +682,7 @@ Construction proceeds in four steps:
 \medskip
 \noindent\textbf{Step 1: Choose activity domain $T_n$.}
 \begin{itemize}
-    \item Baseline: DWA ($n \approx 2{,}000$). Rationale: DWAs are shared across occupations (enabling spillover analysis), granular enough to capture within-category heterogeneity, and have known nesting structure for hierarchy-weighted $\mu$.
+    \item Baseline: DWA ($n = 2{,}087$). Rationale: DWAs are shared across occupations (enabling overlap analysis), granular enough to capture within-category heterogeneity, and have known nesting structure for hierarchy-weighted $\mu$.
     \item Robustness: GWA ($n \approx 41$) to test whether coarser domain destroys signal.
     \item Pruning: drop activities with near-zero mass across all occupations ($\sum_j w_j(a) < $ threshold; threshold pre-committed at $p5$ of activity totals).
 \end{itemize}
@@ -601,46 +699,31 @@ Construction proceeds in four steps:
 
 
 \medskip
-\noindent\textbf{Step 3: Construct activity distance $d(a,b)$.}
+\noindent\textbf{Step 3: Construct activity relatedness measure.}
 \begin{itemize}
-    \item Baseline (Recipe X): Form activity-by-occupation matrix $W$ with entries $w_j(a)$. Transpose to get occupation profiles for each activity. Standardize columns (zero mean, unit variance). Apply PCA (retain 90\% variance). Compute Euclidean distance in reduced space.
-    \item Robustness (Recipe Y): Embed activity text (DWA titles or GWA definitions) using sentence-transformers. Compute cosine distance.
+    \item Baseline (revised after Phase~I): Binary activity sharing via Jaccard index.
+    \item Robustness: Recipe X (rating-cooccurrence) and Recipe Y (text embedding) for comparison.
+    \item Phase~I established that continuous distance does not improve prediction; binary overlap is the primary measure.
 \end{itemize}
 
 
 \medskip
 \noindent\textbf{Step 4: Produce audit outputs.}
 \begin{itemize}
-    \item Nearest-neighbor table: for 20 activities spanning domains, list 5 nearest neighbors under $d$ and verify face validity.
-    \item Stability check: perturb $w_j(a)$ by $\pm 10\%$ noise; report fraction of nearest-neighbor sets that change.
+    \item Nearest-neighbor table (for Recipe X/Y robustness): for 20 activities spanning domains, list 5 nearest neighbors under $d$ and verify face validity.
     \item $\rho_j$ diagnostics: entropy distribution; effective support distribution; flag sparse occupations.
+    \item Overlap distribution: histogram of occupation-pair Jaccard values; note that median overlap is 0.0 due to extreme sparsity.
 \end{itemize}
-
-
-\begin{quote}
-\textit{[PLACEHOLDER---Data specification (v0.4)]}
-Required documentation:
-\begin{itemize}
-    \item O*NET release version (e.g., O*NET 30.0)
-    \item Files used: Work Activities.xlsx (for GWA); Tasks to DWAs.xlsx and Task Ratings.xlsx (for DWA construction); DWA Reference.xlsx
-    \item Columns: O*NET-SOC Code, Element ID, Element Name, Scale ID (IM/LV), Data Value, N, Standard Error, Recommend Suppress, Not Relevant
-    \item Scale handling: IM scale $[1,5]$ rescaled to $[0,1]$ via $(x-1)/4$; LV scale $[0,7]$ rescaled to $[0,1]$ via $x/7$
-    \item Suppression rule: drop if Recommend Suppress $=$ ``Y'' or $N < 5$
-    \item Not Relevant rule: set $w = 0$ if Not Relevant $=$ ``Y''
-    \item Minimum activity threshold: drop activity $a$ if $\sum_j w_j(a) < [p5$ threshold$]$
-    \item Minimum occupation coverage: flag occupation $j$ if $|\{a: \rho_j(a) > 0\}| < 10$
-\end{itemize}
-\end{quote}
 
 
 \subsection{The Diagnostics Gateway: Phase I Validation}
 \label{subsec:phase1}
 
 
-Phase I acts as a \emph{selection mechanism} for the geometry. If the baseline geometry (Recipe X) fails to predict observed worker mobility or wage comovement, we proceed to alternative geometries (Recipe Y) rather than abandoning the framework. We treat the geometry as an estimated parameter that must be validated ex-ante before inspecting treatment effects.
+Phase I acts as a \emph{selection mechanism} for the activity-space representation. The baseline continuous geometry (Recipes X and Y) was tested and failed; binary activity overlap passed. We report these findings as substantive empirical results.
 
 
-Phase I tests whether the constructed geometry and occupation measures are coherent and pass basic rejection diagnostics. Phase I is necessary but not sufficient: it filters out pathological constructions but does not validate that exposure indices predict outcomes.
+Phase I tests whether the constructed representation is coherent and passes basic rejection diagnostics. Phase I is necessary but not sufficient: it filters out pathological constructions but does not validate that exposure indices predict outcomes.
 
 
 \medskip
@@ -651,108 +734,128 @@ Phase I tests whether the constructed geometry and occupation measures are coher
 \noindent\textit{(A1) Sparsity and entropy.}
 \begin{itemize}
     \item Compute entropy $H(\rho_j) = -\sum_a \rho_j(a) \log \rho_j(a)$ for each occupation.
-    \item Report distribution of $H(\rho_j)$; flag if median entropy $<$ [threshold].
-    \item Compute effective support $|\{a: \rho_j(a) > 0.01\}|$; report distribution.
-    \item Decision rule: if $>$20\% of occupations have effective support $< 15$ under DWA domain, consider relaxing suppression rules or switching to GWA.
+    \item Finding: The occupation-activity matrix is 99.1\% zeros. Median Jaccard overlap between occupation pairs is 0.0. Most occupations share no activities at all.
+    \item Interpretation: The activity-sharing structure is extremely sparse and fragmented.
 \end{itemize}
 
 
 \noindent\textit{(A2) Face validity spot checks.}
 \begin{itemize}
-    \item Select 10 occupations spanning sectors (e.g., nurse, electrician, accountant, truck driver, software developer, lawyer, retail cashier, machinist, teacher, manager).
-    \item For each, list top-5 activities by $\rho_j(a)$.
-    \item Manual review: do top activities match occupation descriptions?
-\end{itemize}
-
-
-\noindent\textit{(A3) Sensitivity to construction choices.}
-\begin{itemize}
-    \item Recompute $\rho_j$ under robustness variants (IM only; mean aggregation for DWA).
-    \item Report correlation of $\rho_j$ vectors across variants.
+    \item Selected 10 occupations spanning sectors (nurse, electrician, accountant, truck driver, software developer, lawyer, retail cashier, machinist, teacher, manager).
+    \item For each, top-5 activities by $\rho_j(a)$ were manually reviewed.
+    \item Finding: Top activities match occupation descriptions; construction appears valid.
 \end{itemize}
 
 
 \medskip
-\noindent\textbf{DIAGNOSTIC B: Activity metric validation (external monotonicity)}
+\noindent\textbf{DIAGNOSTIC B: External monotonicity (wage comovement)}
 
 
 \medskip
-\noindent\textit{(B1) Intermediate diagnostic: activity-level coherence.}
+\noindent\textit{(B1) Regression specification.}
+\[
+\text{WageComovement}_{i,j} = \alpha + \beta \times \text{Overlap}_{i,j} + \varepsilon_{i,j}
+\]
+Standard errors clustered by origin occupation. $n = 246{,}051$ occupation pairs.
+
+
+\noindent\textit{(B2) Results.}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Measure} & $\beta$ & SE & $t$ & $p$ & $R^2$ \\
+\midrule
+Binary Jaccard & 0.471 & 0.059 & 8.00 & $< 10^{-15}$ & 0.00167 \\
+Kernel-weighted ($\sigma = p50$) & 606.4 & 117.4 & 5.17 & $< 0.0001$ & 0.00108 \\
+SAE Jaccard & 0.526 & 0.064 & 8.23 & $< 10^{-16}$ & 0.00292 \\
+\bottomrule
+\end{tabular}
+\caption{Phase I validation results: occupation-pair overlap as predictor of wage comovement.}
+\label{tab:phase1-results}
+\end{table}
+
+
+\noindent\textit{(B3) Robustness checks.}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Check} & \textbf{Result} & \textbf{Interpretation} \\
+\midrule
+Permutation test ($n=1000$) & $p = 0.31$ for kernel-weighted & Kernel effect not distinguishable from shuffled \\
+Placebo test ($n=100$) & Random $\beta$ / Real $\beta = 2.5\times$ & Random distances outperform semantic distances \\
+$\sigma$-collinearity & $r = 0.999$ across $\sigma$ values & Bandwidth parameter is inert \\
+Diagonal dominance & $t = 4.85$ without diagonal & Effect is not driven by self-overlap \\
+\bottomrule
+\end{tabular}
+\caption{Phase I robustness checks. Continuous kernel structure fails; binary structure is robust.}
+\label{tab:phase1-robustness}
+\end{table}
+
+
+\noindent\textit{(B4) Interpretation.}
+
+Binary activity overlap strongly predicts wage comovement. Continuous kernel-weighted overlap does not improve prediction---the kernel structure adds noise rather than signal. Random distance matrices produce stronger effects than carefully computed semantic distances, indicating that the semantic structure encoded in text embeddings is actively anti-correlated with economic outcomes.
+
+The finding that $\sigma$ is inert (correlation $r = 0.999$ across bandwidth values) indicates that all distances cluster in a narrow band. Changing the spillover range doesn't change the overlap structure---it just rescales.
+
+
+\medskip
+\noindent\textbf{DIAGNOSTIC C: Sparse autoencoder (SAE) decomposition}
+
+
+An additional analysis used sparse autoencoders to decompose the embedding space into interpretable features.
+
+
+\noindent\textit{(C1) SAE findings.}
 \begin{itemize}
-    \item Identify occupation pairs $(i,j)$ where both have high concentration on the same activity (e.g., both have $\rho(a) > 0.3$ for some $a$).
-    \item For these pairs, check whether observed mobility/comovement is elevated.
-    \item Purpose: test that ``same activity'' predicts relatedness before testing full geometry.
+    \item The SAE identified approximately 2,066 effective features with no power-law dominance.
+    \item 17 of 20 sampled features were semantically coherent (e.g., Feature \#13 clusters ``Python'', ``Java'', ``SQL'').
+    \item Interpretation: The labor market has thousands of distinct occupational niches, not a few dominant skill dimensions.
 \end{itemize}
 
 
-\noindent\textit{(B2) Occupation-pair proximity test.}
+\noindent\textit{(C2) SAE Jaccard performance.}
 \begin{itemize}
-    \item Define proximity $\mathrm{Prox}(i,j) = \sum_a \sum_b \rho_i(a)\, \rho_j(b)\, k(d(a,b); \sigma)$ (expected kernel overlap).
-    \item Regress mobility rate (or wage comovement) on $\mathrm{Prox}(i,j)$, controlling for occupation-level covariates (industry mix, education, wage level).
-    \item Report slope and SE; test monotonicity across distance deciles.
-    \item Unit: occupation pairs. SEs clustered by occupation.
-\end{itemize}
-
-
-\noindent\textit{(B3) Recipe comparison.}
-\begin{itemize}
-    \item Repeat (B2) under Recipe X vs Recipe Y.
-    \item Report whether monotonicity holds under both; flag if divergent.
-    \item \textbf{Selection rule:} If Recipe X fails monotonicity ($p > 0.10$) but Recipe Y passes, proceed with Recipe Y as the primary geometry.
+    \item SAE-based Jaccard overlap produced $t = 8.23$, $\beta$ improvement of +11.5\% vs binary Jaccard, $R^2$ improvement of +75\%.
+    \item However, the +11.5\% effect size improvement is below the pre-committed +20\% threshold for ``better than binary.''
+    \item Conclusion: SAE decomposition finds coherent structure but adds marginally over simple binary overlap.
 \end{itemize}
 
 
 \medskip
-\noindent\textbf{DIAGNOSTIC C: Covariance structure check}
+\noindent\textbf{PHASE I SELECTION OUTCOME:}
+
 \begin{itemize}
-    \item Using $\mathrm{Overlap}(i,j) = \rho_i^\top K \rho_j$ (\cref{rem:discrete-overlap}), test whether occupation-pair wage comovement is predicted by activity overlap.
-    \item This is a coherence check: if exposure propagates through shared activities, pairs with high overlap should comove.
+    \item Binary Jaccard passes all validation criteria.
+    \item Kernel-weighted overlap fails permutation test and is deprioritized.
+    \item SAE Jaccard passes validation but does not meet the ``better than binary'' threshold for primary use.
 \end{itemize}
 
-
-\medskip
-\noindent\textbf{DIAGNOSTIC D: Baseline comparisons}
-\begin{itemize}
-    \item Compute correlation between $\rho_j$-weighted geometric exposure and discrete baselines (routine share, categorical AI-exposure score).
-    \item If correlation $> 0.9$, geometric measure is near-redundant; value depends on interactions/nonlinearities or out-of-sample gains.
-\end{itemize}
-
-
-\medskip
-\noindent\textbf{PHASE I OUTPUT REQUIREMENTS:}
-\begin{itemize}
-    \item Summary table: rows $=$ (domain $\times$ metric $\times$ $\mu$ $\times$ kernel) variants; columns $=$ monotonicity slope, covariance slope, baseline correlation, $\rho_j$ entropy (median), $\rho_j$ coverage (\% occupations with effective support $\geq 15$).
-    \item \textbf{Selection rule:} Variants failing monotonicity ($p > 0.10$) or with baseline correlation $> 0.95$ are deprioritized; proceed with best-performing variant(s) to Phase II.
-\end{itemize}
-
-
-\begin{quote}
-\textit{[PLACEHOLDER PH1---$\mu$ sensitivity panel]}
-\begin{itemize}
-    \item Baseline $\mu$: uniform
-    \item Alternative $\mu$: hierarchy-weighted; average-importance-weighted
-    \item Mechanical effect: hierarchy-weighted $\mu$ downweights activities in large GWA clusters; importance-weighted $\mu$ upweights salient activities.
-    \item Output: table showing exposure index correlations across $\mu$ variants.
-\end{itemize}
-\end{quote}
-
-
-\begin{quote}
-\textit{[PLACEHOLDER PH2---Activity distance sensitivity panel]}
-\begin{itemize}
-    \item Recipe X vs Recipe Y distances
-    \item Euclidean vs cosine
-    \item PCA variance thresholds (80\%, 90\%, 95\%)
-    \item Output: neighbor stability metrics; cross-recipe distance correlations.
-\end{itemize}
-\end{quote}
+\textbf{Primary measure for Phase II:} Binary activity overlap with importance weighting:
+\[
+E^A_j = \sum_{a \in T_n} I(a) \cdot \rho_j(a).
+\]
 
 
 \subsection{Experiment A: Retrospective evaluation (1990--2007)}
 \label{subsec:experimentA}
 
 
-The retrospective evaluation compares geometric exposure to standard composition-based exposure designs in settings associated with late-20th-century automation.
+The retrospective evaluation compares activity-based exposure to standard composition-based exposure designs in settings associated with late-20th-century automation.
+
+
+\medskip
+\noindent\textbf{BASELINE EXPOSURE CONSTRUCTION (revised after Phase~I):}
+
+Given shock profile $I(a)$ over activities, occupation-level exposure is:
+\[
+E^A_j = \sum_{a \in T_n} I(a) \cdot \rho_j(a).
+\]
+This is a weighted sum of shock intensity over the occupation's activity distribution. No kernel propagation across activities.
 
 
 \medskip
@@ -777,7 +880,7 @@ The retrospective evaluation uses a Routine-Biased Technological Change (RBTC) s
 \end{itemize}
 
 
-\noindent Explicitly: we do not estimate $I$ from outcomes. The shock profile is constructed from activity characteristics and applied via $\widetilde{\mathcal{K}}$.
+\noindent Explicitly: we do not estimate $I$ from outcomes. The shock profile is constructed from activity characteristics and applied via the occupation measures.
 
 
 \medskip
@@ -785,28 +888,29 @@ The retrospective evaluation uses a Routine-Biased Technological Change (RBTC) s
 \begin{itemize}
     \item Domain: GWA vs DWA
     \item $\mu$: uniform vs hierarchy-weighted
-    \item $\sigma$: pre-committed grid
-    \item Kernel: exponential vs Gaussian
+    \item Kernel-weighted exposure (not expected to improve, based on Phase~I): reported as robustness check
 \end{itemize}
+
+
+\medskip
+\noindent\textbf{DOMINANCE TEST (new):}
+
+To assess whether activity-based exposure dominates other channels, estimate:
+\[
+Y_j = \alpha + \beta_1 E^{\text{activity}}_j + \beta_2 E^{\text{industry}}_j + \beta_3 E^{\text{credential}}_j + \beta_4 E^{\text{wage}}_j + \epsilon_j,
+\]
+where $E^{\text{industry}}$ is industry-composition exposure (Bartik), $E^{\text{credential}}$ is credential-similarity exposure, and $E^{\text{wage}}$ is wage-proximity exposure.
+
+If $\beta_1$ is not the dominant coefficient, activity-based exposure may be one of several channels rather than the primary mechanism.
 
 
 \medskip
 \noindent\textbf{OUTPUT:}
 \begin{itemize}
-    \item Comparison table: geometric exposure vs composition-based Bartik exposure vs routine-share exposure.
-    \item Figure: within-group dispersion captured by geometry (e.g., distribution of geometric exposure within ``routine'' category).
+    \item Comparison table: activity-based exposure vs composition-based Bartik exposure vs routine-share exposure.
+    \item Dominance test: coefficients on activity-based vs alternative channels.
+    \item Figure: within-group dispersion captured by activity overlap (e.g., distribution of activity-based exposure within ``routine'' category).
 \end{itemize}
-
-
-\begin{quote}
-\textit{[RETROSPECTIVE EXPERIMENT PLACEHOLDER]}
-\begin{itemize}
-    \item Unit (CZ/commuting zone or similar) and baseline composition exposure construction.
-    \item Outcomes (wages, employment, labor share proxies) and baseline controls (including wage-setting proxies: union coverage, occupational licensing prevalence, local labor market concentration).
-    \item Spillover scale $\sigma$: pre-specified grid; report sensitivity; retain a calibrated range for Experiment B.
-    \item Output: a single comparison table (geometric vs baseline) plus one figure showing within-group dispersion captured by geometry.
-\end{itemize}
-\end{quote}
 
 
 \subsection{Experiment B: Prospective evaluation (2022--present)}
@@ -874,6 +978,18 @@ Each candidate defines $I^{(v)}(a)$ for activities $a \in T_n$.
 
 
 \medskip
+\noindent\textbf{STABILITY TEST (new):}
+
+Compare exposure rankings across shock types:
+\begin{itemize}
+    \item RBTC shock (routine-biased): $I^{\text{RBTC}}(a) = $ loading on routine activities
+    \item AI shock (generative): $I^{\text{AI}}(a) = $ loading on language/cognitive activities
+\end{itemize}
+
+Compute rank correlation of $(E^{\text{RBTC}}_j, E^{\text{AI}}_j)$ across occupations. If correlation is low, different shocks have different exposure geometry; the framework may need shock-specific calibration rather than a single stable geometry.
+
+
+\medskip
 \noindent\textbf{DISCRIMINABILITY REQUIREMENT:}
 \begin{itemize}
     \item Compute pairwise correlations among $E^{v_1}$, $E^{v_2}$, $E^{v_3}$ across occupations.
@@ -881,33 +997,12 @@ Each candidate defines $I^{(v)}(a)$ for activities $a \in T_n$.
 \end{itemize}
 
 
-\begin{quote}
-\textit{[PLACEHOLDER PH3---Profile pre-commitment protocol]}
-\begin{itemize}
-    \item Primary profile: $v_3$ (specify which variant)
-    \item Construction rules for $v_1$, $v_2$, $v_3$: [document exact mapping]
-    \item Training/test split (if applicable): [specify windows]
-    \item Selection criterion (if applicable): [specify metric]
-    \item ``No further tuning'' rule: kernel family and $\sigma$ grid fixed before outcome analysis
-\end{itemize}
-\end{quote}
-
-
-\begin{quote}
-\textit{[PLACEHOLDER PH4---Out-of-sample evaluation plan]}
-\begin{itemize}
-    \item Holdout structure: [time / region / occupation]
-    \item Baseline model: [controls, fixed effects, wage-setting proxies per \cref{subsec:wedge}]
-    \item Reporting: one headline table (geometric vs discrete baselines); one robustness table (across domain/$\mu$/kernel variants)
-\end{itemize}
-\end{quote}
-
-
 \medskip
 \noindent\textbf{OUTPUT:}
 \begin{itemize}
-    \item Discriminability table: correlations among candidate exposures across ($\sigma$, $\mu$, domain) variants.
+    \item Discriminability table: correlations among candidate exposures across ($\mu$, domain) variants.
     \item Comparison table: fit statistics for $v_1$, $v_2$, $v_3$ vs discrete baselines (Eloundou et al.\ categorical; routine/manual indicators).
+    \item Stability test: rank correlation of RBTC vs AI exposure rankings.
     \item Robustness table: stability of $v_1$/$v_2$/$v_3$ rankings across domain granularity.
 \end{itemize}
 
@@ -924,15 +1019,14 @@ The framework is evaluated against simple baselines using explicit criteria.
 
 
 \begin{enumerate}
-    \item \textbf{Incremental explanatory power.} Geometric exposure should improve fit relative to discrete baselines by an economically meaningful margin (e.g., $\Delta R^2 > 0.02$ or $\Delta$coefficient precision improvement). Evaluated out-of-sample (by time or held-out units).
+    \item \textbf{Incremental explanatory power.} Activity-based exposure should improve fit relative to discrete baselines by an economically meaningful margin (e.g., $\Delta R^2 > 0.02$ or $\Delta$coefficient precision improvement). Evaluated out-of-sample (by time or held-out units).
     
-    \item \textbf{Parameter stability.} Results should be qualitatively stable across the pre-committed $\sigma$ grid. If optimal $\sigma$ varies by specification, report this as a limitation.
+    \item \textbf{Parameter stability.} Results should be qualitatively stable across domain choices (DWA vs GWA) and weighting schemes (uniform vs importance-weighted $\mu$).
     
     \item \textbf{Non-redundancy.} If correlation with discrete baselines $> 0.90$, value depends on:
     \begin{enumerate}
-        \item[(a)] Interaction effects: Does geometric exposure $\times$ wage-setting environment (union coverage, concentration, licensing) reveal heterogeneity that discrete baselines miss?
-        \item[(b)] Nonlinear specifications: Does binned geometric exposure or spline specification improve fit vs linear discrete baseline?
-        \item[(c)] Out-of-sample gains: Even if in-sample correlation is high, does geometric measure predict better out-of-sample?
+        \item[(a)] Interaction effects: Does activity-based exposure $\times$ wage-setting environment (union coverage, concentration, licensing) reveal heterogeneity that discrete baselines miss?
+        \item[(b)] Out-of-sample gains: Even if in-sample correlation is high, does activity-based measure predict better out-of-sample?
     \end{enumerate}
     
     \item \textbf{Non-tautological validation.} Geometry diagnostics (Phase I) must use targets not used in construction. Phase I is rejection-based; passing Phase I does not validate the measure.
@@ -959,8 +1053,8 @@ The framework is evaluated against simple baselines using explicit criteria.
 If primary criteria fail:
 \begin{itemize}
     \item Do not add auxiliary structure to rescue fit.
-    \item Revise geometry (try different recipe, domain, or $\mu$) or shock mapping (try different profile construction).
-    \item If revision search is extensive, report null result: ``geometric measure does not outperform discrete baselines under tested specifications.''
+    \item Revise the shock profile construction (try different mapping) or domain granularity.
+    \item If revision search is extensive, report null result: ``activity-based measure does not outperform discrete baselines under tested specifications.''
 \end{itemize}
 
 
@@ -975,18 +1069,15 @@ This paper targets a compact, implementable measurement pipeline. Extensions are
 \label{subsec:dynamic}
 
 
-The baseline construction $A_t := \widetilde{\mathcal{K}} I_t$ is static. For settings where shock accumulation or reversal matters, define:
+The baseline construction is static. For settings where shock accumulation or reversal matters, define:
 \[
-A_t = \delta A_{t-1} + \widetilde{\mathcal{K}} I_t + \varepsilon_t,
+A_t = \delta A_{t-1} + I_t + \varepsilon_t,
 \]
 where $\delta \in [0,1]$ governs persistence. This nests the static case ($\delta = 0$, single-period shock) and allows for:
 \begin{itemize}
     \item \textbf{Accumulation ($\delta > 0$):} past shocks continue to affect current exposure.
     \item \textbf{Reversal ($\delta < 1$, negative $I_t$ shocks):} displacement can decline if technology retreats or comparative advantage shifts.
 \end{itemize}
-
-
-The monotonicity constraint ($\partial A/\partial t \geq 0$) from earlier versions is not imposed in baseline; it is appropriate only for retrospective exercises where the technological frontier advances monotonically over the sample period.
 
 
 Estimation of the dynamic model requires panel structure at the occupation-time level and is deferred to future work.
@@ -1006,6 +1097,30 @@ The framework carries $C_t$ (complementarity field) and $E^C$ (augmentation expo
 This channel is not estimated in the baseline empirics. A natural proxy is occupation-level measures of tool/technology adoption; validation would follow the same Phase I / Phase II structure as displacement exposure.
 
 
+\subsection{Supervised dimension extraction}
+\label{subsec:supervised}
+
+
+The SAE findings suggest unsupervised decomposition finds linguistic rather than economic structure. An alternative to unsupervised decomposition (SAE, PCA) is supervised extraction of economically-relevant dimensions. Given theoretical priors about dimensions that matter (e.g., routine/non-routine, cognitive/manual), one can:
+\begin{enumerate}
+    \item Construct contrast sets of activities at each pole.
+    \item Extract representations from a language model.
+    \item Train linear probes to identify concept directions.
+    \item Project all activities onto these dimensions.
+\end{enumerate}
+
+This approach directly extracts \emph{economic} structure rather than hoping unsupervised methods find it. The trade-off is that it requires theoretical priors about which dimensions matter, whereas unsupervised methods are agnostic.
+
+
+\subsection{Worker mobility as alternative validation target}
+\label{subsec:mobility}
+
+
+Wage comovement can be driven by industry concentration, geographic clustering, and institutional factors that operate orthogonal to activity structure. Worker mobility (occupation-to-occupation transitions) is more mechanically tied to ``can this worker do that job?''---the core question of activity overlap.
+
+If binary overlap predicts mobility as well as it predicts comovement, the framework is robust across validation targets. If mobility shows more sensitivity to continuous structure, the geometric approach may be relevant for mobility even if not for wages.
+
+
 \subsection{Additional extensions}
 
 
@@ -1022,25 +1137,25 @@ This channel is not estimated in the baseline empirics. A natural proxy is occup
 \subsection{Historical regime signatures}
 
 
-To summarize historical episodes without forcing a single narrative, \cref{tab:regimes} records regime signatures as hypotheses about shock support, displacement vs augmentation, spillover range, and wage-setting environment.
+To summarize historical episodes without forcing a single narrative, \cref{tab:regimes} records regime signatures as hypotheses about shock support, displacement vs augmentation, and primary mechanism.
 
 
 \begin{table}[h!]
 \centering
 \begin{tabular}{|l|l|l|l|l|}
 \hline
-\textbf{Regime} & \textbf{Shock support ($I_t$)} & \textbf{$A$ vs.\ $C$ balance} & \textbf{Spillover range ($\sigma$)} & \textbf{Wage wedge} \\
+\textbf{Regime} & \textbf{Shock support ($I_t$)} & \textbf{$A$ vs.\ $C$} & \textbf{Mechanism} & \textbf{Wage wedge} \\
 \hline
-Electrification (1900--1940) & Manual/craft tasks & Mixed & Medium & Context-dependent \\
+Electrification (1900--1940) & Manual/craft tasks & Mixed & TBD & Context-dependent \\
 \hline
-Postwar scaling (1945--1970) & Broad/diffuse & Augmentation-dominant & Wide & High pass-through \\
+Postwar scaling (1945--1970) & Broad/diffuse & Augmentation & TBD & High pass-through \\
 \hline
-ICT/RBTC (1980--2007) & Routine-cognitive core & Displacement-dominant & Narrow & Declining pass-through \\
+ICT/RBTC (1980--2007) & Routine-cognitive core & Displacement & Binary? & Declining pass-through \\
 \hline
-AI era (2020--) & Analytic/generative (candidates) & TBD & TBD & TBD \\
+AI era (2020--) & Analytic/generative & TBD & TBD & TBD \\
 \hline
 \end{tabular}
-\caption{Historical regimes as parameter signatures. Entries are hypotheses to be disciplined by data.}
+\caption{Historical regimes as parameter signatures. ``Mechanism'' column records whether continuous or discrete activity structure is the primary channel; Phase~I suggests discrete may dominate.}
 \label{tab:regimes}
 \end{table}
 
@@ -1049,15 +1164,19 @@ AI era (2020--) & Analytic/generative (candidates) & TBD & TBD & TBD \\
 \label{sec:conclusion}
 
 
-\textit{[CONCLUSION PLACEHOLDER]}
-Write $\sim$1 page, minimal repetition:
-\begin{enumerate}
-    \item Contribution in one paragraph: geometry + kernel + exposure + diagnostics.
-    \item Findings: A (retrospective) and B (prospective) in two short paragraphs.
-    \item What failure would mean (one paragraph): revise geometry/shock mapping or accept baselines.
-    \item Scope/limits (one paragraph): partial equilibrium; pass-through wedge; fixed domain; shock-profile uncertainty.
-    \item Next steps (one paragraph): higher-frequency text for new tasks; GE; other historical shocks.
-\end{enumerate}
+This paper develops a geometric measurement framework for labor market exposure to technological shocks and tests whether continuous structure improves prediction beyond discrete activity classification. We model occupations as probability distributions over work activities, with shocks propagating through the activity space. The framework provides a principled construction of occupation-activity measures from O*NET data and a testable formalization that distinguishes continuous from discrete representations of the task domain.
+
+
+The central empirical finding is that discrete activity sharing strongly predicts wage comovement, but continuous semantic similarity does not improve prediction. Binary activity overlap---simple Jaccard index over shared activities---produces robust predictive relationships ($t = 8.00$, $p < 10^{-15}$). In contrast, kernel-weighted overlap using text embeddings fails permutation testing ($p = 0.31$) and is outperformed by random distance matrices. The spillover bandwidth parameter $\sigma$ is inert, with correlation $r = 0.999$ across the pre-committed grid. Sparse autoencoder decomposition identifies semantically coherent features but adds only marginally (+11.5\% effect size) over simple binary overlap.
+
+
+These results suggest that economic frictions are threshold-based rather than continuously graded. Hiring operates through checkbox verification---employers check whether candidates can perform specific required tasks, not whether they can perform ``similar'' tasks. The resulting labor market structure is a sparse bipartite graph (occupations and activities as nodes, with edges indicating usage) rather than a metric space with continuous distances. The manifold representation may be appropriate for some applications, but it does not predict wage comovement better than simple counting.
+
+
+Several questions remain unaddressed. First, we have not tested whether activity-based exposure is the \emph{dominant} channel versus industry composition, credential similarity, or wage proximity. The dominance test proposed in Phase~II will assess this. Second, we have not validated structural stability across shock types; the RBTC-vs-AI stability test is needed. Third, wage comovement may not be the ideal validation target---worker mobility may show different structure. Fourth, the findings are specific to O*NET activity classifications; other taxonomies may behave differently.
+
+
+Future work should test dominance against competing exposure channels, validate against worker mobility, assess stability across historical shock types, and explore supervised dimension extraction if specific shock profiles require it. The framework's contribution is not ``better prediction through geometry'' but rather a disciplined measurement pipeline that reveals what kind of structure actually matters for economic outcomes. The finding that discrete sharing dominates continuous similarity constrains future theoretical work and suggests that the marginal return to more sophisticated embedding approaches may be low for labor-market applications.
 
 
 \bibliographystyle{apalike}

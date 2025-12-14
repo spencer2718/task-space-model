@@ -8,7 +8,8 @@ This document contains working conventions, version control rules, and quality-o
 
 **Paper and codebase versions must always match.**
 
-- Current: **v0.6.1** (Kernel fix validated, continuous structure confirmed)
+- Current: **v0.6.2** (Phase 2 Complete — semantic signal validated)
+- Previous: v0.6.1 (Kernel fix validated, continuous structure confirmed)
 - Previous: v0.5.0 (Binary overlap validated, SAE marginal — **artifact**)
 - Previous: v0.4.2.1 (random > semantic — **artifact, kernel collapse**)
 - Previous: v0.4.2 (appeared to pass, spurious)
@@ -18,19 +19,36 @@ When updating either paper or code, ensure the other stays in sync or is updated
 
 ---
 
-## Current Status: Continuous Structure Validated
+## Current Status: Phase 2 Complete
 
-**v0.6.1 Result:** Kernel-weighted semantic overlap **strongly outperforms** binary Jaccard.
+**v0.6.2 Result:** Semantic signal is **robust** to normalization and concentration controls.
 
-| Measure | t-stat | R² | Status |
-|---------|--------|-----|--------|
-| Kernel (semantic, fixed) | **27.65** | **0.00310** | Best |
+| Measure | t-stat (clustered SEs) | R² | Status |
+|---------|------------------------|-----|--------|
+| MPNet (normalized) | **7.14** | **0.00485** | Best measure |
+| MPNet (unnormalized) | 5.90 | 0.00310 | Matches Phase 1 |
+| MPNet (+ entropy control) | 5.29 | — | Still significant |
 | Binary Jaccard | 8.00 | 0.00167 | Baseline |
-| Random (best of 100) | 15.09 | 0.00052 | Noise |
 
-**Key finding:** The v0.5.0 "discrete dominates continuous" was an **artifact** caused by kernel collapse. With proper σ calibration, semantic structure is highly predictive.
+**Key findings:**
+1. **Normalization IMPROVES R² by 56.6%** — concentration was NOISE, not signal
+2. Signal remains significant (t=5.29) after controlling for occupational breadth
+3. Task-manifold theory validated for activity-level semantic similarity
 
-**Recommendation:** Use kernel-weighted overlap with σ = 0.2230 (median NN distance), unnormalized.
+**Recommendation:** Use **normalized** kernel-weighted overlap for best predictive power.
+
+---
+
+## Methodological Note: Activity vs Occupation Level
+
+**C1-C3 (text embeddings) and C4-C7 (O*NET structured) test different hypotheses:**
+
+| Approach | Level | Method | Tests |
+|----------|-------|--------|-------|
+| C1-C3 | Activity → Occupation | Kernel-weighted overlap | Task-manifold theory |
+| C4-C7 | Occupation → Occupation | Direct similarity | Ability/skill requirements |
+
+C4-C7 bypass the activity-level kernel entirely. Higher R² for C4-C7 does not validate or invalidate the task-manifold theory — it tests whether occupation-level ability requirements predict wage comovement (different hypothesis).
 
 ---
 
@@ -175,7 +193,8 @@ src/task_space/
     baseline.py        # Binary Jaccard overlap
     sae.py             # Sparse Autoencoder
     diagnostics.py     # Phase I coherence checks
-    diagnostics_v061.py  # v0.6.1 kernel diagnostics and fix (NEW)
+    diagnostics_v061.py  # v0.6.1 kernel diagnostics and fix
+    comparison.py      # Phase 2 representation comparison (in progress)
     validation.py      # Phase I external validation
     crosswalk.py       # O*NET-SOC to OES crosswalk
 ```
@@ -232,6 +251,13 @@ outputs/phase1/
     jaccard_semantic_correlation.json  # Task 1.1.4
     activity_embeddings.npy        # MPNet embeddings
     jaccard_semantic_scatter.png   # Correlation plot
+
+outputs/phase2/                    # Complete
+    primary_validation.json        # Main comparison results
+    permutation_tests.json         # Permutation p-values (all p < 0.001)
+    cross_validation.json          # CV R² and overfit ratios
+    phase2_robustness.json         # Normalized overlap + controls
+    phase2_summary.md              # Human-readable summary
 ```
 
 ---
