@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "task_space"
+version = "0.6.3"
+description = "Geometric framework for labor market exposure measurement"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "Research Use Only"}
+
+dependencies = [
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "scipy>=1.10",
+    "scikit-learn>=1.3",
+    "openpyxl>=3.1",
+    "torch>=2.0",
+    "sentence-transformers>=2.2",
+    "transformers>=4.30",
+    "pyyaml>=6.0",
+    "tqdm>=4.65",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+]
+notebooks = [
+    "jupyter>=1.0",
+    "matplotlib>=3.7",
+    "seaborn>=0.12",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

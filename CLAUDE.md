@@ -8,7 +8,8 @@ This document contains working conventions, version control rules, and quality-o
 
 **Paper and codebase versions must always match.**
 
-- Current: **v0.6.2** (Phase 2 Complete — semantic signal validated)
+- Current: **v0.6.3** (Infrastructure Consolidation — Phase II ready)
+- Previous: v0.6.2 (Phase 2 Complete — semantic signal validated)
 - Previous: v0.6.1 (Kernel fix validated, continuous structure confirmed)
 - Previous: v0.5.0 (Binary overlap validated, SAE marginal — **artifact**)
 - Previous: v0.4.2.1 (random > semantic — **artifact, kernel collapse**)
@@ -17,25 +18,31 @@ This document contains working conventions, version control rules, and quality-o
 
 When updating either paper or code, ensure the other stays in sync or is updated together.
 
+**Paper sync:** `paper/main.tex` is updated in chunks after empirical milestones. Current paper version: v0.6.2. Code may be ahead of paper. Canonical empirical results are in `outputs/` JSON files.
+
 ---
 
-## Current Status: Phase 2 Complete
+## Current Status: v0.6.3 (Infrastructure Complete)
 
-**v0.6.2 Result:** Semantic signal is **robust** to normalization and concentration controls.
+**Phase I validation complete. Infrastructure ready for Phase II.**
 
-| Measure | t-stat (clustered SEs) | R² | Status |
-|---------|------------------------|-----|--------|
-| MPNet (normalized) | **7.14** | **0.00485** | Best measure |
-| MPNet (unnormalized) | 5.90 | 0.00310 | Matches Phase 1 |
-| MPNet (+ entropy control) | 5.29 | — | Still significant |
+| Measure | t-stat (clustered) | R² | Status |
+|---------|-------------------|-----|--------|
+| Normalized kernel | 7.14 | 0.00485 | Primary |
+| Unnormalized kernel | 5.90 | 0.00310 | Robustness |
 | Binary Jaccard | 8.00 | 0.00167 | Baseline |
 
-**Key findings:**
-1. **Normalization IMPROVES R² by 56.6%** — concentration was NOISE, not signal
-2. Signal remains significant (t=5.29) after controlling for occupational breadth
-3. Task-manifold theory validated for activity-level semantic similarity
+**What Phase I established:**
+- Continuous semantic structure predicts wage comovement
+- 191% R² improvement over binary Jaccard
+- Robust to concentration controls (t = 5.29)
+- Not artifact (100th percentile vs random)
 
-**Recommendation:** Use **normalized** kernel-weighted overlap for best predictive power.
+**What Phase II will test:**
+- Shock profile construction (v1, v2, v3)
+- Retrospective evaluation (1990–2007)
+- Prospective evaluation (2022–present)
+- RBTC vs AI stability
 
 ---
 
@@ -181,34 +188,39 @@ Coverage statistics:
 
 ---
 
-## Module Structure (v0.6.1)
+## Architecture (v0.6.3)
+
+### Package Structure
 
 ```
 src/task_space/
-    __init__.py        # Exports all public APIs
-    data.py            # O*NET file loading and filtering
-    domain.py          # Activity domain + occupation measures
-    distances.py       # Recipe X (PCA) and Recipe Y (embeddings)
-    kernel.py          # Kernel matrix, propagation, exposure
-    baseline.py        # Binary Jaccard overlap
-    sae.py             # Sparse Autoencoder
-    diagnostics.py     # Phase I coherence checks
-    diagnostics_v061.py  # v0.6.1 kernel diagnostics and fix
-    comparison.py      # Phase 2 representation comparison (in progress)
-    validation.py      # Phase I external validation
-    crosswalk.py       # O*NET-SOC to OES crosswalk
+    domain.py              # Activity domain, occupation measures
+    data/                  # Data loading
+        onet.py, oes.py, crosswalk.py, artifacts.py
+    similarity/            # Similarity computation
+        kernel.py, overlap.py, embeddings.py, distances.py
+    shocks/                # Shock profiles (Phase II)
+        registry.py, profiles.py, propagation.py
+    validation/            # Validation utilities
+        regression.py, diagnostics.py, permutation.py
+    experiments/           # Experiment infrastructure
+        config.py, runner.py
 ```
 
-### New in v0.6.1
+### Key Concepts
 
-**diagnostics_v061.py:**
-- `diagnose_distance_distribution()` — Check for degenerate distances
-- `verify_similarity_orientation()` — Confirm similar > dissimilar
-- `diagnose_kernel_weights()` — Detect kernel collapse
-- `diagnose_nearest_neighbor_distances()` — Compute NN-based σ candidates
-- `test_sigma_discrimination()` — Verify discrimination ratio
-- `compute_kernel_overlap()` — Fixed overlap computation
-- `run_kernel_validation()` — Regression with proper σ
+**Overlap vs Exposure:**
+- Overlap: O = ρ K ρ^T — pairwise occupation similarity (Phase I)
+- Exposure: E = ρ (K I_t) — occupation exposure to shock (Phase II)
+
+**Registry Pattern:**
+- Shocks: `@register_shock("name")` decorator
+- Add new shocks without modifying runner
+
+**Artifact Store:**
+- Cache: `.cache/artifacts/v1/`
+- Use `get_embeddings()`, `get_distance_matrix()`
+- Never compute embeddings elsewhere
 
 ---
 
@@ -321,6 +333,16 @@ spec_*.md                # Implementation specifications
 14. **Kernel bandwidth selection is critical** — The key methodological insight: calibrate to local structure (NN distances), not global distribution.
 
 15. **Geometry enables prediction beyond counting** — +86% R² over binary Jaccard. Semantic similarity adds real value.
+
+### From v0.6.3 (Consolidation)
+
+16. **Single source of truth** — Duplication caused v0.5.0 bug to persist. One implementation, tested.
+
+17. **Explicit rejection of bad methods** — `calibrate_sigma()` throws error for non-NN methods, not silent fallback.
+
+18. **Config-driven experiments** — New experiments = YAML config + registered function, not new script.
+
+19. **Overlap ≠ Exposure** — Phase I validated overlap (O = ρKρ^T). Phase II computes exposure (E = ρKI).
 
 ---
 

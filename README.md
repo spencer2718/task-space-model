@@ -2,7 +2,9 @@
 
 A geometric framework for measuring labor market exposure to technological shocks.
 
-**Version 0.6.2** (Phase 2 Complete)
+**Version 0.6.3** (Infrastructure Consolidation)
+
+**Paper sync:** `paper/main.tex` is updated in chunks after empirical milestones. Current paper version: v0.6.2. Code may be ahead of paper. Canonical empirical results are in `outputs/` JSON files.
 
 ---
 
@@ -88,52 +90,43 @@ Download national OES files from https://www.bls.gov/oes/tables.htm for years 20
 
 ---
 
-## Repository Structure
+## Repository Structure (v0.6.3)
 
 ```
-paper/
-    main.tex              # Theoretical framework and empirical strategy
-    references.bib        # Bibliography
 src/task_space/
-    data.py               # O*NET file loading
-    domain.py             # Activity domain and occupation measures
-    distances.py          # Recipe X (PCA) and Recipe Y (embeddings)
-    kernel.py             # Kernel matrix and exposure computation
-    baseline.py           # Binary Jaccard overlap
-    sae.py                # Sparse Autoencoder
-    diagnostics.py        # Phase I coherence checks
-    diagnostics_v061.py   # v0.6.1 kernel diagnostics
-    comparison.py         # Phase 2 representation comparison (in progress)
-    validation.py         # Phase I external validation
-    crosswalk.py          # O*NET-SOC to OES crosswalk
+    domain.py                 # Core: Activity domain, occupation measures
+    data/                     # Data loading and caching
+    similarity/               # Kernel, overlap, embeddings
+    shocks/                   # Shock profiles and propagation
+    validation/               # Regression, diagnostics, tests
+    experiments/              # Config-driven experiment runner
+
 tests/
-    run_phase1_diagnostics.py  # Phase 1 bug diagnosis
-    run_phase1_fix.py          # Kernel fix validation
-    run_phase2_comparison.py   # Phase 2 representation comparison
-data/
-    onet/                 # O*NET database files (not in git)
-    external/oes/         # OES wage data (not in git)
-outputs/
-    phase1/               # Phase 1 outputs
-    phase2/               # Phase 2 outputs (in progress)
+    unit/                     # pytest unit tests
+    integration/              # Pipeline tests
+
+experiments/
+    configs/                  # YAML experiment configurations
+    scripts/                  # CLI runners
+
+notebooks/
+    prototyping/              # Exploratory notebooks
+    analysis/                 # Result analysis
 ```
 
 ---
 
-## Quick Start
+## Quick Start (v0.6.3)
 
 ```bash
-# Create virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
+# Install
+pip install -e ".[dev,notebooks]"
 
-# Install dependencies
-pip install numpy pandas scipy scikit-learn openpyxl matplotlib sentence-transformers torch transformers
+# Run tests
+pytest tests/unit/ -v
 
-# Run Phase 1 validation (kernel fix)
-PYTHONPATH=src python tests/run_phase1_fix.py
-
-# Results saved to outputs/phase1/
+# Run experiment
+python experiments/scripts/run_experiment.py experiments/configs/phase1_normalized.yaml
 ```
 
 ---
