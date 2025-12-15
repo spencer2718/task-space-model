@@ -11,12 +11,113 @@ IMPORTANT: Classifications are derived from O*NET element ID structure,
 which is hierarchical (dot-separated), NOT fixed-width.
 """
 
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Literal
+from typing import Literal, Optional
 import pandas as pd
 import numpy as np
 
 GWACategory = Literal['cognitive', 'physical', 'technical', 'interpersonal']
+
+
+# Default O*NET path
+DEFAULT_ONET_PATH = Path(__file__).parent.parent.parent.parent / "data" / "onet" / "db_30_0_excel"
+
+
+# ============================================================================
+# Acemoglu-Autor (2011) Task Classification
+# ============================================================================
+#
+# 16 O*NET elements mapped to 5 task dimensions:
+# - Non-routine cognitive analytical (abstract reasoning)
+# - Non-routine cognitive interpersonal (communication, management)
+# - Routine cognitive (repetitive mental tasks)
+# - Routine manual (repetitive physical tasks)
+# - Non-routine manual physical (operating equipment, dexterity)
+#
+# Reference: Acemoglu & Autor (2011), "Skills, Tasks and Technologies"
+# ============================================================================
+
+AA_ELEMENT_MAP = {
+    'nr_cognitive_analytical': [
+        '4.A.2.a.4',  # Analyzing Data or Information (WA)
+        '4.A.2.b.2',  # Thinking Creatively (WA)
+        '4.A.4.a.1',  # Interpreting Meaning of Information (WA)
+    ],
+    'nr_cognitive_interpersonal': [
+        '4.A.4.a.4',  # Establishing Interpersonal Relationships (WA)
+        '4.A.4.b.4',  # Guiding, Directing, Motivating Subordinates (WA)
+        '4.A.4.b.5',  # Coaching and Developing Others (WA)
+    ],
+    'routine_cognitive': [
+        '4.C.3.b.7',  # Importance of Repeating Same Tasks (WC)
+        '4.C.3.b.4',  # Importance of Being Exact or Accurate (WC)
+        '4.C.3.b.8',  # Structured vs Unstructured Work (WC) - REVERSED
+    ],
+    'routine_manual': [
+        '4.C.3.d.3',  # Pace Determined by Speed of Equipment (WC)
+        '4.A.3.a.3',  # Controlling Machines and Processes (WA)
+        '4.C.2.d.1.i',  # Spend Time Making Repetitive Motions (WC)
+    ],
+    'nr_manual_physical': [
+        '4.A.3.a.4',  # Operating Vehicles/Mechanized Equipment (WA)
+        '4.C.2.d.1.g',  # Using Hands to Handle/Control Objects (WC)
+        '1.A.2.a.2',  # Manual Dexterity (AB)
+        '1.A.1.f.1',  # Spatial Orientation (AB)
+    ],
+}
+
+# Elements that need to be reversed (higher = LESS routine)
+AA_REVERSE_ELEMENTS = {'4.C.3.b.8'}  # "Structured vs Unstructured" - high = unstructured
+
+
+@dataclass
+class AATaskScores:
+    """
+    Acemoglu-Autor (2011) 5-factor task scores for an occupation.
+
+    All scores are standardized (mean=0, std=1 across occupations).
+    """
+    nr_cognitive_analytical: float
+    nr_cognitive_interpersonal: float
+    routine_cognitive: float
+    routine_manual: float
+    nr_manual_physical: float
+    occ_code: str = ""
+
+    @property
+    def rti(self) -> float:
+        """
+        Routine Task Intensity index.
+
+        RTI = routine - (abstract + manual) / 2
+
+        Where:
+        - routine = (routine_cognitive + routine_manual) / 2
+        - abstract = (nr_cognitive_analytical + nr_cognitive_interpersonal) / 2
+        - manual = nr_manual_physical
+
+        Higher RTI = more routine-intensive occupation.
+        """
+        routine = (self.routine_cognitive + self.routine_manual) / 2
+        abstract = (self.nr_cognitive_analytical + self.nr_cognitive_interpersonal) / 2
+        manual = self.nr_manual_physical
+        return routine - (abstract + manual) / 2
+
+    @property
+    def abstract(self) -> float:
+        """Abstract task intensity (cognitive non-routine)."""
+        return (self.nr_cognitive_analytical + self.nr_cognitive_interpersonal) / 2
+
+    @property
+    def routine(self) -> float:
+        """Routine task intensity (cognitive + manual)."""
+        return (self.routine_cognitive + self.routine_manual) / 2
+
+    @property
+    def manual(self) -> float:
+        """Manual task intensity (non-routine physical)."""
+        return self.nr_manual_physical
 
 
 def classify_gwa(element_id: str) -> GWACategory:
@@ -198,3 +299,214 @@ def get_activity_projected_routine_scores(
     projected_routine = (occupation_matrix.T @ occ_scores) / activity_weights
 
     return projected_routine
+
+
+# ============================================================================
+# Acemoglu-Autor Task Score Loading
+# ============================================================================
+
+def _load_onet_element_scores(
+    onet_path: Path,
+    element_ids: list[str],
+    scale_id: str = "IM",
+) -> pd.DataFrame:
+    """
+    Load O*NET element scores from appropriate source files.
+
+    Args:
+        onet_path: Path to O*NET database
+        element_ids: List of element IDs to load
+        scale_id: Scale to use ("IM" = Importance, "LV" = Level)
+
+    Returns:
+        DataFrame with columns: [occ_code, element_id, score]
+    """
+    # Determine which file(s) to load based on element ID prefixes
+    wa_ids = [e for e in element_ids if e.startswith('4.A.')]
+    wc_ids = [e for e in element_ids if e.startswith('4.C.')]
+    ab_ids = [e for e in element_ids if e.startswith('1.A.')]
+
+    dfs = []
+
+    if wa_ids:
+        wa = pd.read_excel(onet_path / "Work Activities.xlsx")
+        wa = wa[wa['Element ID'].isin(wa_ids)]
+        wa = wa[wa['Scale ID'] == scale_id]
+        wa = wa[['O*NET-SOC Code', 'Element ID', 'Data Value']].copy()
+        wa.columns = ['occ_code', 'element_id', 'score']
+        dfs.append(wa)
+
+    if wc_ids:
+        wc = pd.read_excel(onet_path / "Work Context.xlsx")
+        wc = wc[wc['Element ID'].isin(wc_ids)]
+        # Work Context uses different scales - filter for context scale
+        if 'Scale ID' in wc.columns:
+            # Some WC elements use CX (context) scale
+            wc = wc[wc['Scale ID'].isin(['CX', 'CT', scale_id])]
+        wc = wc[['O*NET-SOC Code', 'Element ID', 'Data Value']].copy()
+        wc.columns = ['occ_code', 'element_id', 'score']
+        dfs.append(wc)
+
+    if ab_ids:
+        ab = pd.read_excel(onet_path / "Abilities.xlsx")
+        ab = ab[ab['Element ID'].isin(ab_ids)]
+        ab = ab[ab['Scale ID'] == scale_id]
+        ab = ab[['O*NET-SOC Code', 'Element ID', 'Data Value']].copy()
+        ab.columns = ['occ_code', 'element_id', 'score']
+        dfs.append(ab)
+
+    if not dfs:
+        raise ValueError(f"No data found for element IDs: {element_ids}")
+
+    return pd.concat(dfs, ignore_index=True)
+
+
+def get_aa_task_scores(
+    onet_path: Optional[Path] = None,
+) -> dict[str, AATaskScores]:
+    """
+    Load Acemoglu-Autor (2011) 5-factor task scores for all occupations.
+
+    Loads 16 O*NET elements, standardizes within-element, then averages
+    to create 5 task dimensions. Returns RTI and component scores.
+
+    Args:
+        onet_path: Path to O*NET database. Defaults to data/onet/db_30_0_excel.
+
+    Returns:
+        Dict mapping O*NET-SOC code to AATaskScores dataclass.
+
+    Example:
+        >>> scores = get_aa_task_scores()
+        >>> scores['43-9021.00'].rti  # Data Entry Keyers - high RTI
+        1.234
+        >>> scores['11-1011.00'].rti  # Chief Executives - low RTI
+        -0.876
+    """
+    onet_path = Path(onet_path) if onet_path else DEFAULT_ONET_PATH
+
+    # Collect all element IDs
+    all_element_ids = []
+    for elements in AA_ELEMENT_MAP.values():
+        all_element_ids.extend(elements)
+
+    # Load raw scores
+    raw_scores = _load_onet_element_scores(onet_path, all_element_ids)
+
+    # Handle missing values
+    raw_scores = raw_scores.dropna(subset=['score'])
+    raw_scores['score'] = pd.to_numeric(raw_scores['score'], errors='coerce')
+    raw_scores = raw_scores.dropna(subset=['score'])
+
+    # Reverse elements where needed (higher original = lower routine)
+    for element_id in AA_REVERSE_ELEMENTS:
+        mask = raw_scores['element_id'] == element_id
+        if mask.any():
+            # Reverse by negating (will be standardized anyway)
+            raw_scores.loc[mask, 'score'] = -raw_scores.loc[mask, 'score']
+
+    # Standardize within each element
+    standardized = raw_scores.copy()
+    for element_id in all_element_ids:
+        mask = standardized['element_id'] == element_id
+        if mask.any():
+            scores = standardized.loc[mask, 'score']
+            mean = scores.mean()
+            std = scores.std()
+            if std > 0:
+                standardized.loc[mask, 'score'] = (scores - mean) / std
+            else:
+                standardized.loc[mask, 'score'] = 0.0
+
+    # Aggregate to 5 dimensions per occupation
+    occ_codes = standardized['occ_code'].unique()
+    results = {}
+
+    for occ_code in occ_codes:
+        occ_data = standardized[standardized['occ_code'] == occ_code]
+
+        dimension_scores = {}
+        for dim_name, element_ids in AA_ELEMENT_MAP.items():
+            dim_data = occ_data[occ_data['element_id'].isin(element_ids)]
+            if len(dim_data) > 0:
+                dimension_scores[dim_name] = dim_data['score'].mean()
+            else:
+                dimension_scores[dim_name] = 0.0  # Missing = neutral
+
+        results[occ_code] = AATaskScores(
+            nr_cognitive_analytical=dimension_scores['nr_cognitive_analytical'],
+            nr_cognitive_interpersonal=dimension_scores['nr_cognitive_interpersonal'],
+            routine_cognitive=dimension_scores['routine_cognitive'],
+            routine_manual=dimension_scores['routine_manual'],
+            nr_manual_physical=dimension_scores['nr_manual_physical'],
+            occ_code=occ_code,
+        )
+
+    return results
+
+
+def get_aa_task_scores_df(
+    onet_path: Optional[Path] = None,
+) -> pd.DataFrame:
+    """
+    Get AA task scores as a DataFrame for easy merging.
+
+    Args:
+        onet_path: Path to O*NET database.
+
+    Returns:
+        DataFrame with columns:
+        - occ_code: O*NET-SOC code
+        - nr_cognitive_analytical, nr_cognitive_interpersonal,
+          routine_cognitive, routine_manual, nr_manual_physical
+        - rti: Routine Task Intensity index
+        - abstract, routine, manual: Aggregate dimensions
+    """
+    scores = get_aa_task_scores(onet_path)
+
+    rows = []
+    for occ_code, s in scores.items():
+        rows.append({
+            'occ_code': occ_code,
+            'nr_cognitive_analytical': s.nr_cognitive_analytical,
+            'nr_cognitive_interpersonal': s.nr_cognitive_interpersonal,
+            'routine_cognitive': s.routine_cognitive,
+            'routine_manual': s.routine_manual,
+            'nr_manual_physical': s.nr_manual_physical,
+            'rti': s.rti,
+            'abstract': s.abstract,
+            'routine': s.routine,
+            'manual': s.manual,
+        })
+
+    return pd.DataFrame(rows)
+
+
+# ============================================================================
+# Job Zone Loading
+# ============================================================================
+
+def get_job_zones(
+    onet_path: Optional[Path] = None,
+) -> dict[str, int]:
+    """
+    Load O*NET Job Zones (1-5 scale of preparation required).
+
+    Job Zone definitions:
+    - 1: Little or No Preparation Needed
+    - 2: Some Preparation Needed
+    - 3: Medium Preparation Needed
+    - 4: Considerable Preparation Needed
+    - 5: Extensive Preparation Needed
+
+    Args:
+        onet_path: Path to O*NET database.
+
+    Returns:
+        Dict mapping O*NET-SOC code to job zone (1-5).
+    """
+    onet_path = Path(onet_path) if onet_path else DEFAULT_ONET_PATH
+
+    jz = pd.read_excel(onet_path / "Job Zones.xlsx")
+
+    return dict(zip(jz['O*NET-SOC Code'], jz['Job Zone'].astype(int)))

@@ -2,7 +2,7 @@
 
 A geometric framework for measuring labor market exposure to technological shocks.
 
-**Version 0.6.5.1** — CPS Mobility Validation
+**Version 0.6.5.3** — Incremental Validity Test
 
 ---
 
@@ -18,7 +18,15 @@ See `paper/main.tex` for formal theory and specifications.
 
 ## Current Status
 
-### Primary Validation: CPS Worker Mobility (Complete)
+### Validation Summary
+
+| Test | Result | Status |
+|------|--------|--------|
+| CPS Mobility | α=2.99, β=0.22, both p<0.001 | ✓ Validated |
+| Wage Comovement | Kernel R²=0.0049 vs Jaccard R²=0.0017 | ✓ Geometry informative |
+| Employment Prediction | Semantic ΔR²=2.2% over RTI, p=0.07 | ⚠️ Marginal |
+
+### CPS Worker Mobility (✓ Validated)
 
 Conditional logit model of occupation destination choice using 89,329 verified CPS transitions.
 
@@ -27,9 +35,21 @@ Conditional logit model of occupation destination choice using 89,329 verified C
 | α (semantic distance) | 2.994 | 98.5 | Workers prefer task-similar destinations |
 | β (institutional distance) | 0.215 | 63.4 | Workers avoid credential barriers |
 
-Both components independently predictive (r = 0.36 between measures). On a standardized basis, effects are comparable in magnitude. The key finding is that both semantic and institutional structure matter, not that one dominates.
+Both components independently predictive (r = 0.36 between measures). Framework succeeds at measuring task similarity for mobility analysis.
 
-### Complementary Validation: Wage Comovement
+### Employment Prediction (⚠️ Marginal)
+
+Incremental validity test: Does semantic exposure predict 2019-2024 employment changes beyond canonical automation indices?
+
+| Model | R² | Interpretation |
+|-------|-----|----------------|
+| RTI only (Acemoglu-Autor) | 9.8% | Routine occupations lost employment |
+| RTI + Semantic | 12.0% | Semantic adds ΔR²=2.2% (p=0.07) |
+| Full (RTI + AIOE + Semantic + controls) | 12.9% | Only RTI significant |
+
+**Interpretation:** Framework succeeds at task similarity measurement but shows only marginal improvement for predicting automation-driven employment changes beyond canonical RTI measures.
+
+### Wage Comovement
 
 | Measure | t-stat | R² | Notes |
 |---------|--------|-----|-------|
@@ -122,7 +142,8 @@ See `CLAUDE.md` for developer details.
 
 | Version | What Changed |
 |---------|--------------|
-| **v0.6.5.1** | CPS mobility validation integrated; semantic-institutional decomposition confirmed |
+| **v0.6.5.3** | Full Acemoglu-Autor RTI implemented. Incremental validity test: marginal semantic improvement (ΔR²=2.2%, p=0.07) over properly-specified RTI |
+| v0.6.5.1 | CPS mobility validation integrated; semantic-institutional decomposition confirmed |
 | v0.6.3.2 | Retrospective battery redesign (1980–2005 canonical settings) |
 | v0.6.3.1 | Classification infrastructure, architecture tests |
 | v0.6.2 | Both structures informative; neither dominates |

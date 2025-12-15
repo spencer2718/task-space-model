@@ -173,6 +173,49 @@ class WageComovement:
     coverage: float
 
 
+def load_oes_employment(
+    year: int,
+    data_dir: Optional[Path] = None,
+) -> pd.DataFrame:
+    """
+    Load OES employment data for a single year.
+
+    Convenience function that loads OES data and returns employment-focused columns.
+
+    Args:
+        year: Year to load (e.g., 2019, 2024)
+        data_dir: Directory containing OES data.
+
+    Returns:
+        DataFrame with columns:
+            soc_code: 6-digit SOC code (standardized name)
+            occupation_title: Occupation name
+            tot_emp: Total employment
+            year: Survey year
+
+    Raises:
+        ValueError: If TOT_EMP not available for this year
+    """
+    df = load_oes_year(year, data_dir)
+
+    if "TOT_EMP" not in df.columns:
+        raise ValueError(f"Employment data (TOT_EMP) not available for {year}")
+
+    # Standardize column names for consistency with other loaders
+    result = pd.DataFrame({
+        "soc_code": df["OCC_CODE"],
+        "occupation_title": df.get("OCC_TITLE", ""),
+        "tot_emp": df["TOT_EMP"],
+        "year": year,
+    })
+
+    # Drop rows with missing employment
+    result = result.dropna(subset=["tot_emp"])
+    result["tot_emp"] = result["tot_emp"].astype(int)
+
+    return result
+
+
 def compute_wage_comovement(
     oes_panel: pd.DataFrame,
     min_years: int = 4,

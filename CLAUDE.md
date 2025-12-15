@@ -8,19 +8,36 @@ Concise context for AI assistants. For theory, see `paper/main.tex`.
 
 | Component | Version |
 |-----------|---------|
-| Codebase  | v0.6.5.1 |
-| Paper     | v0.6.5.1 |
+| Codebase  | v0.6.5.3 |
+| Paper     | v0.6.5 |
 
-**Core Finding:** Semantic-institutional decomposition validated via CPS worker mobility.
+### Validation Track 1: Worker Mobility (✓ Validated)
 
-| Validation | Coefficient | t-stat | Interpretation |
-|------------|-------------|--------|----------------|
-| CPS Mobility: α (semantic) | 2.994 | 98.5 | Workers prefer task-similar destinations |
-| CPS Mobility: β (institutional) | 0.215 | 63.4 | Workers avoid credential barriers |
+CPS conditional logit confirms semantic-institutional decomposition. Both components significant, not redundant.
 
-Both components independently predictive (r = 0.36 between measures). On standardized basis, effects are comparable magnitude.
+| Component | Coefficient | t-stat | Interpretation |
+|-----------|-------------|--------|----------------|
+| α (semantic) | 2.994 | 98.5 | Workers prefer task-similar destinations |
+| β (institutional) | 0.215 | 63.4 | Workers avoid credential barriers |
 
-**Complementary validation:** Wage comovement shows semantic geometry is detectable (R² = 0.00485 vs 0.00167 for binary). Small absolute R² but useful for model comparison.
+Correlation between measures r = 0.36. On standardized basis, effects are comparable magnitude.
+
+### Validation Track 2: Automation Prediction (⚠️ Marginal)
+
+Incremental validity test: Does semantic exposure predict 2019-2024 employment changes beyond canonical measures?
+
+| Model | R² | Key Predictor | p-value |
+|-------|-----|---------------|---------|
+| RTI only (Acemoglu-Autor 16-element) | 9.8% | RTI: β = -0.077 | <0.0001 |
+| RTI + Semantic | 12.0% | Semantic: β = +0.037 | 0.075 |
+| AIOE + Semantic | 5.9% | Semantic: β = +0.033 | 0.092 |
+| Full horse race (RTI + AIOE + Semantic) | 12.2% | Only RTI significant | — |
+
+**Interpretation:** RTI (properly constructed) dominates. Semantic exposure adds ΔR² = 2.2% over RTI (p = 0.07, marginal). Framework succeeds at measuring task similarity but shows only marginal improvement for automation prediction.
+
+### Complementary Validation: Wage Comovement
+
+Semantic geometry detectable (R² = 0.00485 vs 0.00167 for binary). Small absolute R² but useful for model comparison.
 
 ---
 
@@ -48,7 +65,13 @@ pytest tests/integration/mobility -v -m slow
 ```
 src/task_space/
     domain.py              # Activity domain, occupation measures
-    data/                  # onet.py, oes.py, crosswalk.py, classifications.py
+    data/                  # Data loading and classifications
+        onet.py            # O*NET database loading
+        oes.py             # BLS employment/wage data
+        crosswalk.py       # O*NET ↔ SOC mapping
+        classifications.py # AA task scores, job zones, GWA categories
+        aioe.py            # Felten-Raj-Seamans AI exposure (v0.6.5.3)
+        telework.py        # Dingel-Neiman telework feasibility (v0.6.5.3)
     similarity/            # kernel.py, overlap.py, embeddings.py
     shocks/                # registry.py, profiles.py, propagation.py
     validation/            # regression.py, diagnostics.py, permutation.py
@@ -80,22 +103,26 @@ tests/
 |----------|---------|
 | `paper/main.tex` | Theory + specifications (source of truth) |
 | `outputs/` | Empirical results (JSON files = canonical) |
+| `outputs/experiments/incremental_validity_v0653.json` | Automation prediction results (v0.6.5.3) |
 | `data/onet/db_30_0_excel/` | O*NET 30.0 database (not in git) |
-| `data/external/oes/` | BLS wage data 2019-2023 (not in git) |
+| `data/external/oes/` | BLS wage data 2019-2024 (not in git) |
+| `data/external/aioe/` | Felten-Raj-Seamans AIOE (not in git) |
+| `data/external/dingel_neiman/` | Telework feasibility (not in git) |
 | `data/processed/mobility/` | CPS analysis outputs (canonical results) |
 | `.cache/artifacts/v1/` | Cached embeddings, distance matrices |
 | `.cache/artifacts/v1/mobility/` | Census-level distance matrices, crosswalk |
 
 ---
 
-## Current Focus (v0.6.5.1)
+## Current Focus (v0.6.5.3)
 
-**Primary validation complete.** Semantic-institutional decomposition confirmed via CPS mobility test (89,329 verified transitions).
+**Interpretation of partial negative result.** Semantic geometry validates for mobility but shows only marginal improvement over canonical RTI for automation prediction.
+
+**Key finding:** Framework succeeds at task similarity measurement (CPS mobility, wage comovement) but does not outperform properly-specified Acemoglu-Autor RTI for predicting employment changes. This is methodologically valuable—we correctly identified our RTI proxy was broken and got an honest answer.
 
 **Extensions:**
 - Asymmetric d_inst: decompose into d_inst_up vs d_inst_down (upward mobility harder)
-- Holdout validation: test on post-2019 transitions
-- Alternative choice models: nested logit, mixed logit to relax IIA
+- Alternative shock profiles: test whether different capability vectors yield better prediction
 - Prospective AI evaluation: apply framework to generative AI profiles
 
 ---
@@ -113,6 +140,7 @@ tests/
 - Projected routine scores are ENDOGENOUS — use classifications.py for exogenous GWA categories
 - Test registry isolation requires `importlib.reload(profiles)` after `_reset_registry()`
 - **Conditional logit assumes IIA** — violations possible for occupation choice; documented in ChoiceModelResult.assumptions
+- **RTI must use full 16-element AA composite** — single O*NET element (4.C.3.b.7) yields R² ≈ 0; use `get_aa_task_scores_df()` for proper RTI
 
 ### Dependencies
 - Core: numpy, pandas, scipy, torch, sentence-transformers
@@ -152,6 +180,7 @@ Key definitions: Task domain, Occupation measures, Effective distance decomposit
 
 ## Version History (Brief)
 
+- **v0.6.5.3:** Full Acemoglu-Autor RTI implemented. Incremental validity test shows marginal semantic improvement (ΔR²=2.2%, p=0.07) over properly-specified RTI
 - **v0.6.5.1:** CPS mobility validation integrated; semantic-institutional decomposition confirmed
 - **v0.6.3.2:** Retrospective battery redesign (1980–2005 canonical settings)
 - **v0.6.3.1:** Classification infrastructure, architecture tests
