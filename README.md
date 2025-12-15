@@ -2,7 +2,7 @@
 
 A geometric framework for measuring labor market exposure to technological shocks.
 
-**Version 0.6.5.3** — Incremental Validity Test
+**Version 0.6.6.0** — Validation Complete
 
 ---
 
@@ -22,8 +22,9 @@ See `paper/main.tex` for formal theory and specifications.
 
 | Test | Result | Status |
 |------|--------|--------|
-| CPS Mobility | α=2.99, β=0.22, both p<0.001 | ✓ Validated |
-| Wage Comovement | Kernel R²=0.0049 vs Jaccard R²=0.0017 | ✓ Geometry informative |
+| CPS Mobility (Symmetric) | α=2.99, β=0.22, both p<0.001 | ✓ Validated |
+| CPS Mobility (Asymmetric) | β_up ≈ β_down (ratio 1.04) | ⚠️ Interpretable null |
+| Wage Comovement | Kernel R²=0.0052 vs Jaccard R²=0.0017 | ✓ Geometry informative |
 | Employment Prediction | Semantic ΔR²=2.2% over RTI, p=0.07 | ⚠️ Marginal |
 
 ### CPS Worker Mobility (✓ Validated)
@@ -36,6 +37,10 @@ Conditional logit model of occupation destination choice using 89,329 verified C
 | β (institutional distance) | 0.215 | 63.4 | Workers avoid credential barriers |
 
 Both components independently predictive (r = 0.36 between measures). Framework succeeds at measuring task similarity for mobility analysis.
+
+### Asymmetric Barriers Test (⚠️ Interpretable Null)
+
+Tested whether credentials act as "one-way gates" (β_up > β_down). Result: barriers appear symmetric (ratio 1.04, p=0.0375). Credential-gate hypothesis not supported; theoretically valuable null finding. See paper Section 4.3.6 for interpretation.
 
 ### Employment Prediction (⚠️ Marginal)
 
@@ -119,19 +124,22 @@ src/task_space/          # Core implementation
     similarity/          # Kernel, overlap, embeddings
     shocks/              # Shock profiles
     validation/          # Regression, diagnostics
-    mobility/            # CPS mobility validation
+    mobility/            # CPS mobility validation (symmetric + asymmetric)
+    _legacy/             # Deprecated modules (v0.6.6)
 
 tests/
     unit/                # Fast unit tests
     unit/mobility/       # Mobility module tests
     integration/         # Slower integration tests
+    archive/             # Historical research scripts
 
 paper/
     main.tex             # Theory + specifications
     references.bib       # Bibliography
 
-data/processed/mobility/ # Canonical results (parquet, JSON)
-outputs/                 # Other empirical results
+outputs/
+    canonical/           # Paper-ready results (immutable)
+    experiments/         # Versioned experiment outputs
 ```
 
 See `CLAUDE.md` for developer details.
@@ -142,7 +150,8 @@ See `CLAUDE.md` for developer details.
 
 | Version | What Changed |
 |---------|--------------|
-| **v0.6.5.3** | Full Acemoglu-Autor RTI implemented. Incremental validity test: marginal semantic improvement (ΔR²=2.2%, p=0.07) over properly-specified RTI |
+| **v0.6.6.0** | Asymmetric barriers test (interpretable null). Codebase reorganized: canonical/ directory, _legacy/ modules |
+| v0.6.5.3 | Full Acemoglu-Autor RTI implemented. Marginal semantic improvement (ΔR²=2.2%, p=0.07) |
 | v0.6.5.1 | CPS mobility validation integrated; semantic-institutional decomposition confirmed |
 | v0.6.3.2 | Retrospective battery redesign (1980–2005 canonical settings) |
 | v0.6.3.1 | Classification infrastructure, architecture tests |
