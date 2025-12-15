@@ -49,6 +49,14 @@ outputs/*
 models/*
 !models/.gitkeep
 
+# Killshot data (large files excluded, results kept)
+killshot/cps_mobility/data/*.dat.gz
+killshot/cps_mobility/data/*.parquet
+killshot/cps_mobility/data/*.npz
+killshot/mobility_feasibility/data/crosswalks/*.xls
+killshot/mobility_feasibility/data/crosswalks/*.xlsx
+killshot/mobility_feasibility/outputs/*.npz
+
 # IDE
 .idea/
 .vscode/
