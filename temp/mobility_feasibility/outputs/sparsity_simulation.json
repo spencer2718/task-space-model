@@ -1,0 +1,68 @@
+{
+  "simulation_params": {
+    "true_alpha": 2.0,
+    "true_beta": 1.0,
+    "switch_rate": 0.02,
+    "n_occupations": 894
+  },
+  "distance_stats": {
+    "d_sem_mean": 0.636,
+    "d_sem_std": 0.123,
+    "d_inst_mean": 2.136,
+    "d_inst_std": 1.364,
+    "correlation": 0.358
+  },
+  "results_by_sample_size": [
+    {
+      "n_workers": 50000,
+      "expected_transitions": 1000,
+      "alpha_mean": 1.915,
+      "alpha_bias": -0.085,
+      "beta_mean": 1.006,
+      "beta_bias": 0.006,
+      "recovery_success": true
+    },
+    {
+      "n_workers": 100000,
+      "expected_transitions": 2000,
+      "alpha_mean": 2.065,
+      "alpha_bias": 0.065,
+      "beta_mean": 0.968,
+      "beta_bias": -0.032,
+      "recovery_success": true
+    },
+    {
+      "n_workers": 500000,
+      "expected_transitions": 10000,
+      "alpha_mean": 1.994,
+      "alpha_bias": -0.006,
+      "beta_mean": 0.999,
+      "beta_bias": -0.001,
+      "recovery_success": true
+    },
+    {
+      "n_workers": 1000000,
+      "expected_transitions": 20000,
+      "alpha_mean": 1.963,
+      "alpha_bias": -0.037,
+      "beta_mean": 1.001,
+      "beta_bias": 0.001,
+      "recovery_success": true
+    }
+  ],
+  "cps_feasibility": {
+    "cps_expected_transitions": 192000,
+    "min_workers_for_recovery": 50000,
+    "min_transitions_for_recovery": 1000,
+    "cps_has_sufficient_data": true,
+    "margin": 192.0,
+    "feasibility": "FEASIBLE"
+  },
+  "recommendation": "FEASIBLE",
+  "key_findings": [
+    "Recovery is successful even at 50k workers (1k transitions)",
+    "CPS provides 192x margin over minimum needed",
+    "d_sem and d_inst correlation = 0.358 (capture different info)",
+    "Parameter estimates are unbiased at all sample sizes"
+  ]
+}

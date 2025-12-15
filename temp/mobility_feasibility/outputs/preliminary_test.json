@@ -1,0 +1,18 @@
+{
+  "data_searched": [
+    "BLS Occupational Separations - only aggregate transfer rates, not occupation-to-occupation",
+    "Kambourov & Manovskii - use PSID, data not publicly posted",
+    "LEHD J2J - industry-level, not occupation-level"
+  ],
+  "existing_validation": {
+    "d_sem_predicts_wage_comovement": true,
+    "t_stat": 7.14,
+    "R2": 0.00485,
+    "source": "Phase I validation (paper/main.tex)"
+  },
+  "new_contribution": "d_inst (job zones + certification) is orthogonal signal",
+  "correlation_d_sem_d_inst": 0.358,
+  "interpretation": "Low correlation means they capture different information - good for decomposition",
+  "test_status": "Deferred to CPS microdata analysis",
+  "recommendation": "Proceed with IPUMS CPS extract to run actual transition regression"
+}
