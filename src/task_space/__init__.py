@@ -1,6 +1,6 @@
-# task_space v0.6.3
-# Infrastructure consolidation complete
-# See spec_0_6_3.md for implementation details
+# task_space v0.6.6.0
+# Asymmetric barriers test complete, codebase reorganized
+# Legacy modules moved to _legacy/
 
 # Domain (core, unchanged)
 from .domain import (
