@@ -6,20 +6,22 @@ This document contains working conventions, version control rules, and quality-o
 
 ## Version Control
 
-**Paper and codebase versions must always match.**
+| Component | Version | Notes |
+|-----------|---------|-------|
+| **Codebase** | v0.6.3.1 | Classification Infrastructure + Architecture Tests |
+| **Paper** (`main.tex`) | v0.6.3.1 | Up to date with codebase |
 
-- Current: **v0.6.3.1** (Classification Infrastructure + Architecture Tests)
-- Previous: v0.6.3 (Infrastructure Consolidation — Phase II ready)
-- Previous: v0.6.2 (Phase 2 Complete — semantic signal validated)
-- Previous: v0.6.1 (Kernel fix validated, continuous structure confirmed)
-- Previous: v0.5.0 (Binary overlap validated, SAE marginal — **artifact**)
-- Previous: v0.4.2.1 (random > semantic — **artifact, kernel collapse**)
-- Previous: v0.4.2 (appeared to pass, spurious)
-- Previous: v0.4.1 (GWA + Recipe X validation failed)
+*Update these fields after completing empirical milestones or documentation changes.*
 
-When updating either paper or code, ensure the other stays in sync or is updated together.
+### Version History
+- v0.6.3.1: Classification infrastructure, architecture tests
+- v0.6.3: Infrastructure consolidation — Phase II ready
+- v0.6.2: Phase 2 complete — both structures informative
+- v0.6.1: Kernel fix validated, continuous structure confirmed
+- v0.5.0: Binary overlap validated — **artifact** (kernel collapse)
+- v0.4.x: Various approaches — failed validation
 
-**Paper sync:** `paper/main.tex` is updated in chunks after empirical milestones. Current paper version: v0.6.2. Code may be ahead of paper. Canonical empirical results are in `outputs/` JSON files.
+**Canonical results:** `outputs/` JSON files are the source of truth for empirical findings.
 
 ---
 
