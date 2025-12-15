@@ -8,8 +8,8 @@ Concise context for AI assistants. For theory, see `paper/main.tex`.
 
 | Component | Version |
 |-----------|---------|
-| Codebase  | v0.6.5.3 |
-| Paper     | v0.6.5 |
+| Codebase  | v0.6.6.0 |
+| Paper     | v0.6.6 |
 
 ### Validation Track 1: Worker Mobility (✓ Validated)
 
@@ -21,6 +21,20 @@ CPS conditional logit confirms semantic-institutional decomposition. Both compon
 | β (institutional) | 0.215 | 63.4 | Workers avoid credential barriers |
 
 Correlation between measures r = 0.36. On standardized basis, effects are comparable magnitude.
+
+### Validation Track 1b: Asymmetric Barriers (⚠️ Interpretable Null)
+
+Tested hypothesis: β_up > β_down (credentials restrict entry, not exit).
+
+| Parameter | Coefficient | t-stat | Interpretation |
+|-----------|-------------|--------|----------------|
+| β_up (upward) | 0.282 | 64.9 | Barrier to higher-credential jobs |
+| β_down (downward) | 0.270 | 50.0 | Barrier to lower-credential jobs |
+
+**LR Test:** χ²(1) = 4.33, p = 0.0375 (marginally significant)
+**Asymmetry Ratio:** β_up/β_down = 1.04 (essentially equal)
+
+**Interpretation:** Credential-gate hypothesis not supported. Barriers appear symmetric. Possible explanations: stigma/overqualification effects, skill specificity, Job Zone as noisy proxy. Theoretically valuable null result.
 
 ### Validation Track 2: Automation Prediction (⚠️ Marginal)
 
@@ -76,11 +90,12 @@ src/task_space/
     shocks/                # registry.py, profiles.py, propagation.py
     validation/            # regression.py, diagnostics.py, permutation.py
     experiments/           # config.py, runner.py
-    mobility/              # CPS mobility validation (v0.6.5)
-        institutional.py   # d_inst: job zones + certification
+    mobility/              # CPS mobility validation (v0.6.5+)
+        institutional.py   # d_inst: job zones + certification; asymmetric d_up/d_down (v0.6.6)
         census_crosswalk.py # Census 2010 ↔ O*NET mapping
         filters.py         # Persistence filter for measurement error
-        choice_model.py    # Conditional logit estimation
+        choice_model.py    # Conditional logit; asymmetric model with LR test (v0.6.6)
+    _legacy/               # Deprecated modules (v0.6.6) — see _legacy/README.md
 
 tests/
     unit/                  # Fast unit tests
@@ -102,28 +117,38 @@ tests/
 | Location | Purpose |
 |----------|---------|
 | `paper/main.tex` | Theory + specifications (source of truth) |
-| `outputs/` | Empirical results (JSON files = canonical) |
-| `outputs/experiments/incremental_validity_v0653.json` | Automation prediction results (v0.6.5.3) |
+| `outputs/canonical/` | **Paper-ready results (immutable)** |
+| `outputs/canonical/mobility_cps.json` | CPS symmetric validation (α=2.994, β=0.215) |
+| `outputs/canonical/mobility_asymmetric.json` | Asymmetric barriers test (v0.6.6.0) |
+| `outputs/canonical/automation_v0653.json` | Automation prediction (v0.6.5.3) |
+| `outputs/canonical/wage_comovement.json` | Wage comovement validation |
+| `outputs/experiments/` | Versioned experiment results |
 | `data/onet/db_30_0_excel/` | O*NET 30.0 database (not in git) |
 | `data/external/oes/` | BLS wage data 2019-2024 (not in git) |
 | `data/external/aioe/` | Felten-Raj-Seamans AIOE (not in git) |
 | `data/external/dingel_neiman/` | Telework feasibility (not in git) |
-| `data/processed/mobility/` | CPS analysis outputs (canonical results) |
+| `data/processed/mobility/` | CPS analysis source outputs |
 | `.cache/artifacts/v1/` | Cached embeddings, distance matrices |
 | `.cache/artifacts/v1/mobility/` | Census-level distance matrices, crosswalk |
 
 ---
 
-## Current Focus (v0.6.5.3)
+## Current Focus (v0.6.6.0)
 
-**Interpretation of partial negative result.** Semantic geometry validates for mobility but shows only marginal improvement over canonical RTI for automation prediction.
+**Validation complete.** Three empirical tests establish the framework's validity for measuring occupational similarity while identifying clear boundaries.
 
-**Key finding:** Framework succeeds at task similarity measurement (CPS mobility, wage comovement) but does not outperform properly-specified Acemoglu-Autor RTI for predicting employment changes. This is methodologically valuable—we correctly identified our RTI proxy was broken and got an honest answer.
+**Validated:**
+- CPS mobility (symmetric): Semantic-institutional decomposition confirmed (89K transitions)
+- Wage comovement: 3.1× improvement over binary Jaccard
 
-**Extensions:**
-- Asymmetric d_inst: decompose into d_inst_up vs d_inst_down (upward mobility harder)
+**Interpretable nulls:**
+- Asymmetric barriers: β_up ≈ β_down contradicts credential-gate theory; theoretically valuable
+- Automation prediction: Marginal improvement (ΔR²=2.2%) over properly-specified RTI
+
+**Remaining extensions:**
 - Alternative shock profiles: test whether different capability vectors yield better prediction
 - Prospective AI evaluation: apply framework to generative AI profiles
+- Retrospective battery: 1980-2005 validation pending crosswalk completion
 
 ---
 
@@ -141,6 +166,7 @@ tests/
 - Test registry isolation requires `importlib.reload(profiles)` after `_reset_registry()`
 - **Conditional logit assumes IIA** — violations possible for occupation choice; documented in ChoiceModelResult.assumptions
 - **RTI must use full 16-element AA composite** — single O*NET element (4.C.3.b.7) yields R² ≈ 0; use `get_aa_task_scores_df()` for proper RTI
+- **α coefficient differs between specifications** — canonical CPS uses α=2.994 (pre-cached Census distances); asymmetric test uses α=5.688 (freshly aggregated O*NET distances). Both valid within their specifications.
 
 ### Dependencies
 - Core: numpy, pandas, scipy, torch, sentence-transformers
@@ -180,6 +206,7 @@ Key definitions: Task domain, Occupation measures, Effective distance decomposit
 
 ## Version History (Brief)
 
+- **v0.6.6.0:** Asymmetric barriers test complete (interpretable null: β_up ≈ β_down). Codebase reorganized: canonical results in `outputs/canonical/`, legacy modules in `_legacy/`
 - **v0.6.5.3:** Full Acemoglu-Autor RTI implemented. Incremental validity test shows marginal semantic improvement (ΔR²=2.2%, p=0.07) over properly-specified RTI
 - **v0.6.5.1:** CPS mobility validation integrated; semantic-institutional decomposition confirmed
 - **v0.6.3.2:** Retrospective battery redesign (1980–2005 canonical settings)
