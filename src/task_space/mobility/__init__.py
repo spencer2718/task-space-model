@@ -37,6 +37,10 @@ from .institutional import (
     get_zone_difference,
     load_job_zones,
     load_certification_importance,
+    # v0.6.6.0: Asymmetric institutional distance
+    AsymmetricInstitutionalDistanceResult,
+    build_asymmetric_institutional_distance,
+    verify_asymmetric_decomposition,
 )
 
 from .census_crosswalk import (
@@ -62,6 +66,11 @@ from .choice_model import (
     fit_conditional_logit,
     compute_odds_ratios,
     load_canonical_results,
+    # v0.6.6.0: Asymmetric choice model
+    AsymmetricChoiceModelResult,
+    build_asymmetric_choice_dataset,
+    fit_asymmetric_conditional_logit,
+    compute_asymmetric_odds_ratios,
 )
 
 __all__ = [
@@ -72,6 +81,10 @@ __all__ = [
     "get_zone_difference",
     "load_job_zones",
     "load_certification_importance",
+    # v0.6.6.0: Asymmetric institutional distance
+    "AsymmetricInstitutionalDistanceResult",
+    "build_asymmetric_institutional_distance",
+    "verify_asymmetric_decomposition",
     # Census crosswalk
     "CensusCrosswalkResult",
     "load_census_onet_crosswalk",
@@ -91,4 +104,9 @@ __all__ = [
     "fit_conditional_logit",
     "compute_odds_ratios",
     "load_canonical_results",
+    # v0.6.6.0: Asymmetric choice model
+    "AsymmetricChoiceModelResult",
+    "build_asymmetric_choice_dataset",
+    "fit_asymmetric_conditional_logit",
+    "compute_asymmetric_odds_ratios",
 ]

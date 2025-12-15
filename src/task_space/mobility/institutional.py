@@ -227,3 +227,184 @@ def get_zone_difference(
     idx_i = result.occupations.index(occ_i)
     idx_j = result.occupations.index(occ_j)
     return int(result.zone_vector[idx_j] - result.zone_vector[idx_i])
+
+
+# ============================================================================
+# Asymmetric Institutional Distance (v0.6.6.0)
+# ============================================================================
+
+
+@dataclass
+class AsymmetricInstitutionalDistanceResult:
+    """
+    Asymmetric (directional) institutional barriers.
+
+    Theory: Upward mobility (into higher job zones) faces credentialing barriers;
+    downward mobility does not. Licensing restricts entry, not exit.
+
+    For origin i → destination j:
+        d_up[i,j] = max(0, Zone_j - Zone_i) + γ * max(0, Cert_j - Cert_i)
+        d_down[i,j] = max(0, Zone_i - Zone_j) + γ * max(0, Cert_i - Cert_j)
+
+    Note: d_up[i,j] = d_down[j,i] (transpose relationship)
+
+    Attributes:
+        d_up: (n_occ, n_occ) matrix of upward barriers
+        d_down: (n_occ, n_occ) matrix of downward barriers
+        d_symmetric: (n_occ, n_occ) original symmetric distance
+        occupations: List of O*NET-SOC codes
+        zone_vector: Job zone values (1-5)
+        cert_normalized: Normalized certification importance (0-4)
+        n_occupations: Number of occupations
+        gamma: Weight on certification component
+        cert_coverage: Fraction with direct cert data
+        assumptions: Modeling assumptions
+    """
+    d_up: np.ndarray
+    d_down: np.ndarray
+    d_symmetric: np.ndarray
+    occupations: List[str]
+    zone_vector: np.ndarray
+    cert_normalized: np.ndarray
+    n_occupations: int
+    gamma: float
+    cert_coverage: float
+    assumptions: List[str] = field(default_factory=lambda: [
+        "Upward barrier = max(0, Zone_dest - Zone_origin) + γ * max(0, Cert_dest - Cert_origin)",
+        "Downward barrier = max(0, Zone_origin - Zone_dest) + γ * max(0, Cert_origin - Cert_dest)",
+        "Licensing restricts entry, not exit (Jackson 2023)",
+        "d_up + d_down = d_symmetric for all pairs",
+        "Certification missing → median imputed",
+    ])
+
+
+def build_asymmetric_institutional_distance(
+    onet_path: Optional[Path] = None,
+    gamma: float = 1.0,
+) -> AsymmetricInstitutionalDistanceResult:
+    """
+    Build directional institutional distance matrices.
+
+    Theory: Credentialing is a one-way gate. Moving from Zone 2 → Zone 4
+    requires training (d_up = 2). Moving from Zone 4 → Zone 2 is
+    unconstrained (d_down = 2, but this measures "overqualification",
+    not barrier).
+
+    Hypothesis: β_up >> β_down in conditional logit; possibly β_down ≈ 0.
+
+    Args:
+        onet_path: Path to O*NET database. If None, uses default.
+        gamma: Weight on certification component (default 1.0).
+
+    Returns:
+        AsymmetricInstitutionalDistanceResult with directional matrices.
+
+    Example:
+        >>> result = build_asymmetric_institutional_distance()
+        >>> # Zone 2 → Zone 4 transition
+        >>> i = result.occupations.index("some-zone-2-occ")
+        >>> j = result.occupations.index("some-zone-4-occ")
+        >>> result.d_up[i, j]  # Should be ~2.0 (upward barrier)
+        >>> result.d_down[i, j]  # Should be 0.0 (no downward barrier)
+    """
+    # Load data using existing functions
+    jz = load_job_zones(onet_path)
+    cert = load_certification_importance(onet_path)
+
+    # Merge
+    df = jz.merge(cert, on="O*NET-SOC Code", how="left")
+
+    # Track coverage
+    n_missing_cert = df["cert_importance"].isna().sum()
+    n_total = len(df)
+    cert_coverage = 1.0 - (n_missing_cert / n_total)
+
+    # Fill missing with median
+    cert_median = df["cert_importance"].median()
+    df["cert_importance"] = df["cert_importance"].fillna(cert_median)
+
+    # Normalize certification to [0, 4]
+    cert_min = df["cert_importance"].min()
+    cert_max = df["cert_importance"].max()
+    if cert_max > cert_min:
+        df["cert_normalized"] = (df["cert_importance"] - cert_min) / (cert_max - cert_min) * 4
+    else:
+        df["cert_normalized"] = 0.0
+
+    # Extract vectors
+    n_occ = len(df)
+    occ_codes = df["O*NET-SOC Code"].tolist()
+    zones = df["Job Zone"].values.astype(float)
+    certs_norm = df["cert_normalized"].values
+
+    # Build asymmetric matrices
+    # d_up[i,j] = max(0, zone_j - zone_i) + gamma * max(0, cert_j - cert_i)
+    zone_diff = zones[None, :] - zones[:, None]  # zone_j - zone_i
+    cert_diff = certs_norm[None, :] - certs_norm[:, None]  # cert_j - cert_i
+
+    d_up = np.maximum(0, zone_diff) + gamma * np.maximum(0, cert_diff)
+    d_down = np.maximum(0, -zone_diff) + gamma * np.maximum(0, -cert_diff)
+
+    # Symmetric distance (for comparison)
+    d_symmetric = np.abs(zone_diff) + gamma * np.abs(cert_diff)
+
+    return AsymmetricInstitutionalDistanceResult(
+        d_up=d_up,
+        d_down=d_down,
+        d_symmetric=d_symmetric,
+        occupations=occ_codes,
+        zone_vector=zones,
+        cert_normalized=certs_norm,
+        n_occupations=n_occ,
+        gamma=gamma,
+        cert_coverage=cert_coverage,
+    )
+
+
+def verify_asymmetric_decomposition(
+    result: AsymmetricInstitutionalDistanceResult,
+    tolerance: float = 1e-10,
+) -> dict:
+    """
+    Verify mathematical properties of asymmetric decomposition.
+
+    Properties:
+        1. d_up + d_down = d_symmetric for all pairs
+        2. d_up[i,j] = d_down[j,i] (transpose relationship)
+        3. d_up[i,j] = 0 when Zone_j <= Zone_i and Cert_j <= Cert_i
+        4. All matrices have zero diagonal
+
+    Args:
+        result: AsymmetricInstitutionalDistanceResult
+        tolerance: Numerical tolerance for equality checks
+
+    Returns:
+        Dict with verification results and any violations.
+    """
+    d_up = result.d_up
+    d_down = result.d_down
+    d_sym = result.d_symmetric
+
+    # Property 1: d_up + d_down = d_symmetric
+    sum_check = np.abs(d_up + d_down - d_sym)
+    prop1_pass = np.all(sum_check < tolerance)
+    prop1_max_violation = float(np.max(sum_check))
+
+    # Property 2: d_up[i,j] = d_down[j,i]
+    transpose_check = np.abs(d_up - d_down.T)
+    prop2_pass = np.all(transpose_check < tolerance)
+    prop2_max_violation = float(np.max(transpose_check))
+
+    # Property 3: Diagonal is zero
+    prop3_pass = (np.all(np.diag(d_up) < tolerance) and
+                  np.all(np.diag(d_down) < tolerance) and
+                  np.all(np.diag(d_sym) < tolerance))
+
+    return {
+        "decomposition_valid": prop1_pass,
+        "decomposition_max_violation": prop1_max_violation,
+        "transpose_valid": prop2_pass,
+        "transpose_max_violation": prop2_max_violation,
+        "diagonal_zero": prop3_pass,
+        "all_properties_pass": prop1_pass and prop2_pass and prop3_pass,
+    }
