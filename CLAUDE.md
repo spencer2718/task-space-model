@@ -8,19 +8,19 @@ Concise context for AI assistants. For theory, see `paper/main.tex`.
 
 | Component | Version |
 |-----------|---------|
-| Codebase  | v0.6.3.2 |
-| Paper     | v0.6.3.2 |
+| Codebase  | v0.6.5.1 |
+| Paper     | v0.6.5.1 |
 
-**Phase I:** Complete. Both continuous and discrete structures are informative.
+**Core Finding:** Semantic-institutional decomposition validated via CPS worker mobility.
 
-| Measure | t-stat | R² |
-|---------|--------|-----|
-| Normalized kernel | 7.14 | 0.00485 |
-| Binary Jaccard | 8.00 | 0.00167 |
+| Validation | Coefficient | t-stat | Interpretation |
+|------------|-------------|--------|----------------|
+| CPS Mobility: α (semantic) | 2.994 | 98.5 | Workers prefer task-similar destinations |
+| CPS Mobility: β (institutional) | 0.215 | 63.4 | Workers avoid credential barriers |
 
-**Phase II:** Retrospective diagnostic battery (1980–2005) + prospective AI evaluation.
-- **Primary target:** Test B (Autor-Dorn employment reallocation)
-- Three tests: ALM task composition, Autor-Dorn CZ reallocation, Acemoglu-Restrepo robots
+Both components independently predictive (r = 0.36 between measures). On standardized basis, effects are comparable magnitude.
+
+**Complementary validation:** Wage comovement shows semantic geometry is detectable (R² = 0.00485 vs 0.00167 for binary). Small absolute R² but useful for model comparison.
 
 ---
 
@@ -35,6 +35,10 @@ pytest tests/unit tests/integration -v
 
 # Skip slow tests
 pytest tests/unit tests/integration -v -m "not slow"
+
+# Mobility module tests
+pytest tests/unit/mobility -v
+pytest tests/integration/mobility -v -m slow
 ```
 
 ---
@@ -49,17 +53,24 @@ src/task_space/
     shocks/                # registry.py, profiles.py, propagation.py
     validation/            # regression.py, diagnostics.py, permutation.py
     experiments/           # config.py, runner.py
+    mobility/              # CPS mobility validation (v0.6.5)
+        institutional.py   # d_inst: job zones + certification
+        census_crosswalk.py # Census 2010 ↔ O*NET mapping
+        filters.py         # Persistence filter for measurement error
+        choice_model.py    # Conditional logit estimation
 
 tests/
     unit/                  # Fast unit tests
+    unit/mobility/         # Mobility module unit tests
     integration/           # Slower tests (some @slow)
+    integration/mobility/  # Canonical results verification
     archive/               # Legacy scripts
 ```
 
 **Key concepts:**
 - **Overlap** (Phase I): O = ρ K ρᵀ — pairwise occupation similarity
-- **Exposure** (Phase II): E = ρ K I — occupation exposure to shock profile I
-- **Registry pattern:** `@register_shock("name")` to add shocks without modifying runner
+- **Effective distance** (Phase II): d_eff = d_sem + λ·d_inst — semantic + institutional
+- **Epistemic metadata:** Result dataclasses include `assumptions` lists documenting modeling choices
 
 ---
 
@@ -71,32 +82,28 @@ tests/
 | `outputs/` | Empirical results (JSON files = canonical) |
 | `data/onet/db_30_0_excel/` | O*NET 30.0 database (not in git) |
 | `data/external/oes/` | BLS wage data 2019-2023 (not in git) |
+| `data/processed/mobility/` | CPS analysis outputs (canonical results) |
 | `.cache/artifacts/v1/` | Cached embeddings, distance matrices |
+| `.cache/artifacts/v1/mobility/` | Census-level distance matrices, crosswalk |
 
 ---
 
-## Current Focus (v0.6.3.2)
+## Current Focus (v0.6.5.1)
 
-**Retrospective diagnostic battery** — see `paper/main.tex` Section 4.5:
+**Primary validation complete.** Semantic-institutional decomposition confirmed via CPS mobility test (89,329 verified transitions).
 
-1. **Test A:** Task composition shifts (ALM 1980–2000)
-2. **Test B:** Employment reallocation (Autor-Dorn 1980–2005) ← PRIMARY
-3. **Test C:** Robot displacement (Acemoglu-Restrepo 1990–2007)
-
-**Goal:** Mechanism discrimination — when does continuous structure improve prediction beyond discrete classification?
-
-**Next steps:**
-- Build occ1990dd → O*NET-SOC crosswalk
-- Construct routine shock profile I^routine(a)
-- Replicate Autor-Dorn Table 5 as baseline
-- Run decomposition test (eq. 4.3 in paper)
+**Extensions:**
+- Asymmetric d_inst: decompose into d_inst_up vs d_inst_down (upward mobility harder)
+- Holdout validation: test on post-2019 transitions
+- Alternative choice models: nested logit, mixed logit to relax IIA
+- Prospective AI evaluation: apply framework to generative AI profiles
 
 ---
 
 ## Critical Rules
 
 ### Do Not Touch
-- Kernel bandwidth: σ = 0.223 (NN median). Do not use global distance median (0.74 → collapse)
+- Kernel bandwidth: σ = 0.223 (NN median for occupations). Activity-level σ = 0.0096.
 - Embeddings: Always use `get_embeddings()` from artifacts.py. Never compute elsewhere.
 - Row-normalization: Skip for kernels (destroys signal with 2,087 activities)
 
@@ -105,6 +112,11 @@ tests/
 - O*NET element IDs use dot-parsing (`4.A.3.b.4`), not fixed-width slicing
 - Projected routine scores are ENDOGENOUS — use classifications.py for exogenous GWA categories
 - Test registry isolation requires `importlib.reload(profiles)` after `_reset_registry()`
+- **Conditional logit assumes IIA** — violations possible for occupation choice; documented in ChoiceModelResult.assumptions
+
+### Dependencies
+- Core: numpy, pandas, scipy, torch, sentence-transformers
+- Mobility: statsmodels (ConditionalLogit), pyarrow (parquet I/O)
 
 ### Before Big Implementations
 Request the architect agent for:
@@ -117,8 +129,9 @@ Request the architect agent for:
 ## For Details
 
 - **Theory:** `paper/main.tex` Sections 3–4
-- **Phase I results:** `outputs/phase1/*.json`, `outputs/phase2/*.json`
-- **Retrospective battery spec:** `paper/main.tex` Section 4.5
+- **Decomposition:** `paper/main.tex` Section 3.4 (Effective Distance Decomposition)
+- **CPS mobility results:** `paper/main.tex` Section 4.4
+- **Wage comovement:** `paper/main.tex` Section 4.5
 - **Prospective AI evaluation:** `paper/main.tex` Section 4.6
 - **Data schemas:** Docstrings in `src/task_space/data/`
 
@@ -133,12 +146,13 @@ Reference definitions by **name**, not number (numbers change):
 # Bad: Implements Definition 3.5
 ```
 
-Key definitions: Task domain, Occupation measures, Shock profile, Spillover operator, Exposure functionals.
+Key definitions: Task domain, Occupation measures, Effective distance decomposition, Spillover operator, Exposure functionals.
 
 ---
 
 ## Version History (Brief)
 
+- **v0.6.5.1:** CPS mobility validation integrated; semantic-institutional decomposition confirmed
 - **v0.6.3.2:** Retrospective battery redesign (1980–2005 canonical settings)
 - **v0.6.3.1:** Classification infrastructure, architecture tests
 - **v0.6.1:** Kernel fix — σ calibrated to NN distances (was global → collapse)

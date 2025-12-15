@@ -1,6 +1,0 @@
-collection: cps
-number: 1
-status: started
-samples: 83
-variables: 24
-description: CPS mobility analysis: occupation transitions 2015-2019, 2022-2024
