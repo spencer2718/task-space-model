@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "task_space"
-version = "0.6.5"
+version = "0.6.6.0"
 description = "Geometric framework for labor market exposure measurement"
 readme = "README.md"
 requires-python = ">=3.10"

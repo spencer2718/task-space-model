@@ -70,6 +70,10 @@ pytest tests/unit tests/integration -v -m "not slow"
 # Mobility module tests
 pytest tests/unit/mobility -v
 pytest tests/integration/mobility -v -m slow
+
+# Verify cache integrity
+ls -la .cache/artifacts/v1/
+ls -la .cache/artifacts/v1/mobility/
 ```
 
 ---
@@ -86,7 +90,8 @@ src/task_space/
         classifications.py # AA task scores, job zones, GWA categories
         aioe.py            # Felten-Raj-Seamans AI exposure (v0.6.5.3)
         telework.py        # Dingel-Neiman telework feasibility (v0.6.5.3)
-    similarity/            # kernel.py, overlap.py, embeddings.py
+        artifacts.py       # Embedding/distance cache management
+    similarity/            # kernel.py, overlap.py, embeddings.py, distances.py
     shocks/                # registry.py, profiles.py, propagation.py
     validation/            # regression.py, diagnostics.py, permutation.py
     experiments/           # config.py, runner.py
