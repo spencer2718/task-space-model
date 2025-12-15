@@ -60,7 +60,7 @@ A central empirical finding of this paper is that continuous semantic structure 
 The empirical program has two evaluations. First, a retrospective exercise (1990--2007) compares activity-based exposure to standard industry- or occupation-mix exposure designs in settings associated with late-20th-century automation and routine-biased technological change. Second, a prospective exercise (2022--present) applies the framework to generative AI but treats the shock profile as an empirical object: multiple candidate profiles over activities are constructed and compared against rubric- or label-based baselines. This design is intended to be informative even if no single candidate profile dominates.
 
 
-The paper's contribution is threefold: (i) a principled construction of occupation-activity measures from O*NET data with explicit diagnostics; (ii) a testable formalization that distinguishes continuous from discrete representations of the task domain, with methodological guidance on kernel calibration; and (iii) an empirical finding that continuous semantic similarity significantly outperforms discrete activity classification for predicting wage comovement, once implementation artifacts are resolved.
+The paper's contribution is threefold: (i) a principled construction of occupation-activity measures from O*NET data with explicit diagnostics; (ii) a testable formalization that distinguishes continuous from discrete representations of the task domain, with methodological guidance on kernel calibration; and (iii) an empirical finding that both continuous and discrete structures are informative---continuous semantic similarity explains more variance ($R^2$) while discrete activity overlap achieves higher statistical precision ($t$-stat)---with neither representation unambiguously dominating.
 
 
 Finally, wage outcomes are conditional on institutions. Productivity effects need not pass through one-for-one into wages; wage-setting and pass-through environments can introduce occupation-specific wedges. We treat this as a scope condition (\cref{subsec:wedge}) and record a ``new tasks'' extension (\cref{subsec:newtasks}), while keeping the baseline empirical focus on evaluating exposure measurement.
@@ -131,7 +131,7 @@ Distance is the primitive notion of similarity: tasks $x,y$ are close if capabil
 
 \begin{remark}[Manifold vs Graph]
 \label{rem:graph-vs-manifold}
-The manifold representation assumes continuous similarity: tasks $x, y$ at small distance $d(x,y)$ are economically interchangeable at low friction. An alternative representation treats activities as discrete nodes in a graph, where adjacency (shared occupation usage) rather than continuous distance determines relatedness. Under the graph representation, two activities are ``related'' if occupations that use one tend to use the other; continuous interpolation between activities is not meaningful. The empirical program tests which representation better predicts economic outcomes. Phase~I validation finds that continuous representation, when properly calibrated, outperforms the discrete graph representation.
+The manifold representation assumes continuous similarity: tasks $x, y$ at small distance $d(x,y)$ are economically interchangeable at low friction. An alternative representation treats activities as discrete nodes in a graph, where adjacency (shared occupation usage) rather than continuous distance determines relatedness. Under the graph representation, two activities are ``related'' if occupations that use one tend to use the other; continuous interpolation between activities is not meaningful. The empirical program tests which representation better predicts economic outcomes. Phase~I validation finds that both representations are informative: continuous overlap explains more variance while discrete overlap achieves higher statistical precision.
 \end{remark}
 
 
@@ -250,7 +250,7 @@ The normalization ensures the operator is a local averaging operator whose outpu
 
 \begin{remark}[Selection criterion]
 \label{rem:selection-criterion}
-The choice between continuous and discrete propagation is empirical. If kernel-weighted overlap predicts outcomes better than binary overlap, the continuous mechanism adds value. If not, the simpler discrete mechanism is preferred. Phase~I validation (\cref{subsec:phase1}) tests this by comparing kernel-weighted occupation-pair overlap against binary Jaccard overlap as predictors of wage comovement. The result: continuous overlap outperforms discrete when the kernel is properly calibrated.
+The choice between continuous and discrete propagation is empirical. If kernel-weighted overlap predicts outcomes better than binary overlap, the continuous mechanism adds value. If not, the simpler discrete mechanism is preferred. Phase~I validation (\cref{subsec:phase1}) tests this by comparing kernel-weighted occupation-pair overlap against binary Jaccard overlap as predictors of wage comovement. The result: both mechanisms are informative---continuous overlap explains more variance ($R^2$) while discrete overlap achieves higher statistical precision ($t$-stat).
 \end{remark}
 
 
@@ -363,7 +363,7 @@ Phase~I tests whether kernel-weighted overlap improves prediction of wage comove
 \end{remark}
 
 
-\subsection{Why Continuous Structure May Dominate}
+\subsection{Why Continuous Structure Might Dominate}
 \label{subsec:continuous}
 
 
@@ -382,7 +382,7 @@ Occupation measures vary in concentration: specialists have mass concentrated on
 \end{remark}
 
 
-\subsection{Why Discrete Structure Might Dominate (Falsified)}
+\subsection{Why Discrete Structure Might Dominate}
 \label{subsec:threshold}
 
 
@@ -406,7 +406,7 @@ The threshold interpretation is consistent with one view of how hiring works: em
 
 \begin{remark}[Empirical test of threshold model]
 \label{rem:threshold-test}
-The threshold model predicts: (i) binary activity overlap should predict wage comovement, (ii) continuous distance weighting should not improve prediction beyond binary overlap, and (iii) the spillover bandwidth $\sigma$ should be inert. Phase~I falsifies predictions (ii) and (iii): continuous overlap significantly outperforms binary overlap when properly calibrated, and $\sigma$ matters (calibrating to nearest-neighbor vs global distances produces different results). The threshold model is rejected in favor of the continuous manifold representation.
+The threshold model predicts: (i) binary activity overlap should predict wage comovement, (ii) continuous distance weighting should not improve prediction beyond binary overlap, and (iii) the spillover bandwidth $\sigma$ should be inert. Phase~I partially falsifies this: continuous overlap explains significantly more variance than binary overlap when properly calibrated, and $\sigma$ matters. However, binary overlap achieves higher statistical precision ($t = 8.00$ vs $t = 7.14$ clustered), suggesting the threshold model captures a robust but coarser signal. Both representations are informative.
 \end{remark}
 
 
@@ -611,7 +611,7 @@ Recipe Y (text embedding) & activity text & mobility; wage & Passed ($t = 7.14$,
 Binary Jaccard & activity support & mobility; wage & Passed ($t = 8.00$, $R^2 = 0.00167$) \\
 \hline
 \end{tabular}
-\caption{Validation targets by activity-distance recipe and Phase~I outcomes. Continuous semantic overlap outperforms binary overlap in explanatory power ($R^2$) when properly calibrated.}
+\caption{Validation targets by activity-distance recipe and Phase~I outcomes. Continuous semantic overlap explains more variance ($R^2$); binary overlap achieves higher statistical precision ($t$-stat). Both pass validation.}
 \label{tab:validation-matrix}
 \end{table}
 
@@ -858,7 +858,7 @@ Cross-validation (5-fold) & Overfit ratio $< 1.2$ for all & No overfitting \\
 
 \noindent\textit{(C4) Interpretation.}
 
-Normalized kernel-weighted overlap significantly outperforms binary Jaccard overlap in explaining wage comovement. The improvement in $R^2$ is 191\% (from 0.00167 to 0.00485). This is not driven by concentration effects: after controlling for entropy (specialist vs generalist) and support size (number of activities), the semantic overlap coefficient remains highly significant ($t = 5.29$).
+Normalized kernel-weighted overlap explains substantially more variance in wage comovement than binary Jaccard overlap. The improvement in $R^2$ is 191\% (from 0.00167 to 0.00485). However, binary Jaccard achieves higher statistical precision ($t = 8.00$ vs $t = 7.14$ for normalized kernel), suggesting the semantic signal is noisier despite explaining more variance. This is not driven by concentration effects: after controlling for entropy and support size, the semantic overlap coefficient remains significant ($t = 5.29$).
 
 The semantic signal is robust across validation checks:
 \begin{itemize}
@@ -870,7 +870,7 @@ The semantic signal is robust across validation checks:
 
 \noindent\textit{(C5) Implementation artifact resolved.}
 
-An earlier version (v0.5.0) concluded that ``discrete dominates continuous'' based on kernel-weighted overlap failing permutation testing. This was traced to bandwidth miscalibration: setting $\sigma$ to the global distance median (0.744) caused kernel collapse, making all continuous measures equivalent to noise. With proper calibration ($\sigma = 0.223$, the NN median), the continuous measure substantially outperforms the discrete baseline.
+An earlier version (v0.5.0) concluded that ``discrete dominates continuous'' based on kernel-weighted overlap failing permutation testing. This was traced to bandwidth miscalibration: setting $\sigma$ to the global distance median (0.744) caused kernel collapse, making all continuous measures equivalent to noise. With proper calibration ($\sigma = 0.223$, the NN median), the continuous measure explains substantially more variance than the discrete baseline, though with lower statistical precision.
 
 
 \medskip
@@ -1208,7 +1208,7 @@ ICT/RBTC (1980--2007) & Routine-cognitive core & Displacement & Continuous & Dec
 AI era (2020--) & Analytic/generative & TBD & TBD & TBD \\
 \hline
 \end{tabular}
-\caption{Historical regimes as parameter signatures. ``Mechanism'' column records whether continuous or discrete activity structure is the primary channel; Phase~I suggests continuous dominates when properly calibrated.}
+\caption{Historical regimes as parameter signatures. ``Mechanism'' column records whether continuous or discrete activity structure is the primary channel; Phase~I suggests both are informative, with continuous explaining more variance and discrete providing higher precision.}
 \label{tab:regimes}
 \end{table}
 
@@ -1220,7 +1220,7 @@ AI era (2020--) & Analytic/generative & TBD & TBD & TBD \\
 This paper develops a geometric measurement framework for labor market exposure to technological shocks and tests whether continuous structure improves prediction beyond discrete activity classification. We model occupations as probability distributions over work activities, with shocks propagating through the activity space via a distance-based kernel. The framework provides a principled construction of occupation-activity measures from O*NET data and a testable formalization that distinguishes continuous from discrete representations of the task domain.
 
 
-The central empirical finding is that continuous semantic structure significantly improves prediction of wage comovement when the kernel is properly calibrated. Normalized kernel-weighted overlap achieves $t = 7.14$ (clustered standard errors), $R^2 = 0.00485$---a 191\% improvement in explanatory power over binary Jaccard overlap ($t = 8.00$, $R^2 = 0.00167$). The semantic signal is robust: it survives permutation testing ($p < 0.001$), remains significant after controlling for occupational concentration ($t = 5.29$ with entropy controls), and achieves the 100th percentile against random baseline distributions.
+The central empirical finding is that both continuous and discrete representations are informative for predicting wage comovement, with neither unambiguously dominating. Normalized kernel-weighted overlap achieves $R^2 = 0.00485$---a 191\% improvement in explanatory power over binary Jaccard overlap ($R^2 = 0.00167$). However, binary Jaccard achieves higher statistical precision ($t = 8.00$ vs $t = 7.14$ for normalized kernel under clustered standard errors). The semantic signal is robust: it survives permutation testing ($p < 0.001$), remains significant after controlling for occupational concentration ($t = 5.29$ with entropy controls), and achieves the 100th percentile against random baseline distributions.
 
 
 A critical methodological finding is that kernel bandwidth must be calibrated to local distance structure. Setting $\sigma$ to the global distance median causes kernel collapse, making continuous measures equivalent to noise---an artifact that initially led to an incorrect conclusion that ``discrete dominates continuous.'' Calibrating $\sigma$ to the median nearest-neighbor distance ($\sigma = 0.223$ for our embeddings) restores discrimination and reveals the continuous structure.
@@ -1232,7 +1232,7 @@ Normalization for concentration effects improves prediction. The normalized over
 Several questions remain for Phase~II. First, we have not tested whether activity-based exposure is the \emph{dominant} channel versus industry composition, credential similarity, or wage proximity. The dominance test proposed in Phase~II will assess this. Second, we have not validated structural stability across shock types; the RBTC-vs-AI stability test is needed. Third, wage comovement may not be the ideal validation target---worker mobility may provide a more direct test of economic substitutability. Fourth, the framework has validated the propagation geometry but not the shock profiles; constructing and validating AI-specific profiles ($v_1$, $v_2$, $v_3$) is the critical next step.
 
 
-The framework's contribution is a disciplined measurement pipeline that reveals what kind of structure actually matters for economic outcomes. The finding that continuous semantic similarity outperforms discrete activity classification supports the manifold representation of the task domain and suggests that kernel-weighted exposure measures can capture economically meaningful variation that binary classification misses. The methodological lessons---calibrate bandwidth to local structure, normalize for concentration, validate against random baselines---provide guidance for future implementations.
+The framework's contribution is a disciplined measurement pipeline that reveals what kind of structure actually matters for economic outcomes. The finding that both continuous and discrete representations are informative---with continuous explaining more variance and discrete achieving higher precision---suggests that the choice depends on research priorities. Continuous kernel-weighted measures capture economically meaningful variation that binary classification misses, while discrete measures provide more robust inference. The methodological lessons---calibrate bandwidth to local structure, normalize for concentration, validate against random baselines---provide guidance for future implementations.
 
 
 \bibliographystyle{apalike}

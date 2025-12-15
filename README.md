@@ -16,18 +16,18 @@ This project develops a measurement framework for studying how technological cha
 
 ## Current Status: Phase 2 Complete
 
-**v0.6.2 Result:** Systematic representation comparison confirms kernel-weighted semantic overlap is robust.
+**v0.6.2 Result:** Both continuous and discrete representations are informative; neither unambiguously dominates.
 
 | Measure | t-stat (clustered SEs) | R² | Notes |
 |---------|------------------------|-----|-------|
-| MPNet (normalized) | **7.14** | **0.00485** | ✓ Best measure |
-| MPNet (unnormalized) | 5.90 | 0.00310 | Matches Phase 1 |
-| Binary Jaccard | 8.00 | 0.00167 | Baseline |
+| MPNet (normalized) | 7.14 | **0.00485** | Highest R² (explanatory power) |
+| MPNet (unnormalized) | 5.90 | 0.00310 | Robustness check |
+| Binary Jaccard | **8.00** | 0.00167 | Highest t-stat (precision) |
 
 **Key findings:**
-1. **Normalization IMPROVES prediction** — R² increased 56.6% after normalization (concentration was noise)
-2. **Not just concentration** — Remains significant (t=5.29) after controlling for entropy
-3. **Task-manifold theory validated** — Semantic content predicts beyond job breadth
+1. **Continuous adds explanatory power** — R² = 0.00485 vs 0.00167, a 191% improvement
+2. **Discrete is more statistically robust** — Binary Jaccard has higher t-stat (8.00 vs 7.14) under clustered inference
+3. **Both structures are informative** — Semantic structure is real (100th percentile vs random), but the mapping to economic outcomes is heterogeneous
 
 ---
 
@@ -37,8 +37,8 @@ This project develops a measurement framework for studying how technological cha
 |---------|----------|--------|
 | **v0.6.3.1** | **Classification infrastructure** | **GWA/DWA classification, shock profiles ready for Phase II** |
 | v0.6.3 | Infrastructure consolidation | Codebase reorganized, experiments framework |
-| v0.6.2 | Robustness checks + controls | Semantic signal robust (t=7.14 normalized) |
-| v0.6.1 | Kernel fix + semantic vs random | Semantic >> Jaccard >> Random |
+| v0.6.2 | Robustness checks + controls | Both structures informative; neither dominates |
+| v0.6.1 | Kernel fix + semantic vs random | Semantic beats random; both semantic and Jaccard pass validation |
 | v0.5.0 | Binary Jaccard + SAE comparison | Binary validated, SAE marginal |
 | v0.4.x | Various approaches | Failed validation |
 
@@ -195,7 +195,15 @@ See `paper/main.tex` Section 3 for formal definitions and Section 4 for empirica
 
 5. **Activity-level vs occupation-level are different tests** — Text embeddings (C1-C3) test task-manifold theory; O*NET structured (C4-C7) test ability/skill similarity. Both valid, different hypotheses.
 
-6. **Task-manifold theory is validated** — Kernel-weighted semantic overlap significantly predicts wage comovement beyond discrete activity counting.
+6. **Both structures are informative** — Continuous semantic overlap explains more variance (higher R²); discrete Jaccard provides more reliable inference (higher t-stat). The choice depends on whether you prioritize explanatory power or statistical reliability.
+
+### Why t-stat and R² Can Diverge
+
+The t-statistic measures **precision** (how tightly estimated is β?). R² measures **explanatory power** (how much variance explained?).
+
+Binary Jaccard is a coarser measure (values cluster at 0). Kernel overlap is a finer measure (continuous values). The finer measure picks up more signal *and* more noise.
+
+**Bottom line:** Semantic structure is real and informative. But the mapping from "semantic similarity" to "economic similarity" is imperfect. Some semantically-similar occupation pairs comove strongly; others don't. The discrete measure is cruder but more uniformly predictive.
 
 ---
 

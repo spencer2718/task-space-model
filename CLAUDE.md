@@ -237,19 +237,39 @@ tests/
 
 ## Validation Results Reference (v0.6.1)
 
-### Kernel vs Jaccard
+### Primary Results (Clustered SEs — Correct Inference)
 
-| Measure | t-stat | R² | Improvement |
-|---------|--------|-----|-------------|
-| Kernel (σ=0.22, unnorm) | **27.65** | **0.00310** | — |
-| Binary Jaccard | 8.00 | 0.00167 | +245% t, +86% R² |
+| Measure | t-stat (clustered) | R² | Notes |
+|---------|-------------------|-----|-------|
+| Normalized kernel | **7.14** | **0.00485** | Highest R² |
+| Unnormalized kernel | 5.90 | 0.00310 | Robustness |
+| Binary Jaccard | **8.00** | 0.00167 | Highest t-stat |
 
-### Semantic vs Random (100 seeds)
+**Interpretation:** Binary Jaccard has the highest t-statistic (most precise estimate); normalized kernel has the highest R² (most explanatory power). Neither measure unambiguously dominates.
+
+### Why t-stat and R² Can Diverge
+
+The t-statistic measures **precision**: how tightly estimated is β relative to zero?
+R² measures **explanatory power**: how much outcome variance does the regressor explain?
+
+These can diverge when:
+- The regressor has more variance → explains more outcome variance (higher R²)
+- But the relationship is noisier or more heterogeneous → less precise estimate (lower t)
+
+Binary Jaccard is a **coarser** measure (values cluster at 0 and small positive numbers). Kernel overlap is a **finer** measure (continuous values across the range). The finer measure picks up more signal and more noise.
+
+**Interpretation:** The semantic structure is real and informative, but the mapping from "semantic similarity" to "economic similarity" is imperfect and heterogeneous across occupation pairs. Some semantically-similar occupation pairs comove strongly; others don't. The discrete measure is cruder but more uniformly predictive.
+
+### Semantic vs Random (100 seeds, OLS for comparability)
+
+*Note: This comparison uses OLS (unclustered) standard errors because random baselines were computed with OLS. These t-stats are NOT comparable to the clustered SE results above.*
 
 | Metric | Semantic | Random Mean | Random Max | Percentile |
 |--------|----------|-------------|------------|------------|
-| t-stat | **27.65** | 5.67 | 15.09 | **100%** |
+| t-stat (OLS) | **27.65** | 5.67 | 15.09 | **100%** |
 | R² | **0.00310** | 0.00017 | 0.00052 | **100%** |
+
+This confirms semantic structure is **not noise** — it beats random at the 100th percentile.
 
 ### Sigma Discrimination
 
@@ -329,7 +349,7 @@ spec_*.md                # Implementation specifications
 
 8. **Discrimination ratio > 4x is necessary** — Check `exp(-d_p10/σ) / exp(-d_p90/σ)`. If < 2x, kernel is collapsed.
 
-9. **Semantic structure IS predictive** — t = 27.65, 100th percentile vs random. The manifold representation is vindicated.
+9. **Semantic structure IS predictive** — 100th percentile vs random, higher R² than Jaccard. However, Jaccard has higher t-stat under clustered inference. Both structures are informative; neither unambiguously dominates.
 
 10. **Always diagnose before concluding** — The "discrete dominates" finding seemed robust but was an artifact. Run full diagnostics (distance distribution, orientation, kernel weights, correlation) before drawing conclusions.
 
@@ -339,11 +359,11 @@ spec_*.md                # Implementation specifications
 
 ### Theoretical Implications (Revised)
 
-13. **The manifold abstraction is vindicated** — Tasks DO live on a continuous similarity space. Kernel-weighted overlap significantly improves prediction.
+13. **Both continuous and discrete structures are informative** — Continuous semantic similarity explains more variance (higher R²); discrete overlap provides more reliable inference (higher t-stat). Neither representation unambiguously dominates. The choice depends on whether you prioritize explanatory power or statistical reliability.
 
 14. **Kernel bandwidth selection is critical** — The key methodological insight: calibrate to local structure (NN distances), not global distribution.
 
-15. **Geometry enables prediction beyond counting** — +86% R² over binary Jaccard. Semantic similarity adds real value.
+15. **Geometry enables prediction beyond counting** — +191% R² over binary Jaccard (normalized kernel). Semantic similarity adds explanatory power, but with noisier estimation.
 
 ### From v0.6.3 (Consolidation)
 
@@ -369,16 +389,20 @@ spec_*.md                # Implementation specifications
 
 ---
 
-## Recipe Comparison (Updated v0.6.1)
+## Recipe Comparison (Updated v0.6.3.1)
 
-| Aspect | Recipe X (v0.4.1) | Recipe Y (v0.4.2) | Binary (v0.5.0) | Kernel (v0.6.1) |
-|--------|-------------------|-------------------|-----------------|-----------------|
+| Aspect | Recipe X (v0.4.1) | Recipe Y (v0.4.2) | Binary (v0.5.0) | Kernel (v0.6.1+) |
+|--------|-------------------|-------------------|-----------------|------------------|
 | Input | Importance profiles | Activity titles | Activity weights | Activity embeddings |
 | Method | PCA → Euclidean | Sentence → Cosine | Binarize → Jaccard | Embed → Kernel → Overlap |
 | σ | Various | Various | N/A | **NN median (0.22)** |
-| Normalized | Yes | Yes | N/A | **No** |
-| Validation | FAIL (wrong sign) | FAIL (spurious) | PASS (t=8.00) | **PASS (t=27.65)** |
-| Recommended | No | No | Baseline | **Yes** |
+| Normalized | Yes | Yes | N/A | Yes (overlap), No (kernel) |
+| t-stat (clustered) | — | — | **8.00** | 7.14 (norm), 5.90 (unnorm) |
+| R² | — | — | 0.00167 | **0.00485** (norm) |
+| Validation | FAIL (wrong sign) | FAIL (spurious) | PASS | PASS |
+| Recommended | No | No | Baseline | Primary (norm) |
+
+**Note:** Binary Jaccard has higher t-stat; normalized kernel has higher R². Both are valid; use based on whether precision or explanatory power is prioritized.
 
 ---
 
