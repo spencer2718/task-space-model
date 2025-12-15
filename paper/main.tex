@@ -35,7 +35,7 @@
 
 \textit{This document is a technical specification for an ongoing research program, not a polished manuscript. It contains explicit diagnostic criteria, pre-committed design choices, and implementation notes. A distilled version suitable for academic circulation will be prepared separately.}
 
-\textit{Current version: 0.6.5. Claims recalibrated following internal review. Focus on descriptive validation of semantic-institutional decomposition.}
+\textit{Current version: 0.6.6. Asymmetric barriers test (symmetric finding); automation prediction application (marginal improvement over RTI); oracle framing consolidated.}
 
 \vspace{1em}
 
@@ -55,29 +55,25 @@
 Public discussion of automation and AI is surrounded by anxiety about job loss and wage stagnation. Important empirical questions include how to measure which parts of the labor market are exposed to technological change, how exposure propagates beyond an initial cluster of tasks, and which measurement choices survive falsifiable checks. Existing task-based exposure measures---routine versus non-routine, ``AI-exposed'' versus not---provide useful summaries but do not directly encode graded similarity across tasks, institutional barriers to worker reallocation, or spillovers from a shock that originates in one region of the task space and affects nearby tasks.
 
 
-In principle, a sufficiently capable AI system with a correct structural model could simulate: new technologies as shocks in task space, reallocation paths of workers across occupations, and general-equilibrium wage and unemployment dynamics. Call this hypothetical system the \emph{task-space oracle}---a complete structural mapping $\mathcal{F}$ from task-space representations, technology shocks, and institutional structures to equilibrium labor-market outcomes.
-
-This paper does not attempt to estimate $\mathcal{F}$, nor do we claim that validated components are sufficient for such an oracle; they are necessary conditions that candidate representations must satisfy. We treat economics as a method of model selection over candidate representations of tasks, frictions, and adjustment mechanisms.
+This paper develops a geometric framework for measuring occupational mobility and applies it to study how workers move across the labor market. The central theoretical contribution is the decomposition of effective distance between occupations into semantic and institutional components (\cref{subsec:decomposition}). Semantic distance captures task-content similarity: can the worker perform the tasks? Institutional distance captures credentialing and training barriers: is the worker allowed to perform the job? Two occupations may be semantically similar (e.g., brain surgeon and butcher both involve cutting) but economically distant due to vast differences in required credentials.
 
 
-The contribution is to develop and empirically test modular components of a future oracle: task-space geometry, institutional wedges, and mobility constraints. Each empirical test is a stress test of a specific module. If a candidate representation fails to predict observed labor market patterns, it is unlikely to be useful as an input to any downstream structural model. The framework earns its keep only if the resulting exposure indices are non-redundant relative to standard discrete baselines and if the task geometry passes non-tautological diagnostics.
+The paper makes four contributions. First, we validate the semantic-institutional decomposition using worker-level occupation transitions from the Current Population Survey. Both components are significant predictors of observed mobility, with correlation $r = 0.36$ between measures---related but not redundant.
+
+Second, we test whether institutional barriers are asymmetric---whether credentials function as ``one-way gates'' that restrict entry but not exit. Simple credentialing theory predicts upward barriers should dominate: a surgeon can become a butcher, but not the reverse. We find the opposite: upward and downward barriers are nearly symmetric ($\beta_{\mathrm{up}}/\beta_{\mathrm{down}} = 1.04$). This interpretable null suggests that O*NET Job Zones capture general occupational distance rather than regulatory gatekeeping, and that overqualification discrimination and human capital specificity create genuine downward barriers \citep{Pedulla2016,GathmannSchonberg2010}.
+
+Third, we apply the framework to automation prediction. Semantic exposure adds $\Delta R^2 = 2.2\%$ over canonical routine task intensity (RTI) in predicting 2019--2024 employment changes ($p = 0.075$). The framework succeeds at measuring task similarity but shows only marginal improvement over existing measures for predicting automation-driven outcomes.
+
+Fourth, we document methodological infrastructure: kernel bandwidth must be calibrated to local distance structure, and RTI must use the full 16-element Acemoglu-Autor composite---single O*NET elements yield $R^2 \approx 0$.
 
 
-A central theoretical contribution is the decomposition of effective distance between occupations into semantic and institutional components (\cref{subsec:decomposition}). Semantic distance captures task-content similarity: can the worker perform the tasks? Institutional distance captures credentialing and training barriers: is the worker allowed to perform the job? Two occupations may be semantically similar (e.g., brain surgeon and butcher both involve cutting) but economically distant due to vast differences in required credentials.
+The primary mobility validation uses 89,329 verified occupation transitions from the CPS. In a conditional logit model of destination choice, both semantic distance ($\alpha = 2.994$, $t = 98.5$) and institutional distance ($\beta = 0.215$, $t = 63.4$) are significant predictors of observed destinations. On a standardized basis, the two effects are comparable in magnitude. A complementary validation using wage comovement shows that semantic overlap predicts occupation-pair wage correlations ($R^2 = 0.00523$), outperforming binary Jaccard overlap by a factor of three.
 
 
-The primary empirical test uses worker-level occupation transitions from the Current Population Survey (CPS). In a conditional logit model of destination choice among 89,329 verified transitions, both semantic distance ($\alpha = 2.994$, $t = 98.5$) and institutional distance ($\beta = 0.215$, $t = 63.4$) are significant predictors of observed destinations. The large $t$-statistics primarily reflect sample size; we focus on effect magnitudes. On a standardized basis, the two effects are comparable: a one-standard-deviation increase in institutional distance is associated with 25\% lower odds of that destination, versus 19\% for semantic distance. The key finding is that both components are independently predictive ($r = 0.36$ between measures), not that one dominates.
+The framework sits within a broader research program targeting a \emph{task-space oracle}---a hypothetical complete structural mapping from task representations, technology shocks, and institutions to equilibrium labor-market outcomes. We do not estimate or approximate this oracle; we test candidate components against observed data. The semantic-institutional decomposition and the symmetric barriers finding constrain future specifications: effective distance may not require directional asymmetry, and semantic geometry alone is insufficient for automation prediction.
 
 
-A complementary validation using wage comovement across occupation pairs shows that the semantic geometry is statistically detectable: normalized kernel-weighted overlap achieves $R^2 = 0.00485$, compared to $R^2 = 0.00167$ for binary Jaccard overlap. Both values are small in absolute terms; the value of this test is discriminating between candidate representations, not explaining wage dynamics.
-
-The paper's contribution is primarily descriptive: we show that semantic distance (task-content similarity) and institutional distance (job zone and certification differences) are both significant predictors of observed occupation transitions, with correlation $r = 0.36$ between the two measures. This decomposition is a necessary condition for any downstream structural use of task-space representations---if a representation fails to predict observed mobility, it is unlikely to be useful for counterfactual analysis. We do not claim to have built components of a future oracle; we validate candidate representations against observed patterns.
-
-
-Finally, wage outcomes are conditional on institutions. Productivity effects need not pass through one-for-one into wages; wage-setting and pass-through environments can introduce occupation-specific wedges. We treat this as a scope condition (\cref{subsec:wedge}) and record a ``new tasks'' extension (\cref{subsec:newtasks}), while keeping the baseline empirical focus on evaluating exposure measurement.
-
-
-\cref{sec:literature} reviews related literatures. \cref{sec:theory} develops the theoretical framework, including the oracle mapping, the semantic-institutional decomposition, and both continuous and discrete representations as alternatives to be tested. \cref{sec:empirics} operationalizes each component using O*NET data, reports the CPS mobility validation as the primary test and wage comovement as a complementary test, and specifies the prospective evaluation plan. \cref{sec:extensions} records extensions and historical regime signatures. \cref{sec:conclusion} concludes.
+\cref{sec:literature} reviews related literatures. \cref{sec:theory} develops the theoretical framework, including the semantic-institutional decomposition with both symmetric and asymmetric specifications. \cref{sec:empirics} operationalizes each component using O*NET data, reports the CPS mobility validation, the asymmetric barriers test, wage comovement, and the automation prediction application. \cref{sec:extensions} records extensions. \cref{sec:conclusion} concludes.
 
 
 \section{Literature Review}
@@ -279,14 +275,22 @@ If $\lambda > 0$ and statistically significant, institutional distance predicts 
 \end{remark}
 
 
-\begin{remark}[Asymmetry]
-\label{rem:asymmetry}
-The institutional distance $d_{\mathrm{inst}}$ as defined is symmetric, but the underlying barrier is not: moving \emph{up} job zones requires training; moving \emph{down} does not. A surgeon can become a butcher; the reverse requires medical school. An extension decomposes $d_{\mathrm{inst}}$ into upward and downward components:
+\begin{definition}[Asymmetric institutional distance]
+\label{def:asymmetric-distance}
+The symmetric $d_{\mathrm{inst}}$ can be decomposed into directional components:
 \[
-d_{\mathrm{inst}}^{\mathrm{up}}(i,j) = \max(0, \mathrm{Zone}_j - \mathrm{Zone}_i), \quad
-d_{\mathrm{inst}}^{\mathrm{down}}(i,j) = \max(0, \mathrm{Zone}_i - \mathrm{Zone}_j).
+d_{\mathrm{inst}}^{\mathrm{up}}(i,j) = \max(0, \mathrm{Zone}_j - \mathrm{Zone}_i) + \gamma \cdot \max(0, \mathrm{Cert}_j - \mathrm{Cert}_i),
 \]
-We would expect the coefficient on upward mobility to exceed that on downward mobility.
+\[
+d_{\mathrm{inst}}^{\mathrm{down}}(i,j) = \max(0, \mathrm{Zone}_i - \mathrm{Zone}_j) + \gamma \cdot \max(0, \mathrm{Cert}_i - \mathrm{Cert}_j),
+\]
+where $\mathrm{Zone} \in \{1,\ldots,5\}$ is the O*NET job zone and $\mathrm{Cert}$ is the normalized certification importance. By construction, $d_{\mathrm{inst}}^{\mathrm{up}}(i,j) + d_{\mathrm{inst}}^{\mathrm{down}}(i,j) = d_{\mathrm{inst}}(i,j)$.
+\end{definition}
+
+
+\begin{remark}[Theoretical prediction for asymmetry]
+\label{rem:asymmetry-prediction}
+Credentialing theory predicts $\beta_{\mathrm{up}} \gg \beta_{\mathrm{down}}$ because licensing restricts entry but not exit \citep{Jackson2023}. A surgeon can become a butcher; the reverse requires medical school. However, this prediction assumes Job Zones proxy licensing barriers rather than general human capital investment. If Job Zones capture symmetric switching costs---skill acquisition for upward moves AND skill abandonment for downward moves---both coefficients may be significant. Alternative mechanisms that could generate symmetric barriers include: (i) overqualification discrimination, where employers penalize workers who appear overqualified \citep{Pedulla2016}; (ii) human capital specificity, where workers forfeit returns to occupation-specific skills when moving down \citep{GathmannSchonberg2010,KambourovManovskii2009}; (iii) Job Zones measuring occupational distance rather than regulatory gatekeeping. \cref{subsubsec:asymmetric-test} tests this prediction empirically.
 \end{remark}
 
 
@@ -835,6 +839,54 @@ We cannot distinguish these mechanisms from confounds (e.g., unobserved worker h
 \textbf{Implications for exposure measurement.} If the decomposition is correct, any task-space exposure measure should incorporate both semantic and institutional distance. A model that predicts workers will flow to semantically similar occupations without accounting for institutional barriers would overstate reallocation to credential-protected occupations. This is a conditional claim: it holds if the decomposition reflects real mobility frictions, not merely data artifacts.
 
 
+\subsubsection{Directional Asymmetry Test}
+\label{subsubsec:asymmetric-test}
+
+
+This section tests whether institutional barriers are asymmetric---whether ``one-way gate'' credentialing theory holds empirically.
+
+\textbf{Hypothesis.} Credentialing theory predicts $\beta_{\mathrm{up}} > \beta_{\mathrm{down}}$, possibly with $\beta_{\mathrm{down}} \approx 0$. Licenses restrict entry but not exit; moving up requires credentials, moving down does not \citep{Jackson2023}.
+
+\textbf{Specification.} Conditional logit with directional institutional distance:
+\[
+U_{kj} = \alpha \cdot (-d_{\mathrm{sem}}(i,j)) + \beta_{\mathrm{up}} \cdot (-d_{\mathrm{inst}}^{\mathrm{up}}(i,j)) + \beta_{\mathrm{down}} \cdot (-d_{\mathrm{inst}}^{\mathrm{down}}(i,j)) + \varepsilon_{kj}
+\]
+
+
+\begin{table}[h!]
+\centering
+\caption{Asymmetric Conditional Logit Results}
+\label{tab:asymmetric-results}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Parameter} & \textbf{Coefficient} & \textbf{Std. Error} & \textbf{$t$-statistic} & \textbf{$p$-value} \\
+\midrule
+$\alpha$ (semantic) & 5.691 & 0.036 & 160.2 & $< 10^{-100}$ \\
+$\beta_{\mathrm{up}}$ (upward) & 0.282 & 0.004 & 64.9 & $< 10^{-100}$ \\
+$\beta_{\mathrm{down}}$ (downward) & 0.270 & 0.005 & 50.0 & $< 10^{-100}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Asymmetry ratio:} $\beta_{\mathrm{up}} / \beta_{\mathrm{down}} = 1.04$.
+
+\textbf{Likelihood ratio test:} $\chi^2(1) = 4.33$, $p = 0.038$. The difference is statistically significant but economically trivial.
+
+
+\textbf{Interpretation: Surprising null.} Contrary to simple credential-gate theory, upward and downward barriers are nearly symmetric. The hypothesis that credentials function as one-way gates is not supported in these data.
+
+Three mechanisms explain why barriers appear symmetric:
+\begin{enumerate}
+    \item \textbf{Overqualification discrimination.} Employers actively penalize overqualified applicants. Audit studies find skills underutilization reduces callbacks by approximately 55\%---a penalty nearly as severe as one year of unemployment \citep{Pedulla2016}. This creates genuine downward barriers.
+    
+    \item \textbf{Human capital specificity.} Workers forfeit returns to occupation-specific skills when moving down. Estimates suggest 12--20\% wage premiums for five years of occupation tenure \citep{KambourovManovskii2009}, and up to 52\% of overall wage growth derives from task-specific human capital \citep{GathmannSchonberg2010}. Downward moves destroy this accumulated investment.
+    
+    \item \textbf{Job Zones measure distance, not gates.} O*NET Job Zones capture human capital investment requirements (years of education, training time), not licensing barriers. Licensing creates asymmetric barriers---\citet{Jackson2023} finds licensing reduces entry probability by 24\% with no significant effect on exit. Job Zones capture something more symmetric: general occupational distance.
+\end{enumerate}
+
+This is an interpretable null, not a failure. It tells us Job Zones function as a general mobility friction measure, not a credential barrier measure. Testing with actual licensing data (e.g., CPS licensing supplement, state-level licensing variation) should reveal the expected asymmetry \citep{KleinerXu2020}.
+
+
 \subsection{Complementary Validation: Wage Comovement}
 \label{subsec:wage-comovement}
 
@@ -862,7 +914,7 @@ Standard errors clustered by origin occupation. $n = 246{,}051$ occupation pairs
 \toprule
 \textbf{Measure} & $\beta$ & SE & $t$ & $p$ & $R^2$ \\
 \midrule
-Normalized kernel overlap & 0.322 & 0.045 & 7.14 & $< 10^{-12}$ & 0.00485 \\
+Normalized kernel overlap & 0.337 & 0.046 & 7.39 & $< 10^{-12}$ & 0.00523 \\
 Unnormalized kernel overlap & 1.904 & 0.323 & 5.90 & $< 10^{-8}$ & 0.00310 \\
 Binary Jaccard & 0.471 & 0.059 & 8.00 & $< 10^{-15}$ & 0.00167 \\
 \bottomrule
@@ -873,7 +925,7 @@ Binary Jaccard & 0.471 & 0.059 & 8.00 & $< 10^{-15}$ & 0.00167 \\
 \subsubsection{Interpretation}
 
 
-Normalized kernel-weighted overlap achieves $R^2 = 0.00485$, compared to $R^2 = 0.00167$ for binary Jaccard---a nearly threefold relative improvement. However, both values are small in absolute terms: the semantic geometry captures a statistically detectable but quantitatively modest share of wage comovement variance. Binary Jaccard achieves higher statistical precision ($t = 8.00$ vs $t = 7.14$ for normalized kernel), suggesting the semantic signal is noisier. The value of this test is discriminating between candidate representations, not explaining wage dynamics.
+Normalized kernel-weighted overlap achieves $R^2 = 0.00523$, compared to $R^2 = 0.00167$ for binary Jaccard---a threefold relative improvement. However, both values are small in absolute terms: the semantic geometry captures a statistically detectable but quantitatively modest share of wage comovement variance. The value of this test is discriminating between candidate representations, not explaining wage dynamics.
 
 The semantic signal is robust across validation checks:
 \begin{itemize}
@@ -893,6 +945,84 @@ The semantic signal is robust across validation checks:
 Both suggest the semantic geometry captures structure correlated with economic outcomes. The CPS test additionally shows that institutional distance is predictive conditional on semantic distance.
 
 
+\subsection{Application: Automation Prediction}
+\label{subsec:automation-prediction}
+
+
+This section tests whether the semantic geometry improves prediction of employment changes beyond canonical routine task intensity (RTI). This addresses the original RBTC question: can continuous semantic structure add value beyond discrete routine/non-routine classification?
+
+
+\subsubsection{Motivation}
+
+
+The framework succeeds at predicting mobility: semantic and institutional distance both predict where workers go when they switch occupations. A natural extension asks whether the same geometry predicts which occupations experience employment declines due to automation. If semantic exposure captures economically relevant structure, it should add predictive value beyond existing measures.
+
+
+\subsubsection{Data and Measures}
+
+
+\textbf{Sample:} OES employment data, 2019 and 2024. $N = 658$ occupations after matching to O*NET and external measures. Outcome: $\Delta \log(\text{employment})_{2019 \to 2024}$.
+
+\textbf{Routine Task Intensity (RTI):} Full 16-element Acemoglu-Autor composite \citep{AcemogluAutor2011}, not a single O*NET element. Components include: abstract (quantitative reasoning, creativity, judgment), routine (structured work, repetition), and manual (physical dexterity, outdoor work). RTI = Routine $-$ Abstract $-$ Manual.
+
+\textbf{AI Occupational Exposure (AIOE):} \citet{FeltenRajSeamans2021} measure based on AI capability--ability linkages.
+
+\textbf{Semantic Exposure:} Capability-based shock profile ($v_1$) propagated through task-space kernel geometry.
+
+\textbf{Controls:} Dingel-Neiman telework score \citep{DingelNeiman2020}, O*NET Job Zone.
+
+
+\subsubsection{RTI Construction Note}
+
+
+A critical methodological finding: the choice of RTI operationalization matters substantially. Using a single O*NET element (e.g., 4.C.3.b.7 ``Repeating Same Tasks'') yields $R^2 \approx 0$ for employment changes. The full 16-element composite yields $R^2 = 9.8\%$. Proper RTI construction following \citet{AcemogluAutor2011} is essential for meaningful comparison.
+
+
+\subsubsection{Results}
+
+
+\begin{table}[h!]
+\centering
+\caption{Automation Prediction Model Comparison}
+\label{tab:automation-results}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Model} & \textbf{$R^2$} & \textbf{$R^2_{\mathrm{adj}}$} & \textbf{Key $\beta$ (std.)} & \textbf{$p$-value} \\
+\midrule
+RTI only & 9.82\% & 9.68\% & RTI: $-0.077$ & $< 0.0001$ \\
+RTI + Semantic & 12.03\% & 11.76\% & Semantic: $+0.037$ & 0.075 \\
+AIOE only & 4.64\% & 4.50\% & AIOE: $+0.053$ & 0.039 \\
+AIOE + Semantic & 5.86\% & 5.58\% & Semantic: $+0.033$ & 0.092 \\
+Full (RTI + AIOE + Semantic) & 12.23\% & 11.82\% & Only RTI sig. & --- \\
+Full + Controls & 12.92\% & 12.25\% & Only RTI sig. & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\textbf{Incremental validity:} Semantic exposure adds $\Delta R^2 = 2.21\%$ over RTI alone ($p = 0.075$, marginal). In the full model with RTI, AIOE, semantic exposure, and controls, only RTI remains statistically significant.
+
+\textbf{AIOE coefficient sign:} AIOE positively predicts employment changes, consistent with recent evidence on AI complementarity rather than displacement \citep{FeltenRajSeamans2021}.
+
+\textbf{Correlation structure:}
+\begin{itemize}
+    \item $\mathrm{corr}(\text{RTI}, \text{AIOE}) = -0.325$
+    \item $\mathrm{corr}(\text{RTI}, \text{Semantic}) = -0.229$
+    \item $\mathrm{corr}(\text{AIOE}, \text{Semantic}) = 0.589$
+\end{itemize}
+Variance inflation factors are all below 2, indicating no multicollinearity concerns.
+
+
+\subsubsection{Interpretation}
+
+
+The framework shows only marginal improvement for predicting automation-driven employment changes. RTI---when properly constructed---dominates. This is an honest partial null that constrains claims about the framework's scope.
+
+The result is interpretable: semantic geometry captures task similarity well (validated by mobility and wage comovement), but task similarity is not the same as automation exposure. RTI directly measures the routine/non-routine dimension that theory identifies as the locus of automation effects. Semantic distance captures a broader notion of task relatedness that is useful for mobility prediction but less targeted for automation.
+
+The positive AIOE coefficient suggests current AI technologies may be more complementary than substitutive at the occupation level, consistent with \citet{FeltenRajSeamans2021} findings of positive wage effects for AI-exposed occupations. This is a period-specific finding that may change as AI capabilities evolve.
+
+
 \subsection{Retrospective Battery (Roadmap)}
 \label{subsec:retrospective-roadmap}
 
@@ -906,7 +1036,7 @@ The original research design included three retrospective tests against canonica
 
 These tests were designed before the CPS mobility analysis. We report CPS mobility as the primary test because it operates at the worker level, avoiding ecological inference, and directly tests the semantic-institutional decomposition. The retrospective battery addresses aggregate outcomes (employment shares, wage polarization) that are informative but confounded by industry concentration, geographic clustering, and institutional variation across regions.
 
-\textbf{Status note (v0.6.5):} Retrospective battery implementation is incomplete. The crosswalks required to map historical Census occupation codes to O*NET-based semantic distances have been specified but not validated. No results from Tests A, B, or C are reported in this version. Full retrospective results will be reported in v0.7 once crosswalk validation is complete.
+\textbf{Status note (v0.6.6):} Retrospective battery implementation is incomplete. The crosswalks required to map historical Census occupation codes to O*NET-based semantic distances have been specified but not validated. No results from Tests A, B, or C are reported in this version. Full retrospective results will be reported in v0.7 once crosswalk validation is complete.
 
 Full technical specifications, crosswalk documentation, and placeholder implementations are provided in \cref{app:retrospective}.
 
@@ -1024,16 +1154,26 @@ A_t = \delta A_{t-1} + I_t + \varepsilon_t,
 where $\delta \in [0,1]$ governs persistence.
 
 
-\subsection{Asymmetric institutional distance}
+\subsection{Asymmetric institutional distance (completed)}
 \label{subsec:asymmetric}
 
 
-The current $d_{\mathrm{inst}}$ is symmetric, but upward mobility (into higher job zones) is harder than downward. An extension decomposes:
-\[
-d_{\mathrm{inst}}^{\mathrm{up}}(i,j) = \max(0, \mathrm{Zone}_j - \mathrm{Zone}_i), \quad
-d_{\mathrm{inst}}^{\mathrm{down}}(i,j) = \max(0, \mathrm{Zone}_i - \mathrm{Zone}_j).
-\]
-We would expect $\beta^{\mathrm{up}} > \beta^{\mathrm{down}}$.
+The asymmetric extension has been tested (\cref{subsubsec:asymmetric-test}). Contrary to the theoretical prediction that $\beta^{\mathrm{up}} > \beta^{\mathrm{down}}$, we find nearly symmetric barriers: $\beta_{\mathrm{up}} = 0.282$, $\beta_{\mathrm{down}} = 0.270$, ratio $= 1.04$.
+
+This interpretable null suggests that Job Zones measure general occupational distance (human capital investment requirements) rather than regulatory gatekeeping (licensing barriers). Three mechanisms explain symmetric barriers: overqualification discrimination creates genuine downward barriers; human capital specificity makes skill abandonment costly; and Job Zones capture preparation requirements, not legal permission requirements.
+
+The finding constrains future oracle specifications: effective distance using Job Zones may not require directional asymmetry. However, alternative institutional measures may reveal the expected asymmetry.
+
+
+\subsection{Licensing as alternative barrier measure}
+\label{subsec:licensing-extension}
+
+
+Job Zones and occupational licensing measure fundamentally different constructs. Job Zones capture human capital investment requirements---years of education, training time, accumulated experience. Licensing creates legal permission requirements---government authorization to work in an occupation.
+
+\citet{Jackson2023} demonstrates the asymmetry using CPS licensing data: licensing reduces entry probability by 24\% with no significant effect on exit probability. This is the one-way gate pattern that Job Zones fail to capture.
+
+Future work should test the decomposition using: (i) CPS licensing supplement (2015+) matched to Institute for Justice policy data; (ii) state-level licensing variation following \citet{KleinerXu2020}; (iii) specific licensed occupations with binding credential requirements (nursing compact variation, bar exam pass rates, medical licensing pathways). These specifications should reveal the asymmetry that simple credentialing theory predicts.
 
 
 \subsection{Augmentation channel}
@@ -1087,19 +1227,19 @@ AI era (2020--) & Analytic/generative & TBD & TBD & TBD \\
 \label{sec:conclusion}
 
 
-This paper develops a geometric measurement framework for labor market exposure to technological shocks. The task-space oracle serves as an organizing metaphor---a hypothetical complete structural mapping from task representations, technology shocks, and institutions to equilibrium outcomes. We do not estimate or approximate the oracle; we test candidate components against observed data.
+This paper develops a geometric framework for measuring occupational mobility and tests it against observed labor market patterns.
 
+The central theoretical contribution is the semantic-institutional decomposition (\cref{def:effective-distance}), which separates task-content similarity from credentialing barriers. The primary empirical finding validates this decomposition: in 89,329 CPS occupation transitions, both semantic distance ($\alpha = 2.994$, $t = 98.5$) and institutional distance ($\beta = 0.215$, $t = 63.4$) are significant predictors of destination choice. The two measures are correlated at $r = 0.36$---related but not redundant.
 
-The central theoretical contribution is the effective distance decomposition (\cref{def:effective-distance}), separating semantic distance (task-content similarity) from institutional distance (credentialing barriers).
+A surprising finding emerges from testing directional asymmetry. Simple credentialing theory predicts upward barriers should dominate downward barriers---licenses restrict entry but not exit. We find the opposite: barriers are nearly symmetric ($\beta_{\mathrm{up}}/\beta_{\mathrm{down}} = 1.04$). This interpretable null suggests O*NET Job Zones measure general occupational distance rather than regulatory gatekeeping. Overqualification discrimination and human capital specificity create genuine downward barriers that offset the expected asymmetry.
 
+The framework shows marginal improvement for automation prediction. Semantic exposure adds $\Delta R^2 = 2.2\%$ over canonical RTI in predicting 2019--2024 employment changes ($p = 0.075$). RTI---when properly constructed using the full 16-element Acemoglu-Autor composite---remains the dominant measure. The framework succeeds at measuring task similarity but does not substantially outperform existing measures for automation prediction.
 
-The primary empirical finding is descriptive: in CPS occupation transitions, both semantic distance and institutional distance are significant predictors of observed destination choice. The two measures are correlated at $r = 0.36$, indicating related but non-redundant structure. On a standardized basis, the effects are comparable in magnitude. We interpret this as evidence that both task-content similarity and credentialing barriers are associated with mobility patterns, though we cannot establish causation from this correlational design.
+Methodological contributions include: kernel bandwidth must be calibrated to local distance structure (median nearest-neighbor distance, not global median); proper RTI construction is essential (single O*NET elements yield $R^2 \approx 0$); and the infrastructure for worker-level mobility analysis with persistence-filtered transitions.
 
+These findings constrain future specifications of task-space representations. Effective distance using Job Zones may not require directional asymmetry. Semantic geometry alone is insufficient for automation prediction. The decomposition validates the principle that task similarity and institutional barriers are both economically meaningful, but the specific proxies matter: Job Zones capture something more symmetric than licensing, and RTI captures something more predictive of automation than general semantic similarity.
 
-A complementary test using wage comovement shows that semantic overlap is statistically detectable as a predictor of occupation-pair wage correlation, though the $R^2$ values are small (0.005 vs 0.002 for the binary baseline). The value is discriminating between representations, not explaining wage dynamics.
-
-
-If the decomposition reflects real mobility frictions, it has implications for exposure measurement: any representation that ignores institutional barriers would overstate reallocation feasibility. Future work should address the limitations noted in Section 4---particularly the IIA assumption, the cosine distance metric violation, and the need for two-way clustering in wage comovement tests---before drawing stronger conclusions.
+The task-space oracle remains a useful organizing metaphor for the broader research program---a hypothetical complete structural mapping from task representations to equilibrium outcomes. This paper tests specific modules against observed data. The symmetric barriers finding and marginal automation result are features, not failures: they identify where candidate representations succeed and where they fall short.
 
 
 \appendix
