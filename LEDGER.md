@@ -98,14 +98,14 @@ Deprecated approaches. Do not retry.
 
 ## Current Sprint
 
-**Phase:** 0.6.9 (Documentation Consolidation)
+**Phase:** 0.6.9 complete
 
-| Task | Owner | Status |
-|------|-------|--------|
-| Create LEDGER.md | Engineer | Complete |
-| Update main.tex with v0.6.8 findings | Writer | Queued |
-| Update CLAUDE.md + README.md | Engineer | Blocked on Writer |
-| Version bump to 0.6.9.0 | Engineer | Blocked |
+No active tasks. Awaiting next research direction.
+
+**Candidate next phases:**
+- Path B (JobBERT comparison) — low priority
+- Retrospective diagnostic battery — blocked on data
+- Modality-specific shocks — long-term
 
 ---
 
@@ -151,7 +151,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 0.6.9.0 | 2025-12-16 | LEDGER.md created; v0.6.8 findings integrated |
+| 0.6.9.0 | 2025-12-16 | LEDGER.md created; CLAUDE.md purified; v0.6.8 findings integrated |
 | 0.6.8.0 | — | Wasserstein primary; Path F/C executed |
 | 0.6.7.0 | — | Wasserstein module; geometry comparison |
 | 0.6.6.0 | — | Asymmetric barriers test (kernel) |
