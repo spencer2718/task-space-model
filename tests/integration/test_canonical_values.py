@@ -156,6 +156,58 @@ class TestAutomationCanonical:
         assert abs(r2 - 0.12) < 0.02, f"RTI+Semantic R² = {r2}, expected ~0.12"
 
 
+@pytest.mark.slow
+class TestWassersteinCanonicalValues:
+    """
+    Protect v0.6.8 Wasserstein mobility results.
+
+    These values are reported in paper v0.6.8 Section 5.1.
+    If these change, either:
+    1. The computation is broken (fix it), or
+    2. The paper needs updating (coordinate with lead researcher)
+    """
+
+    @pytest.fixture
+    def results(self):
+        """Load Wasserstein comparison results."""
+        path = Path("outputs/experiments/path_a_wasserstein_comparison_v0672.json")
+        if not path.exists():
+            pytest.skip(f"Wasserstein results not computed: {path}")
+        with open(path) as f:
+            return json.load(f)
+
+    def test_wasserstein_alpha_coefficient(self, results):
+        """α (semantic) with Wasserstein should be ~8.936."""
+        alpha = results["comparison"]["wasserstein"]["alpha"]
+        assert abs(alpha - 8.936) < 0.01, f"α changed: {alpha}, expected ~8.936"
+
+    def test_wasserstein_beta_coefficient(self, results):
+        """β (institutional) with Wasserstein should be ~0.142."""
+        beta = results["comparison"]["wasserstein"]["beta"]
+        assert abs(beta - 0.142) < 0.01, f"β changed: {beta}, expected ~0.142"
+
+    def test_wasserstein_log_likelihood(self, results):
+        """Log-likelihood with Wasserstein should be ~-183,051."""
+        ll = results["comparison"]["wasserstein"]["log_likelihood"]
+        assert abs(ll - (-183051)) < 10, f"LL changed: {ll}, expected ~-183051"
+
+    def test_wasserstein_alpha_t_statistic(self, results):
+        """α t-stat with Wasserstein should be > 200."""
+        t_stat = results["comparison"]["wasserstein"]["alpha_t"]
+        assert t_stat > 200, f"α t-stat = {t_stat}, expected > 200"
+
+    def test_wasserstein_improvement_over_kernel(self, results):
+        """Verify Wasserstein >> Kernel finding persists (Δ LL > 5000)."""
+        delta_ll = results["comparison"]["differences"]["delta_log_lik"]
+        # Pre-committed threshold was +100; we observed +9,576
+        assert delta_ll > 5000, f"Δ LL dropped below safety threshold: {delta_ll}"
+
+    def test_wasserstein_alpha_improvement(self, results):
+        """Verify α improvement > 50% over kernel."""
+        delta_alpha_pct = results["comparison"]["differences"]["delta_alpha_pct"]
+        assert delta_alpha_pct > 50, f"Δα% dropped: {delta_alpha_pct}, expected > 50%"
+
+
 class TestCanonicalFilesExist:
     """Basic existence checks (fast, run always)."""
 
@@ -187,3 +239,17 @@ class TestCanonicalFilesExist:
         """automation_v0653.json should exist."""
         path = CANONICAL_DIR / "automation_v0653.json"
         assert path.exists(), f"Missing: {path}"
+
+    def test_mobility_wasserstein_exists(self):
+        """mobility_wasserstein.json should exist and have required fields."""
+        path = CANONICAL_DIR / "mobility_wasserstein.json"
+        assert path.exists(), f"Missing: {path}"
+
+        with open(path) as f:
+            data = json.load(f)
+
+        # Check required fields
+        assert "results" in data, "Missing 'results' field"
+        assert "alpha_semantic" in data["results"], "Missing alpha_semantic"
+        assert "comparison_vs_kernel" in data, "Missing comparison_vs_kernel"
+        assert abs(data["results"]["alpha_semantic"] - 8.936) < 0.01, "alpha mismatch"

@@ -29,23 +29,22 @@
 \begin{document}
 
 
+% ==================================================================
+% STYLE GUIDELINES
+% ==================================================================
+% 1. State object and claim once; no meta-commentary or repetition.
+% 2. Lead with operational target (what to compute/test), then formalism.
+% 3. Humility is informational: scope conditions and failure modes, not hedging.
+% 4. Compact orientation aids (one toy example; short roadmap), then move on.
+% 5. Empirical tests specify: what we compute, expected result, implications.
+% 6. Timelessness: no version numbers in prose; frame progress as cumulative.
+% 7. Nulls as constraints: non-findings are model-space restrictions, not failures.
+% ==================================================================
+
+
 \begin{center}
-\textit{\textbf{Working Document Notice}}
+\textit{This document is a technical specification for an ongoing research program.}
 \end{center}
-
-\textit{This document is a technical specification for an ongoing research program, not a polished manuscript. It contains explicit diagnostic criteria, pre-committed design choices, and implementation notes. A distilled version suitable for academic circulation will be prepared separately.}
-
-\textit{Current version: 0.6.6. Asymmetric barriers test (symmetric finding); automation prediction application (marginal improvement over RTI); oracle framing consolidated.}
-
-\vspace{1em}
-
-% ------------------------------------------------------------------
-% STYLE GUIDELINES (first-principles)
-% - State the object and the claim once; avoid meta-commentary and repetition.
-% - Lead with the operational target (what to compute / test), then give formalism.
-% - Keep humility informational: scope conditions and failure modes, not performative hedging.
-% - Use compact orientation aids (one toy example; short roadmaps), then move on.
-% ------------------------------------------------------------------
 
 
 \section{Introduction}
@@ -58,22 +57,27 @@ Public discussion of automation and AI is surrounded by anxiety about job loss a
 This paper develops a geometric framework for measuring occupational mobility and applies it to study how workers move across the labor market. The central theoretical contribution is the decomposition of effective distance between occupations into semantic and institutional components (\cref{subsec:decomposition}). Semantic distance captures task-content similarity: can the worker perform the tasks? Institutional distance captures credentialing and training barriers: is the worker allowed to perform the job? Two occupations may be semantically similar (e.g., brain surgeon and butcher both involve cutting) but economically distant due to vast differences in required credentials.
 
 
-The paper makes four contributions. First, we validate the semantic-institutional decomposition using worker-level occupation transitions from the Current Population Survey. Both components are significant predictors of observed mobility, with correlation $r = 0.36$ between measures---related but not redundant.
+Our research program has five contributions thus far. First, we demonstrate that task space has metric structure relevant for labor market outcomes. Wasserstein distance---measuring the minimum cost to transform one occupation's skill portfolio into another---substantially outperforms kernel overlap for predicting worker mobility ($\Delta \text{log-likelihood} = +9{,}576$). This validates the ``earth mover's'' interpretation of occupational distance: workers minimize skill transformation cost when switching occupations.
 
-Second, we test whether institutional barriers are asymmetric---whether credentials function as ``one-way gates'' that restrict entry but not exit. Simple credentialing theory predicts upward barriers should dominate: a surgeon can become a butcher, but not the reverse. We find the opposite: upward and downward barriers are nearly symmetric ($\beta_{\mathrm{up}}/\beta_{\mathrm{down}} = 1.04$). This interpretable null suggests that O*NET Job Zones capture general occupational distance rather than regulatory gatekeeping, and that overqualification discrimination and human capital specificity create genuine downward barriers \citep{Pedulla2016,GathmannSchonberg2010}.
+Second, we validate the semantic-institutional decomposition using worker-level occupation transitions from the Current Population Survey. Both components are significant predictors of observed mobility. Notably, the choice of semantic measure affects the decomposition: Wasserstein distance correlates more strongly with institutional distance ($r = 0.25$) than kernel overlap does ($r = 0.09$), indicating that Wasserstein absorbs variance from the institutional channel and yields a cleaner decomposition where the residual institutional component captures non-skill barriers (credentialing gates, licensing, discrimination).
 
-Third, we apply the framework to automation prediction. Semantic exposure adds $\Delta R^2 = 2.2\%$ over canonical routine task intensity (RTI) in predicting 2019--2024 employment changes ($p = 0.075$). The framework succeeds at measuring task similarity but shows only marginal improvement over existing measures for predicting automation-driven outcomes.
+Third, we test whether institutional barriers are asymmetric---whether credentials function as ``one-way gates'' that restrict entry but not exit. Simple credentialing theory predicts upward barriers should dominate: a surgeon can become a butcher, but not the reverse. We find the opposite: upward and downward barriers are nearly symmetric ($\beta_{\mathrm{up}}/\beta_{\mathrm{down}} = 1.04$). This is an informative constraint on model space: the symmetric barrier finding rules out pure ``one-way gate'' theories of credentialing. O*NET Job Zones capture general occupational distance rather than regulatory gatekeeping; overqualification discrimination and human capital specificity create genuine downward barriers \citep{Pedulla2016,GathmannSchonberg2010}.
 
-Fourth, we document methodological infrastructure: kernel bandwidth must be calibrated to local distance structure, and RTI must use the full 16-element Acemoglu-Autor composite---single O*NET elements yield $R^2 \approx 0$.
+Fourth, we apply the framework to automation prediction. Semantic exposure adds $\Delta R^2 = 2.2\%$ over canonical routine task intensity (RTI) in predicting 2019--2024 employment changes ($p = 0.075$). The framework succeeds at measuring task similarity but shows only marginal improvement over existing measures for predicting automation-driven outcomes.
 
-
-The primary mobility validation uses 89,329 verified occupation transitions from the CPS. In a conditional logit model of destination choice, both semantic distance ($\alpha = 2.994$, $t = 98.5$) and institutional distance ($\beta = 0.215$, $t = 63.4$) are significant predictors of observed destinations. On a standardized basis, the two effects are comparable in magnitude. A complementary validation using wage comovement shows that semantic overlap predicts occupation-pair wage correlations ($R^2 = 0.00523$), outperforming binary Jaccard overlap by a factor of three.
-
-
-The framework sits within a broader research program targeting a \emph{task-space oracle}---a hypothetical complete structural mapping from task representations, technology shocks, and institutions to equilibrium labor-market outcomes. We do not estimate or approximate this oracle; we test candidate components against observed data. The semantic-institutional decomposition and the symmetric barriers finding constrain future specifications: effective distance may not require directional asymmetry, and semantic geometry alone is insufficient for automation prediction.
+Fifth, we document methodological infrastructure: kernel bandwidth must be calibrated to local distance structure, and RTI must use the full 16-element Acemoglu-Autor composite---single O*NET elements yield $R^2 \approx 0$.
 
 
-\cref{sec:literature} reviews related literatures. \cref{sec:theory} develops the theoretical framework, including the semantic-institutional decomposition with both symmetric and asymmetric specifications. \cref{sec:empirics} operationalizes each component using O*NET data, reports the CPS mobility validation, the asymmetric barriers test, wage comovement, and the automation prediction application. \cref{sec:extensions} records extensions. \cref{sec:conclusion} concludes.
+The primary mobility validation uses 89,329 verified occupation transitions from the CPS. In a conditional logit model of destination choice, Wasserstein-based semantic distance ($\alpha = 8.936$, $t = 206.5$) and institutional distance ($\beta = 0.142$, $t = 34.6$) are both significant predictors of observed destinations. Wasserstein substantially outperforms kernel overlap ($\alpha = 5.688$, $t = 160.3$; $\Delta \text{log-likelihood} = +9{,}576$). A complementary validation using wage comovement shows that semantic overlap predicts occupation-pair wage correlations ($R^2 = 0.00523$), outperforming binary Jaccard overlap by a factor of three.
+
+
+The framework sits within a broader research program targeting a \emph{task-space oracle}---a hypothetical complete structural mapping from task representations, technology shocks, and institutions to equilibrium labor-market outcomes. We do not estimate or approximate this oracle; we test candidate components against observed data. The Wasserstein validation, symmetric barriers finding, and marginal automation result constrain future specifications: metric structure matters for mobility prediction, effective distance does not require directional asymmetry, and semantic geometry alone is insufficient for automation prediction.
+
+
+The paper explores a model space defined by three axes: (i) \emph{representation}---how to encode tasks (MPNet embeddings, JobBERT, others); (ii) \emph{geometry}---how to measure occupation distance (Wasserstein, kernel overlap); and (iii) \emph{shocks}---how to characterize technology (generic capability, modality-specific). Each empirical test constrains this space. The Wasserstein validation resolves a key methodological question: optimal transport geometry substantially outperforms kernel overlap. The symmetric barrier finding and marginal automation result are informative constraints on model space, not negative findings: they rule out pure ``one-way gate'' theories of credentialing and establish that semantic geometry alone is insufficient for near-term automation prediction.
+
+
+\cref{sec:literature} reviews related literatures. \cref{sec:theory} develops the theoretical framework, beginning with the task-space oracle as organizing metaphor and including the semantic-institutional decomposition with both symmetric and asymmetric specifications. \cref{sec:data} operationalizes each component using O*NET data. \cref{sec:validation} reports the CPS mobility validation, the geometry comparison, the asymmetric barriers test, wage comovement, and the automation prediction application. \cref{sec:extensions} records extensions. \cref{sec:conclusion} concludes.
 
 
 \section{Literature Review}
@@ -113,7 +117,7 @@ A growing literature on the mismatch between linguistic similarity and economic 
 Finally, measured technological exposure should be separated from distribution and pass-through. Classic and modern evidence documents that productivity growth and compensation growth can diverge for measurement and institutional reasons \citep{BosworthPerry1994,FleckGlaserSprague2011}. More recent work argues that institutional changes affecting bargaining and rents play a first-order role in wage dynamics \citep{StansburySummers2020}. In our framework, exposure coefficients are interpreted as reduced-form effects conditional on pass-through.
 
 
-Methodologically, the framework sits alongside propagation approaches that model how shocks diffuse across related units using distance-weighted or network-based dependence structures \citep{Conley1999}. The construction of task geometry is also related to text-based matching approaches that map technologies to occupations using semantic similarity \citep{Webb2020}.
+Methodologically, the framework sits alongside propagation approaches that model how shocks diffuse across related units using distance-weighted or network-based dependence structures \citep{Conley1999}. The construction of task geometry is also related to text-based matching approaches that map technologies to occupations using semantic similarity \citep{Webb2020}. A key methodological distinction: Webb matches patent text to job descriptions (cross-domain matching), whereas the present paper matches task text to task text within the O*NET structure (intra-domain matching). This distinction matters for the ``Admissible task representation'' requirement (\cref{assump:admissible-representation}): intra-domain matching avoids the challenge of aligning heterogeneous text corpora.
 
 
 
@@ -122,7 +126,44 @@ Methodologically, the framework sits alongside propagation approaches that model
 \label{sec:theory}
 
 
-This section defines the theoretical objects, building from primitives to the structural mapping: (i) the task domain as a metric-measure space; (ii) occupations as probability measures over tasks; (iii) the task-space oracle as the ideal structural mapping that binds them; (iv) the semantic-institutional distance decomposition; and (v) propagation mechanisms. Throughout, we develop toy models to build intuition before the empirical implementation in \cref{sec:empirics}.
+This section defines the theoretical objects, building from primitives to the structural mapping: (i) the task-space oracle as organizing metaphor; (ii) the task domain as a metric-measure space; (iii) occupations as probability measures over tasks; (iv) structural grounding via switching cost models; (v) the semantic-institutional distance decomposition; (vi) optimal transport as primary geometry; and (vii) propagation mechanisms. Throughout, we develop toy models to build intuition before the empirical implementation in \cref{sec:data}.
+
+
+\subsection{The Task-Space Oracle}
+\label{subsec:oracle}
+
+
+The \emph{task-space oracle} $\mathcal{F}: (\mathcal{T}, \mathcal{S}, \mathcal{I}, \mathcal{M}) \to (\Delta \mathbf{T}, \mathbf{L}, \mathbf{W}, \mathbf{U})$ is the research program target: a complete structural mapping from task-space representation ($\mathcal{T}$), technology shocks ($\mathcal{S}$), institutions ($\mathcal{I}$), and equilibrium mechanisms ($\mathcal{M}$) to task structure changes, employment, wages, and unemployment. 
+
+This paper validates candidate representations for two components:
+\begin{itemize}
+    \item $\mathcal{T}$ (semantic geometry): Text-embedding-based task similarity using O*NET Detailed Work Activities, with Wasserstein distance as the primary measure
+    \item $\mathcal{I}$ (institutional distance): Job Zone and certification barriers as mobility frictions
+\end{itemize}
+Future work addresses $\mathcal{S}$ (shock profiles---generic capability vs.\ modality-specific) and $\mathcal{M}$ (equilibrium mechanisms---search, matching, learning). The oracle is an organizing metaphor, not an estimation target. Its value is taxonomic: it clarifies which components a complete model would require, allowing us to test components in isolation and identify which combinations survive falsifiable checks.
+
+
+\subsection{Structural Grounding}
+\label{subsec:structural-grounding}
+
+
+Task-based occupational distance measures are production function specifications, not objects derived from worker optimization problems. Existing measures---including ours---are empirical constructs validated against outcomes. The decomposition $d_{\mathrm{eff}} = d_{\mathrm{sem}} + \lambda \cdot d_{\mathrm{inst}}$ finds structural support in \citet{Traiberman2019}, who parameterizes switching costs as linear in task-space distance with dimension-specific prices.
+
+
+Traiberman's specification treats switching costs as:
+\[
+C(o, o') = \exp\left[\Gamma^M + \Gamma^S \cdot \delta_{\mathrm{in\text{-}sector}} + \Gamma^O \cdot \delta_{\mathrm{out\text{-}sector}} + \sum_i (\upsilon^{o'}_i - \upsilon^o_i) \cdot \Gamma_i\right],
+\]
+where $\upsilon^o$ is occupation $o$'s task intensity vector and $\Gamma_i$ prices movement along each task dimension. This directly accommodates our semantic-institutional decomposition by adding credential indicators as additional cost dimensions.
+
+
+Identification uses conditional choice probability methods \citep{ArcidiaconoMiller2011}, exploiting that workers moving to identical occupations face identical continuation values. Estimated switching costs average five years of income (interquartile range: two years), with intrasectoral occupation switching 28\% costlier than pure sectoral switching.
+
+
+\begin{remark}[Relation to other structural models]
+\label{rem:structural-comparison}
+Earlier structural models provide useful contrasts. \citet{ArtucChaudhuriMcLaren2010} parameterize sector-switching costs at 6.5 times annual wages but treat all transitions equivalently. \citet{KambourovManovskii2009} demonstrate that occupational tenure returns dominate firm and industry returns (12--20\% for five years), establishing that human capital is occupation-specific---but their model assumes binary specificity rather than continuous task distance. \citet{Lazear2009} provides the skill-weights approach: all skills are general but occupations weight them differently, with specificity arising from the combination.
+\end{remark}
 
 
 \subsection{The Task Manifold}
@@ -187,60 +228,6 @@ To build intuition, consider two occupations on the task line $T = [0,1]$. ``Occ
 \end{example}
 
 
-\subsection{The Task-Space Oracle}
-\label{subsec:oracle}
-
-
-With the domain and agents defined, we can now define the structural mapping that binds them. The \emph{task-space oracle} represents the ideal object: a complete model that maps task-space representations, shocks, and institutions to equilibrium outcomes.
-
-
-\begin{definition}[Task-space oracle]
-\label{def:oracle}
-The \emph{task-space oracle} is a hypothetical complete structural mapping
-\[
-\mathcal{F}: (\mathcal{T}, \mathcal{S}, \mathcal{I}, \mathcal{M}) \to (\Delta \mathbf{T}, \mathbf{L}, \mathbf{W}, \mathbf{U}),
-\]
-where the inputs are: $\mathcal{T}$ (task-space representation), $\mathcal{S}$ (technology shock profiles), $\mathcal{I}$ (institutional structure: wage-setting, licensing, bargaining), and $\mathcal{M}$ (equilibrium mechanisms: search, matching, learning). The outputs are: $\Delta \mathbf{T}$ (changes in task structure), $\mathbf{L}$ (employment by occupation), $\mathbf{W}$ (wage distribution), and $\mathbf{U}$ (unemployment).
-\end{definition}
-
-
-\begin{remark}[Scope condition]
-\label{rem:why-not-oracle}
-The oracle mapping requires correct specification of task-space geometry, shock propagation, worker reallocation dynamics, firm responses, and general-equilibrium feedbacks. Misspecification in any component contaminates the whole. This motivates a modular approach: test each component separately against observed data, then assemble validated modules.
-\end{remark}
-
-
-\begin{remark}[Oracle as organizing metaphor]
-\label{rem:oracle-metaphor}
-The oracle is an organizing metaphor, not an estimation target. Its value is taxonomic: it clarifies which components a complete model would require, allowing us to test components in isolation. This paper tests two components---task-space geometry and the semantic-institutional decomposition---against observed mobility patterns. We do not claim to estimate or approximate the oracle itself; we validate necessary conditions that candidate representations must satisfy.
-\end{remark}
-
-
-\begin{remark}[Model-space axes]
-\label{rem:model-space}
-Candidate models for the oracle vary along several axes:
-\begin{enumerate}
-    \item \textbf{Representation axis:} Discrete taxonomies (routine/non-routine) vs.\ continuous manifolds (text embeddings) vs.\ hybrid graph structures (activity co-occurrence networks).
-    \item \textbf{Friction axis:} Purely semantic/skill-based frictions vs.\ institutional frictions (licensing, job zones, unions, contracts).
-    \item \textbf{Adjustment axis:} Static reduced-form vs.\ dynamic search/learning vs.\ full equilibrium models.
-    \item \textbf{Technology axis:} Capability-based exposure (text similarity) vs.\ task-path simulations vs.\ endogenous technology adoption.
-\end{enumerate}
-This paper focuses on a particular slice: task representation via semantic manifold plus institutional wedge, tested against worker mobility and wage comovement.
-\end{remark}
-
-
-\begin{remark}[Observable projections of $\mathcal{F}$]
-\label{rem:projections}
-This paper tests three projections of the oracle:
-\begin{enumerate}
-    \item \textbf{Task similarity structure:} Which activities are described similarly? (From text embeddings.)
-    \item \textbf{Worker occupation transitions:} Where do workers go when they switch? (From CPS panel data.)
-    \item \textbf{Wage comovement:} Which occupation pairs experience correlated wage changes? (From OES wage data.)
-\end{enumerate}
-Each projection tests a different aspect of the candidate task-space representation. If the representation is correct, it should be consistent with all three.
-\end{remark}
-
-
 \subsection{The Semantic-Institutional Decomposition}
 \label{subsec:decomposition}
 
@@ -256,11 +243,40 @@ d_{\mathrm{eff}}(i,j) = d_{\mathrm{sem}}(i,j) + \lambda \cdot d_{\mathrm{inst}}(
 \]
 where:
 \begin{itemize}
-    \item $d_{\mathrm{sem}}(i,j) \in [0,1]$ is \emph{semantic distance}: one minus the normalized kernel-weighted overlap of activity distributions. It measures task-content dissimilarity.
+    \item $d_{\mathrm{sem}}(i,j) \geq 0$ is \emph{semantic distance}: the Wasserstein distance between activity distributions (primary) or one minus normalized kernel-weighted overlap (comparison baseline). It measures task-content dissimilarity.
     \item $d_{\mathrm{inst}}(i,j) \geq 0$ is \emph{institutional distance}: the sum of job zone difference and certification barrier difference. It measures credentialing and training dissimilarity.
     \item $\lambda \geq 0$ is the relative weight of institutional vs.\ semantic friction.
 \end{itemize}
 \end{definition}
+
+
+\begin{remark}[Semantic operationalization affects decomposition]
+\label{rem:operationalization-decomposition}
+The choice of semantic distance measure affects the correlation structure with institutional distance:
+\begin{itemize}
+    \item Kernel overlap: $\rho(d_{\mathrm{kernel}}, d_{\mathrm{inst}}) = 0.088$ (nearly orthogonal)
+    \item Wasserstein: $\rho(d_{\mathrm{wasserstein}}, d_{\mathrm{inst}}) = 0.249$ (moderate correlation)
+\end{itemize}
+This difference has substantive interpretation. Kernel overlap asks: ``Do these occupations share activities?'' This is nearly orthogonal to training requirements---high-training occupations can have zero overlap with each other. Wasserstein asks: ``How costly is the skill transformation?'' This naturally correlates with training requirements, because transforming a low-skill portfolio into a high-skill portfolio requires investment.
+
+The implication: Wasserstein provides a purer measure of skill-based barriers. The residual institutional component (after controlling for Wasserstein distance) captures non-skill barriers---actual credentialing gates, licensing, discrimination, network effects. The decomposition becomes:
+\[
+d_{\mathrm{eff}} = d_{\mathrm{transform}} + \lambda \cdot d_{\mathrm{barrier}},
+\]
+where $d_{\mathrm{transform}}$ is skill transformation cost (Wasserstein) and $d_{\mathrm{barrier}}$ is residual non-skill obstacles (Job Zones after controlling for transformation cost).
+\end{remark}
+
+
+\begin{remark}[Theoretical basis for additive separability]
+\label{rem:separability}
+Additive separability requires three maintained assumptions:
+\begin{enumerate}
+    \item Skill acquisition costs depend on task similarity ($d_{\mathrm{sem}}$)
+    \item Credential costs are orthogonal to skill requirements ($d_{\mathrm{inst}}$)
+    \item No interaction between skill learning and credential acquisition
+\end{enumerate}
+These assumptions are strong---credentials and skills are often bundled (medical licensing requires both knowledge and certification). We maintain separability as a tractable approximation, following \citet{Traiberman2019}'s treatment of task dimensions and sector indicators as additively separable cost components. Identification requires variation where task similarity and credential requirements vary independently; our CPS validation tests whether this decomposition predicts worker transitions.
+\end{remark}
 
 
 \begin{remark}[The brain surgeon / butcher problem]
@@ -288,9 +304,85 @@ where $\mathrm{Zone} \in \{1,\ldots,5\}$ is the O*NET job zone and $\mathrm{Cert
 \end{definition}
 
 
-\begin{remark}[Theoretical prediction for asymmetry]
+\begin{remark}[Theoretical predictions for asymmetry]
 \label{rem:asymmetry-prediction}
-Credentialing theory predicts $\beta_{\mathrm{up}} \gg \beta_{\mathrm{down}}$ because licensing restricts entry but not exit \citep{Jackson2023}. A surgeon can become a butcher; the reverse requires medical school. However, this prediction assumes Job Zones proxy licensing barriers rather than general human capital investment. If Job Zones capture symmetric switching costs---skill acquisition for upward moves AND skill abandonment for downward moves---both coefficients may be significant. Alternative mechanisms that could generate symmetric barriers include: (i) overqualification discrimination, where employers penalize workers who appear overqualified \citep{Pedulla2016}; (ii) human capital specificity, where workers forfeit returns to occupation-specific skills when moving down \citep{GathmannSchonberg2010,KambourovManovskii2009}; (iii) Job Zones measuring occupational distance rather than regulatory gatekeeping. \cref{subsubsec:asymmetric-test} tests this prediction empirically.
+Two competing theoretical models yield different predictions:
+
+\textbf{Credential-gate theory} predicts $\beta_{\mathrm{up}} \gg \beta_{\mathrm{down}}$ because licensing restricts entry but not exit \citep{Jackson2023}. A surgeon can become a butcher; the reverse requires medical school. Under this model, Job Zones proxy licensing barriers that create one-way gates.
+
+\textbf{Human capital specificity theory} predicts $\beta_{\mathrm{up}} \approx \beta_{\mathrm{down}}$ because workers accumulate occupation-specific capital lost in any move. Three mechanisms generate symmetric barriers:
+\begin{enumerate}
+    \item \textbf{Occupation-specific human capital} \citep{KambourovManovskii2009}: 12--20\% wage premiums for five years of occupation tenure are forfeited in any switch.
+    \item \textbf{Overqualification stigma} \citep{Pedulla2016}: Employers penalize overqualified applicants with callback penalties approximately as severe as one year of unemployment, creating genuine downward barriers.
+    \item \textbf{Task-specific skill destruction} \citep{GathmannSchonberg2010}: Up to 52\% of wage growth derives from task-specific human capital destroyed in downward moves.
+\end{enumerate}
+
+\textbf{Distinction:} ``Distance-like'' frictions are continuous, symmetric, and separation-dependent. ``Gate-like'' frictions are discontinuous entry barriers with zero exit cost. \citet{KleinerXu2020} find licensing reduces \emph{both} entry and exit rates by 24\%---contradicting the one-way gate model.
+
+\cref{subsubsec:asymmetric-test} tests these competing predictions empirically.
+\end{remark}
+
+
+\subsection{Optimal Transport as Primary Geometry}
+\label{subsec:optimal-transport}
+
+
+Kernel-weighted overlap measures shared task mass (smoothed intersection). An alternative approach uses optimal transport (OT) to measure minimum transformation cost between task distributions. The empirical comparison (\cref{subsec:geometry-comparison}) demonstrates that Wasserstein distance substantially outperforms kernel overlap for predicting worker mobility, validating OT as the primary geometry \citep{Galichon2016}.
+
+
+\begin{definition}[Wasserstein distance between occupations]
+\label{def:wasserstein}
+The Wasserstein distance between occupations $i$ and $j$ is:
+\[
+W(\rho_i, \rho_j) = \min_{\gamma \in \Pi(\rho_i, \rho_j)} \sum_{a,b} \gamma(a,b) \cdot d(a,b),
+\]
+where $\gamma$ is a transport plan in $\Pi(\rho_i, \rho_j)$ (the set of joint distributions with marginals $\rho_i$ and $\rho_j$), and $d(a,b)$ is the ground distance between tasks $a$ and $b$.
+\end{definition}
+
+
+\begin{remark}[Economic interpretation of the transport plan]
+\label{rem:transport-interpretation}
+The transport plan $\gamma(a,b)$ represents optimal skill transformation---the allocation of retraining investment across task pairs. Entry $\gamma(a,b) \cdot d(a,b)$ is the cost of transforming mass at task $a$ into capability at task $b$. Total Wasserstein distance $W(\rho_i, \rho_j)$ is total transformation cost. This ``earth mover's'' interpretation---the cost to reshape one skill distribution into another---is economically intuitive and empirically validated: workers minimize transformation cost when switching occupations (\cref{subsec:geometry-comparison}).
+\end{remark}
+
+
+\begin{remark}[Kernel overlap vs.\ Wasserstein: theoretical contrast and empirical resolution]
+\label{rem:kernel-vs-ot}
+\begin{enumerate}
+    \item \textbf{Kernel overlap} measures shared task mass with distance-weighted smoothing. Robust to ground metric noise via bandwidth regularization. Does not respect metric structure (triangle inequality).
+    \item \textbf{Wasserstein} measures minimum transformation cost. Respects metric structure (proper distance). Sensitive to ground metric misspecification---even 5\% outliers can cause poor transport couplings.
+\end{enumerate}
+
+\textbf{Theoretical prediction:} If workers' reallocation costs correspond to skill transformation difficulty, Wasserstein should outperform kernel for mobility prediction. If ground metric is noisy (text embeddings imperfectly capture economic substitutability), kernel's implicit regularization may dominate.
+
+\textbf{Empirical resolution:} Wasserstein substantially outperforms kernel overlap ($\Delta \text{log-likelihood} = +9{,}576$; see \cref{subsec:geometry-comparison}). The metric structure of task space is economically relevant: workers minimize transformation cost, not just shared task overlap.
+\end{remark}
+
+
+\subsection{Kernel Overlap as Comparison Baseline}
+\label{subsec:kernel-overlap}
+
+
+While Wasserstein distance is the primary semantic measure, kernel overlap provides a useful comparison baseline and remains appropriate for some applications (e.g., propagation of shocks across tasks).
+
+
+\begin{definition}[Kernel-weighted overlap]
+\label{def:kernel-overlap}
+Define occupation-pair proximity as
+\[
+\mathrm{Overlap}_K(i,j) = \int_T \int_T \rho_i(x)\, \rho_j(y)\, k(d(x,y); \sigma)\, d\mu(x)\, d\mu(y),
+\]
+where $k(\cdot; \sigma)$ is a kernel function with bandwidth $\sigma$. Normalized overlap controls for concentration effects:
+\[
+\mathrm{NormOverlap}_K(i,j) = \frac{\mathrm{Overlap}_K(i,j)}{\sqrt{\mathrm{Overlap}_K(i,i) \cdot \mathrm{Overlap}_K(j,j)}}.
+\]
+Semantic distance (kernel-based) is $d_{\mathrm{sem}}^{\mathrm{kernel}}(i,j) = 1 - \mathrm{NormOverlap}_K(i,j)$.
+\end{definition}
+
+
+\begin{remark}[Bandwidth calibration]
+\label{rem:bandwidth-calibration}
+A critical methodological finding is that $\sigma$ must be calibrated to the \emph{local} distance structure (median nearest-neighbor distance), not the global distance distribution (median of all pairwise distances). When distances cluster in a narrow band, calibrating $\sigma$ to the global median causes kernel collapse: all weights become approximately equal, destroying the signal.
 \end{remark}
 
 
@@ -353,12 +445,6 @@ k\bigl(d(x,y); \sigma\bigr)
 \end{equation}
 
 
-\begin{remark}[Bandwidth calibration]
-\label{rem:bandwidth-calibration}
-A critical methodological finding is that $\sigma$ must be calibrated to the \emph{local} distance structure (median nearest-neighbor distance), not the global distance distribution (median of all pairwise distances). When distances cluster in a narrow band, calibrating $\sigma$ to the global median causes kernel collapse: all weights become approximately equal, destroying the signal. These propagation mechanisms underlie the retrospective tests in \cref{subsec:retrospective-roadmap} and the prospective AI profiles in \cref{subsec:prospective}.
-\end{remark}
-
-
 \subsection{Aggregation to Occupations and Outcome Equations}
 \label{subsec:aggregation}
 
@@ -402,16 +488,6 @@ interpreting coefficients as conditional associations used to compare exposure m
 \label{rem:covariance}
 If outcomes load on exposure with common sign and shocks are spatially concentrated in task space, then occupation pairs with greater task-distribution overlap should exhibit stronger outcome comovement.
 
-\textbf{Kernel-weighted overlap.} Define occupation-pair proximity as
-\[
-\mathrm{Overlap}_K(i,j) = \int_T \int_T \rho_i(x)\, \rho_j(y)\, k(d(x,y); \sigma)\, d\mu(x)\, d\mu(y).
-\]
-
-\textbf{Normalized overlap.} To control for concentration effects (specialist vs generalist occupations), define normalized overlap:
-\[
-\mathrm{NormOverlap}_K(i,j) = \frac{\mathrm{Overlap}_K(i,j)}{\sqrt{\mathrm{Overlap}_K(i,i) \cdot \mathrm{Overlap}_K(j,j)}}.
-\]
-
 \textbf{Binary overlap.} Define binary overlap as the Jaccard index:
 \[
 \mathrm{Overlap}_B(i,j) = \frac{|A_i \cap A_j|}{|A_i \cup A_j|},
@@ -448,28 +524,25 @@ The baseline holds $(T,\mu)$ fixed. Over longer horizons, outcomes depend on tas
 
 
 
-\section{Empirical Strategy}
-\label{sec:empirics}
+\section{Data Construction and Measurement}
+\label{sec:data}
 
 
-This section operationalizes the theoretical framework using O*NET data and tests it against observed labor market outcomes. We describe how to (i) construct a discrete approximation of the task manifold, (ii) build occupation measures from ratings, (iii) compute activity distances, and (iv) evaluate the resulting exposures against baselines. The tests are organized as stress tests of candidate oracle modules.
+This section operationalizes the theoretical framework using O*NET data. We describe how to (i) construct a discrete approximation of the task manifold, (ii) build occupation measures from ratings, (iii) compute activity distances, (iv) compute Wasserstein distances between occupations, and (v) specify design choices. Empirical validation follows in \cref{sec:validation}.
 
 
-\subsection{Empirical Strategy as Oracle Module Testing}
-\label{subsec:strategy}
+\subsection{Model Space Axes}
+\label{subsec:model-space}
 
 
-Each empirical test in this section is a stress test of a specific component of a future task-space oracle:
-
+This paper explores a model space defined by three axes:
 \begin{enumerate}
-    \item \textbf{Primary test: CPS worker mobility (\cref{subsec:cps-mobility}).} Tests whether the candidate effective distance $d_{\mathrm{eff}} = d_{\mathrm{sem}} + \lambda \cdot d_{\mathrm{inst}}$ predicts observed destination choice. If transitions are less frequently observed to high-$d_{\mathrm{eff}}$ destinations, the representation has predictive validity for mobility.
-    
-    \item \textbf{Complementary test: Wage comovement (\cref{subsec:wage-comovement}).} Tests whether the same semantic geometry has interpretable equilibrium wage implications. If occupation pairs with high overlap experience correlated wage changes, the geometry captures economically relevant structure.
-    
-    \item \textbf{Prospective test: AI shock profiles (\cref{subsec:prospective}).} Tests whether the framework can be applied to novel shocks (generative AI) with pre-specified candidate profiles.
+    \item \textbf{Representation axis:} How to represent tasks (MPNet embeddings, JobBERT, others)
+    \item \textbf{Geometry axis:} How to measure occupation distance (Wasserstein [primary], kernel overlap [baseline])
+    \item \textbf{Shock axis:} How to characterize technology (generic capability, modality-specific)
 \end{enumerate}
 
-The CPS mobility test is primary because it directly tests revealed preference over occupation pairs at the worker level, avoiding ecological inference problems and providing the cleanest test of the semantic-institutional decomposition.
+Each empirical test constrains this space. The geometry comparison (\cref{subsec:geometry-comparison}) resolves a key methodological question: Wasserstein substantially outperforms kernel overlap. Validated combinations advance; rejected combinations are pruned.
 
 
 \subsection{Discrete Approximation of the Manifold}
@@ -576,6 +649,23 @@ Instantiate $T$ as a finite set of activities (GWA or DWA). Occupations are prob
 \end{remark}
 
 
+\subsection{Wasserstein Distance Computation}
+\label{subsec:wasserstein-computation}
+
+
+Given the activity-level ground metric $d(a,b)$ and occupation measures $\rho_i, \rho_j$, the Wasserstein distance is computed via linear programming. Implementation uses the Python Optimal Transport (POT) library.
+
+
+\begin{remark}[Computational details]
+\label{rem:wasserstein-computation}
+\begin{itemize}
+    \item \textbf{Sparsity exploitation:} With 99.1\% sparsity, effective transport problems involve only activities with nonzero weight. Median support union: 38 activities per occupation pair.
+    \item \textbf{Computation time:} Full $894 \times 894$ matrix computed in 84 seconds.
+    \item \textbf{Metric verification:} Triangle inequality verified on random samples; Wasserstein satisfies metric axioms (kernel overlap does not).
+\end{itemize}
+\end{remark}
+
+
 \subsection{Design Choices and Pre-Commitment}
 \label{subsec:design-choices}
 
@@ -588,21 +678,93 @@ All design choices are fixed before examining outcome data.
 \label{tab:design-axes}
 \begin{tabular}{lll}
 \toprule
-\textbf{Axis} & \textbf{Baseline} & \textbf{Robustness} \\
+\textbf{Axis} & \textbf{Primary} & \textbf{Comparison/Robustness} \\
 \midrule
 Activity domain & DWA ($n = 2{,}087$) & GWA ($n \approx 41$) \\
 Reference measure & Uniform & Hierarchy-weighted \\
 Weight construction & Top importance over linked tasks & Mean importance \\
 Activity distance & Text embedding (MPNet) & Binary Jaccard \\
-Kernel & Exponential, unnormalized & Gaussian \\
+\textbf{Occupation distance} & \textbf{Wasserstein} & Kernel overlap \\
+Kernel (for propagation) & Exponential, unnormalized & Gaussian \\
 Bandwidth & Median NN distance & Grid search \\
-Overlap & Normalized & Unnormalized \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 
-\subsection{Primary Validation: Worker Mobility and Institutional Wedge}
+\section{Empirical Validation}
+\label{sec:validation}
+
+
+This section reports empirical tests of the semantic-institutional decomposition. Each test follows the structure: objective, specification, pre-committed interpretations, and results. Tests are organized as stress tests of candidate oracle modules.
+
+\textbf{Completed tests:}
+\begin{itemize}
+    \item Geometry comparison (\cref{subsec:geometry-comparison}): Wasserstein vs.\ kernel overlap
+    \item CPS worker mobility (\cref{subsec:cps-mobility}): Tests whether $d_{\mathrm{eff}} = d_{\mathrm{sem}} + \lambda \cdot d_{\mathrm{inst}}$ predicts destination choice
+    \item Asymmetric barriers (\cref{subsubsec:asymmetric-test}): Tests whether $\beta_{\mathrm{up}} > \beta_{\mathrm{down}}$
+    \item Wage comovement (\cref{subsec:wage-comovement}): Tests whether semantic overlap predicts wage correlations
+    \item Automation prediction (\cref{subsec:automation-prediction}): Tests whether semantic exposure improves on RTI
+\end{itemize}
+
+\textbf{Pending tests:}
+\begin{itemize}
+    \item Embedding comparison: JobBERT vs.\ MPNet
+    \item Retrospective construct validity against Autor-Dorn RTI
+\end{itemize}
+
+
+\subsection{Primary Validation: Geometry Comparison}
+\label{subsec:geometry-comparison}
+
+
+This section reports the comparison between Wasserstein distance and kernel overlap for predicting worker mobility. The test directly evaluates whether metric structure (optimal transport) outperforms smoothed intersection (kernel overlap).
+
+
+\subsubsection{Specification}
+
+Both specifications use the same conditional logit framework with 89,329 CPS occupation transitions:
+\[
+U_{kj} = \alpha \cdot (-d_{\mathrm{sem}}(i,j)) + \beta \cdot (-d_{\mathrm{inst}}(i,j)) + \varepsilon_{kj}
+\]
+
+The only difference is the semantic distance measure: Wasserstein vs.\ kernel overlap.
+
+
+\subsubsection{Results}
+
+\begin{table}[h!]
+\centering
+\caption{Geometry Comparison: Wasserstein vs.\ Kernel Overlap}
+\label{tab:geometry-comparison}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Specification} & $\alpha$ (semantic) & $t$-stat & $\beta$ (institutional) & $t$-stat & Log-likelihood \\
+\midrule
+Wasserstein (primary) & 8.936 & 206.5 & 0.142 & 34.6 & $-183{,}051$ \\
+Kernel overlap (baseline) & 5.688 & 160.3 & 0.278 & 71.0 & $-192{,}627$ \\
+\midrule
+Difference & $+57\%$ & --- & $-49\%$ & --- & $+9{,}576$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsubsection{Interpretation}
+
+\textbf{Wasserstein substantially outperforms kernel overlap.} The log-likelihood improvement ($\Delta = +9{,}576$) far exceeds pre-committed thresholds (adopt OT if $\Delta > 100$). This validates the ``earth mover's'' interpretation: workers minimize skill transformation cost when switching occupations, not just shared task overlap.
+
+\textbf{The $\beta$ coefficient absorption is theoretically correct.} The institutional coefficient drops from 0.278 to 0.142 ($-49\%$). This reflects the correlation structure: $\rho(d_{\mathrm{wasserstein}}, d_{\mathrm{inst}}) = 0.249$ vs.\ $\rho(d_{\mathrm{kernel}}, d_{\mathrm{inst}}) = 0.088$. Wasserstein absorbs variance that kernel overlap missed---variance related to skill transformation costs that Job Zones partially capture.
+
+The implication: with Wasserstein as the semantic measure, the residual institutional component ($\beta = 0.142$, still significant at $t = 34.6$) captures genuinely non-skill barriers---credentialing gates, licensing requirements, discrimination, network effects. The decomposition becomes cleaner:
+\[
+d_{\mathrm{eff}} = d_{\mathrm{transform}} + \lambda \cdot d_{\mathrm{barrier}}.
+\]
+
+\textbf{Why is the improvement so large?} Kernel distances are compressed near 1.0 (most pairs have approximately zero overlap), while Wasserstein provides genuine variation across the full range. The model has more signal to work with. Additionally, kernel overlap does not respect metric structure (triangle inequality), while Wasserstein does---this matters for occupation choice, where relative distances affect substitution patterns.
+
+
+\subsection{Worker Mobility and Institutional Wedge}
 \label{subsec:cps-mobility}
 
 
@@ -656,36 +818,24 @@ This removes spurious transitions where occupation codes fluctuate due to report
 \label{subsubsec:distance-construction}
 
 
-\textbf{Semantic distance ($d_{\mathrm{sem}}$).} Constructed as normalized kernel overlap converted to distance:
+\textbf{Semantic distance ($d_{\mathrm{sem}}$).} Primary measure: Wasserstein distance between occupation activity distributions. Comparison baseline: normalized kernel overlap converted to distance.
+
+\textbf{Wasserstein distance construction:}
 \begin{enumerate}
     \item Embed 2,087 DWAs using MPNet (all-mpnet-base-v2, 768 dimensions)
-    \item Compute cosine distance matrix $D_{\mathrm{act}}$ over activities
-    \item Calibrate kernel bandwidth: $\sigma$ = median nearest-neighbor distance = 0.0096
-    \item Build kernel matrix: $K_{ab} = \exp(-D_{\mathrm{act}}(a,b)/\sigma)$
+    \item Compute cosine distance matrix $D_{\mathrm{act}}$ over activities (ground metric)
     \item Load occupation-activity importance matrix (894 $\times$ 2,087)
     \item Row-normalize to probability measures: $\rho_j(a) = w_j(a) / \sum_a w_j(a)$
-    \item Compute normalized overlap: $O_{ij} = \frac{\sum_{a,b} \rho_i(a) K_{ab} \rho_j(b)}{\sqrt{\sum_{a,b} \rho_i(a) K_{ab} \rho_i(b)} \cdot \sqrt{\sum_{a,b} \rho_j(a) K_{ab} \rho_j(b)}}$
-    \item Convert to distance: $d_{\mathrm{sem}}(i,j) = 1 - O_{ij}$
+    \item Compute Wasserstein distance for each occupation pair using POT library
 \end{enumerate}
 
-\textbf{Semantic distance matrix properties (894 $\times$ 894):}
-
-\begin{table}[h!]
-\centering
-\begin{tabular}{lr}
-\toprule
-Statistic & Value \\
-\midrule
-Mean & 0.955 \\
-Std & 0.069 \\
-Min & 0.002 \\
-Max & 1.000 \\
-p10 / p50 / p90 & 0.91 / 0.97 / 0.99 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The distribution is concentrated near 1.0 (most occupation pairs are semantically distant), with a long left tail of similar occupations.
+\textbf{Kernel overlap construction (comparison baseline):}
+\begin{enumerate}
+    \item Calibrate kernel bandwidth: $\sigma$ = median nearest-neighbor distance = 0.0096
+    \item Build kernel matrix: $K_{ab} = \exp(-D_{\mathrm{act}}(a,b)/\sigma)$
+    \item Compute normalized overlap: $O_{ij} = \frac{\sum_{a,b} \rho_i(a) K_{ab} \rho_j(b)}{\sqrt{\sum_{a,b} \rho_i(a) K_{ab} \rho_i(b)} \cdot \sqrt{\sum_{a,b} \rho_j(a) K_{ab} \rho_j(b)}}$
+    \item Convert to distance: $d_{\mathrm{sem}}^{\mathrm{kernel}}(i,j) = 1 - O_{ij}$
+\end{enumerate}
 
 
 \textbf{Institutional distance ($d_{\mathrm{inst}}$).} Constructed as job zone difference plus certification barrier:
@@ -696,29 +846,17 @@ d_{\mathrm{inst}}(i,j) = |\mathrm{Zone}_i - \mathrm{Zone}_j| + \gamma \cdot |\ma
 Components:
 \begin{itemize}
     \item \textbf{Job Zone} (O*NET ``Job Zones.xlsx''): Scale 1--5 (little preparation $\to$ extensive preparation). Coverage: 923/923 occupations (100\%).
-    \item \textbf{Certification importance} (O*NET Element ID 2.D.4.a): Scale 1--5 (not important $\to$ extremely important). Coverage: 564/923 occupations (61.1\%). Missing values imputed with median (2.87). Rescaled to 0--4 range.
+    \item \textbf{Certification importance} (O*NET 30.0 Element ID 2.D.4.a): Scale 1--5 (not important $\to$ extremely important). Coverage: 564/923 occupations (61.1\%). Missing values imputed with median (2.87). Rescaled to 0--4 range.
     \item \textbf{Weight parameter:} $\gamma = 1.0$ (equal weight).
 \end{itemize}
 
-\textbf{Institutional distance matrix properties (923 $\times$ 923):}
 
-\begin{table}[h!]
-\centering
-\begin{tabular}{lr}
-\toprule
-Statistic & Value \\
-\midrule
-Mean & 2.11 \\
-Std & 1.35 \\
-Min & 0.00 \\
-Max & 8.00 \\
-p10 / p50 / p90 & 0.37 / 2.00 / 3.94 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-
-\textbf{Correlation between distance measures.} At the O*NET occupation level, $\mathrm{corr}(d_{\mathrm{sem}}, d_{\mathrm{inst}}) = 0.358$. The low correlation indicates the measures capture distinct information.
+\textbf{Correlation between distance measures:}
+\begin{itemize}
+    \item $\rho(d_{\mathrm{wasserstein}}, d_{\mathrm{inst}}) = 0.249$
+    \item $\rho(d_{\mathrm{kernel}}, d_{\mathrm{inst}}) = 0.088$
+\end{itemize}
+The difference reflects that Wasserstein captures skill transformation costs that correlate with training requirements, while kernel overlap captures shared task mass which is nearly orthogonal to training requirements.
 
 
 \subsubsection{Conditional Logit Specification}
@@ -755,70 +893,44 @@ P(j | i, \text{switch}) = \frac{\exp(\alpha \cdot (-d_{\mathrm{sem}}(i,j)) + \be
 
 \begin{table}[h!]
 \centering
-\caption{Conditional Logit Coefficient Estimates}
-\label{tab:clogit-results}
+\caption{Conditional Logit Results: Wasserstein (Primary)}
+\label{tab:clogit-wasserstein}
 \begin{tabular}{lcccc}
 \toprule
 \textbf{Parameter} & \textbf{Coefficient} & \textbf{Std. Error} & \textbf{$t$-statistic} & \textbf{$p$-value} \\
 \midrule
-$\alpha$ (semantic) & 2.994 & 0.030 & 98.53 & $< 10^{-100}$ \\
-$\beta$ (institutional) & 0.215 & 0.003 & 63.42 & $< 10^{-100}$ \\
+$\alpha$ (semantic) & 8.936 & 0.043 & 206.46 & $< 10^{-100}$ \\
+$\beta$ (institutional) & 0.142 & 0.004 & 34.59 & $< 10^{-100}$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Log-likelihood: $-205{,}528.9$
+Log-likelihood: $-183{,}051.4$
 
-Both coefficients are positive (recall covariates are negated distances), indicating transitions are more frequently observed to destinations that are: (1) semantically similar to the origin (higher task overlap), and (2) institutionally similar to the origin (similar job zone and certification requirements).
-
-
-\textbf{Statistical significance.} Both coefficients are estimated with high precision: $\alpha$: $t = 98.5$; $\beta$: $t = 63.4$. The large $t$-statistics primarily reflect sample size (89,329 transitions). Statistical significance at this scale conveys little information about economic importance; we therefore focus interpretation on effect magnitudes.
+Both coefficients are positive (recall covariates are negated distances), indicating transitions are more frequently observed to destinations that are: (1) semantically similar to the origin (lower Wasserstein distance = lower skill transformation cost), and (2) institutionally similar to the origin (similar job zone and certification requirements).
 
 
-\textbf{Economic magnitude---odds ratio interpretation.}
-
-For a 1-unit increase in $d_{\mathrm{sem}}$ (moving to a more semantically distant occupation):
-\[
-\text{Odds ratio} = \exp(-\alpha) = \exp(-2.994) = 0.050
-\]
-A 1-unit increase in semantic distance is associated with 95\% lower odds of observing that destination choice.
-
-For a 1-unit increase in $d_{\mathrm{inst}}$ (moving to a more institutionally distant occupation):
-\[
-\text{Odds ratio} = \exp(-\beta) = \exp(-0.215) = 0.807
-\]
-A 1-unit increase in institutional distance is associated with 19.3\% lower odds of observing that destination choice.
-
-
-\textbf{Standardized comparison.} The semantic coefficient is 13.9$\times$ larger than the institutional coefficient ($\alpha/\beta = 13.9$). However, the scales differ: $d_{\mathrm{sem}}$ range $\approx 0.9$; $d_{\mathrm{inst}}$ range $\approx 3.6$.
-
-On a standardized basis (using sample standard deviations):
-\begin{itemize}
-    \item 1-SD increase in $d_{\mathrm{sem}}$ (0.069): odds ratio $= \exp(-2.994 \times 0.069) = 0.814$
-    \item 1-SD increase in $d_{\mathrm{inst}}$ (1.35): odds ratio $= \exp(-0.215 \times 1.35) = 0.748$
-\end{itemize}
-
-On a standardized basis, the two effects are comparable in magnitude. The difference is modest and potentially sensitive to measurement choices; the key finding is that both components are independently predictive, not that one dominates.
+\textbf{Statistical significance.} Both coefficients are estimated with high precision: $\alpha$: $t = 206.5$; $\beta$: $t = 34.6$. The large $t$-statistics primarily reflect sample size (89,329 transitions). Statistical significance at this scale conveys little information about economic importance; we therefore focus interpretation on effect magnitudes and model comparison.
 
 
 \textbf{Decomposition test.} The key question: Does institutional distance add predictive value beyond semantic distance?
 
-Result: $\beta = 0.215$, $t = 63.42$, $p < 10^{-100}$.
+Result: $\beta = 0.142$, $t = 34.59$, $p < 10^{-100}$.
 
-\textbf{Conclusion:} Institutional distance is a significant predictor conditional on semantic distance. Transitions are observed less frequently to destinations with larger job zone gaps and certification barriers, even controlling for task-content similarity. Both semantic and institutional structure independently predict observed mobility patterns; they are not redundant ($r = 0.36$).
+\textbf{Conclusion:} Institutional distance is a significant predictor conditional on semantic distance. Transitions are observed less frequently to destinations with larger job zone gaps and certification barriers, even controlling for Wasserstein-based task transformation cost. The residual institutional component captures non-skill barriers---credentialing gates, licensing, discrimination---that Wasserstein distance does not absorb.
 
 
 \subsubsection{Interpretation}
 \label{subsubsec:cps-interpretation}
 
 
-\textbf{Consistency with the decomposition.} The results are consistent with the effective distance decomposition (\cref{def:effective-distance}): both $\alpha > 0$ and $\beta > 0$, indicating transitions are less frequently observed to destinations that are either semantically or institutionally distant. The two measures are not redundant ($r = 0.36$).
+\textbf{Consistency with the decomposition.} The results are consistent with the effective distance decomposition (\cref{def:effective-distance}): both $\alpha > 0$ and $\beta > 0$, indicating transitions are less frequently observed to destinations that are either semantically or institutionally distant.
 
 
 \textbf{Interpretive hypotheses.} If the associations reflect causal mechanisms, the two components would capture distinct barriers:
 \begin{enumerate}
-    \item \textbf{Semantic distance} ($\alpha = 2.994$): Skill transferability, learning costs, productivity gaps.
-    \item \textbf{Institutional distance} ($\beta = 0.215$): Hiring barriers, licensing requirements, training investments.
+    \item \textbf{Semantic distance} ($\alpha = 8.936$): Skill transformation cost---the investment required to reshape one's task portfolio.
+    \item \textbf{Institutional distance} ($\beta = 0.142$): Non-skill barriers---credentialing requirements, licensing gates, employer discrimination, network effects.
 \end{enumerate}
 We cannot distinguish these mechanisms from confounds (e.g., unobserved worker heterogeneity, employer preferences) with the current design.
 
@@ -826,7 +938,7 @@ We cannot distinguish these mechanisms from confounds (e.g., unobserved worker h
 \textbf{Limitations.}
 \begin{enumerate}
     \item \textbf{IIA assumption:} The conditional logit assumes Independence of Irrelevant Alternatives. This assumption is implausible for occupation choice, where adding or removing options should affect relative probabilities of similar occupations. Nested logit or mixed logit specifications would relax this assumption; we retain conditional logit for tractability and comparability with standard practice.
-    \item \textbf{Cosine distance is not a proper metric:} Cosine distance in embedding space does not satisfy the triangle inequality. The theoretical framework (\cref{def:task-domain}) assumes a metric space. We proceed as if triangle inequality violations are empirically small, but this is a maintained assumption.
+    \item \textbf{Ground metric assumption:} Wasserstein distance inherits assumptions from the ground metric (cosine distance in embedding space). If embeddings misrepresent economic substitutability, Wasserstein distances are correspondingly biased.
     \item \textbf{Panel weights not used:} Estimates are unweighted. Weighted estimation may change point estimates.
     \item \textbf{Choice set sampling:} Random 10:1 sampling of alternatives may introduce bias if the true choice set is systematically different.
     \item \textbf{Certification measure coverage:} Only 61.1\% of occupations have direct certification data; 38.9\% are imputed with the median. This attenuates $\beta$ toward zero; the true institutional effect may be larger.
@@ -855,7 +967,7 @@ U_{kj} = \alpha \cdot (-d_{\mathrm{sem}}(i,j)) + \beta_{\mathrm{up}} \cdot (-d_{
 
 \begin{table}[h!]
 \centering
-\caption{Asymmetric Conditional Logit Results}
+\caption{Asymmetric Conditional Logit Results (Kernel Specification)}
 \label{tab:asymmetric-results}
 \begin{tabular}{lcccc}
 \toprule
@@ -875,16 +987,31 @@ $\beta_{\mathrm{down}}$ (downward) & 0.270 & 0.005 & 50.0 & $< 10^{-100}$ \\
 
 \textbf{Interpretation: Surprising null.} Contrary to simple credential-gate theory, upward and downward barriers are nearly symmetric. The hypothesis that credentials function as one-way gates is not supported in these data.
 
+\begin{table}[h!]
+\centering
+\caption{Hypothesis Discrimination: Asymmetric Barriers Test}
+\label{tab:asymmetric-hypotheses}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Hypothesis} & \textbf{Prediction} & \textbf{Observed} & \textbf{Consistent?} \\
+\midrule
+Credentials are one-way gates & $\beta_{\mathrm{up}} \gg \beta_{\mathrm{down}}$ & Ratio $= 1.04$ & No \\
+Human capital specificity & $\beta_{\mathrm{up}} \approx \beta_{\mathrm{down}}$ & Ratio $= 1.04$ & Yes \\
+Job Zones measure distance, not gates & Symmetric barriers & Symmetric & Yes \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 Three mechanisms explain why barriers appear symmetric:
 \begin{enumerate}
-    \item \textbf{Overqualification discrimination.} Employers actively penalize overqualified applicants. Audit studies find skills underutilization reduces callbacks by approximately 55\%---a penalty nearly as severe as one year of unemployment \citep{Pedulla2016}. This creates genuine downward barriers.
+    \item \textbf{Overqualification discrimination.} Employers actively penalize overqualified applicants. Audit studies find skills underutilization reduces callbacks with penalties approximately as severe as one year of unemployment \citep{Pedulla2016}. This creates genuine downward barriers.
     
     \item \textbf{Human capital specificity.} Workers forfeit returns to occupation-specific skills when moving down. Estimates suggest 12--20\% wage premiums for five years of occupation tenure \citep{KambourovManovskii2009}, and up to 52\% of overall wage growth derives from task-specific human capital \citep{GathmannSchonberg2010}. Downward moves destroy this accumulated investment.
     
-    \item \textbf{Job Zones measure distance, not gates.} O*NET Job Zones capture human capital investment requirements (years of education, training time), not licensing barriers. Licensing creates asymmetric barriers---\citet{Jackson2023} finds licensing reduces entry probability by 24\% with no significant effect on exit. Job Zones capture something more symmetric: general occupational distance.
+    \item \textbf{Job Zones measure distance, not gates.} O*NET Job Zones capture human capital investment requirements (years of education, training time), not licensing barriers. Licensing creates asymmetric barriers---\citet{Jackson2023} finds licensing reduces entry probability with no significant effect on exit. \citet{KleinerXu2020} find licensing reduces both entry and exit by similar magnitudes. Job Zones capture something more symmetric: general occupational distance.
 \end{enumerate}
 
-This is an interpretable null, not a failure. It tells us Job Zones function as a general mobility friction measure, not a credential barrier measure. Testing with actual licensing data (e.g., CPS licensing supplement, state-level licensing variation) should reveal the expected asymmetry \citep{KleinerXu2020}.
+\textbf{Implication for model space:} Job Zones are valid as distance proxies but do not capture licensing/credential discontinuities. Testing with actual licensing data (e.g., CPS licensing supplement, state-level licensing variation) should reveal the expected gate-like asymmetry \citep{KleinerXu2020}. This is an interpretable null, not a failure---it tells us Job Zones function as a general mobility friction measure, not a credential barrier measure.
 
 
 \subsection{Complementary Validation: Wage Comovement}
@@ -1018,13 +1145,30 @@ Variance inflation factors are all below 2, indicating no multicollinearity conc
 
 The framework shows only marginal improvement for predicting automation-driven employment changes. RTI---when properly constructed---dominates. This is an honest partial null that constrains claims about the framework's scope.
 
-The result is interpretable: semantic geometry captures task similarity well (validated by mobility and wage comovement), but task similarity is not the same as automation exposure. RTI directly measures the routine/non-routine dimension that theory identifies as the locus of automation effects. Semantic distance captures a broader notion of task relatedness that is useful for mobility prediction but less targeted for automation.
+
+\textbf{Productivity-employment gap context.} The \citet{AcemogluRestrepo2018} framework predicts that automation effects on employment are theoretically ambiguous: displacement effects (reducing labor share) compete with reinstatement effects (new tasks increasing demand). RCT evidence shows 14--56\% productivity gains from AI tools \citep{BrynjolfssonLiRaymond2023,NoyZhang2023}; yet administrative data shows precise employment zeros, ruling out effects larger than 1\% \citep{HumlumVestergaard2025}. This disconnect is not anomalous---it reflects an adjustment hierarchy:
+\[
+\text{Task composition} \to \text{Wages} \to \text{Hours} \to \text{Employment}
+\]
+Employment responds last. Technology shocks first restructure tasks within occupations, then affect wages, then hours, then headcount. Our marginal result ($\Delta R^2 = 2.2\%$, $p = 0.075$) is consistent with ``too early to measure in employment,'' not ``framework failure.''
+
+
+\textbf{Substantive interpretation.} Semantic geometry captures task similarity well (validated by mobility and wage comovement), but task similarity is not the same as automation exposure. RTI directly measures the routine/non-routine dimension that theory identifies as the locus of automation effects. Semantic distance captures a broader notion of task relatedness that is useful for mobility prediction but less targeted for automation.
+
 
 The positive AIOE coefficient suggests current AI technologies may be more complementary than substitutive at the occupation level, consistent with \citet{FeltenRajSeamans2021} findings of positive wage effects for AI-exposed occupations. This is a period-specific finding that may change as AI capabilities evolve.
 
 
-\subsection{Retrospective Battery (Roadmap)}
+\textbf{Implication for model space.} Employment may be the wrong outcome variable for near-term technology exposure validation. Task composition changes (e.g., skill mention changes in job postings per \citet{HampoleEtAl2025}) would provide earlier signal. This requires Lightcast/Revelio data---deferred to future work.
+
+
+\subsection{Retrospective Validation Battery (Pending)}
 \label{subsec:retrospective-roadmap}
+
+
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\textbf{WARNING:} This section specifies tests \emph{not yet executed}. No results are reported. Implementation status: crosswalks specified but not validated.}}
+\end{center}
 
 
 The original research design included three retrospective tests against canonical RBTC settings:
@@ -1036,7 +1180,7 @@ The original research design included three retrospective tests against canonica
 
 These tests were designed before the CPS mobility analysis. We report CPS mobility as the primary test because it operates at the worker level, avoiding ecological inference, and directly tests the semantic-institutional decomposition. The retrospective battery addresses aggregate outcomes (employment shares, wage polarization) that are informative but confounded by industry concentration, geographic clustering, and institutional variation across regions.
 
-\textbf{Status note (v0.6.6):} Retrospective battery implementation is incomplete. The crosswalks required to map historical Census occupation codes to O*NET-based semantic distances have been specified but not validated. No results from Tests A, B, or C are reported in this version. Full retrospective results will be reported in v0.7 once crosswalk validation is complete.
+\textbf{Status:} Retrospective battery implementation is incomplete. The crosswalks required to map historical Census occupation codes to O*NET-based semantic distances have been specified but not validated. No results from Tests A, B, or C are reported. Full retrospective results will be reported once crosswalk validation is complete.
 
 Full technical specifications, crosswalk documentation, and placeholder implementations are provided in \cref{app:retrospective}.
 
@@ -1103,6 +1247,115 @@ The CPS mobility findings have direct implications for how AI shock profiles sho
 \end{enumerate}
 
 
+\subsection{Empirical Paths Forward}
+\label{subsec:paths-forward}
+
+
+This section specifies pending empirical tests with pre-committed interpretations. Each path follows the template: Test $\to$ Expected Results $\to$ Implications.
+
+
+\subsubsection{Path A: Optimal Transport Validation --- RESOLVED}
+
+
+\textbf{Objective:} Test whether Wasserstein distance outperforms kernel overlap for mobility prediction.
+
+\textbf{Status: RESOLVED.} Wasserstein substantially outperforms kernel overlap ($\Delta \text{log-likelihood} = +9{,}576$).
+
+\textbf{Pre-committed interpretation applied:}
+\begin{table}[h!]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Outcome} & \textbf{Pre-committed Interpretation} & \textbf{Actual Result} \\
+\midrule
+OT $\gg$ Kernel & Metric structure matters; adopt OT as primary & \textbf{Confirmed} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Threshold exceeded:} $\Delta \text{log-likelihood} = +9{,}576 \gg 100$ (threshold). $\Delta \alpha = +57\% \gg 10\%$ (threshold).
+
+\textbf{Implication:} Wasserstein is adopted as primary semantic distance measure. The ``earth mover's'' interpretation of occupational distance is economically meaningful: workers minimize skill transformation cost when switching occupations.
+
+
+\subsubsection{Path B: Embedding Comparison}
+
+
+\textbf{Objective:} Test whether domain-specific embeddings (JobBERT-v2, trained on ESCO skills) outperform general-purpose embeddings (MPNet).
+
+\textbf{Specification:} Re-compute semantic distances with JobBERT-v2. Compare wage comovement $R^2$ and CPS mobility coefficients.
+
+\textbf{Priority adjustment:} With Wasserstein validated as primary geometry, embedding comparison is lower priority. The geometry change (kernel $\to$ Wasserstein) produced $\Delta \text{LL} = +9{,}576$. The embedding change is unlikely to produce comparable improvement.
+
+\textbf{Pre-committed interpretations:}
+\begin{table}[h!]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Outcome} & \textbf{Interpretation} & \textbf{Next Step} \\
+\midrule
+JobBERT $\gg$ MPNet & Domain-specific training captures economic structure & Adopt JobBERT \\
+MPNet $\gg$ JobBERT & General semantic structure sufficient & Stay with MPNet \\
+JobBERT $\approx$ MPNet & Embedding choice doesn't matter for this task & Prefer MPNet (standard) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsubsection{Path C: Retrospective Construct Validity}
+
+
+\textbf{Objective:} Test whether our semantic distances correlate with Autor-Dorn RTI at occ1990dd level.
+
+\textbf{Specification:} Construct crosswalk from O*NET-SOC to occ1990dd. Compute correlation between semantic exposure and pre-computed RTI from Dorn replication files.
+
+\textbf{Note:} This does NOT require full Autor-Dorn replication---only crosswalk construction and correlation.
+
+\textbf{Pre-committed interpretations:}
+\begin{table}[h!]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Outcome} & \textbf{Interpretation} & \textbf{Next Step} \\
+\midrule
+High correlation ($r > 0.6$) & Semantic geometry captures RTI construct & Validation, not improvement \\
+Low correlation ($r < 0.3$) & Semantic geometry captures different structure & Potential contribution \\
+Medium correlation & Partial overlap & Need outcome comparison \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsubsection{Path D: Modality-Specific Shocks (Future Work)}
+
+
+\textbf{Objective:} Construct capability profiles distinguishing code generation, reasoning, agentic workflows. Map to O*NET tasks.
+
+\textbf{Status:} Comprehensive implementation requires 6--9 months (taxonomy design, task annotation, benchmark mapping). One-month pilot (2--3 occupations, $\sim$200 tasks) could establish methodology feasibility.
+
+\textbf{Deferred:} Not feasible in current sprint. Documented as research program extension.
+
+
+\subsubsection{Path E: Task Composition Outcomes (Future Work)}
+
+
+\textbf{Objective:} Replace employment with skill mention changes in job postings \citep{HampoleEtAl2025}.
+
+\textbf{Data requirement:} Lightcast/Revelio access (institutional license required).
+
+\textbf{Deferred:} Data not currently available. Documented as research program extension.
+
+
+\subsubsection{Path F: Asymmetric Test with Wasserstein (Extension)}
+
+
+\textbf{Objective:} Re-run asymmetric barriers test using Wasserstein distance instead of kernel overlap.
+
+\textbf{Motivation:} The symmetric finding ($\beta_{\mathrm{up}}/\beta_{\mathrm{down}} = 1.04$) was obtained with kernel-based semantic distance. With Wasserstein absorbing more variance from the institutional channel, the residual asymmetry pattern may change.
+
+\textbf{Status:} Natural extension, not yet executed.
+
+
 \subsection{Model Evaluation Criteria}
 \label{subsec:evaluation}
 
@@ -1119,7 +1372,7 @@ The framework is evaluated against simple baselines using explicit criteria.
     
     \item \textbf{Parameter stability.} Results should be qualitatively stable across domain choices (DWA vs GWA) and weighting schemes.
     
-    \item \textbf{Non-redundancy.} We target low-to-moderate correlation between semantic and institutional distance. In the baseline implementation we obtain $r \approx 0.36$, indicating related but non-redundant structure.
+    \item \textbf{Non-redundancy.} We target low-to-moderate correlation between semantic and institutional distance. With Wasserstein, $\rho(d_{\mathrm{sem}}, d_{\mathrm{inst}}) = 0.25$---moderate correlation indicating the measures capture related but distinct structure.
     
     \item \textbf{Non-tautological validation.} Geometry diagnostics must use targets not used in construction.
 \end{enumerate}
@@ -1140,7 +1393,27 @@ If primary criteria fail:
 \label{sec:extensions}
 
 
-This paper targets a compact, implementable measurement pipeline. Extensions are recorded here for future work.
+This paper targets a compact, implementable measurement pipeline. Extensions are organized by status:
+
+\textbf{Completed:}
+\begin{itemize}
+    \item Wasserstein vs.\ kernel overlap comparison (\cref{subsec:geometry-comparison}): Finding---Wasserstein substantially outperforms ($\Delta \text{LL} = +9{,}576$)
+    \item Asymmetric institutional distance (\cref{subsec:asymmetric}): Finding---symmetric barriers
+\end{itemize}
+
+\textbf{In Progress:}
+\begin{itemize}
+    \item Embedding robustness (JobBERT vs.\ MPNet)
+    \item Asymmetric test with Wasserstein distance
+\end{itemize}
+
+\textbf{Deferred:}
+\begin{itemize}
+    \item Full retrospective battery (Autor-Dorn replication)
+    \item Modality-specific shock profiles
+    \item Task composition outcome validation
+    \item Structural estimation (Traiberman-style)
+\end{itemize}
 
 
 \subsection{Dynamic accumulation and reversals}
@@ -1158,11 +1431,16 @@ where $\delta \in [0,1]$ governs persistence.
 \label{subsec:asymmetric}
 
 
-The asymmetric extension has been tested (\cref{subsubsec:asymmetric-test}). Contrary to the theoretical prediction that $\beta^{\mathrm{up}} > \beta^{\mathrm{down}}$, we find nearly symmetric barriers: $\beta_{\mathrm{up}} = 0.282$, $\beta_{\mathrm{down}} = 0.270$, ratio $= 1.04$.
+The asymmetric extension has been tested (\cref{subsubsec:asymmetric-test}). Contrary to credential-gate theory predicting $\beta^{\mathrm{up}} \gg \beta^{\mathrm{down}}$, we find nearly symmetric barriers: $\beta_{\mathrm{up}} = 0.282$, $\beta_{\mathrm{down}} = 0.270$, ratio $= 1.04$.
 
-This interpretable null suggests that Job Zones measure general occupational distance (human capital investment requirements) rather than regulatory gatekeeping (licensing barriers). Three mechanisms explain symmetric barriers: overqualification discrimination creates genuine downward barriers; human capital specificity makes skill abandonment costly; and Job Zones capture preparation requirements, not legal permission requirements.
+This finding discriminates between theoretical models. Human capital specificity theory correctly predicts symmetric barriers: workers accumulate occupation-specific capital lost in any move. Three mechanisms explain why barriers appear symmetric rather than asymmetric:
+\begin{enumerate}
+    \item \textbf{Occupation-specific human capital} \citep{KambourovManovskii2009}: 12--20\% wage premiums forfeited in any switch
+    \item \textbf{Overqualification stigma} \citep{Pedulla2016}: Employers penalize overqualified applicants
+    \item \textbf{Job Zones measure preparation, not permission} \citep{KleinerXu2020}: Licensing affects mobility symmetrically
+\end{enumerate}
 
-The finding constrains future oracle specifications: effective distance using Job Zones may not require directional asymmetry. However, alternative institutional measures may reveal the expected asymmetry.
+The finding constrains future oracle specifications: effective distance using Job Zones should not require directional asymmetry. However, alternative institutional measures (CPS licensing supplement, state-level licensing variation) may reveal the gate-like asymmetry that simple credentialing theory predicts.
 
 
 \subsection{Licensing as alternative barrier measure}
@@ -1171,7 +1449,7 @@ The finding constrains future oracle specifications: effective distance using Jo
 
 Job Zones and occupational licensing measure fundamentally different constructs. Job Zones capture human capital investment requirements---years of education, training time, accumulated experience. Licensing creates legal permission requirements---government authorization to work in an occupation.
 
-\citet{Jackson2023} demonstrates the asymmetry using CPS licensing data: licensing reduces entry probability by 24\% with no significant effect on exit probability. This is the one-way gate pattern that Job Zones fail to capture.
+\citet{Jackson2023} demonstrates asymmetry using CPS licensing data: licensing reduces entry probability with no significant effect on exit probability. This is the one-way gate pattern that Job Zones fail to capture. \citet{KleinerXu2020} find different results with symmetric effects on both entry and exit---the literature remains unsettled on whether licensing creates one-way or two-way barriers.
 
 Future work should test the decomposition using: (i) CPS licensing supplement (2015+) matched to Institute for Justice policy data; (ii) state-level licensing variation following \citet{KleinerXu2020}; (iii) specific licensed occupations with binding credential requirements (nursing compact variation, bar exam pass rates, medical licensing pathways). These specifications should reveal the asymmetry that simple credentialing theory predicts.
 
@@ -1229,17 +1507,30 @@ AI era (2020--) & Analytic/generative & TBD & TBD & TBD \\
 
 This paper develops a geometric framework for measuring occupational mobility and tests it against observed labor market patterns.
 
-The central theoretical contribution is the semantic-institutional decomposition (\cref{def:effective-distance}), which separates task-content similarity from credentialing barriers. The primary empirical finding validates this decomposition: in 89,329 CPS occupation transitions, both semantic distance ($\alpha = 2.994$, $t = 98.5$) and institutional distance ($\beta = 0.215$, $t = 63.4$) are significant predictors of destination choice. The two measures are correlated at $r = 0.36$---related but not redundant.
 
-A surprising finding emerges from testing directional asymmetry. Simple credentialing theory predicts upward barriers should dominate downward barriers---licenses restrict entry but not exit. We find the opposite: barriers are nearly symmetric ($\beta_{\mathrm{up}}/\beta_{\mathrm{down}} = 1.04$). This interpretable null suggests O*NET Job Zones measure general occupational distance rather than regulatory gatekeeping. Overqualification discrimination and human capital specificity create genuine downward barriers that offset the expected asymmetry.
+\textbf{What we validated.} Task space has metric structure that predicts worker mobility. Wasserstein distance---measuring the minimum cost to transform one occupation's skill portfolio into another---substantially outperforms kernel overlap ($\Delta \text{log-likelihood} = +9{,}576$). This validates the ``earth mover's'' interpretation of occupational distance: workers minimize skill transformation cost when switching occupations.
 
-The framework shows marginal improvement for automation prediction. Semantic exposure adds $\Delta R^2 = 2.2\%$ over canonical RTI in predicting 2019--2024 employment changes ($p = 0.075$). RTI---when properly constructed using the full 16-element Acemoglu-Autor composite---remains the dominant measure. The framework succeeds at measuring task similarity but does not substantially outperform existing measures for automation prediction.
+The semantic-institutional decomposition predicts worker mobility: in 89,329 CPS occupation transitions, both Wasserstein-based semantic distance ($\alpha = 8.936$, $t = 206.5$) and institutional distance ($\beta = 0.142$, $t = 34.6$) are significant predictors of destination choice. The Wasserstein measure correlates moderately with institutional distance ($r = 0.25$), yielding a cleaner decomposition where the residual institutional component captures non-skill barriers---credentialing gates, licensing, discrimination. The semantic geometry predicts wage comovement ($R^2 = 0.52\%$, threefold improvement over binary Jaccard).
 
-Methodological contributions include: kernel bandwidth must be calibrated to local distance structure (median nearest-neighbor distance, not global median); proper RTI construction is essential (single O*NET elements yield $R^2 \approx 0$); and the infrastructure for worker-level mobility analysis with persistence-filtered transitions.
 
-These findings constrain future specifications of task-space representations. Effective distance using Job Zones may not require directional asymmetry. Semantic geometry alone is insufficient for automation prediction. The decomposition validates the principle that task similarity and institutional barriers are both economically meaningful, but the specific proxies matter: Job Zones capture something more symmetric than licensing, and RTI captures something more predictive of automation than general semantic similarity.
+\textbf{Informative constraints from nulls.} The asymmetric barriers test yields an interpretable null: $\beta_{\mathrm{up}}/\beta_{\mathrm{down}} = 1.04$. This is an informative constraint on model space, not a negative finding. The symmetric barrier finding rules out pure ``one-way gate'' theories of credentialing: Job Zones capture general occupational distance rather than regulatory gatekeeping. Human capital specificity theory (symmetric barriers from occupation-specific capital) is supported over credential-gate theory (one-way entry barriers).
 
-The task-space oracle remains a useful organizing metaphor for the broader research program---a hypothetical complete structural mapping from task representations to equilibrium outcomes. This paper tests specific modules against observed data. The symmetric barriers finding and marginal automation result are features, not failures: they identify where candidate representations succeed and where they fall short.
+The automation prediction test shows marginal improvement ($\Delta R^2 = 2.2\%$ over RTI, $p = 0.075$). This too constrains model space: semantic geometry alone is insufficient for near-term automation prediction. The result is consistent with the productivity-employment gap \citep{HumlumVestergaard2025}: employment responds last in the adjustment hierarchy (tasks $\to$ wages $\to$ hours $\to$ employment), so near-term effects appear in task composition before headcount.
+
+
+\textbf{Model space status.} The research program explores three axes:
+\begin{itemize}
+    \item \textbf{Representation:} MPNet validated; JobBERT comparison pending
+    \item \textbf{Geometry:} Wasserstein validated as primary (substantially outperforms kernel overlap)
+    \item \textbf{Shocks:} Generic capability marginal; modality-specific profiles deferred
+    \item \textbf{Outcomes:} Mobility validated; employment marginal; task composition deferred
+\end{itemize}
+
+
+\textbf{Theoretical contribution.} The decomposition is grounded in \citet{Traiberman2019}'s switching cost framework, which parameterizes costs as linear in task-space distance with dimension-specific prices. Optimal transport for occupational similarity is validated: Wasserstein distance---the minimum cost to transform one occupation's skill portfolio into another---is economically meaningful. The research program structure is designed for rapid iteration: pre-committed interpretations enable mechanical next-step identification.
+
+
+These are stress tests of candidate oracle modules. The validated combinations advance; the rejected combinations inform theory. The Wasserstein validation, symmetric barriers finding, and marginal automation result are features, not failures: they identify where candidate representations succeed (mobility prediction with metric structure) and where they fall short (employment prediction in the near term).
 
 
 \appendix
@@ -1348,7 +1639,7 @@ Noise & $0$ & $0$ & $0$ & Semantic similarity $\neq$ economic substitutability \
 \end{table}
 
 
-% Internal notes removed for v0.6.5 external review.
+% Internal notes removed for external review.
 % Distillation planning and venue targeting deferred to internal documentation.
 
 

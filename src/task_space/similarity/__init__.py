@@ -34,6 +34,12 @@ from .distances import (
     distance_percentiles,
 )
 
+from .wasserstein import (
+    WassersteinDistanceResult,
+    compute_wasserstein_distances,
+    wasserstein_to_similarity,
+)
+
 __all__ = [
     # Kernel
     'calibrate_sigma',
@@ -53,4 +59,8 @@ __all__ = [
     'compute_recipe_y_distances',
     'get_nearest_activities',
     'distance_percentiles',
+    # Wasserstein
+    'WassersteinDistanceResult',
+    'compute_wasserstein_distances',
+    'wasserstein_to_similarity',
 ]

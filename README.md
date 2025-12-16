@@ -2,7 +2,7 @@
 
 A geometric framework for measuring labor market exposure to technological shocks.
 
-**Version 0.6.6.0** — Validation Complete
+**Version 0.6.8.0** — Wasserstein Primary
 
 ---
 
@@ -10,7 +10,9 @@ A geometric framework for measuring labor market exposure to technological shock
 
 This project develops a measurement framework for studying how technological change affects labor markets. The key idea: occupations are probability distributions over work activities. When automation affects certain activities, impact propagates through shared structure.
 
-The core theoretical contribution is the **semantic-institutional decomposition**: effective distance between occupations separates task-content similarity (can the worker do the job?) from credentialing barriers (is the worker allowed to do the job?).
+The core theoretical contribution is the **semantic-institutional decomposition**, grounded in Traiberman (2019)'s switching cost framework. Effective distance between occupations separates task-content similarity (can the worker do the job?) from credentialing barriers (is the worker allowed to do the job?).
+
+The paper also positions **optimal transport for occupational similarity** as a novel methodological contribution—no prior economics literature applies Wasserstein distance to occupation-task distributions.
 
 See `paper/main.tex` for formal theory and specifications.
 
@@ -23,20 +25,22 @@ See `paper/main.tex` for formal theory and specifications.
 | Test | Result | Status |
 |------|--------|--------|
 | CPS Mobility (Symmetric) | α=2.99, β=0.22, both p<0.001 | ✓ Validated |
-| CPS Mobility (Asymmetric) | β_up ≈ β_down (ratio 1.04) | ⚠️ Interpretable null |
+| CPS Mobility (Asymmetric) | β_up ≈ β_down (ratio 1.04) | ✓ Interpretable null |
 | Wage Comovement | Kernel R²=0.0052 vs Jaccard R²=0.0017 | ✓ Geometry informative |
 | Employment Prediction | Semantic ΔR²=2.2% over RTI, p=0.07 | ⚠️ Marginal |
+| OT vs Kernel | Wasserstein >> Kernel (Δ LL = +9,576) | ✓ Path A resolved |
+| JobBERT vs MPNet | — | ⏳ Pending (v0.7) |
 
 ### CPS Worker Mobility (✓ Validated)
 
-Conditional logit model of occupation destination choice using 89,329 verified CPS transitions.
+Conditional logit model of occupation destination choice using 89,329 verified CPS transitions. **Wasserstein distance is primary** (Δ log-likelihood = +9,576 over kernel overlap).
 
 | Component | Coefficient | t-stat | Interpretation |
 |-----------|-------------|--------|----------------|
-| α (semantic distance) | 2.994 | 98.5 | Workers prefer task-similar destinations |
-| β (institutional distance) | 0.215 | 63.4 | Workers avoid credential barriers |
+| α (semantic) | 8.936 | 206.5 | Workers minimize transformation cost |
+| β (institutional) | 0.142 | 34.6 | Residual non-skill barriers |
 
-Both components independently predictive (r = 0.36 between measures). Framework succeeds at measuring task similarity for mobility analysis.
+Both components independently predictive. Framework succeeds at measuring task similarity for mobility analysis.
 
 ### Asymmetric Barriers Test (⚠️ Interpretable Null)
 
@@ -121,7 +125,7 @@ print(f"β (institutional) = {results.beta:.3f} (t = {results.beta_t:.1f})")
 ```
 src/task_space/          # Core implementation
     data/                # Data loading, classifications
-    similarity/          # Kernel, overlap, embeddings
+    similarity/          # Kernel, overlap, wasserstein (v0.6.7.1)
     shocks/              # Shock profiles
     validation/          # Regression, diagnostics
     mobility/            # CPS mobility validation (symmetric + asymmetric)
@@ -150,13 +154,11 @@ See `CLAUDE.md` for developer details.
 
 | Version | What Changed |
 |---------|--------------|
-| **v0.6.6.0** | Asymmetric barriers test (interpretable null). Codebase reorganized: canonical/ directory, _legacy/ modules |
-| v0.6.5.3 | Full Acemoglu-Autor RTI implemented. Marginal semantic improvement (ΔR²=2.2%, p=0.07) |
-| v0.6.5.1 | CPS mobility validation integrated; semantic-institutional decomposition confirmed |
-| v0.6.3.2 | Retrospective battery redesign (1980–2005 canonical settings) |
-| v0.6.3.1 | Classification infrastructure, architecture tests |
-| v0.6.2 | Both structures informative; neither dominates |
-| v0.6.1 | Kernel fix — σ calibrated to NN distances |
+| **v0.6.8.0** | Wasserstein validated as primary. Documentation aligned with paper v0.6.8. |
+| v0.6.7.x | Wasserstein module, full matrix, CPS comparison (Δ LL = +9,576). |
+| v0.6.6.0 | Asymmetric barriers test (interpretable null: β_up ≈ β_down). |
+| v0.6.5.x | CPS mobility validation. RTI implemented. Automation prediction marginal. |
+| v0.6.1 | Kernel bandwidth fix (σ = 0.223 from NN distances). |
 
 ---
 
