@@ -31,6 +31,49 @@ from .permutation import (
     run_random_baseline_comparison,
 )
 
+from .shock_integration import (
+    ShockIntegrationResult,
+    get_aioe_by_soc_dataframe,
+    map_aioe_to_census,
+    compute_aioe_geometry_correlations,
+    partition_transitions_by_exposure,
+    compute_historical_baseline,
+    compute_uniform_baseline,
+    compute_model_probabilities,
+    evaluate_model_on_holdout,
+    compute_verdict,
+)
+
+from .scaled_costs import (
+    ScaledCostsResult,
+    ScaledModelResult,
+    load_oes_wages_by_census,
+    get_wage_coverage,
+    build_choice_dataset_with_wages,
+    estimate_scaled_model,
+    compute_switching_costs,
+    compute_median_distances,
+    compute_externally_calibrated_costs,
+    compute_example_transition_costs,
+    lookup_wasserstein_distance,
+)
+
+from .reallocation import (
+    ReallocationResult,
+    load_employment_by_census,
+    get_exposed_occupations,
+    compute_destination_probabilities,
+    aggregate_reallocation_flows,
+    compute_absorption_ranking,
+    validate_against_holdout,
+    load_occupation_names,
+    run_reallocation_analysis,
+    flag_capacity_constraints,
+    split_feasible_constrained,
+    compute_validation_verdict,
+    CREDENTIAL_GATED_OCCUPATIONS,
+)
+
 __all__ = [
     # Regression
     'RegressionResult',
@@ -50,4 +93,41 @@ __all__ = [
     'run_permutation_test',
     'run_cross_validation',
     'run_random_baseline_comparison',
+    # Shock Integration
+    'ShockIntegrationResult',
+    'get_aioe_by_soc_dataframe',
+    'map_aioe_to_census',
+    'compute_aioe_geometry_correlations',
+    'partition_transitions_by_exposure',
+    'compute_historical_baseline',
+    'compute_uniform_baseline',
+    'compute_model_probabilities',
+    'evaluate_model_on_holdout',
+    'compute_verdict',
+    # Scaled Costs
+    'ScaledCostsResult',
+    'ScaledModelResult',
+    'load_oes_wages_by_census',
+    'get_wage_coverage',
+    'build_choice_dataset_with_wages',
+    'estimate_scaled_model',
+    'compute_switching_costs',
+    'compute_median_distances',
+    'compute_externally_calibrated_costs',
+    'compute_example_transition_costs',
+    'lookup_wasserstein_distance',
+    # Reallocation
+    'ReallocationResult',
+    'load_employment_by_census',
+    'get_exposed_occupations',
+    'compute_destination_probabilities',
+    'aggregate_reallocation_flows',
+    'compute_absorption_ranking',
+    'validate_against_holdout',
+    'load_occupation_names',
+    'run_reallocation_analysis',
+    'flag_capacity_constraints',
+    'split_feasible_constrained',
+    'compute_validation_verdict',
+    'CREDENTIAL_GATED_OCCUPATIONS',
 ]

@@ -8,8 +8,8 @@ Concise context for AI assistants. For theory, see `paper/main.tex`.
 
 | Component | Version |
 |-----------|---------|
-| Codebase  | v0.6.9.0 |
-| Paper     | v0.6.9 |
+| Codebase  | v0.7.0 |
+| Paper     | v0.7.0 |
 
 **Scientific State:** See `LEDGER.md` (single source of truth for results, constraints, and deprecated paths).
 
@@ -63,6 +63,9 @@ src/task_space/
     similarity/            # kernel.py, overlap.py, embeddings.py, distances.py, wasserstein.py (v0.6.7.1)
     shocks/                # registry.py, profiles.py, propagation.py
     validation/            # regression.py, diagnostics.py, permutation.py
+        shock_integration.py   # AIOE linkage, geometry vs baselines (v0.7.0)
+        scaled_costs.py        # Wage-scaled switching costs (v0.7.0)
+        reallocation.py        # Counterfactual pathway analysis (v0.7.0)
     experiments/           # config.py, runner.py
     mobility/              # CPS mobility validation (v0.6.5+)
         institutional.py   # d_inst: job zones + certification; asymmetric d_up/d_down (v0.6.6)
@@ -129,6 +132,8 @@ Before implementing, check `LEDGER.md` for:
 - **Wasserstein is primary** — Use d_wasserstein for mobility. Kernel overlap is comparison baseline only.
 - **OT ground metric sensitivity** — Wasserstein amplifies embedding errors. See `paper/main.tex` Remark 3.16.
 - **d_sem_census.npz is kernel-based** — Despite "semantic" name, contains kernel overlap distances (not Wasserstein). Also mislabeled as "census" but is O*NET-level (894). Wasserstein distances: `.cache/artifacts/v1/wasserstein/d_wasserstein_onet.npz`.
+- **Institutional barriers are friction, not gates** — γ_inst captures cost conditional on completion, not blocking probability. Do not use for reallocation forecasting.
+- **Switching costs require external calibration** — CPS + OES data insufficient for endogenous identification. Use 3.84 wage-years/unit Wasserstein (Dix-Carneiro anchor).
 
 ### Dependencies
 - Core: numpy, pandas, scipy, torch, sentence-transformers
@@ -197,6 +202,7 @@ Key definitions: Task domain, Occupation measures, Effective distance decomposit
 
 ## Version History
 
+- **v0.7.0:** Shock integration validated. Pathway identification (ρ=0.43). Reallocation forecasting failed (top-5=0). External cost calibration.
 - **v0.6.9.0:** LEDGER.md created as single source of scientific state. CLAUDE.md purified.
 - **v0.6.8.0:** Wasserstein validated. Path F/C executed. See `LEDGER.md`.
 - **v0.6.7.x:** Wasserstein module added.

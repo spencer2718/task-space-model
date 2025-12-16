@@ -2,7 +2,7 @@
 
 A geometric framework for measuring labor market exposure to technological shocks.
 
-**Version 0.6.9.0** — Wasserstein Primary, Asymmetry Heterogeneous
+**Version 0.7.0** — Shock Integration Validated, Pathway Identification
 
 ---
 
@@ -27,10 +27,12 @@ See `paper/main.tex` for formal theory and specifications.
 | CPS Mobility (Symmetric) | α=8.94, β=0.14, both p<0.001 | ✓ Validated |
 | CPS Mobility (Asymmetric) | Ratio 0.06–2.79 by sample | ⚠️ Heterogeneous |
 | RTI Construct Validity | r = -0.05 (n.s.) | ✓ Orthogonal |
-| Wage Comovement | Kernel R²=0.0052 vs Jaccard R²=0.0017 | ✓ Geometry informative |
-| Employment Prediction | Semantic ΔR²=2.2% over RTI, p=0.07 | ⚠️ Marginal |
-| OT vs Kernel | Wasserstein >> Kernel (Δ LL = +9,576) | ✓ Path A resolved |
-| JobBERT vs MPNet | — | ⏳ Deferred |
+| Geometry vs Historical | ΔLL = +23,119 | ✓ Validated |
+| AIOE-Geometry Orthogonality | r = 0.02 | ✓ Distinct constructs |
+| Directional Skill Compatibility | Spearman ρ = 0.43 | ✓ Validated |
+| Exact Destination Prediction | Top-5 overlap = 0 | ✗ Failed |
+| Switching Cost Calibration | 3.84 wage-years/unit | ✓ Calibrated (external) |
+| Endogenous Cost Identification | β_wage < 0 | ✗ Failed |
 
 ### CPS Worker Mobility (✓ Validated)
 
@@ -172,7 +174,8 @@ See `CLAUDE.md` for developer details.
 
 | Version | What Changed |
 |---------|--------------|
-| **v0.6.9.0** | LEDGER.md created. Asymmetric barriers → heterogeneous. RTI orthogonality documented. |
+| **v0.7.0** | Shock integration validated. Pathway identification (ρ=0.43). Reallocation forecasting failed (top-5=0). External cost calibration. |
+| v0.6.9.0 | LEDGER.md created. Asymmetric barriers → heterogeneous. RTI orthogonality documented. |
 | v0.6.8.0 | Wasserstein validated. Path F/C executed. |
 | v0.6.7.x | Wasserstein module, geometry comparison. |
 | v0.6.6.0 | Asymmetric barriers test (kernel baseline). |
