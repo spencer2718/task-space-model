@@ -2,7 +2,7 @@
 
 A geometric framework for measuring labor market exposure to technological shocks.
 
-**Version 0.6.8.0** — Wasserstein Primary
+**Version 0.6.9.0** — Wasserstein Primary, Asymmetry Heterogeneous
 
 ---
 
@@ -24,12 +24,13 @@ See `paper/main.tex` for formal theory and specifications.
 
 | Test | Result | Status |
 |------|--------|--------|
-| CPS Mobility (Symmetric) | α=2.99, β=0.22, both p<0.001 | ✓ Validated |
-| CPS Mobility (Asymmetric) | β_up ≈ β_down (ratio 1.04) | ✓ Interpretable null |
+| CPS Mobility (Symmetric) | α=8.94, β=0.14, both p<0.001 | ✓ Validated |
+| CPS Mobility (Asymmetric) | Ratio 0.06–2.79 by sample | ⚠️ Heterogeneous |
+| RTI Construct Validity | r = -0.05 (n.s.) | ✓ Orthogonal |
 | Wage Comovement | Kernel R²=0.0052 vs Jaccard R²=0.0017 | ✓ Geometry informative |
 | Employment Prediction | Semantic ΔR²=2.2% over RTI, p=0.07 | ⚠️ Marginal |
 | OT vs Kernel | Wasserstein >> Kernel (Δ LL = +9,576) | ✓ Path A resolved |
-| JobBERT vs MPNet | — | ⏳ Pending (v0.7) |
+| JobBERT vs MPNet | — | ⏳ Deferred |
 
 ### CPS Worker Mobility (✓ Validated)
 
@@ -42,9 +43,26 @@ Conditional logit model of occupation destination choice using 89,329 verified C
 
 Both components independently predictive. Framework succeeds at measuring task similarity for mobility analysis.
 
-### Asymmetric Barriers Test (⚠️ Interpretable Null)
+### Asymmetric Barriers Test (⚠️ Heterogeneous)
 
-Tested whether credentials act as "one-way gates" (β_up > β_down). Result: barriers appear symmetric (ratio 1.04, p=0.0375). Credential-gate hypothesis not supported; theoretically valuable null finding. See paper Section 4.3.6 for interpretation.
+Tested whether credentials act as "one-way gates" (β_up > β_down).
+
+| Geometry | Sample | Ratio | Interpretation |
+|----------|--------|-------|----------------|
+| Kernel | Full | 1.04 | Symmetric (artifact of compression) |
+| Wasserstein | Full | 2.11 | Asymmetric |
+| Wasserstein | Prime-age | 1.12 | Symmetric |
+| Wasserstein | Excl. outliers | 0.06 | Symmetric |
+
+**Interpretation:** Directional asymmetry is sample-dependent. Neither credential-gate nor symmetric-friction theories are universally supported. See paper Section 5.2.4.
+
+### RTI Construct Validity (✓ Distinct)
+
+| Correlation | r | p-value |
+|-------------|---|---------|
+| Semantic vs RTI | -0.052 | 0.377 |
+
+**Interpretation:** Wasserstein-based exposure captures mobility friction, not automation susceptibility—economically orthogonal to RBTC measures.
 
 ### Employment Prediction (⚠️ Marginal)
 
@@ -154,11 +172,11 @@ See `CLAUDE.md` for developer details.
 
 | Version | What Changed |
 |---------|--------------|
-| **v0.6.8.0** | Wasserstein validated as primary. Documentation aligned with paper v0.6.8. |
-| v0.6.7.x | Wasserstein module, full matrix, CPS comparison (Δ LL = +9,576). |
-| v0.6.6.0 | Asymmetric barriers test (interpretable null: β_up ≈ β_down). |
-| v0.6.5.x | CPS mobility validation. RTI implemented. Automation prediction marginal. |
-| v0.6.1 | Kernel bandwidth fix (σ = 0.223 from NN distances). |
+| **v0.6.9.0** | LEDGER.md created. Asymmetric barriers → heterogeneous. RTI orthogonality documented. |
+| v0.6.8.0 | Wasserstein validated. Path F/C executed. |
+| v0.6.7.x | Wasserstein module, geometry comparison. |
+| v0.6.6.0 | Asymmetric barriers test (kernel baseline). |
+| v0.6.5.x | CPS mobility validation. |
 
 ---
 

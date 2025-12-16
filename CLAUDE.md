@@ -8,41 +8,19 @@ Concise context for AI assistants. For theory, see `paper/main.tex`.
 
 | Component | Version |
 |-----------|---------|
-| Codebase  | v0.6.8.0 |
-| Paper     | v0.6.8 |
+| Codebase  | v0.6.9.0 |
+| Paper     | v0.6.9 |
 
-### Primary Result: Wasserstein >> Kernel
+**Scientific State:** See `LEDGER.md` (single source of truth for results, constraints, and deprecated paths).
 
-CPS conditional logit (89K transitions). Wasserstein is primary semantic measure.
+### Research Context
 
-| Metric | Value | Interpretation |
-|--------|-------|----------------|
-| α (semantic) | 8.936 (t=206.5) | Workers minimize transformation cost |
-| β (institutional) | 0.142 (t=34.6) | Residual non-skill barriers |
-| Δ LL vs kernel | +9,576 | Metric structure matters |
+Scientific findings, hard constraints, and deprecated approaches are maintained in `LEDGER.md`.
 
-ρ(d_wass, d_inst) = 0.25. See `paper/main.tex` Section 5.1 for details.
-
-### Scope Conditions
-
-| Finding | Result | Implication |
-|---------|--------|-------------|
-| Asymmetric barriers | β_up/β_down = 1.04 | Job Zones = distance, not gates |
-| Automation prediction | ΔR²=2.2% (p=0.07) | Marginal over RTI |
-| Wage comovement | R²=0.005 (3× Jaccard) | Geometry detectable |
-
-See `paper/main.tex` Sections 5.2–5.4 for details.
-
-### Research Program Framing
-
-The **task-space oracle** F: (T, S, I, M) → outcomes is the organizing metaphor—a hypothetical complete mapping from task representations, shocks, institutions, and mechanisms to labor market outcomes. We test candidate components; we don't estimate the oracle. See `paper/main.tex` Section 3.1.
-
-| Component | Status |
-|-----------|--------|
-| T (task geometry) | Wasserstein validated |
-| I (institutional) | Job Zones validated (symmetric) |
-| S (shock profiles) | Generic marginal; modality-specific deferred |
-| M (mechanisms) | Future work |
+Before implementing new analysis or revisiting old approaches:
+1. Check `LEDGER.md` > **Hard Constraints** for inviolable rules
+2. Check `LEDGER.md` > **Graveyard** before retrying any approach
+3. Check `LEDGER.md` > **Locked Results** for values to use in tests
 
 ---
 
@@ -112,39 +90,34 @@ tests/
 
 | Location | Purpose |
 |----------|---------|
-| `paper/main.tex` | Theory + specifications (v0.6.8) |
-| `outputs/canonical/` | **Paper-ready results (immutable)** |
-| `outputs/canonical/mobility_cps.json` | CPS kernel baseline (α=2.994) |
-| `outputs/experiments/path_a_wasserstein_comparison_v0672.json` | **Wasserstein primary (α=8.936)** |
-| `outputs/canonical/mobility_asymmetric.json` | Asymmetric barriers test (v0.6.6.0) |
-| `outputs/canonical/automation_v0653.json` | Automation prediction (v0.6.5.3) |
-| `outputs/canonical/wage_comovement.json` | Wage comovement validation |
+| `LEDGER.md` | **Scientific state — READ FIRST** |
+| `paper/main.tex` | Theory + specifications |
+| `outputs/canonical/` | Paper-ready results (immutable) |
 | `outputs/experiments/` | Versioned experiment results |
 | `data/onet/db_30_0_excel/` | O*NET 30.0 database (not in git) |
 | `data/external/oes/` | BLS wage data 2019-2024 (not in git) |
-| `data/external/aioe/` | Felten-Raj-Seamans AIOE (not in git) |
-| `data/external/dingel_neiman/` | Telework feasibility (not in git) |
 | `data/processed/mobility/` | CPS analysis source outputs |
 | `.cache/artifacts/v1/` | Cached embeddings, distance matrices |
-| `.cache/artifacts/v1/mobility/` | Census-level distance matrices, crosswalk |
+
+See `LEDGER.md` > **Artifact Registry** for canonical file paths.
 
 ---
 
-## Model Space Status
+### Model Space Status
 
-| Axis | Current | Status |
-|------|---------|--------|
-| Representation | MPNet | JobBERT pending (Path B) |
-| Geometry | **Wasserstein** | **✓ Validated** |
-| Shocks | Generic | Modality-specific deferred |
-
-**Pending paths:** (B) JobBERT vs MPNet; (C) RTI construct validity; (F) Asymmetric with Wasserstein. See `paper/main.tex` Section 6.
+See `LEDGER.md` > **Locked Results** and **Frontier** for current status of all research axes.
 
 ---
 
 ## Critical Rules
 
-### Do Not Touch
+### Scientific Constraints (See LEDGER.md)
+Before implementing, check `LEDGER.md` for:
+- **Hard Constraints:** Inviolable rules (e.g., Wasserstein is primary)
+- **Graveyard:** Deprecated approaches that must not be retried
+- **Artifact Registry:** Canonical file paths for distance matrices
+
+### Implementation Constraints
 - Kernel bandwidth: σ = 0.223 (NN median for occupations). Activity-level σ = 0.0096.
 - Embeddings: Always use `get_embeddings()` from artifacts.py. Never compute elsewhere.
 - Row-normalization: Skip for kernels (destroys signal with 2,087 activities)
@@ -183,8 +156,9 @@ These rules prevent codebase drift. Enforce on every PR / major change.
 - Run `python scripts/run_validation_battery.py` before tagging
 
 ### Before Asking for Changes
+- Read `LEDGER.md` for current scientific state and constraints
 - Read `paper/main.tex` for theory (Sections 3-4)
-- Check `outputs/canonical/` for current results
+- Check `LEDGER.md` > Artifact Registry for canonical file paths
 - Run `pytest tests/unit -v` to verify environment works
 
 ---
@@ -223,8 +197,8 @@ Key definitions: Task domain, Occupation measures, Effective distance decomposit
 
 ## Version History
 
-- **v0.6.8.0:** Wasserstein validated as primary. Documentation aligned with paper v0.6.8.
-- **v0.6.7.x:** Wasserstein module, full matrix, CPS comparison (Δ LL = +9,576).
-- **v0.6.6.0:** Asymmetric barriers test (null: β_up ≈ β_down). Codebase reorganized.
-- **v0.6.5.x:** CPS mobility validation. RTI implemented. Automation prediction marginal.
-- **v0.6.1:** Kernel bandwidth fix (σ = 0.223 from NN distances).
+- **v0.6.9.0:** LEDGER.md created as single source of scientific state. CLAUDE.md purified.
+- **v0.6.8.0:** Wasserstein validated. Path F/C executed. See `LEDGER.md`.
+- **v0.6.7.x:** Wasserstein module added.
+- **v0.6.6.0:** Asymmetric barriers test.
+- **v0.6.5.x:** CPS mobility validation.

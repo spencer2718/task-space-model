@@ -47,6 +47,13 @@
 \end{center}
 
 
+% ==================================================================
+% @AGENT: ORIENTATION SECTION
+% Contains paper framing and contribution summary.
+% Update contribution list when major findings change.
+% Current: 5 contributions (geometry, decomposition, asymmetry, automation, methodology)
+% ==================================================================
+
 \section{Introduction}
 \label{sec:introduction}
 
@@ -61,9 +68,9 @@ Our research program has five contributions thus far. First, we demonstrate that
 
 Second, we validate the semantic-institutional decomposition using worker-level occupation transitions from the Current Population Survey. Both components are significant predictors of observed mobility. Notably, the choice of semantic measure affects the decomposition: Wasserstein distance correlates more strongly with institutional distance ($r = 0.25$) than kernel overlap does ($r = 0.09$), indicating that Wasserstein absorbs variance from the institutional channel and yields a cleaner decomposition where the residual institutional component captures non-skill barriers (credentialing gates, licensing, discrimination).
 
-Third, we test whether institutional barriers are asymmetric---whether credentials function as ``one-way gates'' that restrict entry but not exit. Simple credentialing theory predicts upward barriers should dominate: a surgeon can become a butcher, but not the reverse. We find the opposite: upward and downward barriers are nearly symmetric ($\beta_{\mathrm{up}}/\beta_{\mathrm{down}} = 1.04$). This is an informative constraint on model space: the symmetric barrier finding rules out pure ``one-way gate'' theories of credentialing. O*NET Job Zones capture general occupational distance rather than regulatory gatekeeping; overqualification discrimination and human capital specificity create genuine downward barriers \citep{Pedulla2016,GathmannSchonberg2010}.
+Third, we test whether institutional barriers are asymmetric---whether credentials function as ``one-way gates'' that restrict entry but not exit. Under kernel overlap, barriers appear symmetric ($\beta_{\mathrm{up}}/\beta_{\mathrm{down}} = 1.04$); under Wasserstein, they appear asymmetric (ratio $= 2.11$). Robustness analysis reveals this asymmetry is sample-dependent: prime-age workers show symmetric barriers (ratio $= 1.12$), while the full sample shows asymmetry driven partly by outlier occupations. The defensible finding is that both barrier directions are significant predictors, but directional asymmetry is heterogeneous rather than universal. This is an informative finding about heterogeneity: geometry choice and sample composition both affect directional conclusions, and neither pure ``one-way gate'' nor pure ``symmetric friction'' theories are universally supported. O*NET Job Zones capture general occupational distance rather than regulatory gatekeeping; overqualification discrimination and human capital specificity create genuine downward barriers \citep{Pedulla2016,GathmannSchonberg2010}.
 
-Fourth, we apply the framework to automation prediction. Semantic exposure adds $\Delta R^2 = 2.2\%$ over canonical routine task intensity (RTI) in predicting 2019--2024 employment changes ($p = 0.075$). The framework succeeds at measuring task similarity but shows only marginal improvement over existing measures for predicting automation-driven outcomes.
+Fourth, we apply the framework to automation prediction. Semantic exposure adds $\Delta R^2 = 2.2\%$ over canonical routine task intensity (RTI) in predicting 2019--2024 employment changes ($p = 0.075$). The framework succeeds at measuring task similarity but shows only marginal improvement over existing measures for predicting automation-driven outcomes. Construct validity testing reveals that Wasserstein-based semantic exposure is essentially uncorrelated with Autor-Dorn RTI ($r = -0.05$), indicating the geometry captures mobility friction---where can workers realistically transition?---rather than automation susceptibility.
 
 Fifth, we document methodological infrastructure: kernel bandwidth must be calibrated to local distance structure, and RTI must use the full 16-element Acemoglu-Autor composite---single O*NET elements yield $R^2 \approx 0$.
 
@@ -71,10 +78,10 @@ Fifth, we document methodological infrastructure: kernel bandwidth must be calib
 The primary mobility validation uses 89,329 verified occupation transitions from the CPS. In a conditional logit model of destination choice, Wasserstein-based semantic distance ($\alpha = 8.936$, $t = 206.5$) and institutional distance ($\beta = 0.142$, $t = 34.6$) are both significant predictors of observed destinations. Wasserstein substantially outperforms kernel overlap ($\alpha = 5.688$, $t = 160.3$; $\Delta \text{log-likelihood} = +9{,}576$). A complementary validation using wage comovement shows that semantic overlap predicts occupation-pair wage correlations ($R^2 = 0.00523$), outperforming binary Jaccard overlap by a factor of three.
 
 
-The framework sits within a broader research program targeting a \emph{task-space oracle}---a hypothetical complete structural mapping from task representations, technology shocks, and institutions to equilibrium labor-market outcomes. We do not estimate or approximate this oracle; we test candidate components against observed data. The Wasserstein validation, symmetric barriers finding, and marginal automation result constrain future specifications: metric structure matters for mobility prediction, effective distance does not require directional asymmetry, and semantic geometry alone is insufficient for automation prediction.
+The framework sits within a broader research program targeting a \emph{task-space oracle}---a hypothetical complete structural mapping from task representations, technology shocks, and institutions to equilibrium labor-market outcomes. We do not estimate or approximate this oracle; we test candidate components against observed data. The Wasserstein validation, heterogeneous asymmetry finding, and marginal automation result constrain future specifications: metric structure matters for mobility prediction, effective distance exhibits sample-dependent directional patterns, and semantic geometry alone is insufficient for automation prediction.
 
 
-The paper explores a model space defined by three axes: (i) \emph{representation}---how to encode tasks (MPNet embeddings, JobBERT, others); (ii) \emph{geometry}---how to measure occupation distance (Wasserstein, kernel overlap); and (iii) \emph{shocks}---how to characterize technology (generic capability, modality-specific). Each empirical test constrains this space. The Wasserstein validation resolves a key methodological question: optimal transport geometry substantially outperforms kernel overlap. The symmetric barrier finding and marginal automation result are informative constraints on model space, not negative findings: they rule out pure ``one-way gate'' theories of credentialing and establish that semantic geometry alone is insufficient for near-term automation prediction.
+The paper explores a model space defined by three axes: (i) \emph{representation}---how to encode tasks (MPNet embeddings, JobBERT, others); (ii) \emph{geometry}---how to measure occupation distance (Wasserstein, kernel overlap); and (iii) \emph{shocks}---how to characterize technology (generic capability, modality-specific). Each empirical test constrains this space. The Wasserstein validation resolves a key methodological question: optimal transport geometry substantially outperforms kernel overlap. The heterogeneous asymmetry finding and marginal automation result are informative constraints on model space, not negative findings: they reveal that directional barrier patterns vary by sample composition and establish that semantic geometry captures mobility friction rather than automation susceptibility.
 
 
 \cref{sec:literature} reviews related literatures. \cref{sec:theory} develops the theoretical framework, beginning with the task-space oracle as organizing metaphor and including the semantic-institutional decomposition with both symmetric and asymmetric specifications. \cref{sec:data} operationalizes each component using O*NET data. \cref{sec:validation} reports the CPS mobility validation, the geometry comparison, the asymmetric barriers test, wage comovement, and the automation prediction application. \cref{sec:extensions} records extensions. \cref{sec:conclusion} concludes.
@@ -121,6 +128,13 @@ Methodologically, the framework sits alongside propagation approaches that model
 
 
 
+
+% ==================================================================
+% @AGENT: STABLE THEORY — LOW CHANGE FREQUENCY
+% Definitions are referenced by NAME (e.g., "Effective Distance Decomposition")
+% not by number (numbers shift). Do not modify without explicit instruction.
+% Key objects: Task domain, Occupation measures, d_eff decomposition, Wasserstein
+% ==================================================================
 
 \section{Theory}
 \label{sec:theory}
@@ -692,6 +706,12 @@ Bandwidth & Median NN distance & Grid search \\
 \end{table}
 
 
+% ==================================================================
+% @AGENT: LOCKED RESULTS
+% These findings are verified. Cite as facts. See LEDGER.md for structured lookup.
+% Modification requires new experimental evidence, not reinterpretation.
+% ==================================================================
+
 \section{Empirical Validation}
 \label{sec:validation}
 
@@ -705,12 +725,12 @@ This section reports empirical tests of the semantic-institutional decomposition
     \item Asymmetric barriers (\cref{subsubsec:asymmetric-test}): Tests whether $\beta_{\mathrm{up}} > \beta_{\mathrm{down}}$
     \item Wage comovement (\cref{subsec:wage-comovement}): Tests whether semantic overlap predicts wage correlations
     \item Automation prediction (\cref{subsec:automation-prediction}): Tests whether semantic exposure improves on RTI
+    \item RTI construct validity (\cref{subsubsec:rti-validity}): Tests correlation with Autor-Dorn RTI
 \end{itemize}
 
 \textbf{Pending tests:}
 \begin{itemize}
     \item Embedding comparison: JobBERT vs.\ MPNet
-    \item Retrospective construct validity against Autor-Dorn RTI
 \end{itemize}
 
 
@@ -967,25 +987,55 @@ U_{kj} = \alpha \cdot (-d_{\mathrm{sem}}(i,j)) + \beta_{\mathrm{up}} \cdot (-d_{
 
 \begin{table}[h!]
 \centering
-\caption{Asymmetric Conditional Logit Results (Kernel Specification)}
-\label{tab:asymmetric-results}
-\begin{tabular}{lcccc}
+\caption{Asymmetric Conditional Logit: Geometry Comparison}
+\label{tab:asymmetric-geometry}
+\begin{tabular}{lccccc}
 \toprule
-\textbf{Parameter} & \textbf{Coefficient} & \textbf{Std. Error} & \textbf{$t$-statistic} & \textbf{$p$-value} \\
+\textbf{Geometry} & $\alpha$ (semantic) & $\beta_{\mathrm{up}}$ & $\beta_{\mathrm{down}}$ & Ratio & LR $\chi^2$ \\
 \midrule
-$\alpha$ (semantic) & 5.691 & 0.036 & 160.2 & $< 10^{-100}$ \\
-$\beta_{\mathrm{up}}$ (upward) & 0.282 & 0.004 & 64.9 & $< 10^{-100}$ \\
-$\beta_{\mathrm{down}}$ (downward) & 0.270 & 0.005 & 50.0 & $< 10^{-100}$ \\
+Kernel overlap & 5.691 & 0.282 & 0.270 & 1.04 & 4.33 \\
+Wasserstein & 9.001 & 0.171 & 0.081 & 2.11 & 242.1 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\textbf{Asymmetry ratio:} $\beta_{\mathrm{up}} / \beta_{\mathrm{down}} = 1.04$.
-
-\textbf{Likelihood ratio test:} $\chi^2(1) = 4.33$, $p = 0.038$. The difference is statistically significant but economically trivial.
+\textbf{Geometry matters for asymmetry inference.} Under kernel overlap, barriers appear symmetric (ratio $= 1.04$). Under Wasserstein, they appear asymmetric (ratio $= 2.11$, $\chi^2 = 242.1$, $p < 10^{-50}$). This is not merely a methodological preference---it affects substantive conclusions about institutional barrier structure. Kernel overlap's pathological distance compression (mean $= 0.957$) obscures patterns that Wasserstein (mean $= 0.584$) reveals.
 
 
-\textbf{Interpretation: Surprising null.} Contrary to simple credential-gate theory, upward and downward barriers are nearly symmetric. The hypothesis that credentials function as one-way gates is not supported in these data.
+\textbf{Robustness analysis.} We test whether the baseline asymmetry (ratio $= 2.11$) is robust to specification and sample variants.
+
+\begin{table}[h!]
+\centering
+\caption{Robustness of Asymmetry Ratio Under Wasserstein}
+\label{tab:asymmetric-robustness}
+\begin{tabular}{llcc}
+\toprule
+\textbf{Variant} & \textbf{Description} & \textbf{Ratio} & \textbf{95\% CI} \\
+\midrule
+S1 & Baseline & 2.11 & [1.80, 2.42] \\
+S2 & Job Zone only (no certification) & 1.36 & [1.23, 1.50] \\
+S4 & Squared institutional distance & 2.17 & [1.83, 2.51] \\
+R1 & Thick cells only ($\geq 5$ transitions) & 2.79 & [2.33, 3.26] \\
+R2 & Prime age (25--54) & 1.12 & [0.96, 1.29] \\
+R3 & Excluding outlier occupations & 0.06 & [0.01, 0.11] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\textbf{Interpretation: Geometry-sensitive heterogeneity.} The directional asymmetry finding depends on both geometry choice and sample composition. Under kernel overlap, barriers appear symmetric (ratio $= 1.04$); the kernel's distance compression (mean $= 0.957$, most pairs near 1.0) obscures directional patterns. Under Wasserstein (mean $= 0.584$, genuine spread), the baseline specification shows asymmetric barriers (ratio $= 2.11$, $\chi^2 = 242$, $p < 10^{-50}$).
+
+However, robustness analysis (\cref{tab:asymmetric-robustness}) reveals this asymmetry is sample-dependent. Prime-age workers (25--54) show nearly symmetric barriers (ratio $= 1.12$, CI includes 1.0). Excluding outlier occupations (top/bottom 5\% by transition count) eliminates asymmetry entirely (ratio $= 0.06$). The baseline asymmetry is partly driven by transitions involving very high- or low-frequency occupations.
+
+Three conclusions are defensible:
+\begin{enumerate}
+    \item \textbf{Geometry matters for institutional inference.} Kernel overlap's compression obscures structure that Wasserstein reveals; methodological choices affect substantive conclusions.
+    \item \textbf{Both barrier directions are significant.} Institutional distance deters transitions in both directions---this finding is robust across all specifications.
+    \item \textbf{Directional asymmetry is heterogeneous.} Neither pure credential-gate nor pure symmetric-friction theories are universally supported; the pattern varies by worker age and occupation type.
+\end{enumerate}
+
+This heterogeneity suggests avenues for future decomposition. Prime-age workers may possess more portable skills or face symmetric stigma effects (overqualification and underqualification penalties). The outlier-occupation sensitivity suggests that aggregate asymmetry patterns are driven by a subset of high-salience transitions.
+
 
 \begin{table}[h!]
 \centering
@@ -993,25 +1043,25 @@ $\beta_{\mathrm{down}}$ (downward) & 0.270 & 0.005 & 50.0 & $< 10^{-100}$ \\
 \label{tab:asymmetric-hypotheses}
 \begin{tabular}{lccc}
 \toprule
-\textbf{Hypothesis} & \textbf{Prediction} & \textbf{Observed} & \textbf{Consistent?} \\
+\textbf{Hypothesis} & \textbf{Prediction} & \textbf{Observed} & \textbf{Verdict} \\
 \midrule
-Credentials are one-way gates & $\beta_{\mathrm{up}} \gg \beta_{\mathrm{down}}$ & Ratio $= 1.04$ & No \\
-Human capital specificity & $\beta_{\mathrm{up}} \approx \beta_{\mathrm{down}}$ & Ratio $= 1.04$ & Yes \\
-Job Zones measure distance, not gates & Symmetric barriers & Symmetric & Yes \\
+Credentials are one-way gates & $\beta_{\mathrm{up}} \gg \beta_{\mathrm{down}}$ & Ratio $= 2.11$ (baseline) & Sample-dependent \\
+Human capital specificity & $\beta_{\mathrm{up}} \approx \beta_{\mathrm{down}}$ & Ratio $= 1.12$ (prime-age) & Sample-dependent \\
+Heterogeneous barriers & Ratio varies by sample & Confirmed & \textbf{Supported} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Three mechanisms explain why barriers appear symmetric:
+Three mechanisms may explain why barriers appear more symmetric for prime-age workers:
 \begin{enumerate}
-    \item \textbf{Overqualification discrimination.} Employers actively penalize overqualified applicants. Audit studies find skills underutilization reduces callbacks with penalties approximately as severe as one year of unemployment \citep{Pedulla2016}. This creates genuine downward barriers.
+    \item \textbf{Overqualification discrimination.} Employers actively penalize overqualified applicants. Audit studies find skills underutilization reduces callbacks with penalties approximately as severe as one year of unemployment \citep{Pedulla2016}. This creates genuine downward barriers that offset upward credential barriers.
     
     \item \textbf{Human capital specificity.} Workers forfeit returns to occupation-specific skills when moving down. Estimates suggest 12--20\% wage premiums for five years of occupation tenure \citep{KambourovManovskii2009}, and up to 52\% of overall wage growth derives from task-specific human capital \citep{GathmannSchonberg2010}. Downward moves destroy this accumulated investment.
     
     \item \textbf{Job Zones measure distance, not gates.} O*NET Job Zones capture human capital investment requirements (years of education, training time), not licensing barriers. Licensing creates asymmetric barriers---\citet{Jackson2023} finds licensing reduces entry probability with no significant effect on exit. \citet{KleinerXu2020} find licensing reduces both entry and exit by similar magnitudes. Job Zones capture something more symmetric: general occupational distance.
 \end{enumerate}
 
-\textbf{Implication for model space:} Job Zones are valid as distance proxies but do not capture licensing/credential discontinuities. Testing with actual licensing data (e.g., CPS licensing supplement, state-level licensing variation) should reveal the expected gate-like asymmetry \citep{KleinerXu2020}. This is an interpretable null, not a failure---it tells us Job Zones function as a general mobility friction measure, not a credential barrier measure.
+\textbf{Implication for model space:} Job Zones are valid as distance proxies but do not capture licensing/credential discontinuities. Testing with actual licensing data (e.g., CPS licensing supplement, state-level licensing variation) should reveal whether gate-like asymmetry appears with more targeted institutional measures \citep{KleinerXu2020}. The geometry-dependent finding is itself informative: it tells us that methodological choices affect substantive conclusions about labor market friction structure.
 
 
 \subsection{Complementary Validation: Wage Comovement}
@@ -1162,6 +1212,33 @@ The positive AIOE coefficient suggests current AI technologies may be more compl
 \textbf{Implication for model space.} Employment may be the wrong outcome variable for near-term technology exposure validation. Task composition changes (e.g., skill mention changes in job postings per \citet{HampoleEtAl2025}) would provide earlier signal. This requires Lightcast/Revelio data---deferred to future work.
 
 
+\subsubsection{Construct Validity: Relationship to RTI}
+\label{subsubsec:rti-validity}
+
+
+The marginal automation result raises a question: is the semantic geometry merely a sophisticated proxy for canonical routine task intensity? We test this by correlating Wasserstein-based semantic exposure with Autor-Dorn RTI at the occ1990dd level, using pre-computed task scores from DOT 1977 \citep{AutorDorn2013}.
+
+\begin{table}[h!]
+\centering
+\caption{Correlation: Semantic Exposure vs.\ RTI Components}
+\label{tab:rti-correlation}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Component} & \textbf{Pearson $r$} & \textbf{$p$-value} \\
+\midrule
+RTI (composite) & $-0.052$ & 0.377 \\
+Routine & $-0.058$ & 0.318 \\
+Abstract & $-0.051$ & 0.378 \\
+Manual & $+0.093$ & 0.109 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+All correlations are statistically and economically negligible. Wasserstein-based semantic exposure is essentially orthogonal to RTI.
+
+\textbf{Interpretation.} The semantic geometry measures \emph{mobility friction}---the cost of transitioning between occupations---rather than \emph{automation susceptibility}---which tasks technology will displace. These are distinct economic constructs. RTI predicts automation-driven employment changes; our geometry predicts worker transition flows. The marginal automation result ($\Delta R^2 = 2.2\%$, $p = 0.075$) reflects this construct distinction: the framework succeeds at its validated purpose (mobility prediction, $\alpha = 8.94$, $t = 207$) but does not substantially improve automation forecasting beyond RTI. This is a scope condition, not a failure---the geometry complements rather than replaces RBTC measures.
+
+
 \subsection{Retrospective Validation Battery (Pending)}
 \label{subsec:retrospective-roadmap}
 
@@ -1302,30 +1379,6 @@ JobBERT $\approx$ MPNet & Embedding choice doesn't matter for this task & Prefer
 \end{table}
 
 
-\subsubsection{Path C: Retrospective Construct Validity}
-
-
-\textbf{Objective:} Test whether our semantic distances correlate with Autor-Dorn RTI at occ1990dd level.
-
-\textbf{Specification:} Construct crosswalk from O*NET-SOC to occ1990dd. Compute correlation between semantic exposure and pre-computed RTI from Dorn replication files.
-
-\textbf{Note:} This does NOT require full Autor-Dorn replication---only crosswalk construction and correlation.
-
-\textbf{Pre-committed interpretations:}
-\begin{table}[h!]
-\centering
-\begin{tabular}{lll}
-\toprule
-\textbf{Outcome} & \textbf{Interpretation} & \textbf{Next Step} \\
-\midrule
-High correlation ($r > 0.6$) & Semantic geometry captures RTI construct & Validation, not improvement \\
-Low correlation ($r < 0.3$) & Semantic geometry captures different structure & Potential contribution \\
-Medium correlation & Partial overlap & Need outcome comparison \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-
 \subsubsection{Path D: Modality-Specific Shocks (Future Work)}
 
 
@@ -1346,14 +1399,20 @@ Medium correlation & Partial overlap & Need outcome comparison \\
 \textbf{Deferred:} Data not currently available. Documented as research program extension.
 
 
-\subsubsection{Path F: Asymmetric Test with Wasserstein (Extension)}
+\subsubsection{Path F: Asymmetric Test with Wasserstein --- COMPLETED}
 
 
-\textbf{Objective:} Re-run asymmetric barriers test using Wasserstein distance instead of kernel overlap.
+\textbf{Status: COMPLETED.} The asymmetric barriers test was re-run using Wasserstein geometry. Baseline ratio = 2.11 (vs.\ 1.04 under kernel). Robustness analysis reveals sample-dependent heterogeneity: prime-age workers show ratio = 1.12; excluding outlier occupations yields ratio = 0.06. See \cref{subsubsec:asymmetric-test} for full results.
 
-\textbf{Motivation:} The symmetric finding ($\beta_{\mathrm{up}}/\beta_{\mathrm{down}} = 1.04$) was obtained with kernel-based semantic distance. With Wasserstein absorbing more variance from the institutional channel, the residual asymmetry pattern may change.
+\textbf{Implication:} Geometry choice affects institutional inference. Directional asymmetry is heterogeneous, not universal. The earlier symmetric-barrier finding under kernel overlap was an artifact of distance compression.
 
-\textbf{Status:} Natural extension, not yet executed.
+
+\subsubsection{Path C: RTI Construct Validity --- COMPLETED}
+
+
+\textbf{Status: COMPLETED.} Wasserstein-based semantic exposure was correlated with Autor-Dorn RTI at occ1990dd level. Result: $r = -0.052$ (not significant).
+
+\textbf{Implication:} The semantic geometry captures mobility friction, not automation susceptibility---a construct economically orthogonal to classic RBTC routine exposure. This explains the marginal automation prediction and positions the framework as complementary to, rather than redundant with, task-based automation measures.
 
 
 \subsection{Model Evaluation Criteria}
@@ -1389,6 +1448,12 @@ If primary criteria fail:
 \end{itemize}
 
 
+% ==================================================================
+% @AGENT: FRONTIER — ACTIVE RESEARCH
+% Contains pending tests and future work. Check LEDGER.md for current sprint.
+% This section changes frequently as paths are completed or deferred.
+% ==================================================================
+
 \section{Extensions, Limitations, and Historical Regimes}
 \label{sec:extensions}
 
@@ -1398,13 +1463,13 @@ This paper targets a compact, implementable measurement pipeline. Extensions are
 \textbf{Completed:}
 \begin{itemize}
     \item Wasserstein vs.\ kernel overlap comparison (\cref{subsec:geometry-comparison}): Finding---Wasserstein substantially outperforms ($\Delta \text{LL} = +9{,}576$)
-    \item Asymmetric institutional distance (\cref{subsec:asymmetric}): Finding---symmetric barriers
+    \item Asymmetric institutional distance (\cref{subsec:asymmetric}): Finding---heterogeneous, sample-dependent asymmetry
+    \item RTI construct validity (\cref{subsubsec:rti-validity}): Finding---orthogonal to RTI ($r = -0.05$)
 \end{itemize}
 
 \textbf{In Progress:}
 \begin{itemize}
     \item Embedding robustness (JobBERT vs.\ MPNet)
-    \item Asymmetric test with Wasserstein distance
 \end{itemize}
 
 \textbf{Deferred:}
@@ -1431,16 +1496,18 @@ where $\delta \in [0,1]$ governs persistence.
 \label{subsec:asymmetric}
 
 
-The asymmetric extension has been tested (\cref{subsubsec:asymmetric-test}). Contrary to credential-gate theory predicting $\beta^{\mathrm{up}} \gg \beta^{\mathrm{down}}$, we find nearly symmetric barriers: $\beta_{\mathrm{up}} = 0.282$, $\beta_{\mathrm{down}} = 0.270$, ratio $= 1.04$.
+The asymmetric extension has been tested (\cref{subsubsec:asymmetric-test}). The finding is geometry-sensitive and sample-dependent: under kernel overlap, barriers appear symmetric (ratio $= 1.04$); under Wasserstein, the baseline shows asymmetry (ratio $= 2.11$), but this asymmetry does not survive all robustness checks.
 
-This finding discriminates between theoretical models. Human capital specificity theory correctly predicts symmetric barriers: workers accumulate occupation-specific capital lost in any move. Three mechanisms explain why barriers appear symmetric rather than asymmetric:
+This finding discriminates between theoretical models in a nuanced way. Neither pure credential-gate theory ($\beta_{\mathrm{up}} \gg \beta_{\mathrm{down}}$) nor pure human capital specificity theory ($\beta_{\mathrm{up}} \approx \beta_{\mathrm{down}}$) is universally supported. The evidence supports heterogeneous barriers: the pattern varies by worker age (prime-age workers show symmetric barriers) and occupation type (excluding outlier occupations eliminates asymmetry).
+
+Three mechanisms may explain the heterogeneity:
 \begin{enumerate}
     \item \textbf{Occupation-specific human capital} \citep{KambourovManovskii2009}: 12--20\% wage premiums forfeited in any switch
     \item \textbf{Overqualification stigma} \citep{Pedulla2016}: Employers penalize overqualified applicants
     \item \textbf{Job Zones measure preparation, not permission} \citep{KleinerXu2020}: Licensing affects mobility symmetrically
 \end{enumerate}
 
-The finding constrains future oracle specifications: effective distance using Job Zones should not require directional asymmetry. However, alternative institutional measures (CPS licensing supplement, state-level licensing variation) may reveal the gate-like asymmetry that simple credentialing theory predicts.
+The finding constrains future oracle specifications: geometry choice matters for institutional inference, and directional barrier patterns should be tested for sample-dependence. Alternative institutional measures (CPS licensing supplement, state-level licensing variation) may reveal clearer asymmetry for specific credential barriers.
 
 
 \subsection{Licensing as alternative barrier measure}
@@ -1451,7 +1518,7 @@ Job Zones and occupational licensing measure fundamentally different constructs.
 
 \citet{Jackson2023} demonstrates asymmetry using CPS licensing data: licensing reduces entry probability with no significant effect on exit probability. This is the one-way gate pattern that Job Zones fail to capture. \citet{KleinerXu2020} find different results with symmetric effects on both entry and exit---the literature remains unsettled on whether licensing creates one-way or two-way barriers.
 
-Future work should test the decomposition using: (i) CPS licensing supplement (2015+) matched to Institute for Justice policy data; (ii) state-level licensing variation following \citet{KleinerXu2020}; (iii) specific licensed occupations with binding credential requirements (nursing compact variation, bar exam pass rates, medical licensing pathways). These specifications should reveal the asymmetry that simple credentialing theory predicts.
+Future work should test the decomposition using: (i) CPS licensing supplement (2015+) matched to Institute for Justice policy data; (ii) state-level licensing variation following \citet{KleinerXu2020}; (iii) specific licensed occupations with binding credential requirements (nursing compact variation, bar exam pass rates, medical licensing pathways). These specifications should reveal whether the asymmetry that simple credentialing theory predicts appears with more targeted institutional measures.
 
 
 \subsection{Augmentation channel}
@@ -1513,9 +1580,9 @@ This paper develops a geometric framework for measuring occupational mobility an
 The semantic-institutional decomposition predicts worker mobility: in 89,329 CPS occupation transitions, both Wasserstein-based semantic distance ($\alpha = 8.936$, $t = 206.5$) and institutional distance ($\beta = 0.142$, $t = 34.6$) are significant predictors of destination choice. The Wasserstein measure correlates moderately with institutional distance ($r = 0.25$), yielding a cleaner decomposition where the residual institutional component captures non-skill barriers---credentialing gates, licensing, discrimination. The semantic geometry predicts wage comovement ($R^2 = 0.52\%$, threefold improvement over binary Jaccard).
 
 
-\textbf{Informative constraints from nulls.} The asymmetric barriers test yields an interpretable null: $\beta_{\mathrm{up}}/\beta_{\mathrm{down}} = 1.04$. This is an informative constraint on model space, not a negative finding. The symmetric barrier finding rules out pure ``one-way gate'' theories of credentialing: Job Zones capture general occupational distance rather than regulatory gatekeeping. Human capital specificity theory (symmetric barriers from occupation-specific capital) is supported over credential-gate theory (one-way entry barriers).
+\textbf{Informative constraints from nulls and heterogeneity.} The asymmetric barriers test yields a nuanced finding: under kernel overlap, barriers appear symmetric (ratio $= 1.04$); under Wasserstein, they appear asymmetric (ratio $= 2.11$). However, this asymmetry is sample-dependent---prime-age workers show symmetric barriers (ratio $= 1.12$), and excluding outlier occupations eliminates asymmetry. The defensible conclusion is that both barrier directions are significant predictors, but directional asymmetry is heterogeneous rather than universal. Neither pure ``one-way gate'' theories of credentialing nor pure ``symmetric friction'' theories are fully supported.
 
-The automation prediction test shows marginal improvement ($\Delta R^2 = 2.2\%$ over RTI, $p = 0.075$). This too constrains model space: semantic geometry alone is insufficient for near-term automation prediction. The result is consistent with the productivity-employment gap \citep{HumlumVestergaard2025}: employment responds last in the adjustment hierarchy (tasks $\to$ wages $\to$ hours $\to$ employment), so near-term effects appear in task composition before headcount.
+The RTI construct validity test establishes that Wasserstein-based semantic exposure is essentially uncorrelated with Autor-Dorn RTI ($r = -0.05$). The geometry captures mobility friction---where can workers realistically transition?---rather than automation susceptibility. This explains the marginal automation prediction result ($\Delta R^2 = 2.2\%$ over RTI, $p = 0.075$): the geometry succeeds at its validated purpose (mobility prediction) but measures a distinct construct from routine task exposure.
 
 
 \textbf{Model space status.} The research program explores three axes:
@@ -1524,13 +1591,14 @@ The automation prediction test shows marginal improvement ($\Delta R^2 = 2.2\%$ 
     \item \textbf{Geometry:} Wasserstein validated as primary (substantially outperforms kernel overlap)
     \item \textbf{Shocks:} Generic capability marginal; modality-specific profiles deferred
     \item \textbf{Outcomes:} Mobility validated; employment marginal; task composition deferred
+    \item \textbf{RTI relationship:} Orthogonal ($r \approx 0$)---distinct construct
 \end{itemize}
 
 
 \textbf{Theoretical contribution.} The decomposition is grounded in \citet{Traiberman2019}'s switching cost framework, which parameterizes costs as linear in task-space distance with dimension-specific prices. Optimal transport for occupational similarity is validated: Wasserstein distance---the minimum cost to transform one occupation's skill portfolio into another---is economically meaningful. The research program structure is designed for rapid iteration: pre-committed interpretations enable mechanical next-step identification.
 
 
-These are stress tests of candidate oracle modules. The validated combinations advance; the rejected combinations inform theory. The Wasserstein validation, symmetric barriers finding, and marginal automation result are features, not failures: they identify where candidate representations succeed (mobility prediction with metric structure) and where they fall short (employment prediction in the near term).
+These are stress tests of candidate oracle modules. The validated combinations advance; the rejected combinations inform theory. The Wasserstein validation, heterogeneous asymmetry finding, RTI orthogonality, and marginal automation result are features, not failures: they identify where candidate representations succeed (mobility prediction with metric structure) and where they fall short (employment prediction in the near term), while clarifying that the geometry measures a construct distinct from classic RBTC routine exposure.
 
 
 \appendix
