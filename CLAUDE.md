@@ -86,6 +86,16 @@ tests/
 
 ---
 
+## Versioning Convention
+
+Experiments run at **x.y.0.z** increments (e.g., 0.7.0.2, 0.7.0.3). After experiment batch completes, paper updates to **x.y.1** and codebase to **x.y.1.0**.
+
+**During experiments:** Only `LEDGER.md` tracks results. Do not update `README.md`, `CLAUDE.md`, or `paper/main.tex`.
+
+**Upon confirmation:** Paper consolidates validated findings; `README.md` and `CLAUDE.md` update alongside the paper. Not at engineer discretion.
+
+---
+
 ## Version
 
 **0.7.0.1** — Oracle architecture framing, documentation hierarchy
