@@ -1,6 +1,5 @@
-# task_space v0.6.6.0
-# Asymmetric barriers test complete, codebase reorganized
-# Legacy modules moved to _legacy/
+# task_space v0.7.1.0
+# Dead code cleanup complete
 
 # Domain (core, unchanged)
 from .domain import (

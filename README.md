@@ -2,7 +2,7 @@
 
 Infrastructure for analyzing how task-level technological change propagates to labor market outcomes.
 
-**Version 0.7.0.1** — Initial Validation Complete
+**Version 0.7.1.0** — Demand Decomposition Validated
 
 ---
 
@@ -28,13 +28,14 @@ See `paper/main.tex` for formal theory and specifications.
 
 | Module | Component | Status | Key Result |
 |--------|-----------|--------|------------|
-| **T** | Wasserstein geometry | ✓ Validated | ΔLL = +9,576 over kernel |
-| **I** | Institutional distance | ✓ Validated | t = 34.6 conditional on T |
+| **T** | Wasserstein geometry | ✓ Validated | ΔLL = +9,576 over kernel (n=89,329) |
+| **I** | Institutional distance | ✓ Validated | t = 34.6 conditional on T (n=89,329) |
 | **S** | AIOE integration | ✓ Integrated | r = 0.02 (orthogonal to T) |
 | **M** | Switching costs | ⚠️ Calibrated | 3.84 wage-years/unit (external) |
-| — | Scope | ✓ Delineated | ρ = 0.43 directional; top-5 = 0 exact |
+| **M** | Demand decomposition | ✓ Quantified | Demand ρ = 0.80; geometry ρ ≈ 0.13 |
+| — | Scope | ✓ Delineated | Supply-side feasibility, not realized flows |
 
-**Scope:** The framework measures structural feasibility (where workers CAN go), not realized reallocation (where they DO go). Feasibility is the supply-side input to equilibrium analysis.
+**Scope:** The framework measures structural feasibility (where workers CAN go), not realized reallocation (where they DO go). Empirically: demand dominates aggregate inflows (ρ = 0.80); geometry captures supply-side constraints (per-origin ρ ≈ 0.13). Feasibility is the supply-side input to equilibrium analysis.
 
 ---
 
@@ -143,8 +144,8 @@ See `CLAUDE.md` for developer context, `LEDGER.md` for scientific state.
 
 | Version | What Changed |
 |---------|--------------|
-| **0.7.0.1** | Oracle architecture framing. Documentation hierarchy. |
-| 0.7.0 | Shock integration validated. Pathway identification (ρ=0.43). External cost calibration. |
+| **0.7.1.0** | Demand decomposition validated. Metric correction (ρ = 0.43 → 0.13). Paper updated. |
+| 0.7.0.1 | Oracle architecture framing. Documentation hierarchy. |
 | 0.6.9.0 | LEDGER.md created. Asymmetric barriers → heterogeneous. |
 | 0.6.8.0 | Wasserstein validated. |
 | 0.6.7.x | Wasserstein module, geometry comparison. |

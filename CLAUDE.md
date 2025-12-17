@@ -41,6 +41,7 @@
 - **Institutional barriers are friction, not gates** — γ_inst captures completed transitions only (HC6)
 - **Switching costs require external calibration** — 3.84 wage-years/unit Wasserstein
 - **Always use `get_embeddings()` from artifacts.py** — Never compute embeddings elsewhere
+- **Methodology Standards (MS1-MS6)** — All experiments must document sample, methodology, and distinguish exploratory from confirmatory (see LEDGER.md)
 
 ---
 
@@ -98,4 +99,4 @@ Experiments run at **x.y.0.z** increments (e.g., 0.7.0.2, 0.7.0.3). After experi
 
 ## Version
 
-**0.7.0.1** — Oracle architecture framing, documentation hierarchy
+**0.7.1.0** — Demand decomposition validated; methodology standards added
