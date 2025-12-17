@@ -368,12 +368,15 @@ def build_verified_transitions(
 
 def load_verified_transitions(
     path: Optional[str] = None,
+    year_range: Optional[Tuple[int, int]] = None,
 ) -> pd.DataFrame:
     """
     Load pre-computed verified transitions from parquet file.
 
     Args:
         path: Path to parquet file. If None, uses default location.
+        year_range: Optional (start_year, end_year) inclusive filter.
+                   E.g., (2015, 2019) for pre-COVID only.
 
     Returns:
         DataFrame of verified transitions.
@@ -395,4 +398,11 @@ def load_verified_transitions(
             "Verified transitions not found. Run CPS processing pipeline first."
         )
 
-    return pd.read_parquet(path)
+    df = pd.read_parquet(path)
+
+    if year_range is not None:
+        df['_year'] = df['YEARMONTH'] // 100
+        df = df[(df['_year'] >= year_range[0]) & (df['_year'] <= year_range[1])]
+        df = df.drop(columns=['_year'])
+
+    return df

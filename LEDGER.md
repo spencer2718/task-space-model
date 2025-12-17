@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.1
+**Current Version:** 0.7.2.0
 **Last Updated:** 2025-12-17
 **Paper Draft:** `paper/main.tex`
 
@@ -99,6 +99,43 @@ When a result is invalidated:
 3. Update any downstream claims that depended on it
 4. Do NOT delete the original experiment file (audit trail)
 
+### MS7: Claim Taxonomy and Language Policy
+
+Claims are classified by evidence type. Allowed verbs depend on evidence class.
+
+| Evidence Class | Description | Allowed Verbs | Forbidden Verbs |
+|----------------|-------------|---------------|-----------------|
+| **E1** (Score Robustness) | Probabilistic scoring / ΔLL / log score comparisons | "outperforms," "improves scoring," "assigns higher probability," "ranks higher" | "predicts destinations" (unless explicitly meaning scoring) |
+| **E2** (Ranking Adequacy) | Rank metrics (MPR, RCM, percentile) | "places realized destination in high-feasibility region," "ranks realized transition above baseline" | "accurately predicts," "identifies correct destination" |
+| **E3** (Mechanism) | Behavioral interpretation of coefficients | "consistent with," "suggestive of," "compatible with" | "validates that workers minimize," "estimates transformation cost," "identifies causal cost" |
+| **E4** (Structural) | Equilibrium / switching cost identification | Allowed only with explicit identification strategy or external calibration | All causal language without identification |
+
+**Critical rule:** "VALIDATED" status applies only to E1/E2 claims confirmed under MS4. Mechanism claims (E3) receive "CONSISTENT" status, never "VALIDATED."
+
+### MS8: Performance Battery Requirement
+
+Any mobility validation claim must report all four metrics:
+
+1. **Log score / ΔLL** (E1) — probabilistic scoring improvement
+2. **RCM or MPR** (E2) — realized destination ranking adequacy
+3. **Dispersion diagnostic** — N_eff = exp(entropy) or equivalent
+4. **Top-k appropriateness statement** — explicit note on why top-k overlap is or is not reported
+
+Claims citing only a subset of the battery must justify the omission. This prevents metric-shopping and ensures consistent evaluation across experiments.
+
+### MS9: Multiverse Gate for Primary Claims
+
+A claim may be promoted to "Primary" status (featured in README, Abstract, or Introduction) only if:
+
+1. It survives a documented multiverse analysis over plausible specification nodes
+2. The multiverse covers at least: embedding choice, bandwidth/threshold, sample definition
+3. Win rate ≥ 80% across specifications, OR sensitivity pattern is explicitly documented
+
+Claims meeting criteria receive "ROBUST" designation. Claims from single specifications remain "PRELIMINARY" until multiverse confirmation.
+
+**Current multiverse results:**
+- T Module (Wasserstein vs kernel): 100% win rate (81/81 specs). Status: ROBUST.
+
 ---
 
 ## Methodology Violations Log
@@ -120,6 +157,44 @@ When a result is invalidated:
 
 ---
 
+## Claim Registry
+
+Canonical phrasing for key claims. All documents (main.tex, README, CLAUDE.md) must use phrasing consistent with evidence class.
+
+| Claim ID | Canonical Text | Evidence Class | Status | Primary Location |
+|----------|----------------|----------------|--------|------------------|
+| T-E1 | Wasserstein improves probabilistic scoring vs kernel (median ΔLL = +13,052 across 81 specs) | E1 | VALIDATED | main.tex §5.1 |
+| T-E1b | Wasserstein advantage robust across embedding, bandwidth, sample, threshold choices (100% win rate) | E1 | VALIDATED | main.tex §5.1 |
+| T-E3 | Pattern consistent with feasibility/skill-proximity mechanisms | E3 | CONSISTENT | main.tex §5.1 discussion |
+| I-E1 | Institutional distance provides incremental validity over task distance (t = 34.6) | E1 | VALIDATED | main.tex §5.2 |
+| I-E3 | Residual institutional effect interpreted as non-skill barriers | E3 | CONSISTENT | main.tex §5.2 discussion |
+| S-E1 | AIOE integration improves holdout LL (ΔLL = +23,119) | E1 | VALIDATED | main.tex §5.3 |
+| P-E2 | Per-origin pathway ranking: modest signal (ρ ≈ 0.13) | E2 | VALIDATED | main.tex §5.5 |
+| P-E3 | Geometry captures supply-side feasibility; demand dominates aggregate flows | E3 | CONSISTENT | main.tex §5.5, §7 |
+| D-E1 | Demand-only correlation with aggregate inflows: ρ = 0.80 | E1 | VALIDATED | main.tex §5.5 |
+
+**Maintenance rule:** When adding new claims, assign Claim ID, evidence class, and status before writing prose.
+
+---
+
+## Referee Challenge Table (Living)
+
+Claims most likely to draw referee scrutiny. Updated as vulnerabilities are identified or addressed.
+
+| Claim | Likely Challenge | Current Evidence | Gap / Robustness Needed | Status |
+|-------|------------------|------------------|-------------------------|--------|
+| T-E1 (Wasserstein wins) | "Sensitive to embedding choice" | 81-spec multiverse, 100% win rate | — | ADDRESSED |
+| T-E3 (feasibility mechanism) | "Could be hierarchy, taxonomy artifact, or employer screening" | Reduced-form only | Structural model or IV needed | ACKNOWLEDGED (scope condition) |
+| I-E3 (institutional = non-skill barriers) | "Job Zone reflects skill content; absorption claim too strong" | r = 0.25 correlation | Partial R² by subgroup; interaction with licensing | OPEN |
+| P-E2 (ρ ≈ 0.13 pathway accuracy) | "Too weak to be useful" | Cortes & Gallipoli ~15% benchmark | Add RCM/MPR metrics | IN PROGRESS |
+| P-E3 (geometry = feasibility, demand = realization) | "Post-hoc rationalization of weak prediction" | Demand decomposition (ρ = 0.80) | — | CONSISTENT framing only |
+| M-E4 (switching costs) | "External calibration, not identified" | Dix-Carneiro anchor | Sensitivity across 0.75×–6.5× range | ADDRESSED |
+| Selection bias | "Only see completed transitions; gates invisible" | Jackson 2023 (24% blocked) cited | — | ACKNOWLEDGED (scope condition) |
+
+**Usage:** Before promoting any claim, check this table. If challenge is OPEN, address or explicitly acknowledge in paper.
+
+---
+
 ## Module Validation Checkpoints
 
 Verified validation results for oracle modules. See `paper/main.tex` Section 5 for full exposition.
@@ -135,6 +210,23 @@ Verified validation results for oracle modules. See `paper/main.tex` Section 5 f
 **Sample:** 89,329 verified CPS transitions (full sample, valid Census codes)
 
 **Status: VALIDATED.** Workers minimize skill transformation cost. Wasserstein's "earth mover" interpretation is economically validated.
+
+### T Module: Performance Battery (v0.7.1.2)
+
+MS8-compliant metrics for the baseline Wasserstein specification:
+
+| Metric | Value | Interpretation |
+|--------|-------|----------------|
+| ΔLL vs uniform | +362,084 | E1: Strong probabilistic improvement |
+| MPR mean | 0.7381 | E2: Realized destinations in top 26% on average |
+| MPR median | 0.8251 | E2: Half of transitions in top 17.5% |
+| RCM mean | 0.5550 | Consideration set includes realized choice |
+| N_eff mean | 206.9 | 447 destinations; 46% diffuseness |
+| N_eff/J | 0.463 | Distribution too diffuse for top-k |
+
+**Top-k appropriateness:** NOT reported. N_eff/J = 0.46 > 0.30 threshold. Mean effective consideration set = 207 destinations. Top-k overlap is structurally inappropriate for diffuse distributions.
+
+**Interpretation:** The model ranks realized destinations highly (MPR >> 0.5) despite distributing probability mass across ~207 effective destinations. This confirms the model captures feasibility structure without artificially concentrating on a small set.
 
 ### I Module: Mobility Decomposition (v0.6.5)
 
@@ -341,6 +433,8 @@ Deprecated approaches. Do not retry.
 | Demand Decomposition | `outputs/experiments/demand_probe_decomposition_v0703b.json` | v0.7.0.3b |
 | Methodology Audit | `outputs/experiments/methodology_audit_v0703c.json` | v0.7.0.3c |
 | MS1 Compliance Audit | `outputs/experiments/ms1_compliance_audit_v0704.json` | v0.7.0.4 |
+| T Module Multiverse | `outputs/multiverse/t_module_v0712/summary.json` | v0.7.1.2 |
+| Performance Battery | `outputs/experiments/performance_battery_baseline_v0712.json` | v0.7.1.2 |
 
 ---
 
@@ -348,6 +442,9 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.2.0 | 2025-12-17 | Paper v0.7.2 complete. Multiverse + performance battery integrated. MS7-MS9 regime active. |
+| 0.7.1.2 | 2025-12-17 | Performance battery implemented (MS8); MPR=0.74, RCM=0.56, N_eff=207 |
+| 0.7.1.1 | 2025-12-17 | Added MS7-MS9 (language policy, performance battery, multiverse gate); Claim Registry; Referee Challenge Table |
 | 0.7.1 | 2025-12-17 | Paper updated; ρ corrected (0.43→0.13); demand decomposition integrated |
 | 0.7.0.4 | 2025-12-17 | MS1 compliance audit; 3/4 flagged results verified, sample sizes inlined |
 | 0.7.0.3c | 2025-12-17 | **METHODOLOGY AUDIT**: Original ρ = 0.43 corrected to 0.13; was sample-restricted |

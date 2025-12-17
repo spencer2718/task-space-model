@@ -13,24 +13,29 @@ import numpy as np
 
 def calibrate_sigma(
     dist_matrix: np.ndarray,
-    method: str = 'nn_median',
+    method: str | float = 'nn_median',
 ) -> float:
     """
     Calibrate kernel bandwidth to local distance structure.
 
     Args:
         dist_matrix: (n, n) pairwise distance matrix
-        method: Only 'nn_median' is supported
+        method: Either 'nn_median' for data-driven calibration,
+                or a float for fixed bandwidth value
 
     Returns:
         Calibrated sigma value
 
     Raises:
-        ValueError: If method != 'nn_median'
+        ValueError: If method is a string other than 'nn_median'
     """
+    # Allow fixed numeric values for multiverse analysis
+    if isinstance(method, (int, float)):
+        return float(method)
+
     if method != 'nn_median':
         raise ValueError(
-            f"Method '{method}' is not supported. Use 'nn_median'. "
+            f"Method '{method}' is not supported. Use 'nn_median' or a numeric value. "
             "Global percentile methods cause kernel collapse (see v0.5.0 postmortem). "
             "The NN-median method is the only validated approach."
         )

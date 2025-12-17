@@ -2,7 +2,7 @@
 
 Infrastructure for analyzing how task-level technological change propagates to labor market outcomes.
 
-**Version 0.7.1.0** — Demand Decomposition Validated
+**Version 0.7.2.0** — Multiverse Robustness + Performance Battery
 
 ---
 
@@ -26,16 +26,16 @@ See `paper/main.tex` for formal theory and specifications.
 
 ## Module Status
 
-| Module | Component | Status | Key Result |
-|--------|-----------|--------|------------|
-| **T** | Wasserstein geometry | ✓ Validated | ΔLL = +9,576 over kernel (n=89,329) |
-| **I** | Institutional distance | ✓ Validated | t = 34.6 conditional on T (n=89,329) |
-| **S** | AIOE integration | ✓ Integrated | r = 0.02 (orthogonal to T) |
-| **M** | Switching costs | ⚠️ Calibrated | 3.84 wage-years/unit (external) |
-| **M** | Demand decomposition | ✓ Quantified | Demand ρ = 0.80; geometry ρ ≈ 0.13 |
-| — | Scope | ✓ Delineated | Supply-side feasibility, not realized flows |
+| Module | Status | Evidence |
+|--------|--------|----------|
+| **T** (Wasserstein geometry) | ✓ Robust | 100% win rate (81/81 specs); median ΔLL = +13,052 |
+| **I** (Institutional distance) | ✓ Validated | t = 34.6 conditional on T |
+| **S** (Shock integration) | ✓ Validated | ΔLL = +23,119 on holdout |
+| **M** (Switching costs) | ⚠️ Calibrated | External anchor (Dix-Carneiro) |
+| Pathway ranking | ✓ Validated | MPR = 0.74; per-origin ρ ≈ 0.13 |
+| Demand decomposition | ✓ Quantified | Demand ρ = 0.80; geometry ρ = 0.04 |
 
-**Scope:** The framework measures structural feasibility (where workers CAN go), not realized reallocation (where they DO go). Empirically: demand dominates aggregate inflows (ρ = 0.80); geometry captures supply-side constraints (per-origin ρ ≈ 0.13). Feasibility is the supply-side input to equilibrium analysis.
+**Scope:** The framework measures structural feasibility (where workers CAN go), not realized reallocation (where they DO go). Empirically: demand dominates aggregate inflows (ρ = 0.80); geometry ranks destinations correctly (MPR = 0.74). Feasibility is the supply-side input to equilibrium analysis.
 
 ---
 
@@ -144,7 +144,8 @@ See `CLAUDE.md` for developer context, `LEDGER.md` for scientific state.
 
 | Version | What Changed |
 |---------|--------------|
-| **0.7.1.0** | Demand decomposition validated. Metric correction (ρ = 0.43 → 0.13). Paper updated. |
+| **0.7.2.0** | Multiverse robustness (81/81). Performance battery (MPR=0.74). MS7-MS9 methodology regime. |
+| 0.7.1.0 | Demand decomposition validated. Metric correction (ρ = 0.43 → 0.13). |
 | 0.7.0.1 | Oracle architecture framing. Documentation hierarchy. |
 | 0.6.9.0 | LEDGER.md created. Asymmetric barriers → heterogeneous. |
 | 0.6.8.0 | Wasserstein validated. |

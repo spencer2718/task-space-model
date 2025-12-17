@@ -124,6 +124,7 @@ def build_choice_dataset(
     random_seed: int = 42,
     origin_col: str = "origin_occ",
     dest_col: str = "dest_occ",
+    max_distance: Optional[float] = None,
 ) -> pd.DataFrame:
     """
     Build choice dataset for conditional logit estimation.
@@ -141,6 +142,8 @@ def build_choice_dataset(
         random_seed: Random seed for reproducibility
         origin_col: Column name for origin occupation
         dest_col: Column name for destination occupation
+        max_distance: Optional maximum distance threshold. Transitions
+                     exceeding this distance (in d_sem_matrix) are excluded.
 
     Returns:
         DataFrame with columns: transition_id, occ, chosen, neg_d_sem, neg_d_inst
@@ -152,6 +155,7 @@ def build_choice_dataset(
 
     rows = []
     transition_id = 0
+    skipped_distance = 0
 
     for _, row in transitions_df.iterrows():
         origin = int(row[origin_col])
@@ -163,6 +167,12 @@ def build_choice_dataset(
 
         origin_idx = occ_to_idx[origin]
         dest_idx = occ_to_idx[dest]
+
+        # Skip transitions exceeding distance threshold
+        if max_distance is not None:
+            if d_sem_matrix[origin_idx, dest_idx] > max_distance:
+                skipped_distance += 1
+                continue
 
         # Sample alternatives (excluding chosen destination)
         available = list(all_occs - {dest})

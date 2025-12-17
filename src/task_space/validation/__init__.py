@@ -74,6 +74,15 @@ from .reallocation import (
     CREDENTIAL_GATED_OCCUPATIONS,
 )
 
+from .metrics import (
+    PerformanceBatteryResult,
+    compute_mean_percentile_rank,
+    compute_realized_cumulative_mass,
+    compute_effective_consideration_set,
+    compute_full_destination_probabilities,
+    compute_performance_battery,
+)
+
 __all__ = [
     # Regression
     'RegressionResult',
@@ -130,4 +139,11 @@ __all__ = [
     'split_feasible_constrained',
     'compute_validation_verdict',
     'CREDENTIAL_GATED_OCCUPATIONS',
+    # Performance Battery (MS8)
+    'PerformanceBatteryResult',
+    'compute_mean_percentile_rank',
+    'compute_realized_cumulative_mass',
+    'compute_effective_consideration_set',
+    'compute_full_destination_probabilities',
+    'compute_performance_battery',
 ]
