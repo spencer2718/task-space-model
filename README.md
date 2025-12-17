@@ -1,91 +1,82 @@
-# Task Space Model
+# Task-Space Oracle
 
-A geometric framework for measuring labor market exposure to technological shocks.
+Infrastructure for analyzing how task-level technological change propagates to labor market outcomes.
 
-**Version 0.7.0** — Shock Integration Validated, Pathway Identification
+**Version 0.7.0.1** — Initial Validation Complete
 
 ---
 
 ## What This Is
 
-This project develops a measurement framework for studying how technological change affects labor markets. The key idea: occupations are probability distributions over work activities. When automation affects certain activities, impact propagates through shared structure.
+The **task-space oracle** is a modular architecture targeting:
 
-The core theoretical contribution is the **semantic-institutional decomposition**, grounded in Traiberman (2019)'s switching cost framework. Effective distance between occupations separates task-content similarity (can the worker do the job?) from credentialing barriers (is the worker allowed to do the job?).
+```
+(T, I, S, M) → (Δρ, ΔL, ΔW)
+```
 
-The paper also positions **optimal transport for occupational similarity** as a novel methodological contribution—no prior economics literature applies Wasserstein distance to occupation-task distributions.
+From task representation, institutional structure, shock profiles, and adjustment mechanisms to occupation-specific changes in task distributions, employment, and wages.
+
+**Core insight:** Technology acts on tasks. Occupations are probability distributions over tasks. When technology changes task productivity, occupation task distributions shift; employment and wages adjust as downstream aggregations.
+
+This is a research program, not a finished model. The paper establishes that the architecture is viable and validates initial module specifications.
 
 See `paper/main.tex` for formal theory and specifications.
 
 ---
 
-## Current Status
+## Module Status
 
-### Validation Summary
+| Module | Component | Status | Key Result |
+|--------|-----------|--------|------------|
+| **T** | Wasserstein geometry | ✓ Validated | ΔLL = +9,576 over kernel |
+| **I** | Institutional distance | ✓ Validated | t = 34.6 conditional on T |
+| **S** | AIOE integration | ✓ Integrated | r = 0.02 (orthogonal to T) |
+| **M** | Switching costs | ⚠️ Calibrated | 3.84 wage-years/unit (external) |
+| — | Scope | ✓ Delineated | ρ = 0.43 directional; top-5 = 0 exact |
 
-| Test | Result | Status |
-|------|--------|--------|
-| CPS Mobility (Symmetric) | α=8.94, β=0.14, both p<0.001 | ✓ Validated |
-| CPS Mobility (Asymmetric) | Ratio 0.06–2.79 by sample | ⚠️ Heterogeneous |
-| RTI Construct Validity | r = -0.05 (n.s.) | ✓ Orthogonal |
-| Geometry vs Historical | ΔLL = +23,119 | ✓ Validated |
-| AIOE-Geometry Orthogonality | r = 0.02 | ✓ Distinct constructs |
-| Directional Skill Compatibility | Spearman ρ = 0.43 | ✓ Validated |
-| Exact Destination Prediction | Top-5 overlap = 0 | ✗ Failed |
-| Switching Cost Calibration | 3.84 wage-years/unit | ✓ Calibrated (external) |
-| Endogenous Cost Identification | β_wage < 0 | ✗ Failed |
+**Scope:** The framework measures structural feasibility (where workers CAN go), not realized reallocation (where they DO go). Feasibility is the supply-side input to equilibrium analysis.
 
-### CPS Worker Mobility (✓ Validated)
+---
 
-Conditional logit model of occupation destination choice using 89,329 verified CPS transitions. **Wasserstein distance is primary** (Δ log-likelihood = +9,576 over kernel overlap).
+## Validation Details
 
-| Component | Coefficient | t-stat | Interpretation |
-|-----------|-------------|--------|----------------|
-| α (semantic) | 8.936 | 206.5 | Workers minimize transformation cost |
-| β (institutional) | 0.142 | 34.6 | Residual non-skill barriers |
+### T Module: Geometry Comparison
 
-Both components independently predictive. Framework succeeds at measuring task similarity for mobility analysis.
+Wasserstein substantially outperforms kernel overlap for predicting worker mobility:
 
-### Asymmetric Barriers Test (⚠️ Heterogeneous)
+| Metric | Kernel | Wasserstein | Δ |
+|--------|--------|-------------|---|
+| α (semantic) | 5.688 | 8.936 | +57% |
+| Log-likelihood | -192,627 | -183,051 | +9,576 |
 
-Tested whether credentials act as "one-way gates" (β_up > β_down).
+Workers minimize skill transformation cost. The "earth mover" interpretation is economically validated.
 
-| Geometry | Sample | Ratio | Interpretation |
-|----------|--------|-------|----------------|
-| Kernel | Full | 1.04 | Symmetric (artifact of compression) |
-| Wasserstein | Full | 2.11 | Asymmetric |
-| Wasserstein | Prime-age | 1.12 | Symmetric |
-| Wasserstein | Excl. outliers | 0.06 | Symmetric |
+### I Module: Institutional Distance
 
-**Interpretation:** Directional asymmetry is sample-dependent. Neither credential-gate nor symmetric-friction theories are universally supported. See paper Section 5.2.4.
+| Component | Coefficient | t-stat |
+|-----------|-------------|--------|
+| d_sem (Wasserstein) | 8.936 | 206.5 |
+| d_inst (Job Zone + Cert) | 0.142 | 34.6 |
 
-### RTI Construct Validity (✓ Distinct)
+Sample: 89,329 verified CPS transitions (2015–2019, 2022–2024). Separability holds.
 
-| Correlation | r | p-value |
-|-------------|---|---------|
-| Semantic vs RTI | -0.052 | 0.377 |
+### S Module: Shock Integration
 
-**Interpretation:** Wasserstein-based exposure captures mobility friction, not automation susceptibility—economically orthogonal to RBTC measures.
+| Test | Result |
+|------|--------|
+| AIOE-Wasserstein correlation | r = 0.02 |
+| Geometry vs Historical baseline | ΔLL = +23,119 |
 
-### Employment Prediction (⚠️ Marginal)
+AIOE and Wasserstein are orthogonal—shock profiles identify exposed occupations, geometry identifies compatible destinations.
 
-Incremental validity test: Does semantic exposure predict 2019-2024 employment changes beyond canonical automation indices?
+### M Module: Switching Costs
 
-| Model | R² | Interpretation |
-|-------|-----|----------------|
-| RTI only (Acemoglu-Autor) | 9.8% | Routine occupations lost employment |
-| RTI + Semantic | 12.0% | Semantic adds ΔR²=2.2% (p=0.07) |
-| Full (RTI + AIOE + Semantic + controls) | 12.9% | Only RTI significant |
+| Parameter | Value |
+|-----------|-------|
+| SC per unit Wasserstein | 3.84 wage-years |
+| Source | External calibration (Dix-Carneiro 2014) |
 
-**Interpretation:** Framework succeeds at task similarity measurement but shows only marginal improvement for predicting automation-driven employment changes beyond canonical RTI measures.
-
-### Wage Comovement
-
-| Measure | t-stat | R² | Notes |
-|---------|--------|-----|-------|
-| Normalized kernel | 7.14 | 0.00485 | +191% R² vs binary |
-| Binary Jaccard | 8.00 | 0.00167 | Higher precision |
-
-Small absolute R² values—useful for discriminating between representations, not explaining wage dynamics.
+Endogenous identification failed (β_wage < 0). Individual-level wage data required.
 
 ---
 
@@ -97,9 +88,6 @@ pip install -e ".[dev,notebooks]"
 
 # Run tests
 pytest tests/unit tests/integration -v
-
-# Mobility module specifically
-pytest tests/unit/mobility -v
 ```
 
 ---
@@ -111,32 +99,10 @@ Download `db_30_0_excel.zip` from https://www.onetcenter.org/database.html.
 Extract to `data/onet/db_30_0_excel/`.
 
 ### OES Wage Data (For Wage Comovement)
-Download national OES files from https://www.bls.gov/oes/tables.htm for 2019–2023.
+Download national OES files from https://www.bls.gov/oes/tables.htm.
 Extract to `data/external/oes/`.
 
 **Note:** BLS blocks automated downloads. Download manually via browser.
-
----
-
-## Usage
-
-```python
-from task_space.mobility import (
-    build_institutional_distance_matrix,
-    load_canonical_results,
-)
-
-# Build institutional distance matrix
-d_inst = build_institutional_distance_matrix()
-print(f"Occupations: {d_inst.n_occupations}")
-print(f"Cert coverage: {d_inst.cert_coverage:.1%}")
-print(f"Assumptions: {d_inst.assumptions[0]}")
-
-# Load canonical CPS mobility results
-results = load_canonical_results()
-print(f"α (semantic) = {results.alpha:.3f} (t = {results.alpha_t:.1f})")
-print(f"β (institutional) = {results.beta:.3f} (t = {results.beta_t:.1f})")
-```
 
 ---
 
@@ -144,29 +110,32 @@ print(f"β (institutional) = {results.beta:.3f} (t = {results.beta_t:.1f})")
 
 ```
 src/task_space/          # Core implementation
-    data/                # Data loading, classifications
-    similarity/          # Kernel, overlap, wasserstein (v0.6.7.1)
-    shocks/              # Shock profiles
-    validation/          # Regression, diagnostics
-    mobility/            # CPS mobility validation (symmetric + asymmetric)
-    _legacy/             # Deprecated modules (v0.6.6)
+    data/                # O*NET loading, crosswalks, AIOE
+    similarity/          # Kernel, overlap, wasserstein
+    shocks/              # Shock profiles, propagation
+    validation/          # Regression, diagnostics, reallocation
+    mobility/            # CPS mobility validation
 
 tests/
     unit/                # Fast unit tests
-    unit/mobility/       # Mobility module tests
     integration/         # Slower integration tests
-    archive/             # Historical research scripts
 
 paper/
     main.tex             # Theory + specifications
-    references.bib       # Bibliography
-
-outputs/
-    canonical/           # Paper-ready results (immutable)
-    experiments/         # Versioned experiment outputs
 ```
 
-See `CLAUDE.md` for developer details.
+See `CLAUDE.md` for developer context, `LEDGER.md` for scientific state.
+
+---
+
+## Research Roadmap
+
+| Phase | Objective | Requirements |
+|-------|-----------|--------------|
+| 0.8 | Demand-side integration | Lightcast/JOLTS vacancy data |
+| 0.9 | Institutional barrier enhancement | CPS licensing supplement |
+| 1.0 | Modality-specific shock profiles | Taxonomy design, benchmarks |
+| 1.1 | Full GE with propagation | Individual wage data (LEHD) |
 
 ---
 
@@ -174,12 +143,11 @@ See `CLAUDE.md` for developer details.
 
 | Version | What Changed |
 |---------|--------------|
-| **v0.7.0** | Shock integration validated. Pathway identification (ρ=0.43). Reallocation forecasting failed (top-5=0). External cost calibration. |
-| v0.6.9.0 | LEDGER.md created. Asymmetric barriers → heterogeneous. RTI orthogonality documented. |
-| v0.6.8.0 | Wasserstein validated. Path F/C executed. |
-| v0.6.7.x | Wasserstein module, geometry comparison. |
-| v0.6.6.0 | Asymmetric barriers test (kernel baseline). |
-| v0.6.5.x | CPS mobility validation. |
+| **0.7.0.1** | Oracle architecture framing. Documentation hierarchy. |
+| 0.7.0 | Shock integration validated. Pathway identification (ρ=0.43). External cost calibration. |
+| 0.6.9.0 | LEDGER.md created. Asymmetric barriers → heterogeneous. |
+| 0.6.8.0 | Wasserstein validated. |
+| 0.6.7.x | Wasserstein module, geometry comparison. |
 
 ---
 
