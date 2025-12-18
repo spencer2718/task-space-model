@@ -1,5 +1,9 @@
 # CLAUDE.md — Agent Context
 
+**You are the Engineer.** You implement experiments, write code, and update `LEDGER.md`. The Lead Researcher (Spencer) designs specs and guides version updates. The Writer updates `paper/main.tex`.
+
+---
+
 ## What This Is
 
 **Task-space oracle:** Modular architecture for analyzing how task-level technological change propagates to occupation-level employment and wages.
@@ -22,12 +26,30 @@
 
 ---
 
+## Documentation Architecture
+
+Each document has ONE purpose. No redundancy.
+
+| Document | Purpose | Owner |
+|----------|---------|-------|
+| `CLAUDE.md` | Agent entry point | Lead Researcher (at v0.x.y) |
+| `LEDGER.md` | Scientific state (validations, constraints) | Engineer (during v0.x.y.z) |
+| `SPEC.md` | Current sprint planning | Lead Researcher |
+| `README.md` | Public-facing overview | Lead Researcher (at v0.x.y) |
+| `data/README.md` | Data acquisition | Engineer (when sources change) |
+| `paper/main.tex` | Authoritative theory & claims | Writer |
+
+**Principle:** Progressive disclosure. This file is minimal; detail lives in referenced docs.
+
+---
+
 ## Key Files
 
 | File | Purpose |
 |------|---------|
 | `LEDGER.md` | Scientific state — **READ FIRST** |
 | `paper/main.tex` | Theory, specifications, results |
+| `data/README.md` | External data sources — **read before data work** |
 | `.cache/artifacts/v1/` | Distance matrices, embeddings |
 | `outputs/experiments/` | Versioned experiment results |
 

@@ -95,15 +95,7 @@ pytest tests/unit tests/integration -v
 
 ## Data Requirements
 
-### O*NET Database (Required)
-Download `db_30_0_excel.zip` from https://www.onetcenter.org/database.html.
-Extract to `data/onet/db_30_0_excel/`.
-
-### OES Wage Data (For Wage Comovement)
-Download national OES files from https://www.bls.gov/oes/tables.htm.
-Extract to `data/external/oes/`.
-
-**Note:** BLS blocks automated downloads. Download manually via browser.
+See [`data/README.md`](data/README.md) for complete data documentation including download instructions for O*NET, CPS/IPUMS, OES, and AIOE.
 
 ---
 

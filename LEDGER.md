@@ -358,24 +358,6 @@ Deprecated approaches. Do not retry.
 
 ---
 
-## Current Sprint
-
-**Phase:** 0.7.1 — Consolidation Complete
-
-**Completed (0.7.0.x → 0.7.1):**
-- 0.7.0.2: Switching cost sensitivity (ordinal invariance confirmed)
-- 0.7.0.3: Demand probe (demand-only ρ = 0.798)
-- 0.7.0.3b: Demand decomposition (geometry-only ρ = 0.043, per-origin ρ = 0.128)
-- 0.7.0.3c: Methodology audit (ρ = 0.43 → 0.13 correction)
-- 0.7.0.4: MS1 compliance audit (T/I/S modules verified)
-- 0.7.1: Paper updated with corrected metrics and demand decomposition
-
-**Paper status:** v0.7.1 — Metrics corrected, demand decomposition integrated
-
-**Next:** Phase 0.8 planning
-
----
-
 ## Frontier
 
 ### Demand-Side Integration (Phase 0.8)
@@ -415,26 +397,33 @@ Deprecated approaches. Do not retry.
 
 ## Artifact Registry
 
-| Artifact | Location | Description |
-|----------|----------|-------------|
+### Distance Matrices
+
+| Artifact | Location | Shape |
+|----------|----------|-------|
 | Wasserstein (O*NET) | `.cache/artifacts/v1/wasserstein/d_wasserstein_onet.npz` | 894×894 |
 | Wasserstein (Census) | `.cache/artifacts/v1/mobility/d_wasserstein_census.npz` | 447×447 |
 | Kernel (Census) | `.cache/artifacts/v1/mobility/d_sem_census.npz` | 447×447 |
 | Institutional | `.cache/artifacts/v1/mobility/d_inst_census.npz` | 447×447 |
-| CPS Mobility (Wasserstein) | `outputs/experiments/path_a_wasserstein_comparison_v0672.json` | Primary |
-| Asymmetric (Wasserstein) | `outputs/experiments/mobility_asymmetric_wasserstein_v0682.json` | — |
-| Asymmetric Robustness | `outputs/experiments/path_f_robustness_v0683.json` | — |
-| RTI Correlation | `outputs/experiments/path_c_rti_construct_validity_v0681.json` | — |
-| Shock Integration | `outputs/experiments/shock_integration_v070a.json` | 0.7a results |
-| Scaled Costs | `outputs/experiments/scaled_costs_v070b.json` | 0.7b results |
-| Reallocation | `outputs/experiments/reallocation_v070c.json` | 0.7c results |
-| Sensitivity Analysis | `outputs/experiments/sensitivity_switching_costs_v0702.json` | v0.7.0.2 |
-| Demand Probe | `outputs/experiments/demand_probe_v0703.json` | v0.7.0.3 |
-| Demand Decomposition | `outputs/experiments/demand_probe_decomposition_v0703b.json` | v0.7.0.3b |
-| Methodology Audit | `outputs/experiments/methodology_audit_v0703c.json` | v0.7.0.3c |
-| MS1 Compliance Audit | `outputs/experiments/ms1_compliance_audit_v0704.json` | v0.7.0.4 |
-| T Module Multiverse | `outputs/multiverse/t_module_v0712/summary.json` | v0.7.1.2 |
-| Performance Battery | `outputs/experiments/performance_battery_baseline_v0712.json` | v0.7.1.2 |
+
+### Experiment Results
+
+| Artifact | Location | Paper Section |
+|----------|----------|---------------|
+| CPS Mobility (Wasserstein) | `outputs/experiments/path_a_wasserstein_comparison_v0672.json` | T Module (PRIMARY) |
+| Asymmetric (Wasserstein) | `outputs/experiments/mobility_asymmetric_wasserstein_v0682.json` | I Module |
+| Asymmetric Robustness | `outputs/experiments/path_f_robustness_v0683.json` | I Module |
+| RTI Correlation | `outputs/experiments/path_c_rti_construct_validity_v0681.json` | Complementary |
+| Shock Integration | `outputs/experiments/shock_integration_v070a.json` | S Module |
+| Scaled Costs | `outputs/experiments/scaled_costs_v070b.json` | M Module |
+| Reallocation | `outputs/experiments/reallocation_v070c.json` | Scope Validation |
+| Sensitivity Analysis | `outputs/experiments/sensitivity_switching_costs_v0702.json` | M Module |
+| Demand Probe | `outputs/experiments/demand_probe_v0703.json` | Scope Validation |
+| Demand Decomposition | `outputs/experiments/demand_probe_decomposition_v0703b.json` | Scope Validation |
+| Methodology Audit | `outputs/experiments/methodology_audit_v0703c.json` | — |
+| MS1 Compliance Audit | `outputs/experiments/ms1_compliance_audit_v0704.json` | — |
+| T Module Multiverse | `outputs/multiverse/t_module_v0712/summary.json` | T Module |
+| Performance Battery | `outputs/experiments/performance_battery_baseline_v0712.json` | T Module |
 
 ---
 
