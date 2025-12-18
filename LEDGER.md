@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.2.0
+**Current Version:** 0.7.2.2
 **Last Updated:** 2025-12-17
 **Paper Draft:** `paper/main.tex`
 
@@ -340,6 +340,60 @@ MS8-compliant metrics for the baseline Wasserstein specification:
 - Normalized kernel overlap: R² = 0.52%
 - **Interpretation:** Detectable but explains small share of variance.
 
+### Retrospective Battery Infrastructure (v0.7.2.x)
+
+**v0.7.2.1: occ1990dd → O*NET-SOC Crosswalk**
+
+| Metric | Value | Gate |
+|--------|-------|------|
+| Unweighted coverage | 84.8% | — |
+| Employment-weighted coverage | 91.9% | ≥80% |
+| Mapped codes | 280/330 | — |
+| Confidence tiers | High: 160, Medium: 308, Low: 149 | — |
+
+**Chain:** occ1990dd → Census 1990 (97.6% identity) → OCC2010 (IPUMS) → O*NET-SOC
+
+**Top unmapped by employment:**
+1. Assemblers (785): 1.75%
+2. Police/detectives (418): 0.59%
+3. Industrial machinery repairers (518): 0.56%
+
+**Artifact:** `data/processed/crosswalks/occ1990dd_to_onet_soc.csv`
+
+**Status: PASSED.** Gate (80% employment-weighted) exceeded. Ready for Test B.
+
+**v0.7.2.2: CSH Implementation**
+
+| Metric | Value | Gate |
+|--------|-------|------|
+| r(CSH, RTI) | 0.815 | [0.7, 0.9] |
+| ρ(CSH, RTI) | 0.803 | — |
+| Common occupations | 262 | — |
+| Ridge α (best) | 596.4 | — |
+
+**Method:** Ridge regression (L2 regularization, CV-selected α) of RTI on 768-dim occupation embedding centroids. Direction vector learned maximizes correlation.
+
+**Robustness variant (CSH_alt):**
+| Metric | Value | Note |
+|--------|-------|------|
+| r(CSH_alt, RTI) | 0.288 | Weaker than CSH |
+| r(CSH, CSH_alt) | 0.405 | Moderate overlap |
+
+CSH_alt = cosine similarity to routine centroid (top-33% RTI occupations, employment-weighted). Weaker correlation confirms ridge regression captures routine content better than naive distance-to-centroid.
+
+**Artifacts:**
+- Direction vector: `.cache/artifacts/v1/embeddings/rti_direction_v0722.npz`
+- Centroids: `.cache/artifacts/v1/embeddings/occ1990dd_centroids_mpnet.npz`
+- CSH values: `outputs/experiments/csh_values_v0722.csv`
+- CSH_alt values: `outputs/experiments/csh_alt_values_v0722.csv`
+
+**Status: PASSED.** Gate [0.7, 0.9] met. RSHExposure class implemented with:
+- `discrete_exposure()`: RTI tercile bands
+- `continuous_exposure()`: CSH (learned direction)
+- `continuous_exposure_alt()`: CSH_alt (robustness)
+- `residualized_continuous()`: CSH | RTI band
+- `aggregate_to_cz()`: CZ-level aggregation
+
 ---
 
 ## Graveyard
@@ -387,11 +441,13 @@ Deprecated approaches. Do not retry.
 - **Expected signal:** May improve mobility α; unlikely to affect RTI correlation
 - **Priority:** Low (geometry change >> embedding change)
 
-### Retrospective Diagnostic Battery (Deferred)
+### Retrospective Diagnostic Battery (IN PROGRESS)
 
 - **Tests A/B/C:** Task composition, employment reallocation, robot displacement
-- **Specifications:** `paper/main.tex` Appendix
-- **Blocking:** Historical data acquisition (Autor-Dorn replication files)
+- **Specifications:** `paper/main.tex` Appendix A
+- **v0.7.2.1:** occ1990dd crosswalk PASSED (91.9% employment-weighted coverage)
+- **v0.7.2.2:** CSH implementation PASSED (r=0.815)
+- **Next:** v0.7.2.3 Test B (Autor-Dorn polarization)
 
 ---
 
@@ -424,6 +480,22 @@ Deprecated approaches. Do not retry.
 | MS1 Compliance Audit | `outputs/experiments/ms1_compliance_audit_v0704.json` | — |
 | T Module Multiverse | `outputs/multiverse/t_module_v0712/summary.json` | T Module |
 | Performance Battery | `outputs/experiments/performance_battery_baseline_v0712.json` | T Module |
+| Crosswalk Coverage | `outputs/experiments/crosswalk_coverage_v0721.json` | Battery |
+| CSH Values | `outputs/experiments/csh_values_v0722.csv` | Battery |
+| CSH_alt Values | `outputs/experiments/csh_alt_values_v0722.csv` | Battery |
+
+### Embeddings
+
+| Artifact | Location | Shape |
+|----------|----------|-------|
+| occ1990dd Centroids | `.cache/artifacts/v1/embeddings/occ1990dd_centroids_mpnet.npz` | 280×768 |
+| RTI Direction | `.cache/artifacts/v1/embeddings/rti_direction_v0722.npz` | 768 |
+
+### Crosswalks
+
+| Artifact | Location | Coverage |
+|----------|----------|----------|
+| occ1990dd → O*NET-SOC | `data/processed/crosswalks/occ1990dd_to_onet_soc.csv` | 91.9% emp-weighted |
 
 ---
 
@@ -431,6 +503,8 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.2.2 | 2025-12-17 | CSH implementation: r(CSH, RTI)=0.815; RSHExposure class; CSH_alt robustness variant |
+| 0.7.2.1 | 2025-12-17 | occ1990dd crosswalk: 91.9% emp-weighted coverage; crosswalk diagnostics module |
 | 0.7.2.0 | 2025-12-17 | Paper v0.7.2 complete. Multiverse + performance battery integrated. MS7-MS9 regime active. |
 | 0.7.1.2 | 2025-12-17 | Performance battery implemented (MS8); MPR=0.74, RCM=0.56, N_eff=207 |
 | 0.7.1.1 | 2025-12-17 | Added MS7-MS9 (language policy, performance battery, multiverse gate); Claim Registry; Referee Challenge Table |

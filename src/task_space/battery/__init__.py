@@ -64,6 +64,24 @@ from .runner import (
     print_interpretation_matrix,
 )
 
+from .crosswalks import (
+    Occ1990ddCrosswalkResult,
+    build_occ1990dd_to_onet_crosswalk,
+    load_default_crosswalk,
+    save_crosswalk,
+    get_onet_codes_for_occ1990dd,
+    aggregate_onet_to_occ1990dd,
+)
+
+from .crosswalk_diagnostics import (
+    CoverageReport,
+    categorize_occ1990dd,
+    generate_coverage_report,
+    print_coverage_report,
+    save_coverage_report,
+    validate_crosswalk,
+)
+
 __all__ = [
     # Exposure
     'ExposureType',
@@ -87,4 +105,18 @@ __all__ = [
     'BatteryRunner',
     'load_battery_result',
     'print_interpretation_matrix',
+    # Crosswalks
+    'Occ1990ddCrosswalkResult',
+    'build_occ1990dd_to_onet_crosswalk',
+    'load_default_crosswalk',
+    'save_crosswalk',
+    'get_onet_codes_for_occ1990dd',
+    'aggregate_onet_to_occ1990dd',
+    # Crosswalk Diagnostics
+    'CoverageReport',
+    'categorize_occ1990dd',
+    'generate_coverage_report',
+    'print_coverage_report',
+    'save_coverage_report',
+    'validate_crosswalk',
 ]
