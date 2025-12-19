@@ -355,20 +355,25 @@ class RSHExposure(ExposureMeasure):
                 band += 1
         return band
 
-    def discrete_exposure(self, unit_id: str) -> float:
+    def discrete_exposure(self, unit_id: str, binary: bool = False) -> float:
         """
-        Return RTI tercile band for occupation.
+        Return discrete RTI exposure for occupation.
 
         Args:
             unit_id: occ1990dd code as string
+            binary: If True, return 1 for top tercile, 0 otherwise (Autor-Dorn style)
+                    If False, return tercile band (0/1/2)
 
         Returns:
-            Band index (0 = low routine, 1 = medium, 2 = high routine)
+            Binary (0/1) or tercile (0/1/2) index
         """
         occ = int(unit_id)
         if occ not in self._rti:
             raise KeyError(f"No RTI for occ1990dd {occ}")
-        return float(self._rti_to_band(self._rti[occ]))
+        band = self._rti_to_band(self._rti[occ])
+        if binary:
+            return float(1 if band == self._n_bands - 1 else 0)
+        return float(band)
 
     def continuous_exposure(self, unit_id: str) -> float:
         """
@@ -410,15 +415,17 @@ class RSHExposure(ExposureMeasure):
             raise KeyError(f"No CSH_alt for occ1990dd {occ}")
         return self._csh_alt[occ]
 
-    def residualized_continuous(self, unit_id: str) -> float:
+    def residualized_continuous(self, unit_id: str, binary: bool = False) -> float:
         """
-        Return CSH residualized against RTI band.
+        Return CSH residualized against discrete RTI classification.
 
         This captures the continuous variation within each discrete band.
-        Computed as CSH - mean(CSH | RTI band).
+        Computed as CSH - mean(CSH | discrete class).
 
         Args:
             unit_id: occ1990dd code as string
+            binary: If True, residualize against binary (top tercile vs rest)
+                    If False, residualize against tercile bands
 
         Returns:
             Residualized CSH value
@@ -427,20 +434,27 @@ class RSHExposure(ExposureMeasure):
         if occ not in self._csh or occ not in self._rti:
             raise KeyError(f"No CSH/RTI for occ1990dd {occ}")
 
-        # Get this occupation's band
+        # Get this occupation's discrete class
         band = self._rti_to_band(self._rti[occ])
+        if binary:
+            discrete_class = 1 if band == self._n_bands - 1 else 0
+        else:
+            discrete_class = band
 
-        # Compute mean CSH for this band
-        band_csh_values = [
-            self._csh[o] for o in self._csh
-            if o in self._rti and self._rti_to_band(self._rti[o]) == band
-        ]
+        # Compute mean CSH for this discrete class
+        class_csh_values = []
+        for o in self._csh:
+            if o in self._rti:
+                o_band = self._rti_to_band(self._rti[o])
+                o_class = (1 if o_band == self._n_bands - 1 else 0) if binary else o_band
+                if o_class == discrete_class:
+                    class_csh_values.append(self._csh[o])
 
-        if not band_csh_values:
+        if not class_csh_values:
             return self._csh[occ]
 
-        band_mean = np.mean(band_csh_values)
-        return self._csh[occ] - band_mean
+        class_mean = np.mean(class_csh_values)
+        return self._csh[occ] - class_mean
 
     def metadata(self) -> ExposureMetadata:
         """Return metadata for this exposure measure."""
