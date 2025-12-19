@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.2.2
+**Current Version:** 0.7.2.3
 **Last Updated:** 2025-12-17
 **Paper Draft:** `paper/main.tex`
 
@@ -394,6 +394,27 @@ CSH_alt = cosine similarity to routine centroid (top-33% RTI occupations, employ
 - `residualized_continuous()`: CSH | RTI band
 - `aggregate_to_cz()`: CZ-level aggregation
 
+**v0.7.2.3: Test B (Autor-Dorn Polarization)**
+
+| Outcome | β₃ (CSH_resid) | p-value | ΔR² | Verdict |
+|---------|----------------|---------|-----|---------|
+| Δ routine share | -0.203 | <0.001 | 5.1% | **+** |
+| Δ clerical/retail | -0.174 | <0.001 | 2.5% | **+** |
+| Δ operator share | -0.134 | <0.001 | 1.5% | **+** |
+| Δ service share | +0.058 | 0.009 | 0.3% | 0 |
+| Δ mgmt/prof/tech | +0.015 | 0.43 | 0.0% | 0 |
+
+**Sample:** 722 CZs, 3 periods (1980-1990-2000), 2,166 obs
+**Specification:** Matches Autor-Dorn (2013) Table 5; state FE + time FE
+
+**Interpretation Matrix Summary:** 3+, 0−, 2(0)
+
+**Finding:** CSH_resid adds significant explanatory power (p < 0.001) for routine job decline. CZs with higher continuous routine intensity (beyond binary RSH classification) experienced larger losses in routine, clerical/retail, and operator employment.
+
+**Caveat:** CZ-level CSH computed as linear proxy from RSH (no direct CZ × occupation employment available). True test requires independent CZ-level aggregation.
+
+**Artifact:** `outputs/experiments/battery_test_b_v0723.json`
+
 ---
 
 ## Graveyard
@@ -447,7 +468,8 @@ Deprecated approaches. Do not retry.
 - **Specifications:** `paper/main.tex` Appendix A
 - **v0.7.2.1:** occ1990dd crosswalk PASSED (91.9% employment-weighted coverage)
 - **v0.7.2.2:** CSH implementation PASSED (r=0.815)
-- **Next:** v0.7.2.3 Test B (Autor-Dorn polarization)
+- **v0.7.2.3:** Test B PASSED (3+, 0−, 2(0))
+- **Next:** v0.7.2.4 Test A-lite (task drift) or v0.7.2.5 Test C' (Webb robot)
 
 ---
 
@@ -503,6 +525,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.2.3 | 2025-12-17 | Test B (Autor-Dorn): 3+, 0−, 2(0); CSH_resid adds 5.1% ΔR² for routine decline |
 | 0.7.2.2 | 2025-12-17 | CSH implementation: r(CSH, RTI)=0.815; RSHExposure class; CSH_alt robustness variant |
 | 0.7.2.1 | 2025-12-17 | occ1990dd crosswalk: 91.9% emp-weighted coverage; crosswalk diagnostics module |
 | 0.7.2.0 | 2025-12-17 | Paper v0.7.2 complete. Multiverse + performance battery integrated. MS7-MS9 regime active. |
