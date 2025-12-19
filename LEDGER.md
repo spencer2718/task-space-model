@@ -1,12 +1,12 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.2.3
+**Current Version:** 0.7.3.0
 **Last Updated:** 2025-12-19
 **Paper Draft:** `paper/main.tex`
 
 ---
 
-## Oracle Architecture
+## Oracle Architecture {#oracle-architecture}
 
 The task-space oracle maps **(T, I, S, M) → (Δρ, ΔL, ΔW)**:
 
@@ -28,7 +28,7 @@ The task-space oracle maps **(T, I, S, M) → (Δρ, ΔL, ΔW)**:
 
 ---
 
-## Hard Constraints
+## Hard Constraints {#hard-constraints}
 
 These are inviolable. Agents must not contradict or re-litigate.
 
@@ -45,9 +45,14 @@ These are inviolable. Agents must not contradict or re-litigate.
 
 ---
 
-## Methodology Standards
+## Methodology Standards {#methodology-standards}
 
 These standards govern experiment design and reporting to prevent forking-path inflation of results.
+
+**Priority Tiers:**
+- **Tier 1 (Gatekeeping):** MS7, MS8, MS9 — Prevent invalid claims from reaching paper
+- **Tier 2 (Integrity):** MS2, MS3, MS4, MS10 — Ensure results mean what they claim
+- **Tier 3 (Hygiene):** MS1, MS5, MS6 — Documentation and cleanup discipline
 
 ### MS1: Sample Definition Requirement
 
@@ -136,13 +141,25 @@ Claims meeting criteria receive "ROBUST" designation. Claims from single specifi
 **Current multiverse results:**
 - T Module (Wasserstein vs kernel): 100% win rate (81/81 specs). Status: ROBUST.
 
+### MS10: Specification Deviation Protocol
+
+If implementation cannot follow spec due to data, technical, or feasibility constraints:
+
+1. **STOP** before implementing an alternative
+2. **DOCUMENT**: What spec required, why infeasible, what alternative is proposed
+3. **RETURN** to Lead Researcher for approval OR explicit relabeling
+4. **DO NOT** present alternative results under original test name without approval
+
+Deviations implemented without this protocol constitute MS2 (metric definition) and/or MS3 (exploratory vs confirmatory) violations.
+
 ---
 
-## Methodology Violations Log
+## Methodology Violations Log {#violations-log}
 
 | Date | Violation | Result Affected | Resolution |
 |------|-----------|-----------------|------------|
 | 2025-12-17 | MS1, MS3 | ρ = 0.43 reported without sample filter | Corrected to ρ ≈ 0.13; 0.43 to Graveyard |
+| 2025-12-19 | MS2, MS3, MS10 | Test C' robot exposure | Metric changed from embedding distance to keyword count without approval; relabeled as C'-keyword; correct C' deferred to v0.7.3.1 |
 
 ### MS1 Compliance Audit (v0.7.0.4)
 
@@ -157,7 +174,7 @@ Claims meeting criteria receive "ROBUST" designation. Claims from single specifi
 
 ---
 
-## Claim Registry
+## Claim Registry {#claim-registry}
 
 Canonical phrasing for key claims. All documents (main.tex, README, CLAUDE.md) must use phrasing consistent with evidence class.
 
@@ -177,7 +194,7 @@ Canonical phrasing for key claims. All documents (main.tex, README, CLAUDE.md) m
 
 ---
 
-## Referee Challenge Table (Living)
+## Referee Challenge Table {#referee-challenges}
 
 Claims most likely to draw referee scrutiny. Updated as vulnerabilities are identified or addressed.
 
@@ -195,7 +212,7 @@ Claims most likely to draw referee scrutiny. Updated as vulnerabilities are iden
 
 ---
 
-## Module Validation Checkpoints
+## Module Validation Checkpoints {#module-checkpoints}
 
 Verified validation results for oracle modules. See `paper/main.tex` Section 5 for full exposition.
 
@@ -421,25 +438,37 @@ CSH_alt = cosine similarity to routine centroid (top-33% RTI occupations, employ
 
 ---
 
-**v0.7.2.5: Test C' (Robot Exposure) — PASSED**
+### Retrospective Battery: Interpretation Summary (v0.7.2.x)
 
-| Outcome | β(Robot Exposure) | p-value | R² | Verdict |
-|---------|-------------------|---------|----|---------|
-| Δ ln(emp share) 1990-2005 | **-0.656** | **0.024** | 8.9% | **+** |
+**Test B verdict:** 1+, 0−, 4(0)
 
-**Sample:** 616 occupations (occ1990dd level)
-**Robot DWAs:** 106 DWAs classified as robot-exposed (5.1% of all DWAs)
-**High-exposure occupations:** 108 (top tercile among non-zero exposure)
+CSH adds 5.5% ΔR² for operator employment share; <1% for other outcomes. This is **expected given construct distinction**: embedding geometry captures mobility friction (validated in CPS, v0.6.7-v0.7.1), not automation susceptibility (which RTI already captures). Weak polarization results are a **scope clarification**, not falsification.
 
-**Method:** Robot exposure = fraction of occupation's DWAs matching robot keywords (welding, assembling, loading, sorting, etc.)
+**Test C':** Invalid as framework test (methodology deviation). Deferred to v0.7.3.1.
 
-**Finding:** Occupations with higher robot exposure experienced significantly larger employment share declines during the robot adoption period (1990-2005). A 1 SD increase in robot exposure → 0.66 log-point decline in employment share.
+**Test A-lite:** Blocked (no industry-level data in Dorn archive). Deferred to v0.7.4+.
 
-**Artifact:** `outputs/experiments/battery_test_c_prime_v0725.json`
+**Framework implication:** Task-space oracle validated for mobility/feasibility applications. Automation prediction is outside validated scope.
 
 ---
 
-## Graveyard
+### Retrospective Battery: Test C'-keyword (v0.7.2.5)
+
+**Status: INVALID as framework test**
+
+**Methodology deviation:** Spec required embedding distance to robot-task centroid. Implemented keyword classification + binary count. This tests a classification scheme, not our embedding geometry.
+
+**Result (for reference only):** β = -0.656, p = 0.024, R² = 8.9%
+
+**Interpretation:** Keyword-classified robot DWAs predict occupation employment decline during 1990-2005. This validates the keyword classification but does not test the task-space oracle framework.
+
+**Resolution:** Correct implementation (embedding-based) deferred to v0.7.3.1.
+
+**Artifact:** `outputs/experiments/battery_test_c_prime_keyword_v0725.json`
+
+---
+
+## Graveyard {#graveyard}
 
 Deprecated approaches. Do not retry.
 
@@ -455,7 +484,7 @@ Deprecated approaches. Do not retry.
 
 ---
 
-## Frontier
+## Frontier {#frontier}
 
 ### Demand-Side Integration (Phase 0.8)
 
@@ -484,20 +513,23 @@ Deprecated approaches. Do not retry.
 - **Expected signal:** May improve mobility α; unlikely to affect RTI correlation
 - **Priority:** Low (geometry change >> embedding change)
 
-### Retrospective Diagnostic Battery (IN PROGRESS)
+### Retrospective Battery (v0.7.2.x → v0.7.3.x)
 
-- **Tests A/B/C:** Task composition, employment reallocation, robot displacement
-- **Specifications:** `paper/main.tex` Appendix A
-- **v0.7.2.1:** occ1990dd crosswalk PASSED (91.9% employment-weighted coverage)
-- **v0.7.2.2:** CSH implementation PASSED (r=0.815)
-- **v0.7.2.3:** Test B PASSED (1+, 0−, 4(0)) — IPUMS pipeline constructed
-- **v0.7.2.5:** Test C' PASSED (β=-0.656, p=0.024)
-- **v0.7.2.4:** Test A-lite BLOCKED (no industry-level data in Dorn archive)
-- **Next:** v0.7.3.0 consolidation
+**Completed:**
+- Test B (CZ-level polarization): 1+, 0−, 4(0) — validates construct distinction
+- Crosswalk infrastructure: occ1990dd → O*NET-SOC (91.9% coverage)
+- CSH implementation: r(CSH, RTI) = 0.815
+- IPUMS pipeline: CZ × occ1990dd employment matrices (1980, 1990, 2000)
+
+**Deferred:**
+- Test C' (robot exposure): Requires re-implementation with embedding distance (v0.7.3.1)
+- Test A-lite (industry task drift): Blocked by data; requires ALM replication files (v0.7.4+)
+
+**Implication:** Framework validated for mobility; automation prediction outside current scope.
 
 ---
 
-## Artifact Registry
+## Artifact Registry {#artifact-registry}
 
 ### Distance Matrices
 
@@ -545,11 +577,12 @@ Deprecated approaches. Do not retry.
 
 ---
 
-## Version History
+## Version History {#version-history}
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 0.7.2.5 | 2025-12-19 | Test C' PASSED: Robot exposure predicts employment decline (β=-0.656, p=0.024) |
+| 0.7.3.0 | 2025-12-19 | Documentation schema update. Decision Authority Matrix, LEDGER Update Authority, SPEC requirements. Sprint summary template. |
+| 0.7.2.5 | 2025-12-19 | Retrospective battery. Test B: 1+, 0−, 4(0). Test C' invalid (methodology deviation). IPUMS pipeline built. MS10 added. |
 | 0.7.2.3 | 2025-12-19 | Test B PASSED: IPUMS pipeline; r(CSH_cz, RSH_cz)=0.478; operator decline (+), others (0) |
 | 0.7.2.2 | 2025-12-17 | CSH implementation: r(CSH, RTI)=0.815; RSHExposure class; CSH_alt robustness variant |
 | 0.7.2.1 | 2025-12-17 | occ1990dd crosswalk: 91.9% emp-weighted coverage; crosswalk diagnostics module |

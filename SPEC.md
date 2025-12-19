@@ -1,293 +1,298 @@
-**TASK-SPACE ORACLE v0.7.2.x SPECIFICATION**
-**Retrospective Battery Implementation**
+**TASK-SPACE ORACLE v0.7.3.x SPECIFICATION**
+**Battery Completion + Mobility Validation**
 
 **Status:** FINAL
-**Date:** 2025-12-17
-**Authors:** Lead Researcher, Spec Finalizer
+**Date:** 2025-12-19
+**Version Range:** v0.7.3.1 → v0.7.4.0
 
 ---
 
-## 1. Objective
+## 1. Strategic Context
 
-Implement the retrospective diagnostic battery (Appendix A) to test whether continuous task-space geometry adds explanatory power beyond discrete classification for historical technology episodes. This is the falsifiability test for the oracle's representation quality.
+**Key finding from v0.7.2.x:** Embedding geometry captures **mobility friction** (where workers CAN go), not **automation susceptibility** (which jobs get displaced). Test B confirmed this construct distinction: 1+, 0−, 4(0) for polarization outcomes.
 
-**Core question:** When technology shocks hit labor markets, does measuring "distance from shock in continuous embedding space" predict outcomes better than "binary classification of affected vs. unaffected"?
+**Sprint objective:** Validate this construct distinction through additional tests, then pivot toward mobility applications where the framework shows genuine predictive power.
 
----
-
-## 2. Interpretation Framework
-
-### 2.1 Pre-Registered Thresholds
-
-| Verdict | Criteria |
-|---------|----------|
-| **+** | p < 0.05 AND incremental R² ≥ 0.01 |
-| **−** | p < 0.05 AND β₃ wrong sign |
-| **0** | Otherwise |
-
-**Rationale:** 1% incremental R² is economically meaningful given the paper finds geometry explains ~13-15% of transition patterns. A statistically significant but variance-trivial effect is a "0."
-
-### 2.2 Null Result Interpretation
-
-If Test B yields "0" verdicts, this does NOT falsify the framework. Two interpretations:
-
-1. **Construct distinction (expected):** Embedding space captures mobility friction (where workers CAN go), not automation susceptibility (which tasks get displaced). The paper already finds Wasserstein orthogonal to RTI (r = −0.05).
-
-2. **Representation problem:** Embedding space doesn't add information in these settings.
-
-Interpretation (1) is consistent with existing findings. Null Test B results would constrain scope, not invalidate the architecture.
+**Success criteria for v0.7.4.0:**
+- Test C' completed with proper methodology
+- At least one Tier 1 mobility validation test completed
+- Phase 0.8 demand data access assessed
+- Framework scope definitively established
 
 ---
 
-## 3. Phase Structure
+## 2. Phase Structure
 
-| Version | Deliverable | Gate | Output |
-|---------|-------------|------|--------|
-| **0.7.2.1** | Crosswalk: occ1990dd → O*NET-SOC | Coverage ≥ 80% emp-weighted | `occ1990dd_to_onet_soc.csv` |
-| **0.7.2.2** | CSH implementation | 0.7 ≤ r(CSH, RTI) ≤ 0.9 | `CSHExposure` class |
-| **0.7.2.3** | Test B: Polarization | Signed verdict | `battery_test_b_v0723.json` |
-| **0.7.2.4** | Test A-lite: Task drift | Signed verdict | `battery_test_a_lite_v0724.json` |
-| **0.7.2.5** | Test C': Webb robot exposure | Implementation | `RobotExposure` class |
-| **0.7.3.0** | Battery consolidation | Interpretation matrix | Paper Section 6 update |
-
----
-
-## 4. Detailed Specifications
-
-### 4.1 Crosswalk Construction (0.7.2.1)
-
-**Objective:** Build occ1990dd → O*NET-SOC mapping via Census 2000 chain.
-
-**Method:**
-```
-occ1990dd ← [occ2000_occ1990dd.dta] ← Census 2000 OCC → SOC 2000 → O*NET-SOC
-```
-
-**Data sources (all present in repo):**
-- `data/external/dorn_replication/occ2000_occ1990dd.dta`
-- Census 2000 OCC → SOC crosswalk (acquire from census.gov)
-- O*NET SOC crosswalk files
-
-**Output schema:**
-```
-occ1990dd | onet_soc | weight | confidence_tier | emp_1980
-```
-
-**Acceptance criteria:**
-- Coverage ≥ 80% of 1980 employment-weighted occupations
-- Many-to-many mappings use employment-weighted probabilistic assignment
-- Loss analysis documented by occupation type
-
-**A-full gate:** Proceed to full Δρ tracking only if:
-- Coverage ≥ 90%, OR
-- Missing occupations represent < 5% of 1980 total employment
-
-**Stop condition:** If coverage < 70%, return to Lead Researcher before proceeding.
+| Version | Deliverable | Gate | Timeline |
+|---------|-------------|------|----------|
+| **0.7.3.1** | Test C' proper implementation | Robot direction learned, r > 0.5 with Webb/Felten | Week 1-2 |
+| **0.7.3.2** | Test C' execution | Signed verdict | Week 2-3 |
+| **0.7.3.3** | Decision point: Construct distinction | Confirmed or disconfirmed | Week 3 |
+| **0.7.3.4** | Test A-lite data acquisition (conditional) | GO only if C' confirms distinction | Week 3-4 |
+| **0.7.3.5** | Tier 1 mobility validation | At least one test executed | Week 5-6 |
+| **0.7.4.0** | Sprint consolidation + Phase 0.8 spec | All results documented | Week 7-8 |
 
 ---
 
-### 4.2 CSH Implementation (0.7.2.2)
+## 3. Test C' Proper Implementation (v0.7.3.1-0.7.3.2)
 
-**Objective:** Operationalize Continuous Semantic Height as learned direction in embedding space.
+### 3.1 Objective
 
-**Method:**
-1. Load ALM task scores from `occ1990dd_task_alm.dta`
-2. Compute RTI = ln(Routine) − ln(Manual) − ln(Abstract) for each occ1990dd
-3. Map occ1990dd → O*NET-SOC → DWA embedding centroids (via 0.7.2.1 crosswalk)
-4. Learn direction vector **v**: maximize correlation between occupation DWA centroid projections and RTI
-5. CSH(occ) = projection onto **v**
+Test whether embedding geometry predicts robot-era employment decline. This completes the battery with correct methodology (embedding distance, not keyword classification).
 
-**Residualization for tests:**
+**Expected outcome:** Geometry does NOT add significant predictive power beyond existing robot exposure measures — confirming construct distinction.
+
+### 3.2 Data Acquisition
+
+**Primary:** Webb (2020) robot exposure scores
+- Source: http://eepurl.com/gxo4zr (email signup required)
+- Contains occupation-level robot patent exposure
+- Most methodologically rigorous option
+
+**Fallback:** Felten et al. AIOE scores
+- Source: https://github.com/AIOE-Data/AIOE
+- Immediately available
+- Validated correlation with Webb
+
+**Decision:** If Webb data not received within 3 business days, proceed with Felten AIOE.
+
+### 3.3 Robot Direction Learning (Option C)
+
+**Method:** Learn direction in embedding space that maximizes correlation with robot exposure, analogous to CSH learning from RTI.
+
 ```python
-CSH_resid = CSH - (α + β·RSH)  # Regress CSH on discrete RSH
+# Pseudocode
+1. Load Webb/Felten robot exposure scores at occupation level
+2. Map to occ1990dd via crosswalk (reuse v0.7.2.1 infrastructure)
+3. Get occupation embedding centroids (reuse v0.7.2.2 infrastructure)
+4. Learn robot direction via ridge regression:
+   robot_direction = ridge_fit(centroids, robot_exposure)
+5. Robot_CSH = centroids @ robot_direction
+6. Validate: r(Robot_CSH, robot_exposure) should be > 0.5
 ```
-
-This isolates the geometric information that discrete classification misses.
-
-**Robustness variant (Option A):**
-- Routine centroid = employment-weighted average embedding of top-third RTI occupations
-- CSH_alt = Wasserstein distance to routine centroid
 
 **Acceptance criteria:**
-- 0.7 ≤ r(CSH, RTI) ≤ 0.9
+- r(Robot_CSH, robot_exposure) ≥ 0.5
+- Robot_CSH distribution has meaningful variance
+- Top/bottom occupations pass smell test (forklift operators high, clergy low)
 
-**Concern flag:** If r > 0.9, CSH is nearly redundant with RTI. The residualization will remove most signal, making β₃ uninformative. Document and assess variance of CSH_resid before proceeding to Test B.
+### 3.4 Test C' Execution
 
-**Stop condition:** If r(CSH, RTI) < 0.5, the learned direction doesn't capture routine content. Return to Lead Researcher.
+**Design:**
+```
+Δ ln(emp_share)_occ = β₁·RobotExposure + β₃·Robot_CSH_resid + controls + ε
+```
 
-**Output:** `CSHExposure` class implementing `ExposureMeasure` interface with:
-- `discrete_exposure()` → RSH (binary routine indicator)
-- `continuous_exposure()` → CSH_resid
-- CZ-level aggregation via employment weights
+**Sample:** Manufacturing occupations, 1990-2005 (robot adoption period)
+
+**Outcome:** Employment share change
+
+**Robot_CSH_resid:** Robot_CSH after regressing out Webb/Felten score
+
+**Controls:** Baseline wage, baseline employment share, RTI (to isolate robot from general automation)
+
+**Interpretation:**
+- β₃ significant, ΔR² ≥ 1% → "+" (geometry adds to robot prediction — **disconfirms** construct distinction)
+- β₃ not significant or ΔR² < 1% → "0" (geometry does NOT add — **confirms** construct distinction)
+
+### 3.5 Output
+
+`outputs/experiments/battery_test_c_prime_v0731.json`
 
 ---
 
-### 4.3 Test B: Autor-Dorn Polarization (0.7.2.3)
+## 4. Decision Point: Construct Distinction (v0.7.3.3)
 
-**Objective:** Test whether continuous geometry adds explanatory power to polarization patterns.
+**After Test C' results:**
+
+| Test C' Result | Test B Pattern | Interpretation | Action |
+|----------------|----------------|----------------|--------|
+| "0" | 1+, 0−, 4(0) | **CONFIRMED**: Geometry = mobility, not automation | Proceed to mobility validation |
+| "+" | 1+, 0−, 4(0) | **MIXED**: Geometry captures some automation signal | Investigate what robot component geometry captures |
+| "+" | (hypothetical strong B) | **DISCONFIRMED**: Geometry = automation | Reconceptualize framework |
+
+**Expected path:** Test C' = "0", confirming construct distinction. Proceed with mobility-focused validation.
+
+**If disconfirmed:** STOP. Return to Lead Researcher for framework reconceptualization before proceeding.
+
+---
+
+## 5. Test A-lite (v0.7.3.4) — Conditional
+
+**Gate:** Execute only if Test C' confirms construct distinction.
+
+### 5.1 Data Acquisition
+
+**Sources:**
+- Dorn [B1]: occ1990dd_task_alm.zip (already have)
+- Dorn [C4]: ind1990dd balanced industry panel — https://www.ddorn.net/data.htm
+- BEA Fixed Assets: Computer capital by industry — https://www.bea.gov/data/investment-fixed-assets/industry
+
+**Estimated effort:** 2-3 days for data acquisition and crosswalk construction
+
+### 5.2 Design
+
+**Unit:** Industry × decade (1980-1990, 1990-2000)
 
 **Specification:**
 ```
-ΔY_cz = β₁·RSH + β₃·CSH_resid + X'γ + ε
+Δ TaskIndex_ind = β₁·ComputerIntensity + β₃·Industry_CSH_resid + controls + ε
 ```
 
-**Outcomes (from Dorn workfile):**
-1. Δ employment share in service occupations (1980-2005)
-2. Δ employment share in routine occupations (1980-2005)
-3. Δ log hourly wage, 10th percentile
-4. Δ log hourly wage, 50th percentile
-5. Δ log hourly wage, 90th percentile
+**Industry_CSH:** Employment-weighted average CSH across occupations within industry
 
-**Controls (standard Autor-Dorn):**
-- Census division dummies
-- 1980 demographic controls (education shares, age shares, race shares)
-- 1980 manufacturing share
+**Outcomes:** Δ Routine, Δ Abstract, Δ Manual task indices
 
-**CZ aggregation:**
-- CSH_cz = Σ_k (emp_share_k × CSH_k) for occupations k in CZ
-- Parallels RSH construction
+### 5.3 Decision
 
-**Interpretation per outcome:**
-- β₃ > 0, p < 0.05, ΔR² ≥ 0.01 → "+"
-- β₃ < 0, p < 0.05 → "−"
-- Otherwise → "0"
-
-**Output:** JSON with verdicts, coefficients, standard errors, R² values for each outcome.
-
-**Scope note:** Test B validates the embedding space direction (CSH as scalar), not the full Wasserstein optimal transport structure. Complementary to CPS mobility validation which tests the distance metric.
+If data acquisition exceeds 3 days or requires extensive manual crosswalk construction, defer to v0.7.4+ and document as blocked.
 
 ---
 
-### 4.4 Test A-lite: Task Index Drift (0.7.2.4)
+## 6. Tier 1 Mobility Validation (v0.7.3.5)
 
-**Objective:** Test whether continuous geometry predicts task composition changes.
+**Rationale:** If geometry captures mobility friction, it should predict:
+- Unemployment duration (more nearby occupations → faster reemployment)
+- Post-displacement wage recovery (higher task similarity → less wage loss)
+
+### 6.1 Option A: Unemployment Duration Test (Preferred)
+
+**Hypothesis:** Workers in occupations with more "nearby" alternatives (lower average Wasserstein distance to other occupations) experience shorter unemployment spells.
+
+**Data:** SIPP unemployment spells merged with O*NET task content
+
+**Measure:** For each occupation, compute:
+- `mean_distance` = average Wasserstein distance to all other occupations
+- `nearby_mass` = fraction of employment in occupations within distance threshold
+
+**Outcome:** Unemployment duration (weeks)
 
 **Specification:**
 ```
-Δ TaskIndex_it = β₁·ComputerIntensity_it + β₃·(CSH_i - DiscreteRoutine_i) + ε
+ln(duration)_i = β₁·nearby_mass_occ + X'γ + ε
 ```
 
-**Unit of analysis:** Industry × decade (1980-1990, 1990-2000)
+**Expected:** β₁ < 0 (more nearby options → shorter duration)
 
-**Task indices:** Routine, Abstract, Manual (from ALM measures in Dorn files)
+### 6.2 Option B: Post-Displacement Wage Recovery
 
-**Computer intensity:** PC utilization from Dorn workfile
+**Hypothesis:** Workers who transition to task-similar occupations retain more of their pre-displacement wage.
 
-**Output:** JSON with verdicts per task index per decade.
+**Data:** Displaced Worker Survey (CPS supplement) with occupation codes
 
----
+**Measure:** Task similarity between pre- and post-displacement occupations (1 - Wasserstein distance)
 
-### 4.5 Test C': Webb Robot Exposure (0.7.2.5)
+**Outcome:** Wage ratio (post/pre displacement)
 
-**Decision:** Pivot to Webb (2020) methodology instead of IFR purchase.
-
-**Rationale:**
-- Tests oracle's task-based approach (patent→task semantic matching)
-- Higher learning value for "research-for-learning" orientation
-- Avoids $1,000 IFR cost and data complexity
-- If Test B strongly positive, IFR purchase can be revisited
-
-**Method:**
-1. Define robot-exposed DWA cluster based on Webb's patent-task findings:
-   - Activities involving: moving, handling, welding, assembling objects, material manipulation
-   - High loading on: repetitive motions, equipment-paced work, structured physical environments
-2. Robot exposure = semantic similarity (embedding distance) to robot-task centroid
-3. Aggregate to CZ via occupation employment shares
-
-**Trade-off documented:** Test C' results not directly comparable to Acemoglu-Restrepo. Interpretation matrix distinguishes:
-- Test C (IFR): "Does continuous outperform discrete in canonical robot setting?"
-- Test C' (Webb): "Does task-based robot exposure outperform industry-based?"
-
-C' is more aligned with oracle's value proposition—testing whether task-level measurement adds value.
-
-**Output:** `RobotExposure` class; evaluation deferred pending B results.
-
----
-
-### 4.6 Battery Consolidation (0.7.3.0)
-
-**Deliverables:**
-1. Complete interpretation matrix across all tests/outcomes
-2. Summary statistics and diagnostics
-3. Paper Section 6 update (promote Appendix A from "retained for future" to "implemented")
-
-**Interpretation matrix format:**
+**Specification:**
 ```
-| Test | Outcome | β₃ | SE | p | ΔR² | Verdict |
-|------|---------|----|----|---|-----|---------|
-| B | Δ Service Share | ... | ... | ... | ... | +/−/0 |
+ln(wage_ratio)_i = β₁·task_similarity + X'γ + ε
 ```
 
-**Summary:**
-```
-| Verdict | Count | Interpretation |
-|---------|-------|----------------|
-| + | n | Continuous geometry adds information |
-| − | n | Discrete classification dominates |
-| 0 | n | No difference / inconclusive |
-```
+**Expected:** β₁ > 0 (higher similarity → better wage retention)
+
+### 6.3 Selection
+
+**Prefer Option A** (unemployment duration) if SIPP data accessible within 1 week.
+
+**Fall back to Option B** if SIPP preparation exceeds estimates.
+
+**Minimum viable:** At least one test completed with interpretable results.
 
 ---
 
-## 5. Data Requirements
+## 7. Parallel Track: Phase 0.8 Preparation
 
-**Already present:**
-- `data/external/dorn_replication/occ1990dd_task_alm.dta` — ALM task scores
-- `data/external/dorn_replication/occ2000_occ1990dd.dta` — Crosswalk
-- `data/external/dorn_replication/dorn_extracted/` — Full archive
-- O*NET db_30_0 — DWA embeddings
-- Wasserstein distance matrices — Cached
+### 7.1 Demand Data Access Assessment
 
-**To acquire:**
-- Census 2000 OCC → SOC 2000 crosswalk (census.gov, free)
-- Dorn workfile2012.dta if not in archive (ddorn.net, free)
-- IPUMS Census extracts for employment weights if needed (ipums.org, free with registration)
+**Objective:** Determine feasibility and cost of occupation-level vacancy data.
 
----
+**Tasks:**
+1. Check institutional WRDS access for Revelio Labs
+2. Request Lightcast academic pricing (expect $5,000-12,000/year)
+3. Download Indeed Hiring Lab indices as free baseline (github.com/hiring-lab)
 
-## 6. Timeline
+**Note:** JOLTS provides industry-level data only — insufficient for occupation-level demand integration.
 
-| Task | Effort | Cumulative |
-|------|--------|------------|
-| 0.7.2.1 Crosswalk | 3-4 days | Day 4 |
-| 0.7.2.2 CSH | 2-3 days | Day 7 |
-| 0.7.2.3 Test B | 2-3 days | Day 10 |
-| 0.7.2.4 Test A-lite | 2 days | Day 12 |
-| 0.7.2.5 Test C' setup | 2 days | Day 14 |
-| 0.7.3.0 Consolidation | 2-3 days | Day 17 |
+**Output:** Memo documenting access options, costs, and recommendation for Phase 0.8.
 
-**Total:** ~2.5 weeks to battery completion
+### 7.2 Δρ Operator Scoping
+
+**Defer detailed Δρ specification** until demand data access confirmed. The Δρ concept requires observing task content evolution over time, which only job posting data provides.
+
+**Preliminary design question:** Is Δρ (task distribution change) better modeled as:
+- (a) Shift toward/away from shock-exposed tasks within occupation
+- (b) Reweighting of DWA importance based on posting frequency
+- (c) Emergence/deprecation of specific tasks
 
 ---
 
-## 7. Success Criteria for Phase
+## 8. Risk Assessment
 
-**Minimum viable:** Interpretation matrix with signed verdicts for Tests B and A-lite.
-
-**Full success:** 
-- All tests executed with pre-registered methodology
-- Results documented in experiment JSONs
-- Paper Section 6 updated
-- Scope implications for 0.8.x demand integration identified
-
-**Learning outcomes regardless of verdicts:**
-- If "+" dominant: Proceed to 0.8.x with confidence in representation
-- If "0" dominant: Confirms construct distinction (geometry ≠ automation); scope constraint documented
-- If "−" dominant: Fundamental reassessment required; geometry may not capture economically relevant structure
+| Risk | Probability | Impact | Mitigation |
+|------|-------------|--------|------------|
+| Webb data access delayed | Medium | Low | Use Felten AIOE immediately |
+| Test C' disconfirms construct distinction | Low | High | Framework reconceptualization required |
+| SIPP data preparation exceeds estimate | Medium | Medium | Fall back to Displaced Worker Survey |
+| Lightcast pricing prohibitive | Medium | High | Pursue WRDS-Revelio; use Indeed for validation |
+| Test A-lite data too complex | Medium | Low | Defer to v0.7.4+; battery sufficient without it |
 
 ---
 
-## 8. Forward Link to Phase 0.8
+## 9. Stop-and-Return Conditions
 
-| Phase | Question | Tests |
-|-------|----------|-------|
-| 0.7.2-3 | Does continuous geometry predict canonical outcomes? | Representation quality |
-| 0.8.x | Does geometry combine with demand for equilibrium prediction? | Architecture integration |
+**Return to Lead Researcher if:**
 
-**Design requirement for 0.8.x:** Include separability test—does T module contribution remain stable when M incorporates demand?
+1. Test C' shows β₃ significant with ΔR² ≥ 1% (geometry predicts robots — construct distinction in question)
+2. Robot direction learning yields r < 0.3 with Webb/Felten (methodology not working)
+3. Both mobility validation tests (A and B) show null results (mobility interpretation unsupported)
+4. Any MS10 situation: implementation requires deviation from spec
+
+---
+
+## 10. Sprint Timeline
+
+| Week | Tasks | Deliverables |
+|------|-------|--------------|
+| 1 | Webb data request; Felten download; robot direction learning | Robot_CSH values |
+| 2 | Test C' regression; results analysis | battery_test_c_prime_v0731.json |
+| 3 | Decision point; A-lite data acquisition begins | Construct distinction verdict |
+| 4 | A-lite pipeline (conditional); SIPP/DWS preparation | Data ready for mobility test |
+| 5 | Mobility validation test execution | Regression results |
+| 6 | Results analysis; demand data assessment | Access memo |
+| 7 | Documentation; Phase 0.8 spec draft | Sprint summary |
+| 8 | Consolidation; version bump | v0.7.4.0 release |
+
+---
+
+## 11. Success Metrics for v0.7.4.0
+
+**Minimum viable:**
+- Test C' completed with proper methodology
+- Construct distinction verdict documented
+- At least one mobility validation test with interpretable results
+- Phase 0.8 scoped
+
+**Full success:**
+- All above plus Test A-lite completed (or documented as blocked with clear rationale)
+- Demand data access secured or priced
+- Framework scope definitively established with multiple supporting tests
+- Clear policy application pathway identified
+
+---
+
+## 12. Claim Registry Updates (Anticipated)
+
+If construct distinction confirmed:
+
+| Claim ID | Canonical Text | Evidence Class | Status |
+|----------|----------------|----------------|--------|
+| CD-E1 | Embedding geometry captures mobility friction, not automation susceptibility | E1 | VALIDATED |
+| CD-E2 | Test B (1+/5) and Test C' (0) confirm orthogonality to automation prediction | E1 | VALIDATED |
+| M-E2 | Nearby occupation mass predicts unemployment duration (if mobility test succeeds) | E2 | VALIDATED |
 
 ---
 
 **SPECIFICATION FINAL**
 
-Ready for Engineer instructions on 0.7.2.1 implementation.
+Ready for Engineer implementation upon Lead Researcher approval.

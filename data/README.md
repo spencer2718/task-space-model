@@ -22,6 +22,15 @@ External data required for the task-space oracle. Specifications match `paper/ma
 - **Sample:** 89,329 verified transitions after filtering
 - **Download:** https://cps.ipums.org/cps/ (requires free IPUMS account)
 
+### Census Microdata (IPUMS) — Retrospective Battery
+
+- **Source:** IPUMS USA 5% samples
+- **Years:** 1980, 1990, 2000
+- **Variables:** STATEFIP, PUMA/CNTYGP98, OCC/OCC1950/OCC1990, PERWT, AGE, EMPSTAT
+- **Location:** `data/external/ipums/census/`
+- **Purpose:** CZ × occupation employment matrices for Test B
+- **Download:** Via `ipumspy` API (see `src/task_space/battery/ipums_extract.py`)
+
 ---
 
 ## Optional Data
@@ -55,6 +64,7 @@ These exist in `data/external/` for retrospective tests (main.tex Appendix A) or
 | Data | Location | Purpose | Status |
 |------|----------|---------|--------|
 | Dorn replication | `data/external/dorn_replication/` | Appendix A Test B (1980-2005) | Available |
+| IPUMS Census (1980-2000) | `data/external/ipums/census/` | CZ employment matrices | Available (v0.7.2.3) |
 | Dingel-Neiman telework | `data/external/dingel_neiman/` | Telework shock profiles | Available |
 | JOLTS vacancy rates | — | Demand-side integration | Phase 0.8 |
 | CPS licensing supplement | — | Institutional barriers | Phase 0.9 |
