@@ -394,16 +394,48 @@ CSH_alt = cosine similarity to routine centroid (top-33% RTI occupations, employ
 - `residualized_continuous()`: CSH | RTI band
 - `aggregate_to_cz()`: CZ-level aggregation
 
-**v0.7.2.3: Test B (Autor-Dorn Polarization) — BLOCKED**
+**v0.7.2.3: Test B (Autor-Dorn Polarization) — PASSED**
 
-**Status: BLOCKED.** Proper Test B requires CZ × occupation employment data to compute independent CZ-level CSH. The Dorn replication archive provides only pre-aggregated CZ outcomes (workfile2012.dta) and national occupation-level data (occ1990dd_data2012.dta). No CZ × occupation employment matrix exists.
+| Outcome | β(CSH_resid) | p-value | ΔR² | Verdict |
+|---------|--------------|---------|-----|---------|
+| Δ routine share | -1.034 | 0.001 | 0.77% | 0 |
+| Δ clerical/retail | +0.437 | 0.187 | 0.09% | 0 |
+| Δ operator share | **-3.337** | **<0.001** | **5.5%** | **+** |
+| Δ service share | +0.214 | 0.557 | 0.02% | 0 |
+| Δ mgmt/prof/tech | +0.545 | 0.079 | 0.13% | 0 |
 
-**Invalid Proxy Attempt (discarded):**
-An initial attempt computed CSH_cz = α + β × RSH_cz, yielding r(RSH_cz, CSH_cz) = 1.0 by construction. This tests "continuous vs binary RSH" rather than "CSH vs RSH" — a methodologically different question.
+**Sample:** 722 CZs, 3 periods (1980-2000), 2,166 obs
+**Specification:** Matches Autor-Dorn (2013) Table 5; state FE + time FE
 
-**Path Forward:** IPUMS Census microdata (1980, 1990, 2000) can be downloaded via API (`ipumspy` library), aggregated to CZ × occ1990dd using Dorn crosswalks, and used to compute proper independent CSH_cz. Requires API key from user's existing IPUMS account.
+**Interpretation Matrix:** 1+, 0−, 4(0)
 
-**Artifact (INVALID):** `outputs/experiments/battery_test_b_proxy_INVALID_v0723.json`
+**Key Validation:** r(CSH_cz, RSH_cz) = **0.478** (independent, not proxy!)
+- CSH_cz computed from IPUMS 1980 Census via occupation employment weights
+- CSH_resid variance retained: 73.2%
+
+**Finding:** CSH_resid adds significant explanatory power for operator job decline (ΔR² = 5.5%, p < 0.001). Other outcomes show directionally consistent effects but below the ΔR² ≥ 1% threshold.
+
+**Methodology:** IPUMS Census microdata downloaded via API, aggregated to CZ × occ1990dd using Dorn crosswalks, then weighted by CZ-specific employment shares.
+
+**Artifact:** `outputs/experiments/battery_test_b_v0723.json`
+
+---
+
+**v0.7.2.5: Test C' (Robot Exposure) — PASSED**
+
+| Outcome | β(Robot Exposure) | p-value | R² | Verdict |
+|---------|-------------------|---------|----|---------|
+| Δ ln(emp share) 1990-2005 | **-0.656** | **0.024** | 8.9% | **+** |
+
+**Sample:** 616 occupations (occ1990dd level)
+**Robot DWAs:** 106 DWAs classified as robot-exposed (5.1% of all DWAs)
+**High-exposure occupations:** 108 (top tercile among non-zero exposure)
+
+**Method:** Robot exposure = fraction of occupation's DWAs matching robot keywords (welding, assembling, loading, sorting, etc.)
+
+**Finding:** Occupations with higher robot exposure experienced significantly larger employment share declines during the robot adoption period (1990-2005). A 1 SD increase in robot exposure → 0.66 log-point decline in employment share.
+
+**Artifact:** `outputs/experiments/battery_test_c_prime_v0725.json`
 
 ---
 
@@ -458,8 +490,10 @@ Deprecated approaches. Do not retry.
 - **Specifications:** `paper/main.tex` Appendix A
 - **v0.7.2.1:** occ1990dd crosswalk PASSED (91.9% employment-weighted coverage)
 - **v0.7.2.2:** CSH implementation PASSED (r=0.815)
-- **v0.7.2.3:** Test B BLOCKED (requires CZ × occupation data from IPUMS)
-- **Next:** IPUMS API acquisition OR contingency tests (B-alt, A-lite, C')
+- **v0.7.2.3:** Test B PASSED (1+, 0−, 4(0)) — IPUMS pipeline constructed
+- **v0.7.2.5:** Test C' PASSED (β=-0.656, p=0.024)
+- **v0.7.2.4:** Test A-lite BLOCKED (no industry-level data in Dorn archive)
+- **Next:** v0.7.3.0 consolidation
 
 ---
 
@@ -515,7 +549,8 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 0.7.2.3 | 2025-12-19 | Test B BLOCKED: requires CZ × occupation data; IPUMS API feasible; invalid proxy discarded |
+| 0.7.2.5 | 2025-12-19 | Test C' PASSED: Robot exposure predicts employment decline (β=-0.656, p=0.024) |
+| 0.7.2.3 | 2025-12-19 | Test B PASSED: IPUMS pipeline; r(CSH_cz, RSH_cz)=0.478; operator decline (+), others (0) |
 | 0.7.2.2 | 2025-12-17 | CSH implementation: r(CSH, RTI)=0.815; RSHExposure class; CSH_alt robustness variant |
 | 0.7.2.1 | 2025-12-17 | occ1990dd crosswalk: 91.9% emp-weighted coverage; crosswalk diagnostics module |
 | 0.7.2.0 | 2025-12-17 | Paper v0.7.2 complete. Multiverse + performance battery integrated. MS7-MS9 regime active. |
