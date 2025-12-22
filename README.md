@@ -118,7 +118,7 @@ paper/
     main.tex             # Theory + specifications
 ```
 
-See `CLAUDE.md` for developer context, `LEDGER.md` for scientific state.
+See `CLAUDE.md` for developer context, `LEDGER.md` for scientific state. Use [`templates/sprint_summary.md`](templates/sprint_summary.md) when writing sprint summaries (one per sprint when updating LEDGER and the paper).
 
 ---
 

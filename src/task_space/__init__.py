@@ -1,5 +1,5 @@
-# task_space v0.7.1.0
-# Dead code cleanup complete
+# task_space v0.7.3.0
+# Retrospective battery + documentation schema (MS10, Decision Authority)
 
 # Domain (core, unchanged)
 from .domain import (

@@ -1,5 +1,11 @@
 """
-Wasserstein vs Kernel Overlap Comparison (Path A)
+Wasserstein vs Kernel Overlap Comparison (Path A) — ARCHIVED STUB
+
+This script reflects the original pre-registered Path A design from v0.7.0.
+The actual experiment has since been run and results are recorded in the
+main validation layer (see LEDGER.md and paper/main.tex).
+
+This script is retained as an archived reference for the original design.
 
 Pre-registered test: Does Wasserstein distance outperform kernel overlap
 for predicting CPS worker mobility?
@@ -21,7 +27,7 @@ from datetime import datetime
 
 # Configuration
 OUTPUT_DIR = Path("outputs/experiments")
-VERSION = "0.7.0"
+VERSION = "0.7.0-stub"  # Archived reference; see LEDGER for actual results
 
 
 def main():

@@ -1,8 +1,15 @@
+# Minimal runtime deps for quick experimentation.
+# Full dependency set is defined in pyproject.toml.
+#
+# For full installation with all features (torch, sentence-transformers,
+# validation modules, etc.), use:
+#   pip install -e ".[dev,notebooks]"
+#
 numpy
 pandas
-scikit-learn
 scipy
+scikit-learn
+openpyxl
+python-dotenv
 requests
 matplotlib
-python-dotenv
-openpyxl

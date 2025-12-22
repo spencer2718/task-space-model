@@ -1,14 +1,13 @@
 """
 Robot exposure classification based on Webb (2020) methodology.
 
-Robots are particularly suited to perform routine manual tasks such as:
-- Welding, assembling, handling tools
-- Moving, loading, packaging objects
-- Machine tending, equipment operation
-- Physical manipulation in structured environments
+NOTE: This module implements the C'-keyword prototype used in v0.7.2.x
+and documented in LEDGER. It is an exploratory keyword-based measure of
+robot exposure and is NOT the canonical Test C' framework implementation,
+which is deferred to v0.7.3.1+.
 
-This module classifies DWAs as robot-exposed and computes occupation-level
-robot exposure scores for Test C'.
+The module classifies DWAs as robot-exposed using keyword rules and
+computes occupation-level robot exposure scores for exploratory analysis.
 """
 
 import re
