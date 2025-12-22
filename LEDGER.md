@@ -669,6 +669,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.3.4b | 2025-12-22 | PPML robustness: all β<0 preserved, rankings differ slightly. Distance effect robust to heteroskedasticity correction. |
 | 0.7.3.4 | 2025-12-22 | Gravity model: partial R² = 3.46% (wasserstein), below C-G 15% benchmark. Task distance modest share of aggregate flows. |
 | 0.7.3.3 | 2025-12-22 | Ground metric validation: PASSED. Embedding vs identity: +96% pseudo-R². Semantic task similarity matters. |
 | 0.7.3.2 | 2025-12-22 | 2×2 head-to-head: GATE FAILED. Wasserstein vs cosine_embed: ΔR²=0.43pp, p=0.002. Embedding choice dominates. |
