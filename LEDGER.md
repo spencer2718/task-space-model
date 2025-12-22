@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.3.3
+**Current Version:** 0.7.3.4
 **Last Updated:** 2025-12-22
 **Paper Draft:** `paper/main.tex`
 
@@ -394,6 +394,34 @@ The MPNet embedding is doing the work. The Wasserstein formulation provides marg
 
 **Status: VALIDATED.** Aggregate reallocation is demand-dominated. Geometry measures supply-side feasibility (where workers CAN go), not demand-side outcomes (where they DO go). The oracle's (T, I, S, M) architecture correctly separates these components.
 
+### M Module: Gravity Model (v0.7.3.4)
+
+Bilateral flow gravity model: ln(Flow_ij + 1) = α + β₁·ln(Emp_i) + β₂·ln(Emp_j) + β₃·d(i,j) + ε
+
+| Metric | β_distance | t-stat | R²_full | Partial R² |
+|--------|------------|--------|---------|------------|
+| wasserstein | -1.041 | -96.2 | 25.52% | **3.46%** |
+| cosine_onet | -1.556 | -92.4 | 25.27% | 3.20% |
+| cosine_embed | -0.577 | -82.2 | 24.62% | 2.55% |
+| euclidean_dwa | -0.514 | -25.3 | 22.31% | 0.25% |
+
+**Sample:** 199,362 occupation pairs (447 × 446); 12.5% positive flow, 87.5% zeros
+
+**Mass-only model R²:** 22.06% (employment size alone explains most variance)
+
+**Key findings:**
+1. **Wasserstein best for aggregate flows:** Unlike conditional logit (where cosine_embed ≈ wasserstein), distributional treatment adds value for aggregate prediction
+2. **cosine_onet competitive in gravity:** Its binary "connected/not connected" structure captures aggregate patterns even though it fails in individual choice
+3. **euclidean_dwa nearly zero:** Confirms this metric captures little useful signal
+
+**Cortes-Gallipoli benchmark:** Best partial R² = 3.46%, well below C-G's 15%. Consistent with task-specific costs being a modest share of switching costs.
+
+**Note:** Gravity model (aggregate flows) differs from conditional logit (individual choice). The two tests answer different questions:
+- Conditional logit: "Which destinations do workers choose, given they switch?"
+- Gravity model: "How much does distance reduce total bilateral flows?"
+
+**Status: VALIDATED.** Task distance explains modest share of aggregate flows. Embedding methods average 3.0% partial R², outperforming O*NET methods (1.7%).
+
 ### Complementary Validations
 
 **RTI Construct Validity (v0.6.8):**
@@ -620,6 +648,7 @@ Deprecated approaches. Do not retry.
 | Distance Baselines | `outputs/experiments/distance_baselines_v0731.json` | Methodology Comparison |
 | 2×2 Head-to-Head | `outputs/experiments/distance_head_to_head_v0732.json` | Methodology Comparison |
 | Ground Metric Validation | `outputs/experiments/ground_metric_validation_v0733.json` | Methodology Comparison |
+| Gravity Model | `outputs/experiments/gravity_model_v0734.json` | M Module |
 
 ### Embeddings
 
@@ -640,6 +669,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.3.4 | 2025-12-22 | Gravity model: partial R² = 3.46% (wasserstein), below C-G 15% benchmark. Task distance modest share of aggregate flows. |
 | 0.7.3.3 | 2025-12-22 | Ground metric validation: PASSED. Embedding vs identity: +96% pseudo-R². Semantic task similarity matters. |
 | 0.7.3.2 | 2025-12-22 | 2×2 head-to-head: GATE FAILED. Wasserstein vs cosine_embed: ΔR²=0.43pp, p=0.002. Embedding choice dominates. |
 | 0.7.3.1 | 2025-12-22 | Distance baselines: cosine-onet, cosine-embed, euclidean-dwa matrices (447×447). ρ(Wasserstein, cosine-embed)=0.95. |
