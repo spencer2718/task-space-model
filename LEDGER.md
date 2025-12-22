@@ -1,7 +1,7 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.3.0
-**Last Updated:** 2025-12-19
+**Current Version:** 0.7.3.1
+**Last Updated:** 2025-12-22
 **Paper Draft:** `paper/main.tex`
 
 ---
@@ -539,6 +539,9 @@ Deprecated approaches. Do not retry.
 | Wasserstein (Census) | `.cache/artifacts/v1/mobility/d_wasserstein_census.npz` | 447×447 |
 | Kernel (Census) | `.cache/artifacts/v1/mobility/d_sem_census.npz` | 447×447 |
 | Institutional | `.cache/artifacts/v1/mobility/d_inst_census.npz` | 447×447 |
+| Cosine O*NET (Census) | `.cache/artifacts/v1/mobility/d_cosine_onet_census.npz` | 447×447 |
+| Cosine Embedding (Census) | `.cache/artifacts/v1/mobility/d_cosine_embed_census.npz` | 447×447 |
+| Euclidean DWA (Census) | `.cache/artifacts/v1/mobility/d_euclidean_dwa_census.npz` | 447×447 |
 
 ### Experiment Results
 
@@ -561,6 +564,7 @@ Deprecated approaches. Do not retry.
 | Crosswalk Coverage | `outputs/experiments/crosswalk_coverage_v0721.json` | Battery |
 | CSH Values | `outputs/experiments/csh_values_v0722.csv` | Battery |
 | CSH_alt Values | `outputs/experiments/csh_alt_values_v0722.csv` | Battery |
+| Distance Baselines | `outputs/experiments/distance_baselines_v0731.json` | Methodology Comparison |
 
 ### Embeddings
 
@@ -581,6 +585,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.3.1 | 2025-12-22 | Distance baselines: cosine-onet, cosine-embed, euclidean-dwa matrices (447×447). ρ(Wasserstein, cosine-embed)=0.95. |
 | 0.7.3.0 | 2025-12-19 | Documentation schema update. Decision Authority Matrix, LEDGER Update Authority, SPEC requirements. Sprint summary template. |
 | 0.7.2.5 | 2025-12-19 | Retrospective battery. Test B: 1+, 0−, 4(0). Test C' invalid (methodology deviation). IPUMS pipeline built. MS10 added. |
 | 0.7.2.3 | 2025-12-19 | Test B PASSED: IPUMS pipeline; r(CSH_cz, RSH_cz)=0.478; operator decline (+), others (0) |
