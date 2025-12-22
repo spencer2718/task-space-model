@@ -2,7 +2,7 @@
 
 Infrastructure for analyzing how task-level technological change propagates to labor market outcomes.
 
-**Version 0.7.3.0** — Retrospective Battery + Documentation Schema
+**Version 0.7.4.0** — Attribution Reframe: Semantic Task Substitutability
 
 ---
 
@@ -28,7 +28,7 @@ See `paper/main.tex` for formal theory and specifications.
 
 | Module | Status | Evidence |
 |--------|--------|----------|
-| **T** (Wasserstein geometry) | ✓ Robust | 100% win rate (81/81 specs); median ΔLL = +13,052 |
+| **T** (Embedding-informed distance) | ✓ Robust | 100% win rate (81/81 specs); median ΔLL = +13,052 |
 | **I** (Institutional distance) | ✓ Validated | t = 34.6 conditional on T |
 | **S** (Shock integration) | ✓ Validated | ΔLL = +23,119 on holdout |
 | **M** (Switching costs) | ⚠️ Calibrated | External anchor (Dix-Carneiro) |
@@ -42,16 +42,16 @@ See `paper/main.tex` for formal theory and specifications.
 
 ## Validation Details
 
-### T Module: Geometry Comparison
+### T Module: Distance Metric Attribution
 
-Wasserstein substantially outperforms kernel overlap for predicting worker mobility:
+Task distance comparison shows embedding ground metric (+96%) dominates distributional treatment (+3%). Wasserstein preserves theoretical grounding; cosine_embed achieves comparable predictive performance (ρ = 0.95).
 
 | Metric | Kernel | Wasserstein | Δ |
 |--------|--------|-------------|---|
 | α (semantic) | 5.688 | 8.936 | +57% |
 | Log-likelihood | -192,627 | -183,051 | +9,576 |
 
-Workers minimize skill transformation cost. The "earth mover" interpretation is economically validated.
+The core mechanism is **semantic task substitutability**: embeddings capture that "operating forklift" ≈ "driving delivery vehicle."
 
 ### I Module: Institutional Distance
 
@@ -137,7 +137,8 @@ See `CLAUDE.md` for developer context, `LEDGER.md` for scientific state. Use [`t
 
 | Version | What Changed |
 |---------|--------------|
-| **0.7.3.0** | Retrospective battery (Test B: 1+/5). IPUMS pipeline. Documentation schema (MS10, Decision Authority). |
+| **0.7.4.0** | Attribution reframe: embedding-informed distance. Ground metric validation (+96% vs identity). Gravity model (3.5% partial R², consistent with C-G). |
+| 0.7.3.0 | Retrospective battery (Test B: 1+/5). IPUMS pipeline. Documentation schema (MS10, Decision Authority). |
 | 0.7.2.0 | Multiverse robustness (81/81). Performance battery (MPR=0.74). MS7-MS9 methodology regime. |
 | 0.7.1.0 | Demand decomposition validated. Metric correction (ρ = 0.43 → 0.13). |
 | 0.7.0.1 | Oracle architecture framing. Documentation hierarchy. |

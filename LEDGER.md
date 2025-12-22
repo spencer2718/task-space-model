@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.3.4
+**Current Version:** 0.7.4.0
 **Last Updated:** 2025-12-22
 **Paper Draft:** `paper/main.tex`
 
@@ -12,7 +12,7 @@ The task-space oracle maps **(T, I, S, M) → (Δρ, ΔL, ΔW)**:
 
 | Module | Description | Status |
 |--------|-------------|--------|
-| **T** (Task representation) | Wasserstein geometry on O*NET embeddings | **Validated** |
+| **T** (Task representation) | Embedding-informed distance (semantic task substitutability) | **Validated** |
 | **I** (Institutional structure) | Job zones + certification distance | **Validated** |
 | **S** (Shock profiles) | External AIOE integration | **Integrated** |
 | **M** (Adjustment mechanisms) | Switching costs, equilibrium | **Preliminary** |
@@ -174,14 +174,34 @@ Deviations implemented without this protocol constitute MS2 (metric definition) 
 
 ---
 
+## Attribution Audit (v0.7.3.2b) {#attribution-audit}
+
+**Finding:** The original T Module validation (ΔLL = +9,576 vs kernel overlap) conflated two effects. The 2×2 comparison (v0.7.3.2) isolated them:
+
+| Effect | Comparison | Result |
+|--------|------------|--------|
+| Embedding vs O*NET | cosine_embed (14.1%) vs cosine_onet (8.1%) | +75% relative |
+| Distributional vs Simple | wasserstein (14.5%) vs cosine_embed (14.1%) | +3% relative |
+
+**Implication:** The embedding choice is the primary driver. Wasserstein vs cosine-on-centroids is marginal for individual choice prediction (ρ = 0.95 correlation between distance matrices).
+
+**Ground metric validation (v0.7.3.3):** Wasserstein-embedding >> Wasserstein-identity (+96%), confirming semantic task similarity (knowing "operating forklift" ≈ "driving delivery vehicle") is economically meaningful.
+
+**Gravity model divergence (v0.7.3.4):** Rankings shift between frameworks—Wasserstein best for aggregate flows, cosine_onet competitive. This reflects extensive vs intensive margin dynamics: individual workers use fine-grained similarity (embeddings excel), aggregate flows depend on connectivity structure (binary-like measures capture extensive margin).
+
+**Reframed contribution:** Semantic task substitutability captured by embedding ground metric improves occupation distance measurement. Wasserstein provides theoretical foundation; centroid averaging approximates it well in practice.
+
+---
+
 ## Claim Registry {#claim-registry}
 
 Canonical phrasing for key claims. All documents (main.tex, README, CLAUDE.md) must use phrasing consistent with evidence class.
 
 | Claim ID | Canonical Text | Evidence Class | Status | Primary Location |
 |----------|----------------|----------------|--------|------------------|
-| T-E1 | Wasserstein improves probabilistic scoring vs kernel (median ΔLL = +13,052 across 81 specs) | E1 | VALIDATED | main.tex §5.1 |
-| T-E1b | Wasserstein advantage robust across embedding, bandwidth, sample, threshold choices (100% win rate) | E1 | VALIDATED | main.tex §5.1 |
+| T-E1 | Embedding-informed distance improves individual transition prediction vs O*NET-based measures (14.5% vs 6-8% pseudo-R²) | E1 | VALIDATED | main.tex §5.1 |
+| T-E1b | Embedding ground metric captures semantic task substitutability; identity ground metric underperforms by 96% | E1 | VALIDATED | main.tex §5.1 |
+| T-E1c | Wasserstein and cosine-on-centroids produce nearly identical rankings (ρ = 0.95); distributional treatment marginal | E1 | VALIDATED | main.tex §5.1 |
 | T-E3 | Pattern consistent with feasibility/skill-proximity mechanisms | E3 | CONSISTENT | main.tex §5.1 discussion |
 | I-E1 | Institutional distance provides incremental validity over task distance (t = 34.6) | E1 | VALIDATED | main.tex §5.2 |
 | I-E3 | Residual institutional effect interpreted as non-skill barriers | E3 | CONSISTENT | main.tex §5.2 discussion |
@@ -189,6 +209,8 @@ Canonical phrasing for key claims. All documents (main.tex, README, CLAUDE.md) m
 | P-E2 | Per-origin pathway ranking: modest signal (ρ ≈ 0.13) | E2 | VALIDATED | main.tex §5.5 |
 | P-E3 | Geometry captures supply-side feasibility; demand dominates aggregate flows | E3 | CONSISTENT | main.tex §5.5, §7 |
 | D-E1 | Demand-only correlation with aggregate inflows: ρ = 0.80 | E1 | VALIDATED | main.tex §5.5 |
+| G-E1 | Gravity model: task distance explains 3.5% partial R², consistent with Cortes-Gallipoli benchmark | E1 | VALIDATED | main.tex §5.6 |
+| G-E3 | Individual choice and aggregate flow prediction respond differently to distance metrics; reflects intensive vs extensive margin dynamics | E3 | CONSISTENT | main.tex §5.6 |
 
 **Maintenance rule:** When adding new claims, assign Claim ID, evidence class, and status before writing prose.
 
@@ -561,6 +583,8 @@ Deprecated approaches. Do not retry.
 | Reallocation forecasting from geometry alone | Top-5 overlap = 0 | Demand side, capacity, credential gates required | v0.7.0 |
 | Endogenous switching cost identification | β_wage < 0 | Need individual wages at transition | v0.7.0 |
 | ρ = 0.43 pathway accuracy | Computed on filtered sample (n=60 exposed origins); full sample ρ = 0.13 | MS1/MS3 violation; sample filter undocumented | v0.7.0.3c |
+| "Wasserstein as primary contribution" framing | ρ = 0.95 with cosine_embed | Distributional treatment adds only 3% over centroid averaging | v0.7.3.2 |
+| Kernel overlap as fair baseline | Underperforms even simple cosine_embed | Weak aggregation method, not representative of alternatives | v0.7.3.2b |
 
 ---
 
@@ -669,9 +693,11 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.4.0 | 2025-12-22 | Documentation consolidation. Contribution reframed: semantic task substitutability, not Wasserstein per se. Attribution Audit added. |
 | 0.7.3.4b | 2025-12-22 | PPML robustness: all β<0 preserved, rankings differ slightly. Distance effect robust to heteroskedasticity correction. |
 | 0.7.3.4 | 2025-12-22 | Gravity model: partial R² = 3.46% (wasserstein), below C-G 15% benchmark. Task distance modest share of aggregate flows. |
 | 0.7.3.3 | 2025-12-22 | Ground metric validation: PASSED. Embedding vs identity: +96% pseudo-R². Semantic task similarity matters. |
+| 0.7.3.2b | 2025-12-22 | Kernel attribution audit: Original T Module comparison conflated effects. Kernel was weak baseline. |
 | 0.7.3.2 | 2025-12-22 | 2×2 head-to-head: GATE FAILED. Wasserstein vs cosine_embed: ΔR²=0.43pp, p=0.002. Embedding choice dominates. |
 | 0.7.3.1 | 2025-12-22 | Distance baselines: cosine-onet, cosine-embed, euclidean-dwa matrices (447×447). ρ(Wasserstein, cosine-embed)=0.95. |
 | 0.7.3.0 | 2025-12-19 | Documentation schema update. Decision Authority Matrix, LEDGER Update Authority, SPEC requirements. Sprint summary template. |

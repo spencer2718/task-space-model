@@ -13,6 +13,8 @@ See `LEDGER.md` for:
 - Current experiment results and validations
 - Artifact locations
 
+**v0.7.3.x reframing:** The contribution has been reattributed from "Wasserstein geometry" to "embedding-informed distance with semantic task substitutability." See Attribution Audit section in LEDGER.md.
+
 ---
 
 ## Before Any Work
@@ -54,13 +56,26 @@ Each document has ONE purpose. No redundancy.
 
 ## Critical Implementation Rules
 
-- **Wasserstein is primary** — Not kernel overlap (HC1)
+- **Wasserstein is primary** — Not kernel overlap (HC1). Primary for theoretical grounding; cosine_embed is acceptable approximation (ρ = 0.95)
+- **Embedding ground metric is the mechanism** — Semantic task similarity, not distributional treatment, drives improvement over O*NET methods
 - **RTI requires 16-element composite** — Single element yields R² ≈ 0 (HC2)
 - **Do not row-normalize kernels** — Destroys signal (HC5)
 - **Institutional barriers are friction, not gates** — γ_inst captures completed transitions only (HC6)
 - **Switching costs require external calibration** — 3.84 wage-years/unit Wasserstein
 - **Always use `get_embeddings()` from artifacts.py** — Never compute embeddings elsewhere
 - **Methodology Standards (MS1-MS10)** — See LEDGER.md for full definitions
+
+---
+
+## Contribution Framing (v0.7.4.0)
+
+The core contribution is **semantic task substitutability** as the basis for occupation distance:
+
+1. **Embedding choice drives improvement** (+75-96% over identity ground metric)
+2. **Distributional treatment is secondary** (+3% from Wasserstein vs centroid)
+3. **Mechanism**: Embeddings capture that "operating forklift" ≈ "driving delivery vehicle"
+
+This reframes from "Wasserstein geometry" to "embedding-informed distance." See Attribution Audit in LEDGER.md.
 
 ---
 
@@ -154,7 +169,7 @@ Experiments run at **x.y.0.z** increments (e.g., 0.7.0.2, 0.7.0.3). After experi
 
 ## Version
 
-**0.7.3.0** — Documentation schema update; Decision Authority; SPEC requirements
+**0.7.4.0** — Attribution reframe: semantic task substitutability; Contribution Framing section
 
 ---
 
