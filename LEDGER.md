@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.3.1
+**Current Version:** 0.7.3.2
 **Last Updated:** 2025-12-22
 **Paper Draft:** `paper/main.tex`
 
@@ -244,6 +244,32 @@ MS8-compliant metrics for the baseline Wasserstein specification:
 **Top-k appropriateness:** NOT reported. N_eff/J = 0.46 > 0.30 threshold. Mean effective consideration set = 207 destinations. Top-k overlap is structurally inappropriate for diffuse distributions.
 
 **Interpretation:** The model ranks realized destinations highly (MPR >> 0.5) despite distributing probability mass across ~207 effective destinations. This confirms the model captures feasibility structure without artificially concentrating on a small set.
+
+### T Module: 2×2 Methodology Comparison (v0.7.3.2)
+
+Head-to-head comparison of four distance metrics on conditional logit (n=89,329):
+
+| Metric | α | γ | LL | Pseudo-R² |
+|--------|---|---|-----|-----------|
+| wasserstein | 8.953 | 0.134 | -183,116 | 14.51% |
+| cosine_embed | 7.404 | 0.139 | -184,043 | 14.08% |
+| cosine_onet | 4.548 | 0.300 | -196,961 | 8.05% |
+| euclidean_dwa | 9.764 | 0.365 | -201,230 | 6.06% |
+
+**Gate evaluation (Wasserstein vs best alternative = cosine_embed):**
+- ΔLL = +927
+- Vuong p = 0.00192 (FAIL: not < 0.001)
+- Pseudo-R² ratio = 1.031 (FAIL: not ≥ 1.05)
+
+**Status: GATE FAILED.** Wasserstein provides only 3.1% improvement over cosine_embed (centroid averaging).
+
+**Key findings:**
+1. **Embedding choice dominates:** Both wasserstein and cosine_embed vastly outperform cosine_onet and euclidean_dwa
+2. **Distributional treatment marginal:** ΔPseudo-R² = 0.43 percentage points (14.51% vs 14.08%)
+3. **cosine_onet worst:** Confirms sparsity limitation (78% of pairs at max distance)
+4. **ρ(wasserstein, cosine_embed) = 0.95:** High distance correlation; different aggregation yields similar rankings
+
+**Interpretation:** MPNet embeddings capture economically meaningful task similarity. The distributional treatment (Wasserstein) provides marginal improvement over simple centroid averaging. The paper's core contribution is the embedding-based task distance, not the distributional formulation per se.
 
 ### I Module: Mobility Decomposition (v0.6.5)
 
@@ -565,6 +591,7 @@ Deprecated approaches. Do not retry.
 | CSH Values | `outputs/experiments/csh_values_v0722.csv` | Battery |
 | CSH_alt Values | `outputs/experiments/csh_alt_values_v0722.csv` | Battery |
 | Distance Baselines | `outputs/experiments/distance_baselines_v0731.json` | Methodology Comparison |
+| 2×2 Head-to-Head | `outputs/experiments/distance_head_to_head_v0732.json` | Methodology Comparison |
 
 ### Embeddings
 
@@ -585,6 +612,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.3.2 | 2025-12-22 | 2×2 head-to-head: GATE FAILED. Wasserstein vs cosine_embed: ΔR²=0.43pp, p=0.002. Embedding choice dominates. |
 | 0.7.3.1 | 2025-12-22 | Distance baselines: cosine-onet, cosine-embed, euclidean-dwa matrices (447×447). ρ(Wasserstein, cosine-embed)=0.95. |
 | 0.7.3.0 | 2025-12-19 | Documentation schema update. Decision Authority Matrix, LEDGER Update Authority, SPEC requirements. Sprint summary template. |
 | 0.7.2.5 | 2025-12-19 | Retrospective battery. Test B: 1+, 0−, 4(0). Test C' invalid (methodology deviation). IPUMS pipeline built. MS10 added. |
