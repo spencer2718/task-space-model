@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.3.2
+**Current Version:** 0.7.3.3
 **Last Updated:** 2025-12-22
 **Paper Draft:** `paper/main.tex`
 
@@ -270,6 +270,32 @@ Head-to-head comparison of four distance metrics on conditional logit (n=89,329)
 4. **ρ(wasserstein, cosine_embed) = 0.95:** High distance correlation; different aggregation yields similar rankings
 
 **Interpretation:** MPNet embeddings capture economically meaningful task similarity. The distributional treatment (Wasserstein) provides marginal improvement over simple centroid averaging. The paper's core contribution is the embedding-based task distance, not the distributional formulation per se.
+
+### T Module: Ground Metric Validation (v0.7.3.3)
+
+Tests whether embedding-based ground metric adds value over identity ground metric:
+
+| Metric | α | γ | LL | Pseudo-R² |
+|--------|---|---|-----|-----------|
+| wasserstein_identity | 4.712 | 0.310 | -198,308 | 7.42% |
+| wasserstein_embedding | 8.953 | 0.134 | -183,116 | 14.51% |
+
+**Comparison:**
+- ΔLL = +15,192
+- Δpseudo-R² = +7.09 percentage points
+- Pseudo-R² ratio = 1.96 (96% improvement)
+
+**Gate: PASSED.** Embedding ground metric substantially improves over identity (criterion: ≥5% improvement).
+
+**Distance correlation:** r(identity, embedding) = 0.61, ρ = 0.36
+
+**Key finding:** Semantic task similarity (via MPNet embeddings) nearly doubles explanatory power compared to raw task overlap. Knowing that "operating forklift" ≈ "driving delivery vehicle" provides substantial value beyond just knowing "different tasks."
+
+**Attribution summary (v0.7.3.2 + v0.7.3.3):**
+1. Semantic embeddings (vs O*NET/identity): +75-96% improvement
+2. Distributional treatment (Wasserstein vs cosine centroid): +3% improvement
+
+The MPNet embedding is doing the work. The Wasserstein formulation provides marginal additional value.
 
 ### I Module: Mobility Decomposition (v0.6.5)
 
@@ -568,6 +594,7 @@ Deprecated approaches. Do not retry.
 | Cosine O*NET (Census) | `.cache/artifacts/v1/mobility/d_cosine_onet_census.npz` | 447×447 |
 | Cosine Embedding (Census) | `.cache/artifacts/v1/mobility/d_cosine_embed_census.npz` | 447×447 |
 | Euclidean DWA (Census) | `.cache/artifacts/v1/mobility/d_euclidean_dwa_census.npz` | 447×447 |
+| Wasserstein Identity (Census) | `.cache/artifacts/v1/mobility/d_wasserstein_identity_census.npz` | 447×447 |
 
 ### Experiment Results
 
@@ -592,6 +619,7 @@ Deprecated approaches. Do not retry.
 | CSH_alt Values | `outputs/experiments/csh_alt_values_v0722.csv` | Battery |
 | Distance Baselines | `outputs/experiments/distance_baselines_v0731.json` | Methodology Comparison |
 | 2×2 Head-to-Head | `outputs/experiments/distance_head_to_head_v0732.json` | Methodology Comparison |
+| Ground Metric Validation | `outputs/experiments/ground_metric_validation_v0733.json` | Methodology Comparison |
 
 ### Embeddings
 
@@ -612,6 +640,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.3.3 | 2025-12-22 | Ground metric validation: PASSED. Embedding vs identity: +96% pseudo-R². Semantic task similarity matters. |
 | 0.7.3.2 | 2025-12-22 | 2×2 head-to-head: GATE FAILED. Wasserstein vs cosine_embed: ΔR²=0.43pp, p=0.002. Embedding choice dominates. |
 | 0.7.3.1 | 2025-12-22 | Distance baselines: cosine-onet, cosine-embed, euclidean-dwa matrices (447×447). ρ(Wasserstein, cosine-embed)=0.95. |
 | 0.7.3.0 | 2025-12-19 | Documentation schema update. Decision Authority Matrix, LEDGER Update Authority, SPEC requirements. Sprint summary template. |
