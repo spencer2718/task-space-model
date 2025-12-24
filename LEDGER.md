@@ -1,7 +1,7 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.4.0
-**Last Updated:** 2025-12-22
+**Current Version:** 0.7.5.0
+**Last Updated:** 2025-12-23
 **Paper Draft:** `paper/main.tex`
 
 ---
@@ -211,6 +211,9 @@ Canonical phrasing for key claims. All documents (main.tex, README, CLAUDE.md) m
 | D-E1 | Demand-only correlation with aggregate inflows: ρ = 0.80 | E1 | VALIDATED | main.tex §5.5 |
 | G-E1 | Gravity model: task distance explains 3.5% partial R², consistent with Cortes-Gallipoli benchmark | E1 | VALIDATED | main.tex §5.6 |
 | G-E3 | Individual choice and aggregate flow prediction respond differently to distance metrics; reflects intensive vs extensive margin dynamics | E3 | CONSISTENT | main.tex §5.6 |
+| COVID-E1 | Task-distance geometry is structurally stable across pre/post COVID (Δα < 1%, LR p = 0.76, n = 89,329) | E1 | VALIDATED | main.tex §5.7 |
+| COVID-E1b | Teleworkable occupations show elevated hiring standards post-COVID (δ₄ = -0.086, p = 0.01) | E1 | VALIDATED | main.tex §5.7 |
+| COVID-E3 | Elevated hiring standards consistent with applicant pool expansion enabling selectivity | E3 | CONSISTENT | main.tex §5.7 |
 
 **Maintenance rule:** When adding new claims, assign Claim ID, evidence class, and status before writing prose.
 
@@ -444,6 +447,31 @@ Bilateral flow gravity model: ln(Flow_ij + 1) = α + β₁·ln(Emp_i) + β₂·l
 
 **Status: VALIDATED.** Task distance explains modest share of aggregate flows. Embedding methods average 3.0% partial R², outperforming O*NET methods (1.7%).
 
+### Structural Stability: COVID Comparison (v0.7.5.0)
+
+| Period | α | SE(α) | γ | SE(γ) | Pseudo-R² |
+|--------|---|-------|---|-------|-----------|
+| Pre-COVID (2015-2019) | 8.953 | 0.053 | 0.142 | 0.005 | 14.6% |
+| Post-COVID (2022-2024) | 8.900 | 0.076 | 0.141 | 0.007 | 14.2% |
+
+**Structural break test:** LR χ²(2) = 0.54, p = 0.76. Coefficient change < 1%.
+
+**Sample:** Pre-COVID n = 60,225; Post-COVID n = 29,104.
+
+**Remote work heterogeneity (Dingel-Neiman teleworkability, 92.4% coverage):**
+
+| Coefficient | Estimate | SE | p-value |
+|-------------|----------|-----|---------|
+| δ₂ (sem × post) | -0.033 | 0.089 | 0.707 |
+| δ₃ (sem × telework) | -0.561 | 0.019 | <0.0001 |
+| δ₄ (sem × post × telework) | -0.086 | 0.033 | 0.010 |
+
+**Robustness:** Effect persists excluding 2022 (δ₄ = -0.097, p = 0.016); replicates with cosine_embed.
+
+**Interpretation:** Aggregate task-distance constraints are structural (invariant to COVID shock). Heterogeneity: teleworkable occupations experienced elevated hiring standards post-COVID, consistent with expanded applicant pools enabling heightened employer selectivity (Modestino et al. 2020 framework).
+
+**Status: VALIDATED.**
+
 ### Complementary Validations
 
 **RTI Construct Validity (v0.6.8):**
@@ -673,6 +701,7 @@ Deprecated approaches. Do not retry.
 | 2×2 Head-to-Head | `outputs/experiments/distance_head_to_head_v0732.json` | Methodology Comparison |
 | Ground Metric Validation | `outputs/experiments/ground_metric_validation_v0733.json` | Methodology Comparison |
 | Gravity Model | `outputs/experiments/gravity_model_v0734.json` | M Module |
+| Pre/Post COVID | `outputs/experiments/pre_post_covid_v0741.json` | Structural Stability (§5.7) |
 
 ### Embeddings
 
@@ -693,6 +722,8 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.5.0 | 2025-12-23 | COVID structural stability: aggregate geometry invariant (Δα < 1%, p = 0.76); teleworkable occupations show elevated hiring standards (δ₄ = -0.086, p = 0.01). Paper §5.7 added. |
+| 0.7.4.1 | 2025-12-23 | Pre/post COVID comparison implemented. Sample split, period estimation, structural break test, remote work interactions. |
 | 0.7.4.0 | 2025-12-22 | Documentation consolidation. Contribution reframed: semantic task substitutability, not Wasserstein per se. Attribution Audit added. |
 | 0.7.3.4b | 2025-12-22 | PPML robustness: all β<0 preserved, rankings differ slightly. Distance effect robust to heteroskedasticity correction. |
 | 0.7.3.4 | 2025-12-22 | Gravity model: partial R² = 3.46% (wasserstein), below C-G 15% benchmark. Task distance modest share of aggregate flows. |

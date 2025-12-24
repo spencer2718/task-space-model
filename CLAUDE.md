@@ -77,6 +77,8 @@ The core contribution is **semantic task substitutability** as the basis for occ
 
 This reframes from "Wasserstein geometry" to "embedding-informed distance." See Attribution Audit in LEDGER.md.
 
+**Structural stability (v0.7.5.0):** COVID comparison validates that task-distance geometry is structural, not contingent. Aggregate coefficients invariant (Δα < 1%); teleworkable occupations show elevated hiring standards post-COVID (δ₄ < 0), consistent with applicant pool expansion enabling selectivity.
+
 ---
 
 ## Decision Authority
@@ -169,7 +171,7 @@ Experiments run at **x.y.0.z** increments (e.g., 0.7.0.2, 0.7.0.3). After experi
 
 ## Version
 
-**0.7.4.0** — Attribution reframe: semantic task substitutability; Contribution Framing section
+**0.7.5.0** — COVID structural stability finding; paper §5.7 added
 
 ---
 

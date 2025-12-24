@@ -2,7 +2,7 @@
 
 Infrastructure for analyzing how task-level technological change propagates to labor market outcomes.
 
-**Version 0.7.4.0** — Attribution Reframe: Semantic Task Substitutability
+**Version 0.7.5.0** — COVID Structural Stability
 
 ---
 
@@ -34,7 +34,8 @@ See `paper/main.tex` for formal theory and specifications.
 | **M** (Switching costs) | ⚠️ Calibrated | External anchor (Dix-Carneiro) |
 | Pathway ranking | ✓ Validated | MPR = 0.74; per-origin ρ ≈ 0.13 |
 | Demand decomposition | ✓ Quantified | Demand ρ = 0.80; geometry ρ = 0.04 |
-| Retrospective battery | ⚠️ Partial | Test B: 1+/5; Test C': deferred; Test A: blocked |
+| Structural stability | ✓ Validated | Aggregate Δα < 1% (p = 0.76); telework heterogeneity δ₄ = -0.086 (p = 0.01) |
+| Retrospective battery | ⚠️ Partial | Test B: 1+/5; COVID stability: aggregate stable, telework heterogeneity |
 
 **Scope:** The framework measures structural feasibility (where workers CAN go), not realized reallocation (where they DO go). Empirically: demand dominates aggregate inflows (ρ = 0.80); geometry ranks destinations correctly (MPR = 0.74). Feasibility is the supply-side input to equilibrium analysis.
 
@@ -137,7 +138,9 @@ See `CLAUDE.md` for developer context, `LEDGER.md` for scientific state. Use [`t
 
 | Version | What Changed |
 |---------|--------------|
-| **0.7.4.0** | Attribution reframe: embedding-informed distance. Ground metric validation (+96% vs identity). Gravity model (3.5% partial R², consistent with C-G). |
+| **0.7.5.0** | COVID structural stability. Aggregate geometry invariant; elevated hiring standards for teleworkable occupations post-COVID. |
+| 0.7.4.1 | Pre/post COVID comparison implementation. |
+| 0.7.4.0 | Attribution reframe: embedding-informed distance. Ground metric validation (+96% vs identity). Gravity model (3.5% partial R², consistent with C-G). |
 | 0.7.3.0 | Retrospective battery (Test B: 1+/5). IPUMS pipeline. Documentation schema (MS10, Decision Authority). |
 | 0.7.2.0 | Multiverse robustness (81/81). Performance battery (MPR=0.74). MS7-MS9 methodology regime. |
 | 0.7.1.0 | Demand decomposition validated. Metric correction (ρ = 0.43 → 0.13). |
