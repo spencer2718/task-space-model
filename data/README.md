@@ -4,6 +4,30 @@ External data required for the task-space oracle. Specifications match `paper/ma
 
 ---
 
+## Setup
+
+### API Keys
+
+Some data sources require API keys. Copy `.env.example` to `.env` and fill in:
+
+```bash
+cp .env.example .env
+# Edit .env with your keys
+```
+
+| Key | Source | Registration |
+|-----|--------|--------------|
+| `ONET_API_KEY` | O*NET Web Services | https://services.onetcenter.org/developer/ |
+| `IPUMS_API_KEY` | IPUMS | https://account.ipums.org/api_keys |
+
+### Quick Start
+
+1. **O*NET Database** (required): Download from https://www.onetcenter.org/database.html → extract to `data/onet/db_30_0_excel/`
+2. **CPS Transitions**: Already cached in `.cache/artifacts/v1/mobility/verified_transitions.parquet` (or re-extract via IPUMS API)
+3. **Optional data**: See sections below
+
+---
+
 ## Required Data
 
 ### O*NET Database
