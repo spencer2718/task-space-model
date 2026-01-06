@@ -6,25 +6,36 @@ External data required for the task-space oracle. Specifications match `paper/ma
 
 ## Setup
 
-### API Keys
-
-Some data sources require API keys. Copy `.env.example` to `.env` and fill in:
-
-```bash
-cp .env.example .env
-# Edit .env with your keys
-```
-
-| Key | Source | Registration |
-|-----|--------|--------------|
-| `ONET_API_KEY` | O*NET Web Services | https://services.onetcenter.org/developer/ |
-| `IPUMS_API_KEY` | IPUMS | https://account.ipums.org/api_keys |
-
 ### Quick Start
 
-1. **O*NET Database** (required): Download from https://www.onetcenter.org/database.html → extract to `data/onet/db_30_0_excel/`
-2. **CPS Transitions**: Already cached in `.cache/artifacts/v1/mobility/verified_transitions.parquet` (or re-extract via IPUMS API)
+1. **CPS Transitions**: Already committed at `data/processed/mobility/verified_transitions.parquet`
+2. **O*NET Database** (required): Download from https://www.onetcenter.org/database.html → extract to `data/onet/db_30_0_excel/`
 3. **Optional data**: See sections below
+
+### API Keys (Optional)
+
+API keys are only needed for specific workflows. See `.env.example` for details.
+
+```bash
+cp .env.example .env  # Only if you need API access
+```
+
+---
+
+## Automated vs Manual Acquisition
+
+**Claude Code can download automatically:**
+- O*NET Database (onetcenter.org) — 47MB zip
+- AIOE scores (GitHub)
+- Dingel-Neiman telework (GitHub)
+- Dorn replication data (ddorn.net)
+
+**Human must download in browser (BLS blocks bots):**
+- OES wage data — see `data/external/oes/README.md`
+- BLS Employment Projections
+
+**Already committed to repo:**
+- CPS verified transitions (2MB parquet)
 
 ---
 

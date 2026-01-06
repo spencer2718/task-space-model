@@ -39,6 +39,8 @@ data/processed/*
 data/onet/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
+!data/processed/mobility/
+!data/processed/mobility/verified_transitions.parquet
 !data/onet/.gitkeep
 
 # Outputs
