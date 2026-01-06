@@ -83,6 +83,18 @@ from .metrics import (
     compute_performance_battery,
 )
 
+# v0.7.4.0: Spearman correlation utilities
+from .spearman import (
+    SpearmanResult,
+    PerOriginSpearmanResult,
+    aggregate_spearman_model_prob,
+    per_origin_spearman_model_prob,
+    aggregate_spearman_inv_distance,
+    per_origin_spearman_inv_distance,
+    spearman_with_bootstrap,
+    compute_model_probability_matrix,
+)
+
 __all__ = [
     # Regression
     'RegressionResult',
@@ -146,4 +158,13 @@ __all__ = [
     'compute_effective_consideration_set',
     'compute_full_destination_probabilities',
     'compute_performance_battery',
+    # Spearman utilities (v0.7.4.0)
+    'SpearmanResult',
+    'PerOriginSpearmanResult',
+    'aggregate_spearman_model_prob',
+    'per_origin_spearman_model_prob',
+    'aggregate_spearman_inv_distance',
+    'per_origin_spearman_inv_distance',
+    'spearman_with_bootstrap',
+    'compute_model_probability_matrix',
 ]

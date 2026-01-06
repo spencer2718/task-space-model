@@ -73,6 +73,19 @@ from .choice_model import (
     compute_asymmetric_odds_ratios,
 )
 
+# v0.7.4.0: Canonical IO module for scripts
+from .io import (
+    DEFAULT_TRAIN_YEARS,
+    DEFAULT_HOLDOUT_YEAR,
+    load_transitions,
+    get_holdout_transitions,
+    get_training_transitions,
+    load_wasserstein_census,
+    load_institutional_census,
+    load_distance_matrix,
+    aggregate_institutional_distances,
+)
+
 __all__ = [
     # Institutional distance
     "InstitutionalDistanceResult",
@@ -109,4 +122,14 @@ __all__ = [
     "build_asymmetric_choice_dataset",
     "fit_asymmetric_conditional_logit",
     "compute_asymmetric_odds_ratios",
+    # v0.7.4.0: Canonical IO module
+    "DEFAULT_TRAIN_YEARS",
+    "DEFAULT_HOLDOUT_YEAR",
+    "load_transitions",
+    "get_holdout_transitions",
+    "get_training_transitions",
+    "load_wasserstein_census",
+    "load_institutional_census",
+    "load_distance_matrix",
+    "aggregate_institutional_distances",
 ]

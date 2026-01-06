@@ -25,62 +25,10 @@ from task_space.validation.scaled_costs import (
 
 
 # =============================================================================
-# Fixtures
+# Fixtures (shared fixtures from tests/conftest.py)
 # =============================================================================
-
-
-@pytest.fixture
-def mock_wages_df():
-    """Mock OES wages at Census level."""
-    return pd.DataFrame({
-        "census_code": [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-        "mean_annual_wage": [50000, 60000, 70000, 80000, 55000, 65000, 75000, 85000, 58000, 68000],
-        "median_annual_wage": [48000, 58000, 68000, 78000, 53000, 63000, 73000, 83000, 56000, 66000],
-        "soc_code": ["11-1011", "11-1021", "11-2011", "11-2021", "11-2022",
-                     "11-2033", "11-3012", "11-3013", "11-3021", "11-3031"],
-        "n_soc_codes": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    })
-
-
-@pytest.fixture
-def mock_transitions_df():
-    """Mock CPS transition data."""
-    return pd.DataFrame({
-        "CPSIDP": list(range(100)),
-        "YEARMONTH": [202301] * 100,
-        "origin_occ": [10, 20, 30, 40, 50] * 20,
-        "dest_occ": [20, 30, 40, 50, 60] * 20,
-        "AGE": [35] * 100,
-        "SEX": [1] * 100,
-    })
-
-
-@pytest.fixture
-def mock_wasserstein_matrix():
-    """Mock 10x10 Wasserstein distance matrix."""
-    np.random.seed(42)
-    n = 10
-    d = np.random.rand(n, n) * 0.5
-    d = (d + d.T) / 2
-    np.fill_diagonal(d, 0)
-    return d
-
-
-@pytest.fixture
-def mock_inst_matrix():
-    """Mock 10x10 institutional distance matrix."""
-    np.random.seed(43)
-    n = 10
-    d = np.random.rand(n, n) * 2
-    d = (d + d.T) / 2
-    np.fill_diagonal(d, 0)
-    return d
-
-
-@pytest.fixture
-def mock_census_codes():
-    """Census codes matching the mock matrices."""
-    return [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+# mock_wages_df, mock_transitions_df, mock_wasserstein_matrix, mock_inst_matrix,
+# and mock_census_codes are defined in tests/conftest.py and auto-discovered.
 
 
 # =============================================================================

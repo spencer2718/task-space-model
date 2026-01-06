@@ -18,7 +18,6 @@ P(j|i) ∝ exp(-α·d(i,j) - γ·d_inst(i,j))
 Success criterion: Wasserstein-embedding achieves ≥5% higher pseudo-R² than Wasserstein-identity.
 """
 
-import json
 from pathlib import Path
 import time
 from dataclasses import dataclass
@@ -28,10 +27,9 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-import sys
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
+from task_space.data.artifacts import CACHE_DIR, CACHE_VERSION
 from task_space.domain import build_dwa_occupation_measures
+from task_space.mobility.io import load_distance_matrix, load_transitions, aggregate_institutional_distances
 from task_space.mobility.census_crosswalk import (
     load_census_onet_crosswalk,
     aggregate_distances_to_census,
@@ -40,10 +38,11 @@ from task_space.mobility.choice_model import (
     build_choice_dataset,
     fit_conditional_logit,
 )
+from task_space.utils.experiments import save_experiment_output
 
 
-CACHE_DIR = Path(__file__).parent.parent / ".cache" / "artifacts" / "v1" / "mobility"
-OUTPUT_DIR = Path(__file__).parent.parent / "outputs" / "experiments"
+# Cache path for new computed matrices
+_MOBILITY_CACHE_DIR = CACHE_DIR / CACHE_VERSION / "mobility"
 
 
 @dataclass
@@ -111,43 +110,6 @@ def compute_wasserstein_identity_onet(occ_measures):
     return D, occ_measures.occupation_codes
 
 
-def load_distance_matrix(name: str) -> Tuple[np.ndarray, List[int]]:
-    """Load a distance matrix and census codes."""
-    path = CACHE_DIR / f"d_{name}_census.npz"
-    data = np.load(path, allow_pickle=True)
-    distances = data["distances"]
-
-    # Try different key names for census codes
-    if "census_codes" in data.files:
-        codes = list(data["census_codes"])
-    elif "occupation_codes" in data.files:
-        codes = list(data["occupation_codes"])
-    else:
-        raise ValueError(f"No census codes found in {path}")
-
-    return distances, codes
-
-
-def load_institutional_distance() -> np.ndarray:
-    """Load institutional distance matrix at Census level."""
-    from task_space.mobility.census_crosswalk import aggregate_distances_to_census
-
-    path = CACHE_DIR / "d_inst_census.npz"
-    data = np.load(path, allow_pickle=True)
-
-    d_inst_onet = data["d_inst_matrix"]
-    onet_codes = list(data["occ_codes"])
-
-    # Aggregate to Census level
-    crosswalk = load_census_onet_crosswalk()
-    d_inst_census, _ = aggregate_distances_to_census(
-        d_inst_onet, onet_codes, crosswalk, aggregation="mean"
-    )
-
-    # Zero the diagonal
-    np.fill_diagonal(d_inst_census, 0)
-
-    return d_inst_census
 
 
 def compute_null_ll(n_transitions: int, n_alternatives: int = 11) -> float:
@@ -212,8 +174,7 @@ def main():
     print("=" * 70)
 
     start_time = time.time()
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    _MOBILITY_CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
     # Step 1: Compute Wasserstein-identity at O*NET level
     print("\n1. Computing Wasserstein-identity (Total Variation)...")
@@ -234,17 +195,17 @@ def main():
 
     # Save the matrix
     np.savez_compressed(
-        CACHE_DIR / "d_wasserstein_identity_census.npz",
+        _MOBILITY_CACHE_DIR / "d_wasserstein_identity_census.npz",
         distances=d_identity_census,
         census_codes=census_codes,
         metric="wasserstein_identity",
         description="Wasserstein with identity ground metric (= Total Variation distance)",
     )
-    print(f"Saved: {CACHE_DIR / 'd_wasserstein_identity_census.npz'}")
+    print(f"Saved: {_MOBILITY_CACHE_DIR / 'd_wasserstein_identity_census.npz'}")
 
     # Step 3: Load Wasserstein-embedding for comparison
     print("\n3. Loading Wasserstein-embedding...")
-    d_embedding, _ = load_distance_matrix("wasserstein")
+    d_embedding, _ = load_distance_matrix(kind="wasserstein")
     print(f"Shape: {d_embedding.shape}")
     print(f"Range: [{d_embedding.min():.4f}, {d_embedding.max():.4f}]")
 
@@ -265,12 +226,12 @@ def main():
 
     # Step 5: Load institutional distance
     print("\n5. Loading institutional distance...")
-    d_inst = load_institutional_distance()
+    d_inst, _ = load_distance_matrix(kind="institutional")
     print(f"Shape: {d_inst.shape}")
 
     # Step 6: Load transitions
     print("\n6. Loading CPS transitions...")
-    transitions_df = pd.read_parquet("data/processed/mobility/verified_transitions.parquet")
+    transitions_df = load_transitions()
     print(f"Total: {len(transitions_df):,}")
 
     # Filter to valid codes
@@ -376,9 +337,7 @@ def main():
     }
 
     # Save results
-    output_path = OUTPUT_DIR / "ground_metric_validation_v0733.json"
-    with open(output_path, "w") as f:
-        json.dump(output, f, indent=2)
+    output_path = save_experiment_output("ground_metric_validation_v0733", output)
     print(f"\nSaved: {output_path}")
 
     elapsed = time.time() - start_time

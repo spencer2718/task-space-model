@@ -15,38 +15,16 @@ Where:
 Uses statsmodels GLM with Poisson family.
 """
 
-import json
-from pathlib import Path
 import time
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 from statsmodels.genmod.families import Poisson
 
-import sys
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
-
-CACHE_DIR = Path(__file__).parent.parent / ".cache" / "artifacts" / "v1" / "mobility"
-OUTPUT_DIR = Path(__file__).parent.parent / "outputs" / "experiments"
-
-
-def load_distance_matrix(name: str) -> Tuple[np.ndarray, List[int]]:
-    """Load a distance matrix and census codes."""
-    path = CACHE_DIR / f"d_{name}_census.npz"
-    data = np.load(path, allow_pickle=True)
-    distances = data["distances"]
-
-    if "census_codes" in data.files:
-        codes = list(data["census_codes"])
-    elif "occupation_codes" in data.files:
-        codes = list(data["occupation_codes"])
-    else:
-        raise ValueError(f"No census codes found in {path}")
-
-    return distances, codes
+from task_space.mobility.io import load_distance_matrix, load_transitions
+from task_space.utils.experiments import save_experiment_output, get_output_path
 
 
 def build_gravity_dataset(
@@ -166,12 +144,13 @@ def fit_ppml_no_fe(df: pd.DataFrame, distance_col: str) -> Dict:
 
 
 def main():
+    import json  # Only needed for reading OLS results
+
     print("=" * 70)
     print("v0.7.3.4b: PPML Robustness Check for Gravity Model")
     print("=" * 70)
 
     start_time = time.time()
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     # Load distance matrices
     print("\n1. Loading distance matrices...")
@@ -180,7 +159,7 @@ def main():
     census_codes = None
 
     for metric in metrics:
-        d, codes = load_distance_matrix(metric)
+        d, codes = load_distance_matrix(kind=metric)
         distance_matrices[metric] = d
         if census_codes is None:
             census_codes = codes
@@ -192,7 +171,7 @@ def main():
 
     # Load transitions
     print("\n2. Loading CPS transitions...")
-    transitions = pd.read_parquet("data/processed/mobility/verified_transitions.parquet")
+    transitions = load_transitions()
     valid = set(census_codes)
     mask = transitions['origin_occ'].isin(valid) & transitions['dest_occ'].isin(valid)
     trans = transitions[mask].copy()
@@ -207,7 +186,7 @@ def main():
 
     # Load OLS results for comparison
     print("\n4. Loading OLS results from v0.7.3.4...")
-    ols_path = OUTPUT_DIR / "gravity_model_v0734.json"
+    ols_path = get_output_path("gravity_model_v0734")
     with open(ols_path) as f:
         ols_results = json.load(f)
 
@@ -320,9 +299,7 @@ def main():
         output["models_distance_only"][metric] = results_no_mass[metric]
 
     # Save
-    output_path = OUTPUT_DIR / "gravity_ppml_v0734b.json"
-    with open(output_path, "w") as f:
-        json.dump(output, f, indent=2)
+    output_path = save_experiment_output("gravity_ppml_v0734b", output)
     print(f"\nSaved: {output_path}")
 
     elapsed = time.time() - start_time

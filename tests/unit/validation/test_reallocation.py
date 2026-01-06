@@ -29,54 +29,10 @@ from task_space.validation.reallocation import (
 
 
 # =============================================================================
-# Fixtures
+# Fixtures (shared fixtures from tests/conftest.py)
 # =============================================================================
-
-
-@pytest.fixture
-def mock_aioe_df():
-    """Mock AIOE scores at Census level."""
-    return pd.DataFrame({
-        "census_code": [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-        "aioe_score": [0.3, 0.5, 0.7, 0.9, 0.95, 0.4, 0.6, 0.8, 0.85, 0.92],
-    })
-
-
-@pytest.fixture
-def mock_employment_df():
-    """Mock employment data at Census level."""
-    return pd.DataFrame({
-        "census_code": [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-        "tot_emp": [100000, 80000, 60000, 40000, 30000, 90000, 70000, 50000, 45000, 35000],
-    })
-
-
-@pytest.fixture
-def mock_wasserstein_matrix():
-    """Mock 10x10 Wasserstein distance matrix."""
-    np.random.seed(42)
-    n = 10
-    d = np.random.rand(n, n) * 0.5
-    d = (d + d.T) / 2
-    np.fill_diagonal(d, 0)
-    return d
-
-
-@pytest.fixture
-def mock_inst_matrix():
-    """Mock 10x10 institutional distance matrix."""
-    np.random.seed(43)
-    n = 10
-    d = np.random.rand(n, n) * 2
-    d = (d + d.T) / 2
-    np.fill_diagonal(d, 0)
-    return d
-
-
-@pytest.fixture
-def mock_census_codes():
-    """Census codes matching the mock matrices."""
-    return [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+# mock_aioe_df, mock_employment_df, mock_wasserstein_matrix, mock_inst_matrix,
+# and mock_census_codes are defined in tests/conftest.py and auto-discovered.
 
 
 # =============================================================================

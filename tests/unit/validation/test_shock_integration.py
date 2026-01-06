@@ -24,49 +24,10 @@ from task_space.validation.shock_integration import (
 
 
 # =============================================================================
-# Fixtures
+# Fixtures (shared fixtures from tests/conftest.py)
 # =============================================================================
-
-
-@pytest.fixture
-def mock_aioe_census_df():
-    """Mock AIOE scores at Census level."""
-    return pd.DataFrame({
-        "census_code": [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-        "aioe_score": [0.5, 1.2, 0.8, 1.5, 0.3, 0.9, 1.1, 0.6, 1.3, 0.4],
-        "n_soc_codes": [1, 2, 1, 1, 1, 2, 1, 1, 1, 1],
-    })
-
-
-@pytest.fixture
-def mock_transitions_df():
-    """Mock CPS transition data."""
-    return pd.DataFrame({
-        "CPSIDP": list(range(100)),
-        "YEARMONTH": [202401] * 50 + [202301] * 50,
-        "origin_occ": [10, 20, 30, 40, 50] * 20,
-        "dest_occ": [20, 30, 40, 50, 60] * 20,
-        "AGE": [35] * 100,
-        "SEX": [1] * 100,
-    })
-
-
-@pytest.fixture
-def mock_wasserstein_matrix():
-    """Mock 10x10 Wasserstein distance matrix."""
-    np.random.seed(42)
-    # Create symmetric distance matrix
-    n = 10
-    d = np.random.rand(n, n)
-    d = (d + d.T) / 2
-    np.fill_diagonal(d, 0)
-    return d
-
-
-@pytest.fixture
-def mock_census_codes():
-    """Census codes matching the mock matrices."""
-    return [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+# mock_aioe_census_df, mock_transitions_df, mock_wasserstein_matrix,
+# and mock_census_codes are defined in tests/conftest.py and auto-discovered.
 
 
 # =============================================================================

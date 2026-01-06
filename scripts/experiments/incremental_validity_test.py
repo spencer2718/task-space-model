@@ -25,7 +25,6 @@ Usage:
 """
 
 import json
-import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -33,9 +32,6 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 from scipy import stats
-
-# Add src to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 
 from task_space.data.aioe import load_aioe
 from task_space.data.oes import load_oes_employment

@@ -13,8 +13,6 @@ for "no more than 15%" of switching costs.
 Sample: All 447 × 446 = 199,362 occupation pairs (including zeros)
 """
 
-import json
-from pathlib import Path
 import time
 from dataclasses import dataclass
 from typing import Dict, List, Tuple
@@ -22,14 +20,9 @@ from typing import Dict, List, Tuple
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
-from scipy import stats
 
-import sys
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
-
-CACHE_DIR = Path(__file__).parent.parent / ".cache" / "artifacts" / "v1" / "mobility"
-OUTPUT_DIR = Path(__file__).parent.parent / "outputs" / "experiments"
+from task_space.mobility.io import load_distance_matrix, load_transitions
+from task_space.utils.experiments import save_experiment_output
 
 
 @dataclass
@@ -46,22 +39,6 @@ class GravityResult:
     t_stat_distance: float
     r2: float
     n_obs: int
-
-
-def load_distance_matrix(name: str) -> Tuple[np.ndarray, List[int]]:
-    """Load a distance matrix and census codes."""
-    path = CACHE_DIR / f"d_{name}_census.npz"
-    data = np.load(path, allow_pickle=True)
-    distances = data["distances"]
-
-    if "census_codes" in data.files:
-        codes = list(data["census_codes"])
-    elif "occupation_codes" in data.files:
-        codes = list(data["occupation_codes"])
-    else:
-        raise ValueError(f"No census codes found in {path}")
-
-    return distances, codes
 
 
 def build_gravity_dataset(
@@ -200,7 +177,6 @@ def main():
     print("=" * 70)
 
     start_time = time.time()
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     # Load distance matrices
     print("\n1. Loading distance matrices...")
@@ -209,7 +185,7 @@ def main():
     census_codes = None
 
     for metric in metrics:
-        d, codes = load_distance_matrix(metric)
+        d, codes = load_distance_matrix(kind=metric)
         distance_matrices[metric] = d
         if census_codes is None:
             census_codes = codes
@@ -217,7 +193,7 @@ def main():
 
     # Load transitions
     print("\n2. Loading CPS transitions...")
-    transitions = pd.read_parquet("data/processed/mobility/verified_transitions.parquet")
+    transitions = load_transitions()
 
     # Filter to valid codes
     valid = set(census_codes)
@@ -344,9 +320,7 @@ def main():
         }
 
     # Save results
-    output_path = OUTPUT_DIR / "gravity_model_v0734.json"
-    with open(output_path, "w") as f:
-        json.dump(output, f, indent=2)
+    output_path = save_experiment_output("gravity_model_v0734", output)
     print(f"\nSaved: {output_path}")
 
     elapsed = time.time() - start_time

@@ -18,15 +18,18 @@ Usage:
     python scripts/run_scaled_costs_v070b.py
 """
 
-import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-# Ensure src is on path
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
+# Canonical imports from task_space
+from task_space.mobility.io import (
+    load_transitions,
+    get_training_transitions,
+    load_wasserstein_census,
+    load_institutional_census,
+)
 from task_space.validation.scaled_costs import (
     load_oes_wages_by_census,
     get_wage_coverage,
@@ -39,72 +42,6 @@ from task_space.validation.scaled_costs import (
     compute_example_transition_costs,
     ScaledCostsResult,
 )
-from task_space.mobility.census_crosswalk import load_census_onet_crosswalk
-from task_space.mobility.institutional import build_institutional_distance_matrix
-
-
-def load_transitions(path: str = "data/processed/mobility/verified_transitions.parquet") -> pd.DataFrame:
-    """Load CPS transition data."""
-    df = pd.read_parquet(path)
-    df["year"] = df["YEARMONTH"] // 100
-    return df
-
-
-def partition_by_year(df: pd.DataFrame, train_years: list) -> pd.DataFrame:
-    """Filter transitions to training years."""
-    return df[df["year"].isin(train_years)].copy()
-
-
-def load_wasserstein_census():
-    """Load Census-level Wasserstein distances."""
-    data = np.load(".cache/artifacts/v1/mobility/d_wasserstein_census.npz")
-    return data["distances"], list(data["occupation_codes"])
-
-
-def load_institutional_census(census_codes: list):
-    """
-    Load/compute Census-level institutional distances.
-    Aggregates from O*NET level using crosswalk.
-    """
-    # Build O*NET-level institutional distances
-    inst_result = build_institutional_distance_matrix()
-    d_inst_onet = inst_result.matrix
-    onet_codes = inst_result.occupations
-
-    # Load crosswalk
-    xwalk = load_census_onet_crosswalk()
-
-    # Build O*NET to index mapping
-    onet_to_idx = {code: i for i, code in enumerate(onet_codes)}
-
-    # Aggregate to Census level
-    n_census = len(census_codes)
-    d_inst_census = np.zeros((n_census, n_census))
-
-    for ci, census_i in enumerate(census_codes):
-        if census_i not in xwalk.census_to_onet:
-            continue
-        onet_list_i = xwalk.census_to_onet[census_i]
-        valid_idx_i = [onet_to_idx[o] for o in onet_list_i if o in onet_to_idx]
-
-        for cj, census_j in enumerate(census_codes):
-            if census_j not in xwalk.census_to_onet:
-                continue
-            onet_list_j = xwalk.census_to_onet[census_j]
-            valid_idx_j = [onet_to_idx[o] for o in onet_list_j if o in onet_to_idx]
-
-            if not valid_idx_i or not valid_idx_j:
-                continue
-
-            distances = []
-            for oi in valid_idx_i:
-                for oj in valid_idx_j:
-                    distances.append(d_inst_onet[oi, oj])
-
-            if distances:
-                d_inst_census[ci, cj] = np.mean(distances)
-
-    return d_inst_census
 
 
 def main():
@@ -117,17 +54,16 @@ def main():
     # =========================================================================
     print("\n[1] Loading data...")
 
-    # Load transitions (training set from 0.7a)
+    # Load transitions using canonical functions
     transitions = load_transitions()
-    train_years = list(range(2015, 2020)) + [2022, 2023]
-    train_df = partition_by_year(transitions, train_years)
+    train_df = get_training_transitions(transitions)
     print(f"    Training transitions: {len(train_df):,}")
 
-    # Load distance matrices
+    # Load distance matrices using canonical functions
     d_sem, census_codes = load_wasserstein_census()
     print(f"    Census occupations: {len(census_codes)}")
-    print("    Computing institutional distances...")
-    d_inst = load_institutional_census(census_codes)
+    print("    Loading institutional distances...")
+    d_inst, _ = load_institutional_census()
 
     # =========================================================================
     # Step 2: Load OES wages

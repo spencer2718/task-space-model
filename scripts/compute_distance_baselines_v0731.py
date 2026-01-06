@@ -18,19 +18,14 @@ Outputs to:
 - .cache/artifacts/v1/mobility/d_euclidean_dwa_census.npz
 """
 
-import json
 from pathlib import Path
 import time
 
 import numpy as np
 from sklearn.metrics.pairwise import cosine_distances, euclidean_distances
 
-# Add src to path
-import sys
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
+from task_space.data.artifacts import CACHE_DIR, CACHE_VERSION, get_embeddings
 from task_space.domain import build_dwa_occupation_measures
-from task_space.data.artifacts import get_embeddings
 from task_space.data.onet import load_dwa_reference
 from task_space.mobility.census_crosswalk import (
     load_census_onet_crosswalk,
@@ -38,8 +33,8 @@ from task_space.mobility.census_crosswalk import (
 )
 
 
-CACHE_DIR = Path(__file__).parent.parent / ".cache" / "artifacts" / "v1" / "mobility"
-OUTPUT_DIR = Path(__file__).parent.parent / "outputs" / "experiments"
+# Cache path for mobility artifacts
+_MOBILITY_CACHE_DIR = CACHE_DIR / CACHE_VERSION / "mobility"
 
 
 def compute_d1_cosine_onet(occ_measures, onet_codes):
@@ -154,8 +149,7 @@ def main():
     start_time = time.time()
 
     # Ensure output directories exist
-    CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    _MOBILITY_CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
     # Load DWA occupation measures
     print("\nLoading DWA occupation measures...")
@@ -188,31 +182,31 @@ def main():
     print("\n=== Saving matrices ===")
 
     np.savez_compressed(
-        CACHE_DIR / "d_cosine_onet_census.npz",
+        _MOBILITY_CACHE_DIR / "d_cosine_onet_census.npz",
         distances=d1_census,
         census_codes=census_codes,
         metric="cosine_onet",
         description="Cosine distance on O*NET DWA importance vectors",
     )
-    print(f"Saved: {CACHE_DIR / 'd_cosine_onet_census.npz'}")
+    print(f"Saved: {_MOBILITY_CACHE_DIR / 'd_cosine_onet_census.npz'}")
 
     np.savez_compressed(
-        CACHE_DIR / "d_cosine_embed_census.npz",
+        _MOBILITY_CACHE_DIR / "d_cosine_embed_census.npz",
         distances=d2_census,
         census_codes=census_codes,
         metric="cosine_embed",
         description="Cosine distance on MPNet occupation centroid embeddings",
     )
-    print(f"Saved: {CACHE_DIR / 'd_cosine_embed_census.npz'}")
+    print(f"Saved: {_MOBILITY_CACHE_DIR / 'd_cosine_embed_census.npz'}")
 
     np.savez_compressed(
-        CACHE_DIR / "d_euclidean_dwa_census.npz",
+        _MOBILITY_CACHE_DIR / "d_euclidean_dwa_census.npz",
         distances=d3_census,
         census_codes=census_codes,
         metric="euclidean_dwa",
         description="Euclidean distance on normalized DWA weight distributions",
     )
-    print(f"Saved: {CACHE_DIR / 'd_euclidean_dwa_census.npz'}")
+    print(f"Saved: {_MOBILITY_CACHE_DIR / 'd_euclidean_dwa_census.npz'}")
 
     elapsed = time.time() - start_time
     print(f"\nCompleted in {elapsed:.1f}s")

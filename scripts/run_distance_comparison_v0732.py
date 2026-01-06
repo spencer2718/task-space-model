@@ -16,8 +16,6 @@ Model: P(j|i) ∝ exp(-α·d(i,j) - γ·d_inst(i,j))
 Sample: 89,329 verified CPS transitions (2015-2019, 2022-2024)
 """
 
-import json
-from pathlib import Path
 import time
 from dataclasses import dataclass
 from typing import Dict, List, Tuple
@@ -26,19 +24,14 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-import sys
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
+from task_space.mobility.io import load_distance_matrix, load_transitions
 from task_space.mobility.census_crosswalk import load_census_onet_crosswalk
 from task_space.mobility.choice_model import (
     build_choice_dataset,
     fit_conditional_logit,
     ChoiceModelResult,
 )
-
-
-CACHE_DIR = Path(__file__).parent.parent / ".cache" / "artifacts" / "v1" / "mobility"
-OUTPUT_DIR = Path(__file__).parent.parent / "outputs" / "experiments"
+from task_space.utils.experiments import save_experiment_output
 
 
 @dataclass
@@ -56,52 +49,6 @@ class ModelResult:
     converged: bool
 
 
-def load_distance_matrix(name: str) -> Tuple[np.ndarray, List[int]]:
-    """Load a distance matrix and census codes."""
-    path = CACHE_DIR / f"d_{name}_census.npz"
-    data = np.load(path, allow_pickle=True)
-    distances = data["distances"]
-
-    # Try to get census codes
-    if "census_codes" in data.files:
-        census_codes = list(data["census_codes"])
-    else:
-        # Load from crosswalk if not in file
-        crosswalk = load_census_onet_crosswalk()
-        census_codes = sorted(crosswalk.census_to_onet.keys())
-
-    return distances, census_codes
-
-
-def load_institutional_distance(census_codes: List[int]) -> np.ndarray:
-    """
-    Load institutional distance matrix and aggregate to Census level.
-
-    The d_inst file is at O*NET level (923 occupations), so we aggregate
-    to Census level (447) using the crosswalk.
-    """
-    from task_space.mobility.census_crosswalk import aggregate_distances_to_census
-
-    path = CACHE_DIR / "d_inst_census.npz"
-    data = np.load(path, allow_pickle=True)
-
-    d_inst_onet = data["d_inst_matrix"]
-    onet_codes = list(data["occ_codes"])
-
-    print(f"  d_inst (O*NET): shape={d_inst_onet.shape}")
-
-    # Aggregate to Census level
-    crosswalk = load_census_onet_crosswalk()
-    d_inst_census, _ = aggregate_distances_to_census(
-        d_inst_onet, onet_codes, crosswalk, aggregation="mean"
-    )
-
-    # Zero the diagonal
-    np.fill_diagonal(d_inst_census, 0)
-
-    print(f"  d_inst (Census): shape={d_inst_census.shape}")
-
-    return d_inst_census
 
 
 def compute_null_ll(n_transitions: int, n_alternatives: int = 11) -> float:
@@ -223,28 +170,28 @@ def main():
     print("=" * 70)
 
     start_time = time.time()
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     # Load distance matrices
     print("\n1. Loading distance matrices...")
 
     metrics = ["cosine_onet", "cosine_embed", "euclidean_dwa", "wasserstein"]
     distance_matrices = {}
+    census_codes = None
 
     for metric in metrics:
-        d, codes = load_distance_matrix(metric)
+        d, codes = load_distance_matrix(kind=metric)
         distance_matrices[metric] = d
+        if census_codes is None:
+            census_codes = codes
         print(f"  {metric}: shape={d.shape}, range=[{d.min():.4f}, {d.max():.4f}]")
 
-    census_codes = codes  # Same for all
-
-    # Load institutional distance (aggregates from O*NET to Census level)
+    # Load institutional distance
     print("\n2. Loading institutional distance...")
-    d_inst = load_institutional_distance(census_codes)
+    d_inst, _ = load_distance_matrix(kind="institutional")
 
     # Load transitions
     print("\n3. Loading CPS transitions...")
-    transitions_df = pd.read_parquet("data/processed/mobility/verified_transitions.parquet")
+    transitions_df = load_transitions()
     print(f"  Total: {len(transitions_df):,}")
 
     # Filter to valid codes
@@ -383,9 +330,7 @@ def main():
     output["interpretation"] = interpretation
 
     # Save
-    output_path = OUTPUT_DIR / "distance_head_to_head_v0732.json"
-    with open(output_path, "w") as f:
-        json.dump(output, f, indent=2)
+    output_path = save_experiment_output("distance_head_to_head_v0732", output)
     print(f"\nSaved: {output_path}")
 
     elapsed = time.time() - start_time

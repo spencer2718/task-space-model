@@ -14,16 +14,18 @@ Outputs:
     - Console: Validation metrics and top destinations
 """
 
-import json
-import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-# Add src to path
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
+# Canonical imports from task_space
+from task_space.mobility.io import (
+    load_wasserstein_census,
+    load_institutional_census,
+    get_holdout_transitions,
+)
+from task_space.utils.experiments import save_experiment_output
 from task_space.validation.reallocation import (
     load_employment_by_census,
     load_occupation_names,
@@ -41,7 +43,6 @@ from task_space.validation.shock_integration import (
     get_aioe_by_soc_dataframe,
     map_aioe_to_census,
 )
-from task_space.mobility.census_crosswalk import load_census_onet_crosswalk
 
 
 # =============================================================================
@@ -57,93 +58,6 @@ OES_YEAR = 2023
 AIOE_QUARTILE = 0.75  # Top 25% by AI exposure
 CAPACITY_THRESHOLD = 0.5  # 50% absorption rate = constrained
 
-OUTPUT_PATH = Path(__file__).parent.parent / "outputs" / "experiments" / "reallocation_v070c.json"
-
-
-# =============================================================================
-# Data Loading
-# =============================================================================
-
-
-def load_distance_matrices():
-    """Load Wasserstein and institutional distance matrices at Census level."""
-    cache_dir = Path(__file__).parent.parent / ".cache" / "artifacts" / "v1"
-
-    # Load pre-aggregated Wasserstein at Census level
-    wass_path = cache_dir / "mobility" / "d_wasserstein_census.npz"
-    wass_data = np.load(wass_path)
-    d_wass_census = wass_data["distances"]
-    wass_codes = [int(c) for c in wass_data["occupation_codes"]]
-    print(f"   Wasserstein matrix: {d_wass_census.shape}, {len(wass_codes)} Census codes")
-
-    # Load institutional distance at O*NET level and aggregate to Census
-    inst_path = cache_dir / "mobility" / "d_inst_census.npz"
-    inst_data = np.load(inst_path, allow_pickle=True)
-    d_inst_onet = inst_data["d_inst_matrix"]
-    onet_codes = list(inst_data["occ_codes"])
-    print(f"   Institutional matrix (O*NET): {d_inst_onet.shape}, {len(onet_codes)} O*NET codes")
-
-    # Build O*NET to Census mapping
-    xwalk = load_census_onet_crosswalk()
-    xwalk_df = xwalk.crosswalk_df[xwalk.crosswalk_df["matched"] == True].copy()
-    onet_to_census = dict(zip(xwalk_df["onet_soc"], xwalk_df["census_2010"]))
-
-    # Aggregate institutional distance to Census level
-    onet_idx = {o: i for i, o in enumerate(onet_codes)}
-
-    n_census = len(wass_codes)
-    d_inst_census = np.zeros((n_census, n_census))
-    count_matrix = np.zeros((n_census, n_census))
-
-    census_to_wass_idx = {c: i for i, c in enumerate(wass_codes)}
-
-    for onet_i in onet_codes:
-        if onet_i not in onet_to_census:
-            continue
-        census_i = int(onet_to_census[onet_i])
-        if census_i not in census_to_wass_idx:
-            continue
-        i_census = census_to_wass_idx[census_i]
-        i_onet = onet_idx[onet_i]
-
-        for onet_j in onet_codes:
-            if onet_j not in onet_to_census:
-                continue
-            census_j = int(onet_to_census[onet_j])
-            if census_j not in census_to_wass_idx:
-                continue
-            j_census = census_to_wass_idx[census_j]
-            j_onet = onet_idx[onet_j]
-
-            d_inst_census[i_census, j_census] += d_inst_onet[i_onet, j_onet]
-            count_matrix[i_census, j_census] += 1
-
-    count_matrix = np.maximum(count_matrix, 1)
-    d_inst_census /= count_matrix
-
-    print(f"   Institutional matrix (Census): {d_inst_census.shape}")
-
-    return d_wass_census, d_inst_census, wass_codes
-
-
-def load_holdout_transitions():
-    """Load 2024 holdout transitions for validation."""
-    data_dir = Path(__file__).parent.parent / "data" / "processed" / "mobility"
-    holdout_path = data_dir / "verified_transitions.parquet"
-
-    if not holdout_path.exists():
-        print(f"   WARNING: Holdout data not found at {holdout_path}")
-        return None
-
-    df = pd.read_parquet(holdout_path)
-
-    # Filter to 2024 (post-training period)
-    df["year"] = df["YEARMONTH"] // 100
-    holdout = df[df["year"] >= 2024].copy()
-
-    print(f"   Holdout transitions (2024+): {len(holdout)}")
-    return holdout
-
 
 # =============================================================================
 # Main Analysis
@@ -155,9 +69,12 @@ def main():
     print("Phase 0.7c-revised: Skill-Compatible Pathway Analysis")
     print("=" * 70)
 
-    # Load distance matrices
+    # Load distance matrices using canonical functions
     print("\n1. Loading distance matrices...")
-    d_wass, d_inst, census_codes = load_distance_matrices()
+    d_wass, census_codes = load_wasserstein_census()
+    d_inst, _ = load_institutional_census()
+    print(f"   Wasserstein matrix: {d_wass.shape}, {len(census_codes)} Census codes")
+    print(f"   Institutional matrix: {d_inst.shape}")
 
     # Load AIOE and employment data
     print("\n2. Loading AIOE and employment data...")
@@ -216,9 +133,10 @@ def main():
     # Split into feasible vs constrained
     feasible_df, constrained_df = split_feasible_constrained(absorption_df, CAPACITY_THRESHOLD)
 
-    # Load holdout for validation
+    # Load holdout for validation using canonical function
     print("\n6. Validating against 2024 holdout...")
-    holdout_df = load_holdout_transitions()
+    holdout_df = get_holdout_transitions()
+    print(f"   Holdout transitions (2024+): {len(holdout_df)}")
 
     validation_result = None
     if holdout_df is not None and len(holdout_df) > 0:
@@ -350,11 +268,9 @@ def main():
         "verdict": validation_result.get("verdict", "no_validation") if validation_result else "no_validation",
     }
 
-    # Save
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(OUTPUT_PATH, "w") as f:
-        json.dump(result, f, indent=2)
-    print(f"\n   Saved to: {OUTPUT_PATH}")
+    # Save using canonical function
+    output_path = save_experiment_output("reallocation_v070c", result)
+    print(f"\n   Saved to: {output_path}")
 
     # Summary
     print("\n" + "=" * 70)

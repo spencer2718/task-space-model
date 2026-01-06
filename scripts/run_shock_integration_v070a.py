@@ -17,15 +17,19 @@ Usage:
     python scripts/run_shock_integration_v070a.py
 """
 
-import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-# Ensure src is on path
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
+# Canonical imports from task_space
+from task_space.mobility.io import (
+    load_transitions,
+    get_training_transitions,
+    get_holdout_transitions,
+    load_wasserstein_census,
+    load_institutional_census,
+)
 from task_space.validation.shock_integration import (
     get_aioe_by_soc_dataframe,
     map_aioe_to_census,
@@ -43,83 +47,6 @@ from task_space.mobility.choice_model import (
 )
 
 
-def load_transitions(path: str = "data/processed/mobility/verified_transitions.parquet") -> pd.DataFrame:
-    """Load CPS transition data."""
-    df = pd.read_parquet(path)
-    # Extract year from YEARMONTH
-    df["year"] = df["YEARMONTH"] // 100
-    return df
-
-
-def partition_by_year(
-    df: pd.DataFrame,
-    train_years: list,
-    holdout_years: list,
-) -> tuple:
-    """Split transitions into train and holdout by year."""
-    train = df[df["year"].isin(train_years)].copy()
-    holdout = df[df["year"].isin(holdout_years)].copy()
-    return train, holdout
-
-
-def load_wasserstein_census():
-    """Load Census-level Wasserstein distances."""
-    data = np.load(".cache/artifacts/v1/mobility/d_wasserstein_census.npz")
-    return data["distances"], list(data["occupation_codes"])
-
-
-def load_institutional_census(census_codes: list):
-    """
-    Load/compute Census-level institutional distances.
-
-    The raw d_inst_census.npz is at O*NET level (923 occs).
-    We aggregate to Census level (447 occs) using the crosswalk.
-    """
-    from task_space.mobility.census_crosswalk import load_census_onet_crosswalk
-    from task_space.mobility.institutional import build_institutional_distance_matrix
-
-    # Build O*NET-level institutional distances
-    inst_result = build_institutional_distance_matrix()
-    d_inst_onet = inst_result.matrix
-    onet_codes = inst_result.occupations
-
-    # Load crosswalk
-    xwalk = load_census_onet_crosswalk()
-
-    # Build O*NET to index mapping
-    onet_to_idx = {code: i for i, code in enumerate(onet_codes)}
-
-    # Aggregate to Census level
-    n_census = len(census_codes)
-    d_inst_census = np.zeros((n_census, n_census))
-
-    for ci, census_i in enumerate(census_codes):
-        if census_i not in xwalk.census_to_onet:
-            continue
-        onet_list_i = xwalk.census_to_onet[census_i]
-        valid_idx_i = [onet_to_idx[o] for o in onet_list_i if o in onet_to_idx]
-
-        for cj, census_j in enumerate(census_codes):
-            if census_j not in xwalk.census_to_onet:
-                continue
-            onet_list_j = xwalk.census_to_onet[census_j]
-            valid_idx_j = [onet_to_idx[o] for o in onet_list_j if o in onet_to_idx]
-
-            if not valid_idx_i or not valid_idx_j:
-                continue
-
-            # Aggregate pairwise distances using mean
-            distances = []
-            for oi in valid_idx_i:
-                for oj in valid_idx_j:
-                    distances.append(d_inst_onet[oi, oj])
-
-            if distances:
-                d_inst_census[ci, cj] = np.mean(distances)
-
-    return d_inst_census
-
-
 def main():
     print("=" * 60)
     print("Phase 0.7a: Shock Integration Test")
@@ -130,25 +57,23 @@ def main():
     # =========================================================================
     print("\n[1] Loading data...")
 
-    # Load transitions
+    # Load transitions using canonical functions
     transitions = load_transitions()
     print(f"    Total transitions: {len(transitions):,}")
     print(f"    Year range: {transitions['year'].min()}-{transitions['year'].max()}")
 
-    # Partition: train = 2015-2019, 2022-2023; holdout = 2024
-    train_years = list(range(2015, 2020)) + [2022, 2023]
-    holdout_years = [2024]
+    # Partition using canonical train/holdout functions
+    train_df = get_training_transitions(transitions)
+    holdout_df = get_holdout_transitions()
+    print(f"    Train: {len(train_df):,} transitions (excludes COVID years)")
+    print(f"    Holdout: {len(holdout_df):,} transitions (2024)")
 
-    train_df, holdout_df = partition_by_year(transitions, train_years, holdout_years)
-    print(f"    Train: {len(train_df):,} transitions ({train_years[0]}-{train_years[-1]})")
-    print(f"    Holdout: {len(holdout_df):,} transitions ({holdout_years})")
-
-    # Load distance matrices
+    # Load distance matrices using canonical functions
     d_sem, census_codes = load_wasserstein_census()
     print(f"    Census occupations: {len(census_codes)}")
-    print("    Computing institutional distances (aggregating from O*NET)...")
-    d_inst = load_institutional_census(census_codes)
-    print(f"    Institutional matrix computed: {d_inst.shape}")
+    print("    Loading institutional distances...")
+    d_inst, _ = load_institutional_census()
+    print(f"    Institutional matrix: {d_inst.shape}")
 
     # Load AIOE
     aioe_soc = get_aioe_by_soc_dataframe(use_lm=True)
