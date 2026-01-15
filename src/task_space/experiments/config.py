@@ -29,7 +29,7 @@ class ExperimentConfig:
     output_dir: Path = field(default_factory=lambda: Path("outputs/experiments"))
 
     # Similarity (registry key + args)
-    similarity: str = "normalized_kernel"
+    similarity: str = "wasserstein"  # Default changed from normalized_kernel per HC1
     similarity_args: dict[str, Any] = field(default_factory=dict)
 
     # Shock (registry key + args, optional for validation-only)

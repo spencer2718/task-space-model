@@ -234,12 +234,42 @@ def fit_conditional_logit(
     """
     from statsmodels.discrete.conditional_models import ConditionalLogit
 
-    # Prepare data
-    endog = choice_df[outcome_col].values
-    exog = choice_df[[sem_col, inst_col]].values
-    groups = choice_df[group_col].values
+    # ===========================================================================
+    # CONDITIONAL LOGIT UTILITY SPECIFICATION
+    # ===========================================================================
+    # 
+    # Worker k switching from occupation i considers destination j
+    # Utility of destination j:
+    #
+    #   U_kj = α·(-d_sem(i,j)) + β·(-d_inst(i,j)) + ε_kj
+    #
+    # Where:
+    #   - d_sem(i,j) = semantic/task distance between i and j (Wasserstein)
+    #   - d_inst(i,j) = institutional distance (job zones + certification)
+    #   - ε_kj = idiosyncratic preference shock (Type I extreme value)
+    #
+    # NEGATION: Distances are NEGATED before entering utility because:
+    #   - Higher distance = Lower utility (harder transition)
+    #   - α, β > 0 means workers avoid distant occupations
+    #
+    # COEFFICIENTS:
+    #   - α = task transformation penalty (units: utils per Wasserstein distance)
+    #   - β = credential barrier penalty (units: utils per job zone difference)
+    #
+    # IDENTIFICATION CAVEAT:
+    #   This estimates probabilistic choice patterns, not causal effects.
+    #   We observe P(j chosen | i, worker switched), not why workers switch.
+    #   The coefficients capture revealed preference in equilibrium, which
+    #   combines supply-side costs AND demand-side opportunities.
+    # ===========================================================================
 
-    # Fit model
+    # Prepare data
+    endog = choice_df[outcome_col].values  # Binary: 1 if occupation was chosen
+    exog = choice_df[[sem_col, inst_col]].values  # Negated distances
+    groups = choice_df[group_col].values  # Group choices by transition
+
+    # Fit model using conditional (fixed effects) logit
+    # This differences out any origin-specific effects
     model = ConditionalLogit(endog, exog, groups=groups)
     result = model.fit(disp=False)
 

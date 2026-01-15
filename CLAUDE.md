@@ -171,7 +171,7 @@ Experiments run at **x.y.0.z** increments (e.g., 0.7.0.2, 0.7.0.3). After experi
 
 ## Version
 
-**0.7.5.0** — COVID structural stability finding; paper §5.7 added
+**0.7.5.1** — Codebase polish for external review
 
 ---
 

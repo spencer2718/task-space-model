@@ -69,3 +69,6 @@ killshot/mobility_feasibility/outputs/*.npz
 # OS
 .DS_Store
 Thumbs.db
+
+# External data (see data/README.md for acquisition)
+data/external/

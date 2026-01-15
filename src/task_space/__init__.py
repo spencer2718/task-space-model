@@ -1,3 +1,18 @@
+"""
+Module: task_space
+Oracle role: Root module coordinating T/I/S/M components
+Key functions: build_dwa_occupation_measures (T), load_transitions (M), compute_wasserstein_distances (T)
+
+The task-space oracle maps (T, I, S, M) → (Δρ, ΔL, ΔW):
+- T: Task representation via embedding-informed distance
+- I: Institutional structure (job zones, certifications)
+- S: Shock profiles (e.g., AI exposure)
+- M: Adjustment mechanisms (mobility patterns, switching costs)
+
+Core insight: Technology acts on tasks. Occupations are probability 
+distributions over tasks. Employment/wage outcomes aggregate task-level effects.
+"""
+
 # task_space v0.7.3.0
 # Retrospective battery + documentation schema (MS10, Decision Authority)
 

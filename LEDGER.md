@@ -1,7 +1,7 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.5.0
-**Last Updated:** 2025-12-23
+**Current Version:** 0.7.5.1
+**Last Updated:** 2025-01-15
 **Paper Draft:** `paper/main.tex`
 
 ---
@@ -14,7 +14,7 @@ The task-space oracle maps **(T, I, S, M) → (Δρ, ΔL, ΔW)**:
 |--------|-------------|--------|
 | **T** (Task representation) | Embedding-informed distance (semantic task substitutability) | **Validated** |
 | **I** (Institutional structure) | Job zones + certification distance | **Validated** |
-| **S** (Shock profiles) | External AIOE integration | **Integrated** |
+| **S** (Shock profiles) | External AIOE integration | **Validated** |
 | **M** (Adjustment mechanisms) | Switching costs, equilibrium | **Preliminary** |
 
 **Outputs:**
@@ -42,6 +42,21 @@ These are inviolable. Agents must not contradict or re-litigate.
 | HC6 | Institutional barriers are FRICTION not GATES | γ_inst/γ_sem = 0.015; credential-blocking unobserved | v0.7.0 |
 | HC7 | Technology acts on TASKS, not occupations | Occupations are task distributions; outcomes aggregate task-level effects | v0.7.0.1 |
 | HC8 | Oracle outputs are (Δρ, ΔL, ΔW) | Task distribution changes, employment changes, wage changes | v0.7.0.1 |
+
+---
+
+## Key Metrics Glossary {#key-metrics}
+
+Critical metrics used throughout validation. Understanding these is essential for interpreting results.
+
+| Metric | Definition | Interpretation |
+|--------|------------|----------------|
+| **Pseudo-R²** | McFadden's pseudo-R² = 1 - (LL_model / LL_null) | Proportion of choice uncertainty resolved by model. 14.5% is strong for discrete choice models; indicates substantial predictive power over random choice. |
+| **MPR** | Mean Percentile Rank of realized destinations in geometry-ranked list | Average position of actual transitions in model's ranking. MPR = 0.74 means realized destinations rank in top 26% on average, confirming model captures feasibility structure. |
+| **ΔLL** | Log-likelihood improvement over baseline model | Absolute improvement in probabilistic fit. ΔLL = +23,119 means geometry substantially outperforms historical transition rates; larger values indicate better prediction. |
+| **Partial R²** | Incremental variance explained by adding distance to gravity model | Measures distance contribution beyond employment size effects. 3.5% for task distance is consistent with Cortes-Gallipoli (15%) given that task costs are one component of total switching costs. |
+| **Spearman ρ** | Rank correlation between predicted and actual flows | Measures ordinal agreement. Per-origin ρ ≈ 0.13 indicates modest but positive signal for ranking destinations within each origin occupation. |
+| **N_eff** | Effective number of destinations = exp(entropy) | Captures distribution diffuseness. N_eff = 207 means probability mass spread across ~200 occupations, not concentrated on a few. |
 
 ---
 
@@ -357,7 +372,7 @@ The MPNet embedding is doing the work. The Wasserstein formulation provides marg
 
 **Sample:** Train = 97,236 transitions (2015-2019, 2022-2023); Holdout = 8,880 transitions (2024)
 
-**Status: INTEGRATED.** AIOE and Wasserstein are orthogonal—shock profiles identify exposed occupations, geometry identifies compatible destinations.
+**Status: VALIDATED.** AIOE and Wasserstein are orthogonal—shock profiles identify exposed occupations, geometry identifies compatible destinations. Holdout validation (ΔLL = +23,119) confirms S module integration improves prediction.
 
 ### S Module: Pathway Accuracy Audit (v0.7.0.3c)
 
@@ -722,6 +737,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.5.1 | 2025-01-15 | Codebase polish for external review. HC1 default fix; metrics glossary; distance guide; code documentation. |
 | 0.7.5.0 | 2025-12-23 | COVID structural stability: aggregate geometry invariant (Δα < 1%, p = 0.76); teleworkable occupations show elevated hiring standards (δ₄ = -0.086, p = 0.01). Paper §5.7 added. |
 | 0.7.4.1 | 2025-12-23 | Pre/post COVID comparison implemented. Sample split, period estimation, structural break test, remote work interactions. |
 | 0.7.4.0 | 2025-12-22 | Documentation consolidation. Contribution reframed: semantic task substitutability, not Wasserstein per se. Attribution Audit added. |

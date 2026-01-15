@@ -2,7 +2,19 @@
 
 Infrastructure for analyzing how task-level technological change propagates to labor market outcomes.
 
-**Version 0.7.5.0** — COVID Structural Stability
+**Version 0.7.5.1** — COVID Structural Stability
+
+---
+
+## Quick Navigation
+
+| If you want to... | Start here |
+|-------------------|------------|
+| Understand the research | `paper/main.tex` (full theory) |
+| Run the main validation | `scripts/run_distance_comparison_v0732.py` |
+| Understand distance metrics | `src/task_space/similarity/DISTANCE_GUIDE.md` |
+| See current scientific state | `LEDGER.md` |
+| Contribute as engineer | `CLAUDE.md` |
 
 ---
 

@@ -5,6 +5,13 @@ Maps between Census 2010 occupation codes (used in CPS) and O*NET-SOC codes
 (used for task measures). Handles many-to-one aggregation when multiple
 O*NET occupations map to a single Census code.
 
+IMPORTANT LIMITATION: When multiple O*NET codes map to a single Census code,
+this module currently uses UNWEIGHTED MEAN aggregation. This does not account
+for employment prevalence differences among the O*NET occupations. Future work
+should consider employment-weighted averaging if OES employment data is
+incorporated. This limitation may bias distance calculations for Census codes
+that aggregate heterogeneous O*NET occupations with very different employment levels.
+
 Mapping path: Census 2010 (OCC2010) → 6-digit SOC → O*NET-SOC 2019
 
 References:
@@ -131,6 +138,15 @@ def aggregate_distances_to_census(
 
     When multiple O*NET codes map to one Census code, aggregate their
     distances using the specified method.
+
+    IMPORTANT LIMITATION: The current implementation uses UNWEIGHTED aggregation.
+    This means when a Census code maps to multiple O*NET codes (e.g., Census code 1020
+    includes both "Software Developers, Applications" and "Software Developers, Systems"),
+    their distances are averaged without considering that one O*NET occupation might
+    have 10x more workers than another. This limitation could bias results for Census
+    codes that aggregate occupations with very different employment levels.
+    
+    Future improvement: Implement employment-weighted averaging using OES employment data.
 
     Args:
         onet_distance_matrix: (n_onet, n_onet) distance matrix

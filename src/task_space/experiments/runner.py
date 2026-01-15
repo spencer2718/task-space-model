@@ -75,6 +75,13 @@ def run_experiment(config: ExperimentConfig) -> dict:
         if config.similarity == 'kernel':
             similarity = compute_kernel_overlap(measures.occupation_matrix, K)
         elif config.similarity == 'normalized_kernel':
+            import warnings
+            warnings.warn(
+                "normalized_kernel is deprecated for distance applications per HC1. "
+                "Use 'wasserstein' instead. See DISTANCE_GUIDE.md for details.",
+                DeprecationWarning,
+                stacklevel=2
+            )
             similarity = compute_normalized_overlap(measures.occupation_matrix, K)
         else:
             raise ValueError(f"Unknown similarity: {config.similarity}")

@@ -293,6 +293,51 @@ def build_verified_transitions(
     """
     Apply full filter pipeline to identify verified occupation transitions.
 
+    ==========================================================================
+    CPS TRANSITION PIPELINE — MEASUREMENT ERROR CORRECTION
+    ==========================================================================
+    
+    The Current Population Survey (CPS) tracks individuals for 16 months 
+    (4 months in, 8 months out, 4 months in). However, raw occupation 
+    switching rates in CPS (~6.7% monthly) vastly exceed true mobility rates 
+    (~0.5-1.0% monthly) due to measurement error.
+    
+    Pipeline stages (see paper Table 7):
+    
+    1. RAW CPS DATA (n ≈ 5.7M person-months)
+       └─> All CPS observations with occupation codes
+    
+    2. EMPLOYMENT FILTER (n ≈ 3.5M)
+       └─> Keep only employed workers (EMPSTAT ∈ {10, 12})
+       └─> Why: Occupation codes only meaningful for employed
+       └─> Require continuous employment around transition (E-E)
+    
+    3. DEMOGRAPHIC VALIDATION (n ≈ 3.2M)
+       └─> Verify person links: SEX/RACE constant, AGE increases 0-2
+       └─> Why: False links create spurious transitions
+    
+    4. LINKED PAIRS (n ≈ 2.8M)
+       └─> Extract month-to-month occupation pairs within person
+       └─> Identify raw occupation changes
+    
+    5. PERSISTENCE FILTER (n ≈ 97,236 transitions)
+       └─> Require: Origin stable 2+ months before switch
+       └─> Require: Destination persists 2+ months after switch
+       └─> Why: Filters coding errors (temporary miscoding that reverts)
+    
+    6. O*NET MAPPING (n ≈ 89,329 final)
+       └─> Map Census codes to O*NET-SOC for task analysis
+       └─> Drop transitions with unmappable occupations
+    
+    The persistence filter is CRITICAL: It reduces false transitions by ~75%.
+    Without it, we'd incorrectly measure occupation distance effects using
+    mostly coding noise rather than true labor market transitions.
+    
+    Final sample represents: Verified occupation-to-occupation transitions 
+    among continuously employed adults, with stable origin and persistent 
+    destination occupations.
+    ==========================================================================
+
     Filter order (per measurement error literature):
     1. Employment filter: Remove non-employed observations
     2. Demographic validation: Remove inconsistent person links
