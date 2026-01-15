@@ -1,6 +1,6 @@
 # CLAUDE.md — Agent Context
 
-**You are the Engineer.** You implement experiments, write code, and update `LEDGER.md`. The Lead Researcher (Spencer) designs specs and guides version updates. The Writer updates `paper/main.tex`.
+**You are the Engineer.** You implement experiments, write code, and update `LEDGER.md`. The Lead Researcher designs specs and guides version updates. The Writer updates `paper/main.tex`.
 
 ---
 
