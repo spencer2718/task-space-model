@@ -1,0 +1,573 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\author{David H. Autor \\
+%EndAName
+MIT and NBER \and David Dorn \\
+%EndAName
+CEMFI and IZA}
+\date{December 2012}
+
+\AtBeginDocument{
+\addtolength{\abovedisplayskip}{-1.0ex}
+\addtolength{\abovedisplayshortskip}{-1.0ex}
+\addtolength{\belowdisplayskip}{-1.0ex}
+\addtolength{\belowdisplayshortskip}{-1.0ex}
+}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 11
+\spacing onehalf
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 2
+\use_esint 0
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.5cm
+\topmargin 2.5cm
+\rightmargin 2.5cm
+\bottommargin 2.5cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+
+\series bold
+Data for 
+\begin_inset Quotes eld
+\end_inset
+
+The Growth of Low Skill Service Jobs and the Polarization of the U.S.
+ Labor Market
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Data files (folder 
+\emph on
+/dta
+\emph default
+)
+\end_layout
+
+\begin_layout Standard
+The online data archive contains the following data sets in Stata format:
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+workfile2012.dta
+\emph default
+ provides data for 722 Commuting Zones times 5 time periods (1950-1970,
+ 1970-1980, 1980-1990, 1990-2000, 2000-2005).
+ All variables with the prefix 
+\begin_inset Quotes eld
+\end_inset
+
+
+\emph on
+l_
+\emph default
+
+\begin_inset Quotes erd
+\end_inset
+
+ refer to start-of-period values while variables with the prefix 
+\begin_inset Quotes eld
+\end_inset
+
+
+\emph on
+d_
+\emph default
+
+\begin_inset Quotes erd
+\end_inset
+
+ correspond to 10-year equivalent changes.
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+occ1990dd_data2012.dta
+\emph default
+ provides data for the 330 occupations of the 
+\emph on
+occ1990dd
+\emph default
+ occupation panel.
+ Variables are defined for the years 1950, 1970, 1980, 1990, 2000, and 2005.
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+emp-bypctile-1980-2005-rewt-0-*.dta
+\emph default
+, 
+\emph on
+emp-bypctile-1980-2005-rewt-1980-*.dta
+\emph default
+, 
+\emph on
+dwg-byperc-1980-2005-*.dta
+\emph default
+, and 
+\emph on
+occ-means-by-decade-1980-2005-*.dta 
+\emph default
+provide occupation-level data for polarization graphs, drawing either on
+ the full set of commuting zones (suffix 
+\emph on
+czall
+\emph default
+) or only on commuting zones with high or low routine employment share (suffix
+ 
+\emph on
+czhigh-abovemean-RSHA
+\emph default
+ or 
+\emph on
+czlow-abovemean-RSHA
+\emph default
+).
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+plotpoints-svc-by-quintile-1970-2005.dta
+\emph default
+ and 
+\emph on
+RTI-bypctile.dta
+\emph default
+ provide data for employment shares in the bottom quintile of the occupational
+ skill distribution, and for routine intensity by skill percentile.
+\end_layout
+
+\begin_layout Standard
+These data files are the basis for all reported empirical results except
+ Panel B of Table 7 which draws on individual-level Census microdata.
+\end_layout
+
+\begin_layout Subsection*
+Crosswalks (folder 
+\emph on
+/crosswalks
+\emph default
+)
+\end_layout
+
+\begin_layout Standard
+Mapping of Census occupation codes to 
+\emph on
+occ1990dd
+\emph default
+ occupation panel:
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+occ1950_occ1990dd.dta
+\emph default
+: 1950 Census occupation codes to 
+\emph on
+occ1990dd
+\emph default
+ codes.
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+occ1970_occ1990dd.dta
+\emph default
+: 1970 Census occupation codes to 
+\emph on
+occ1990dd
+\emph default
+ codes.
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+occ1980_occ1990dd.dta
+\emph default
+: 1980 Census occupation codes to 
+\emph on
+occ1990dd
+\emph default
+ codes.
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+occ1990_occ1990dd.dta
+\emph default
+: 1990 Census occupation codes to 
+\emph on
+occ1990dd
+\emph default
+ codes.
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+occ2000_occ1990dd.dta
+\emph default
+: 2000 Census 5%-sample occupation codes to 
+\emph on
+occ1990dd
+\emph default
+ codes.
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+occ2005_occ1990dd.dta
+\emph default
+: ACS occupation codes to 
+\emph on
+occ1990dd
+\emph default
+ codes.
+\end_layout
+
+\begin_layout Standard
+Other resources relating to 
+\emph on
+occ1990dd
+\emph default
+ codes:
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+subfile_occ1990dd_occgroups.do
+\emph default
+: aggregation of occ1990dd occupations to occupation groups.
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+Dorn_Thesis_Appendix.pdf
+\emph default
+, section A1: additional documentation regarding the construction of occ1990dd
+ codes.
+\end_layout
+
+\begin_layout Standard
+Mapping of geographic units in Census IPUMS samples to Commuting Zones:
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+cw_sea1950_czone.dta
+\emph default
+: 1950 Census State Economic Areas to 1990 Commuting Zones.
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+cw_ctygrp1970_czone.dta
+\emph default
+: 1970 Census County Groups to 1990 Commuting Zones.
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+cw_ctygrp1980_czone.dta
+\emph default
+: 1980 Census County Groups to 1990 Commuting Zones.
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+cw_puma1990_czone.dta
+\emph default
+: 1990 Census Public Use Micro Areas to 1990 Commuting Zones.
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+cw_puma2000_czone.dta
+\emph default
+: 2000 Census Public Use Micro Areas (also used in 2005 ACS) to 1990 Commuting
+ Zones.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+Note: In each file, the variable 
+\emph on
+afactor
+\emph default
+ indicates which fraction of a SEA/County Group/PUMA maps to a given CZ.
+ To allocate observations from Census microdata to Commuting Zones, one
+ has to merge the geographic unit of the Census file to the corresponding
+ Commuting Zone crosswalk using a many-to-many merge (command 
+\emph on
+joinby
+\emph default
+ in older versions of Stata).
+ The labor supply weight or person weight from the Census then needs to
+ be multiplied with 
+\emph on
+afactor
+\emph default
+.
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\noindent
+\align left
+Other resources relating to Commuting Zones:
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+cw_cty_czone.dta
+\emph default
+: mapping of 1990 FIPS county codes to 1990 Commuting Zones.
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+cw_czone_state.dta
+\emph default
+: mapping of 1990 Commuting Zones to FIPS state codes (indicating the state
+ that contains the largest fraction of a CZ's population).
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+cw_czone_division.dta
+\emph default
+: mapping of 1990 Commuting Zones to Census Division dummies.
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+Dorn_Thesis_Appendix.pdf
+\emph default
+, section A2: additional documentation regarding Commuting Zones.
+\end_layout
+
+\begin_layout Subsection*
+Computation of results (folder 
+\emph on
+/do
+\emph default
+)
+\end_layout
+
+\begin_layout Standard
+The following Stata do-files produce our main results:
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+czone_analysis_final.do
+\emph default
+ computes the results for Table 3, Table 4, Table 5, Table 6, Table 7 (Panel
+ A), Appendix Table 3, Appendix Table 4 (Panel A), and the two Online Appendix
+ Tables.
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+occ1990dd_stats.do
+\emph default
+ computes the results for Table 1, Table 2, Appendix Table 1, Appendix Table
+ 2, Appendix Table 4 (Panel B), and the data input for Figure 3.
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+microwage1980_2005_regression.do
+\emph default
+ computes the results for Table 7 (Panel B).
+ This file draws on individual-level microdata from the 1980 Census and
+ the 2005 ACS which is not contained in this data distribution due to very
+ large file size.
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+plot-demp-bypctile-1980-2005-rewt.do
+\emph default
+ computes the employment polarization graphs for Figure 1 (Panel A), Figure
+ 2 (Panel A), and Figure 5 (Panel A).
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+calc-plot-dwage-by-occ-pctile-1980-2005.do
+\emph default
+ computes the wage polarization graphs for Figure 1 (Panel B), Figure 2
+ (Panel B), and Figure 5 (Panel B).
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+plot-svc-growth-barchart-p20.do
+\emph default
+ computes the bar chart of Figure 3.
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+calc-plot-rti-by-wage-pctile.do 
+\emph default
+computes the graph of Figure 4.
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+czone_plot_final.do
+\emph default
+ computes the scatterplots for Figure 6.
+\end_layout
+
+\begin_layout Subsection*
+Raw results (folders 
+\emph on
+/log
+\emph default
+ and 
+\emph on
+/gph
+\emph default
+)
+\end_layout
+
+\begin_layout Standard
+The folders 
+\emph on
+/log
+\emph default
+ and 
+\emph on
+/gph
+\emph default
+ contain all regression log files and graphs that are produced by the files
+ in the folder 
+\emph on
+/do
+\emph default
+.
+\end_layout
+
+\begin_layout Subsection*
+Tables and figures (folder 
+\emph on
+/tab-fig
+\emph default
+)
+\end_layout
+
+\begin_layout Standard
+The Excel files 
+\emph on
+Autor-Dorn-AER-Final-Tables.xls
+\emph default
+ and 
+\emph on
+Autor-Dorn-AER-Final-Figures.xls
+\emph default
+ provide the full set of tables and figures that are presented in the paper
+ and in the online appendix.
+\end_layout
+
+\end_body
+\end_document

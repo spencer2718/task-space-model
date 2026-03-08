@@ -1,0 +1,101 @@
+------------------------------------------------------------------------------------------------------------------------
+       log:  C:\Users\David Dorn\Documents\My Dropbox\Current Projects\HFT\AER-PublishedVersion-Fall2012\Public data\do\
+> ../log/czone_plot.log
+  log type:  text
+ opened on:  15 Oct 2012, 13:42:25
+
+. use ../dta/workfile2012.dta, clear
+
+. 
+. * 25-year change in service occupation share
+. by czone, sort: egen d_shocc_service_long=total(d_shocc1_service_nc*t1+d_shocc1_service_nc*t2+0.5*d_shocc1_service_nc*
+> t3)
+
+. keep if yr==1980
+(2888 observations deleted)
+
+. assert _N==722
+
+. 
+. * Regressions
+. reg d_shocc_service_long l_sh_routine33a [aw=timepwt48]
+(sum of wgt is   1.0000e+00)
+
+      Source |       SS       df       MS              Number of obs =     722
+-------------+------------------------------           F(  1,   720) =  260.09
+       Model |  .135347532     1  .135347532           Prob > F      =  0.0000
+    Residual |  .374677105   720  .000520385           R-squared     =  0.2654
+-------------+------------------------------           Adj R-squared =  0.2644
+       Total |  .510024638   721  .000707385           Root MSE      =  .02281
+
+------------------------------------------------------------------------------
+d_shocc_se~g |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+l_sh_rou~33a |   .3359259   .0208296    16.13   0.000     .2950319    .3768198
+       _cons |  -.0425709   .0069395    -6.13   0.000    -.0561949   -.0289469
+------------------------------------------------------------------------------
+
+. reg d_shocc_service_long l_sh_routine33a [aw=timepwt48] if l_popcount>=750000==1
+(sum of wgt is   5.9353e-01)
+
+      Source |       SS       df       MS              Number of obs =      64
+-------------+------------------------------           F(  1,    62) =   18.78
+       Model |  .006287616     1  .006287616           Prob > F      =  0.0001
+    Residual |  .020761236    62  .000334859           R-squared     =  0.2325
+-------------+------------------------------           Adj R-squared =  0.2201
+       Total |  .027048852    63  .000429347           Root MSE      =   .0183
+
+------------------------------------------------------------------------------
+d_shocc_se~g |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+l_sh_rou~33a |   .4947067   .1141657     4.33   0.000     .2664928    .7229207
+       _cons |  -.0955176   .0405954    -2.35   0.022    -.1766666   -.0143686
+------------------------------------------------------------------------------
+
+. 
+. * Labels
+. label var l_sh_routine33a "Share of Employment in Routine-Intensive Occs in 1980"
+
+. label var d_shocc_service_long "Change in Non-College Service Empl Share"
+
+. 
+. * Plots
+. #delimit ;
+delimiter now ;
+. set scheme s2color;
+
+. twoway lfitci d_shocc_service_long l_sh_routine33a [aw=timepwt48], stdp estopts(cluster(statefip)) ||
+> scatter d_shocc_service_long l_sh_routine33a,
+> sort msize(small) ylabel(-.05(.05).20) xlabel(0.2(0.05)0.4)
+> t1("Change in Non-College Service Emp Share by CZ 1980-2005")
+> xtitle("Share of Employment in Routine-Intensive Occs in 1980")
+> ytitle("Change in Non-College Service Emp Share")
+> msymbol(circle)
+> saving(../gph/czone_plot_svc_r33a.gph, replace);
+(file ../gph/czone_plot_svc_r33a.gph saved)
+
+. #delimit cr
+delimiter now cr
+. 
+. #delimit ;
+delimiter now ;
+. twoway lfitci d_shocc_service_long l_sh_routine33a [aw=timepwt48] if l_popcount>=750000, stdp estopts(cluster(statefip
+> )) ||
+> scatter d_shocc_service_long l_sh_routine33a if l_popcount>750000,
+> sort msize(small) ylabel(.01(.02).14) xlabel(0.29(0.02)0.39)
+> t1("Change in Non-College Service Emp Share by CZ 1980-2005")
+> xtitle("Share of Employment in Routine-Intensive Occs in 1980")
+> ytitle("Change in Non-College Service Emp Share")
+> msymbol(circle) mlabel(city) mlabsize(tiny) mlabcolor(black) mlabposition(6)
+> saving(../gph/czone_plot_svc_r33a_750k.gph, replace);
+(file ../gph/czone_plot_svc_r33a_750k.gph saved)
+
+. #delimit cr
+delimiter now cr
+. 
+. log close
+       log:  C:\Users\David Dorn\Documents\My Dropbox\Current Projects\HFT\AER-PublishedVersion-Fall2012\Public data\do\
+> ../log/czone_plot.log
+  log type:  text
+ closed on:  15 Oct 2012, 13:42:28
+------------------------------------------------------------------------------------------------------------------------

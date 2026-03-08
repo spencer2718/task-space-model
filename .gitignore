@@ -4,8 +4,11 @@
 venv/
 env/
 
-# Cache
-.cache/
+# Cache (general)
+.cache/*
+!.cache/artifacts/
+!.cache/artifacts/v1/
+!.cache/artifacts/v1/**
 
 # Python
 __pycache__/
@@ -33,19 +36,18 @@ wheels/
 .ipynb_checkpoints/
 *.ipynb_checkpoints
 
-# Data (keep structure, ignore contents)
+# Data
 data/raw/*
-data/processed/*
-data/onet/*
 !data/raw/.gitkeep
-!data/processed/.gitkeep
-!data/processed/mobility/
-!data/processed/mobility/verified_transitions.parquet
-!data/onet/.gitkeep
+# O*NET and processed data: tracked for reproducibility
+# data/onet/ — tracked
+# data/processed/ — tracked
 
 # Outputs
 outputs/*
 !outputs/.gitkeep
+!outputs/experiments/
+!outputs/experiments/**
 
 # Models (too large for git)
 models/*
@@ -70,5 +72,6 @@ killshot/mobility_feasibility/outputs/*.npz
 .DS_Store
 Thumbs.db
 
-# External data (see data/README.md for acquisition)
-data/external/
+# External data — tracked for reproducibility, except raw IPUMS census extracts
+# (IPUMS extracts can be re-downloaded from https://ipums.org if needed)
+data/external/ipums/census/*.dat.gz

@@ -1,0 +1,173 @@
+------------------------------------------------------------------------------------------------------------------------
+       log:  C:\Users\David Dorn\Documents\My Dropbox\Current Projects\HFT\AER-PublishedVersion-Fall2012\Public-Release-
+> Data\do\../log/plot-demp-bypctile-1980-2005.log
+  log type:  text
+ opened on:   4 Dec 2012, 13:05:19
+
+. 
+. 
+. **************************************************************************************************
+. ** Figures for all CZs
+. **************************************************************************************************
+. 
+. local subtit = ""
+
+. * Plot observed change and counterfactual change at 1980 service occupation employment
+. local bw = .75
+
+. local y1 = 1980
+
+. local y2 = 2005
+
+. local span1=-0.2
+
+. local span2=0.4
+
+. local int = 0.1
+
+. local tick=0.05
+
+. local rewtyr=1980
+
+. 
+. use ../dta/emp-bypctile-1980-2005-rewt-0-czall, clear
+(HFT Census 1980 czall Sample with DFL Service Occ Reweights for Years 1980, 1990)
+
+. keep if year==`y1' | year==`y2'
+(200 observations deleted)
+
+. gen byte rwt=0
+
+. append using ../dta/emp-bypctile-1980-2005-rewt-`rewtyr'-czall
+
+. keep if year==`y1' | year==`y2'
+(200 observations deleted)
+
+. replace rwt=1 if rwt==.
+(200 real changes made)
+
+. 
+. * Calculate share changes for observed and reweighted distributions
+. sort rwt perc year
+
+. quietly by rwt perc: gen dsh = empshare-empshare[_n-1]
+
+. keep if year==`y2'
+(200 observations deleted)
+
+. drop empshare
+
+. tab rwt, summ(dsh)
+
+            |           Summary of dsh
+        rwt |        Mean   Std. Dev.       Freq.
+------------+------------------------------------
+          0 |   2.384e-08   .38578831         100
+          1 |  -4.411e-08   .39333089         100
+------------+------------------------------------
+      Total |  -1.013e-08   .38859778         200
+
+. reshape wide dsh, i(perc) j(rwt)
+(note: j = 0 1)
+
+Data                               long   ->   wide
+-----------------------------------------------------------------------------
+Number of obs.                      200   ->     100
+Number of variables                   4   ->       4
+j variable (2 values)               rwt   ->   (dropped)
+xij variables:
+                                    dsh   ->   dsh0 dsh1
+-----------------------------------------------------------------------------
+
+. label var perc "Occupation's Percentile in 1980 Wage Distribution"
+
+. 
+. * Get plotting points
+. lowess dsh0 perc, gen(pdsh0) bwidth(`bw') nograph
+
+. lowess dsh1 perc, gen(pdsh1) bwidth(`bw') nograph
+
+. label var pdsh0 "Observed change"
+
+. label var pdsh1 "Holding service emp at `rewtyr' level"
+
+. 
+. sort perc
+
+. tw scatter pdsh0 perc, connect(l) msymbol(o d) msize(small) ylabel(`span1'(`int')`span2') ymtick(`span1'(`tick')`span2
+> ') l1title("100 x Change in Employment Share", size(medsmall)) ytitle("") xtitle("Skill Percentile (Ranked by Occupati
+> onal Mean Wage)", size(medsmall)) subtitle("`subtit'", size(medsmall)) title("Smoothed Changes in Employment by Skill 
+> Percentile `y1'-`y2'", size(medium)) saving(../gph/demp-pct-`y1'-`y2'-czall-color.gph,replace)
+(file ../gph/demp-pct-1980-2005-czall-color.gph saved)
+
+. tw scatter pdsh0 pdsh1 perc, connect(l l) lpattern(solid dash) msymbol(sh i) msize(small small) ylabel(`span1'(`int')`
+> span2') ymtick(`span1'(`tick')`span2') l1title("100 x Change in Employment Share", size(medsmall)) ytitle("") xtitle("
+> Skill Percentile (Ranked by Occupational Mean Wage)", size(medsmall)) subtitle("`subtit'", size(medsmall)) title("Obse
+> rved and Counterfactual Changes in Employment by Skill Percentile `y1'-`y2'", size(medium)) saving(../gph/demp-pct-`y1
+> '-`y2'-rewt`rewtyr'-czall-color.gph,replace)
+(file ../gph/demp-pct-1980-2005-rewt1980-czall-color.gph saved)
+
+.         
+. **************************************************************************************************
+. * Plot combined factuals for high and low RSH czones: 1980-2005
+. **************************************************************************************************
+. 
+. local suffix="-abovemean-RSHA"
+
+. use ../dta/emp-bypctile-1980-2005-rewt-0-czlow`suffix', clear
+(HFT Census 1980 czlow Sample with DFL Service Occ Reweights for Years 1980, 1990)
+
+. rename empshare emp_lo
+
+. sort year perc
+
+. merge year perc using ../dta/emp-bypctile-1980-2005-rewt-0-czhigh`suffix'
+
+. assert _merge==3
+
+. drop _merge
+
+. rename empshare emp_hi
+
+. keep if year==1980 | year==2005
+(200 observations deleted)
+
+. 
+. * Calculate share changes for observed and reweighted distributions
+. sort perc year
+
+. quietly by perc: gen dsh_lo = emp_lo-emp_lo[_n-1]
+
+. quietly by perc: gen dsh_hi = emp_hi-emp_hi[_n-1]
+
+. label var perc "Occupation's Percentile in 1980 Wage Distribution"
+
+. 
+. * Get plotting points
+. lowess dsh_lo perc, gen(pdsh_lo) bwidth(`bw') nograph
+
+. lowess dsh_hi perc, gen(pdsh_hi) bwidth(`bw') nograph
+
+. label var pdsh_lo "Low Routine Share"
+
+. label var pdsh_hi "High Routine Share"
+
+. local subtit = "Commuting Zones Split on Mean Routine Share in 1980"
+
+. 
+. sort perc
+
+. tw scatter pdsh_lo pdsh_hi perc, connect(l l) lpattern(solid dash) msymbol(sh i) msize(small small) ylabel(-.2(.1).4) 
+> ymtick(-.2(.05).4) l1title("100 x Change in Employment Share", size(medsmall)) ytitle("") xtitle("Skill Percentile (Ra
+> nked by 1980 Occupational Mean Wage)", size(medsmall)) subtitle("`subtit'", size(medsmall)) title("Smoothed Changes in
+>  Employment by Skill Percentile 1980-2005", size(medium)) saving(../gph/demp-pct-1980-2005`suffix'-hilow-color.gph,rep
+> lace)   
+(file ../gph/demp-pct-1980-2005-abovemean-RSHA-hilow-color.gph saved)
+
+. 
+. log close
+       log:  C:\Users\David Dorn\Documents\My Dropbox\Current Projects\HFT\AER-PublishedVersion-Fall2012\Public-Release-
+> Data\do\../log/plot-demp-bypctile-1980-2005.log
+  log type:  text
+ closed on:   4 Dec 2012, 13:05:26
+------------------------------------------------------------------------------------------------------------------------
