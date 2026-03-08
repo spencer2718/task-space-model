@@ -1,0 +1,31 @@
+dwa_id,description,cluster_name,semantic_x,semantic_y
+4.A.4.a.5.I09.D01,Feed patients.,Healthcare,-2.7942941188812256,-1.6949667930603027
+4.A.4.a.5.I03.D07,Immunize patients.,Healthcare,-1.5744609832763672,0.18368571996688843
+4.A.4.c.3.I06.D03,Prescribe medications.,Healthcare,-1.0481672286987305,-0.3209065794944763
+4.A.1.b.2.I01.D04,Test patient vision.,Healthcare,-0.4119163453578949,0.9824872016906738
+4.A.4.a.5.I07.D02,Administer first aid.,Healthcare,0.21658630669116974,-2.5569140911102295
+4.A.4.a.5.I07.D03,Treat medical emergencies.,Healthcare,2.3674023151397705,-1.6641473770141602
+4.A.3.a.4.I01.D10,Drive trucks or truck-mounted equipment.,Vehicle & Equipment,1.3313512802124023,-3.9820492267608643
+4.A.3.a.4.I01.D11,Pilot aircraft.,Vehicle & Equipment,0.0630195140838623,-2.060875654220581
+4.A.3.a.1.I06.D09,Secure cargo.,Vehicle & Equipment,1.7595007419586182,0.08151879906654358
+4.A.3.a.3.I08.D01,Operate forklifts or other loaders.,Vehicle & Equipment,0.5731407403945923,-5.122276306152344
+4.A.3.a.1.I06.D01,"Load shipments, belongings, or materials.",Vehicle & Equipment,-0.8637176752090454,-2.2139785289764404
+4.A.3.b.4.I07.D03,Repair tires.,Vehicle & Equipment,3.2867953777313232,-0.8084610104560852
+4.A.3.a.2.I39.D01,Apply mortar.,Construction,0.05630004405975342,1.085227370262146
+4.A.3.a.2.I12.D10,Cut glass.,Construction,3.6962738037109375,-1.3240140676498413
+4.A.3.a.1.I07.D01,Dig holes or trenches.,Construction,0.9146324396133423,-1.7155601978302002
+4.A.3.a.2.I35.D02,Weld metal components.,Construction,0.07162433862686157,-2.0911951065063477
+4.A.3.a.2.I41.D07,Align masonry materials.,Construction,-0.623231053352356,1.9292433261871338
+4.A.3.a.2.I01.D08,Assemble temporary equipment or structures.,Construction,-0.8545246124267578,-5.072823524475098
+4.A.1.b.3.I03.D03,Calculate tax information.,Quantitative,-0.057270150631666183,5.153326988220215
+4.A.2.a.2.I04.D02,Balance receipts.,Quantitative,0.13227856159210205,2.5219316482543945
+4.A.4.b.4.I09.D04,Prepare operational budgets.,Quantitative,0.6513559222221375,2.231231689453125
+4.A.1.b.3.I03.D01,Calculate financial data.,Quantitative,2.684314489364624,6.282026767730713
+4.A.2.b.1.I07.D02,Edit documents.,Communication,1.0573666095733643,2.0465362071990967
+4.A.4.c.1.I01.D07,Type documents.,Communication,0.8068466186523438,0.4606093466281891
+4.A.2.b.1.I07.D01,Edit written materials.,Communication,-0.4982199966907501,2.6082615852355957
+4.A.3.b.6.I07.D02,Write grant proposals.,Communication,2.943415880203247,2.040038824081421
+4.A.3.b.1.I03.D01,Install computer software.,Technology,1.8468244075775146,3.582634449005127
+4.A.3.b.1.I03.D04,Configure computer networks.,Technology,1.22716224193573,2.6376523971557617
+4.A.2.b.2.I02.D10,Design software applications.,Technology,2.147447109222412,4.039585113525391
+4.A.1.b.2.I08.D03,Test software performance.,Technology,1.1292197704315186,2.980534791946411
