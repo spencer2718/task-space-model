@@ -1,0 +1,325 @@
+{
+  "version": "0.6.5.3",
+  "timestamp": "2025-12-15T04:53:31.624669",
+  "sample": {
+    "n_occupations": 658,
+    "n_clusters": 22,
+    "employment_coverage_pct": 85.01291989664082,
+    "years": [
+      2019,
+      2024
+    ],
+    "telework_coverage": 658,
+    "job_zone_coverage": 658
+  },
+  "outcome": {
+    "variable": "delta_log_emp",
+    "description": "log(employment_2024) - log(employment_2019)",
+    "mean": -0.03828014433690311,
+    "std": 0.24444377104323145
+  },
+  "predictors": {
+    "rti": {
+      "source": "Acemoglu-Autor 16-element composite from O*NET",
+      "elements": "4.A.2.a.4, 4.A.2.b.2, 4.A.4.a.1 (NR-Cog-Analytical), 4.A.4.a.4, 4.A.4.b.4, 4.A.4.b.5 (NR-Cog-Interpersonal), 4.C.3.b.7, 4.C.3.b.4, 4.C.3.b.8 (R-Cognitive), 4.C.3.d.3, 4.A.3.a.3, 4.C.2.d.1.i (R-Manual), 4.A.3.a.4, 4.C.2.d.1.g, 1.A.2.a.2, 1.A.1.f.1 (NR-Manual-Physical)",
+      "mean": 0.05240247470038775,
+      "std": 0.7157900250875057
+    },
+    "aioe": {
+      "source": "Felten, Raj, Seamans (2021)",
+      "mean": -0.028791701519756834,
+      "std": 1.0107458380888408
+    },
+    "semantic_exposure": {
+      "source": "capability_v1 shock propagated through task-space kernel",
+      "mean": 31.214383361360447,
+      "std": 5.128970483233768
+    }
+  },
+  "controls": {
+    "telework": {
+      "source": "Dingel & Neiman (2020)",
+      "mean": 0.34039724013677813,
+      "coverage": 658
+    },
+    "job_zone": {
+      "source": "O*NET Job Zones (1-5 scale)",
+      "mean": 3.022752930959618,
+      "coverage": 658
+    }
+  },
+  "correlations": {
+    "rti_aioe": -0.3247795739751159,
+    "rti_semantic": -0.2286129230781389,
+    "aioe_semantic": 0.5887633244009381,
+    "aioe_lm_aioe": 0.9796649560811195,
+    "lm_aioe_semantic": 0.52426244039786,
+    "rti_telework": -0.29553422266328533,
+    "semantic_telework": 0.3132915192788941,
+    "rti_jobzone": -0.6021408534707025,
+    "semantic_jobzone": 0.4357413852132814
+  },
+  "vif": {
+    "rti_std": 1.1206014036224363,
+    "aioe_std": 1.6255021733849713,
+    "semantic_exposure_std": 1.5342259054005276
+  },
+  "models": {
+    "model_1_rti_only": {
+      "r2": 0.09818925842765602,
+      "r2_adj": 0.09681454693135672,
+      "n_obs": 658,
+      "n_clusters": 22,
+      "coefficients": {
+        "const": -0.038280144336903105,
+        "rti_std": -0.0765968597179808
+      },
+      "std_errors": {
+        "const": 0.022361013000797677,
+        "rti_std": 0.015745844051007103
+      },
+      "t_statistics": {
+        "const": -1.7119145870331345,
+        "rti_std": -4.864576295170513
+      },
+      "p_values": {
+        "const": 0.08691241007307804,
+        "rti_std": 1.1470225638748794e-06
+      }
+    },
+    "model_2_rti_semantic": {
+      "r2": 0.12025471306973623,
+      "r2_adj": 0.11756846791880415,
+      "n_obs": 658,
+      "n_clusters": 22,
+      "coefficients": {
+        "const": -0.038280144336903105,
+        "rti_std": -0.06806993413584365,
+        "semantic_exposure_std": 0.037298528304206
+      },
+      "std_errors": {
+        "const": 0.02037026561958898,
+        "rti_std": 0.011575421818471774,
+        "semantic_exposure_std": 0.020923381384739186
+      },
+      "t_statistics": {
+        "const": -1.8792167491469118,
+        "rti_std": -5.880557547131399,
+        "semantic_exposure_std": 1.78262431001761
+      },
+      "p_values": {
+        "const": 0.06021490355573315,
+        "rti_std": 4.0888681488617254e-09,
+        "semantic_exposure_std": 0.07464747983935156
+      }
+    },
+    "model_3_aioe_only": {
+      "r2": 0.046408970432408325,
+      "r2_adj": 0.044955325570262605,
+      "n_obs": 658,
+      "n_clusters": 22,
+      "coefficients": {
+        "const": -0.038280144336903105,
+        "aioe_std": 0.052659889310886894
+      },
+      "std_errors": {
+        "const": 0.028446787944733626,
+        "aioe_std": 0.025522022277210912
+      },
+      "t_statistics": {
+        "const": -1.3456754559169812,
+        "aioe_std": 2.0633117837965327
+      },
+      "p_values": {
+        "const": 0.17840720520334707,
+        "aioe_std": 0.03908301520635331
+      }
+    },
+    "model_4_aioe_semantic": {
+      "r2": 0.05864475184512319,
+      "r2_adj": 0.05577038467518469,
+      "n_obs": 658,
+      "n_clusters": 22,
+      "coefficients": {
+        "const": -0.038280144336903105,
+        "aioe_std": 0.03296470469978191,
+        "semantic_exposure_std": 0.03345178579379876
+      },
+      "std_errors": {
+        "const": 0.027911697182596586,
+        "aioe_std": 0.020757681773514933,
+        "semantic_exposure_std": 0.0198387130764415
+      },
+      "t_statistics": {
+        "const": -1.3714731886949325,
+        "aioe_std": 1.5880725535470015,
+        "semantic_exposure_std": 1.6861872876987571
+      },
+      "p_values": {
+        "const": 0.1702274958822123,
+        "aioe_std": 0.11226993383208997,
+        "semantic_exposure_std": 0.09175973162457622
+      }
+    },
+    "model_5_full": {
+      "r2": 0.12226303936102279,
+      "r2_adj": 0.1182367230278164,
+      "n_obs": 658,
+      "n_clusters": 22,
+      "coefficients": {
+        "const": -0.03828014433690309,
+        "rti_std": -0.06526728441245497,
+        "aioe_std": 0.013966574074752347,
+        "semantic_exposure_std": 0.029716243667090855
+      },
+      "std_errors": {
+        "const": 0.020115803032885866,
+        "rti_std": 0.011005287003510871,
+        "aioe_std": 0.015020554091439223,
+        "semantic_exposure_std": 0.02029001212397603
+      },
+      "t_statistics": {
+        "const": -1.9029886241340532,
+        "rti_std": -5.930539057421547,
+        "aioe_std": 0.9298308164751673,
+        "semantic_exposure_std": 1.4645749586308112
+      },
+      "p_values": {
+        "const": 0.057042029630627905,
+        "rti_std": 3.0194174701448327e-09,
+        "aioe_std": 0.3524586880285304,
+        "semantic_exposure_std": 0.1430369181938944
+      }
+    },
+    "model_6_lm_aioe_semantic": {
+      "r2": 0.06463581336415591,
+      "r2_adj": 0.0617797395118328,
+      "n_obs": 658,
+      "n_clusters": 22,
+      "coefficients": {
+        "const": -0.038280144336903105,
+        "lm_aioe_std": 0.038376511699506184,
+        "semantic_exposure_std": 0.03274083124319749
+      },
+      "std_errors": {
+        "const": 0.02715859781644888,
+        "lm_aioe_std": 0.02183874767867648,
+        "semantic_exposure_std": 0.01933035616258564
+      },
+      "t_statistics": {
+        "const": -1.4095037083880062,
+        "lm_aioe_std": 1.7572670495651772,
+        "semantic_exposure_std": 1.6937520947786848
+      },
+      "p_values": {
+        "const": 0.15868627768853405,
+        "lm_aioe_std": 0.07887230139726036,
+        "semantic_exposure_std": 0.09031240066972636
+      }
+    },
+    "model_7_full_controls": {
+      "r2": 0.1291875096650269,
+      "r2_adj": 0.12250949976981995,
+      "n_obs": 658,
+      "n_clusters": 22,
+      "coefficients": {
+        "const": -0.03828014433690309,
+        "rti_std": -0.057209629733724475,
+        "aioe_std": 0.015630861032159406,
+        "semantic_exposure_std": 0.026762382284562375,
+        "telework_std": -0.021245704398074706,
+        "job_zone_std": 0.024033001258038745
+      },
+      "std_errors": {
+        "const": 0.01935217422671124,
+        "rti_std": 0.017855516799050668,
+        "aioe_std": 0.03084236321375013,
+        "semantic_exposure_std": 0.020716213567567376,
+        "telework_std": 0.023005947132942663,
+        "job_zone_std": 0.02393141071537996
+      },
+      "t_statistics": {
+        "const": -1.9780797696656807,
+        "rti_std": -3.204031021760522,
+        "aioe_std": 0.5067984228001978,
+        "semantic_exposure_std": 1.2918568442671725,
+        "telework_std": -0.9234874910954033,
+        "job_zone_std": 1.0042450712106785
+      },
+      "p_values": {
+        "const": 0.047919708400297516,
+        "rti_std": 0.0013551787392345712,
+        "aioe_std": 0.6122962631072053,
+        "semantic_exposure_std": 0.19640672531882508,
+        "telework_std": 0.3557532161775928,
+        "job_zone_std": 0.31526050240165904
+      }
+    },
+    "model_8_semantic_controls": {
+      "r2": 0.09596822837545926,
+      "r2_adj": 0.09182129364323655,
+      "n_obs": 658,
+      "n_clusters": 22,
+      "coefficients": {
+        "const": -0.03828014433690309,
+        "telework_std": -0.016780690640612043,
+        "job_zone_std": 0.06633439403181411,
+        "semantic_exposure_std": 0.029212802243377658
+      },
+      "std_errors": {
+        "const": 0.023249129749356945,
+        "telework_std": 0.017436257226914588,
+        "job_zone_std": 0.01605937176471444,
+        "semantic_exposure_std": 0.021551212530529777
+      },
+      "t_statistics": {
+        "const": -1.6465194503876814,
+        "telework_std": -0.9624021039738613,
+        "job_zone_std": 4.13057216706096,
+        "semantic_exposure_std": 1.355506201889771
+      },
+      "p_values": {
+        "const": 0.09965685894917252,
+        "telework_std": 0.33584765721326815,
+        "job_zone_std": 3.618614741132183e-05,
+        "semantic_exposure_std": 0.17525633398801577
+      }
+    },
+    "model_9_controls_only": {
+      "r2": 0.08453125263132144,
+      "r2_adj": 0.08173592821187514,
+      "n_obs": 658,
+      "n_clusters": 22,
+      "coefficients": {
+        "const": -0.038280144336903105,
+        "telework_std": -0.013450015491150718,
+        "job_zone_std": 0.07729454359756274
+      },
+      "std_errors": {
+        "const": 0.023831114991318274,
+        "telework_std": 0.017158828654509614,
+        "job_zone_std": 0.017435039638825704
+      },
+      "t_statistics": {
+        "const": -1.6063094131704976,
+        "telework_std": -0.7838539425950757,
+        "job_zone_std": 4.433287517479297
+      },
+      "p_values": {
+        "const": 0.10820594313313275,
+        "telework_std": 0.43312581757473134,
+        "job_zone_std": 9.280696901463496e-06
+      }
+    }
+  },
+  "incremental_r2": {
+    "semantic_over_rti": 0.022065454642080207,
+    "semantic_over_aioe": 0.012235781412714863,
+    "semantic_over_controls": 0.011436975744137823
+  },
+  "interpretation": {
+    "semantic_significant_beyond_rti": false,
+    "semantic_significant_beyond_aioe": false,
+    "semantic_significant_with_controls": false
+  }
+}

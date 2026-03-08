@@ -1,0 +1,24 @@
+{
+  "version": "0.7a.0",
+  "preliminary_checks": {
+    "aioe_coverage": 0.9351230425055929,
+    "aioe_wasserstein_corr": 0.019938722517406037
+  },
+  "sample_sizes": {
+    "train_n": 97236,
+    "holdout_n": 8880,
+    "exposed_holdout_n": 1915
+  },
+  "metrics": {
+    "geometry_ll": -42505.4512668596,
+    "baseline_historical_ll": -65624.51793120497,
+    "baseline_uniform_ll": -44743.95961569834,
+    "geometry_top5_acc": 0.09819967266775777,
+    "baseline_historical_top5_acc": 0.32064920894708127
+  },
+  "deltas": {
+    "geometry_vs_historical": 23119.066664345373,
+    "geometry_vs_uniform": 2238.508348838739
+  },
+  "verdict": "proceed_strong"
+}

@@ -1,0 +1,525 @@
+{
+  "version": "0.7c.1",
+  "parameters": {
+    "gamma_sem": 8.9346,
+    "gamma_inst": 0.1361,
+    "oes_year": 2023,
+    "aioe_quartile": 0.75,
+    "aioe_threshold": 0.9496825874999999,
+    "capacity_threshold": 0.5
+  },
+  "exposed_summary": {
+    "n_exposed_occupations": 104,
+    "total_exposed_employment": 31979190.0,
+    "mean_aioe_exposed": 1.2660427245727823
+  },
+  "validation_2024": {
+    "n_observed_transitions": 1922,
+    "kl_divergence": 0.8541705519787732,
+    "spearman_correlation": 0.4318735737449323,
+    "mean_per_origin_spearman": 0.14022709983065265,
+    "top5_overlap": 0.0,
+    "top10_overlap": 0.0,
+    "observed_top5_destinations": [
+      "Managers, All Other",
+      "Executive Secretaries and Executive Administrative Assistants",
+      "Office Clerks, General",
+      "Elementary School Teachers, Except Special Education",
+      "Bookkeeping, Accounting, and Auditing Clerks"
+    ],
+    "predicted_top5_destinations": [
+      "Secondary School Teachers, Except Special and Career/Technical Education",
+      "Preschool Teachers, Except Special Education",
+      "Special Education Teachers, Preschool",
+      "Social and Community Service Managers",
+      "Advertising and Promotions Managers"
+    ],
+    "observed_top10_destinations": [
+      "Managers, All Other",
+      "Executive Secretaries and Executive Administrative Assistants",
+      "Office Clerks, General",
+      "Elementary School Teachers, Except Special Education",
+      "Bookkeeping, Accounting, and Auditing Clerks",
+      "First-Line Supervisors of Office and Administrative Support Workers",
+      "Customer Service Representatives",
+      "Retail Salespersons",
+      "First-Line Supervisors of Non-Retail Sales Workers",
+      "Financial Managers"
+    ],
+    "predicted_top10_destinations": [
+      "Secondary School Teachers, Except Special and Career/Technical Education",
+      "Preschool Teachers, Except Special Education",
+      "Special Education Teachers, Preschool",
+      "Social and Community Service Managers",
+      "Advertising and Promotions Managers",
+      "Computer and Information Systems Managers",
+      "Compensation and Benefits Managers",
+      "Lodging Managers",
+      "Purchasing Managers",
+      "Sales Engineers"
+    ],
+    "n_origins_evaluated": 60,
+    "verdict": "partial"
+  },
+  "feasible_destinations": [
+    {
+      "rank": 1,
+      "census_code": 4820,
+      "occupation_name": "Securities, Commodities, and Financial Services Sales Agents",
+      "expected_inflow": 178640.85586380478,
+      "pct_of_displaced": 0.00558615949509055,
+      "current_employment": 479630.0,
+      "absorption_rate": 0.3724555508700556,
+      "constraint_type": "none",
+      "is_constrained": false
+    },
+    {
+      "rank": 2,
+      "census_code": 110,
+      "occupation_name": "Computer and Information Systems Managers",
+      "expected_inflow": 177071.1137154307,
+      "pct_of_displaced": 0.005537073131478024,
+      "current_employment": 592600.0,
+      "absorption_rate": 0.29880376934767244,
+      "constraint_type": "none",
+      "is_constrained": false
+    },
+    {
+      "rank": 3,
+      "census_code": 5860,
+      "occupation_name": "Office Clerks, General",
+      "expected_inflow": 170105.42675804155,
+      "pct_of_displaced": 0.005319253763401811,
+      "current_employment": 2496370.0,
+      "absorption_rate": 0.06814111159725583,
+      "constraint_type": "none",
+      "is_constrained": false
+    },
+    {
+      "rank": 4,
+      "census_code": 350,
+      "occupation_name": "Medical and Health Services Managers",
+      "expected_inflow": 156503.03429137147,
+      "pct_of_displaced": 0.004893902387501731,
+      "current_employment": 515100.0,
+      "absorption_rate": 0.30383039078115215,
+      "constraint_type": "none",
+      "is_constrained": false
+    },
+    {
+      "rank": 5,
+      "census_code": 5400,
+      "occupation_name": "Receptionists and Information Clerks",
+      "expected_inflow": 154893.0683100746,
+      "pct_of_displaced": 0.004843558211139012,
+      "current_employment": 1003820.0,
+      "absorption_rate": 0.1543036284493979,
+      "constraint_type": "none",
+      "is_constrained": false
+    },
+    {
+      "rank": 6,
+      "census_code": 4760,
+      "occupation_name": "Retail Salespersons",
+      "expected_inflow": 153387.48798670422,
+      "pct_of_displaced": 0.004796478209320006,
+      "current_employment": 3684740.0,
+      "absorption_rate": 0.0416277642348454,
+      "constraint_type": "none",
+      "is_constrained": false
+    },
+    {
+      "rank": 7,
+      "census_code": 4740,
+      "occupation_name": "Counter and Rental Clerks",
+      "expected_inflow": 151291.13683568494,
+      "pct_of_displaced": 0.004730924605522683,
+      "current_employment": 390300.0,
+      "absorption_rate": 0.38762781664280027,
+      "constraint_type": "none",
+      "is_constrained": false
+    },
+    {
+      "rank": 8,
+      "census_code": 230,
+      "occupation_name": "Education and Childcare Administrators, Preschool and Daycare",
+      "expected_inflow": 148142.87796450788,
+      "pct_of_displaced": 0.004632477494411456,
+      "current_employment": 533940.0,
+      "absorption_rate": 0.27745229419880113,
+      "constraint_type": "none",
+      "is_constrained": false
+    },
+    {
+      "rank": 9,
+      "census_code": 5000,
+      "occupation_name": "First-Line Supervisors of Office and Administrative Support Workers",
+      "expected_inflow": 142394.24537848486,
+      "pct_of_displaced": 0.004452715824837491,
+      "current_employment": 1504570.0,
+      "absorption_rate": 0.09464115686108647,
+      "constraint_type": "none",
+      "is_constrained": false
+    },
+    {
+      "rank": 10,
+      "census_code": 20,
+      "occupation_name": "General and Operations Managers",
+      "expected_inflow": 140019.31324643287,
+      "pct_of_displaced": 0.00437845090030213,
+      "current_employment": 3507810.0,
+      "absorption_rate": 0.039916447369279656,
+      "constraint_type": "none",
+      "is_constrained": false
+    },
+    {
+      "rank": 11,
+      "census_code": 120,
+      "occupation_name": "Financial Managers",
+      "expected_inflow": 138828.64889839236,
+      "pct_of_displaced": 0.0043412184266828635,
+      "current_employment": 787340.0,
+      "absorption_rate": 0.17632617280767185,
+      "constraint_type": "none",
+      "is_constrained": false
+    },
+    {
+      "rank": 12,
+      "census_code": 4700,
+      "occupation_name": "First-Line Supervisors of Retail Sales Workers",
+      "expected_inflow": 132509.83551220983,
+      "pct_of_displaced": 0.004143627012197927,
+      "current_employment": 1087890.0,
+      "absorption_rate": 0.12180444301557126,
+      "constraint_type": "none",
+      "is_constrained": false
+    },
+    {
+      "rank": 13,
+      "census_code": 710,
+      "occupation_name": "Management Analysts",
+      "expected_inflow": 127270.26252079263,
+      "pct_of_displaced": 0.003979783806931715,
+      "current_employment": 838140.0,
+      "absorption_rate": 0.1518484531471981,
+      "constraint_type": "none",
+      "is_constrained": false
+    },
+    {
+      "rank": 14,
+      "census_code": 50,
+      "occupation_name": "Marketing Managers",
+      "expected_inflow": 126201.8684566747,
+      "pct_of_displaced": 0.003946374766111171,
+      "current_employment": 944820.0,
+      "absorption_rate": 0.133572393108396,
+      "constraint_type": "none",
+      "is_constrained": false
+    },
+    {
+      "rank": 15,
+      "census_code": 740,
+      "occupation_name": "Business Operations Specialists, All Other",
+      "expected_inflow": 124205.59783718729,
+      "pct_of_displaced": 0.003883950714110873,
+      "current_employment": 1103440.0,
+      "absorption_rate": 0.11256216725620541,
+      "constraint_type": "none",
+      "is_constrained": false
+    },
+    {
+      "rank": 16,
+      "census_code": 5110,
+      "occupation_name": "Billing and Posting Clerks",
+      "expected_inflow": 123681.54599694403,
+      "pct_of_displaced": 0.003867563437252289,
+      "current_employment": 430220.0,
+      "absorption_rate": 0.28748441726777935,
+      "constraint_type": "none",
+      "is_constrained": false
+    },
+    {
+      "rank": 17,
+      "census_code": 5120,
+      "occupation_name": "Bookkeeping, Accounting, and Auditing Clerks",
+      "expected_inflow": 121240.81200692241,
+      "pct_of_displaced": 0.0037912408665423487,
+      "current_employment": 1501910.0,
+      "absorption_rate": 0.08072441891120134,
+      "constraint_type": "none",
+      "is_constrained": false
+    },
+    {
+      "rank": 18,
+      "census_code": 310,
+      "occupation_name": "Food Service Managers",
+      "expected_inflow": 120659.19969896653,
+      "pct_of_displaced": 0.0037730536545474273,
+      "current_employment": 246070.0,
+      "absorption_rate": 0.4903450225503578,
+      "constraint_type": "none",
+      "is_constrained": false
+    },
+    {
+      "rank": 19,
+      "census_code": 4810,
+      "occupation_name": "Insurance Sales Agents",
+      "expected_inflow": 120463.75183002991,
+      "pct_of_displaced": 0.003766941934114964,
+      "current_employment": 457510.0,
+      "absorption_rate": 0.2633029919128105,
+      "constraint_type": "none",
+      "is_constrained": false
+    },
+    {
+      "rank": 20,
+      "census_code": 2540,
+      "occupation_name": "Farm and Home Management Educators",
+      "expected_inflow": 117369.44517663965,
+      "pct_of_displaced": 0.0036701819269543616,
+      "current_employment": 361340.0,
+      "absorption_rate": 0.324817194821054,
+      "constraint_type": "none",
+      "is_constrained": false
+    }
+  ],
+  "constrained_destinations": [
+    {
+      "rank": 1,
+      "census_code": 2320,
+      "occupation_name": "Secondary School Teachers, Except Special and Career/Technical Education",
+      "expected_inflow": 560410.5038060775,
+      "pct_of_displaced": 0.017524224466163075,
+      "current_employment": 1135240.0,
+      "absorption_rate": 0.49364936384031355,
+      "constraint_type": "credential",
+      "is_constrained": true
+    },
+    {
+      "rank": 2,
+      "census_code": 2300,
+      "occupation_name": "Preschool Teachers, Except Special Education",
+      "expected_inflow": 391041.8215997105,
+      "pct_of_displaced": 0.01222800895206259,
+      "current_employment": 548820.0,
+      "absorption_rate": 0.7125137961439278,
+      "constraint_type": "capacity|credential",
+      "is_constrained": true
+    },
+    {
+      "rank": 3,
+      "census_code": 2330,
+      "occupation_name": "Special Education Teachers, Preschool",
+      "expected_inflow": 305425.6533536745,
+      "pct_of_displaced": 0.00955076264763662,
+      "current_employment": 315550.0,
+      "absorption_rate": 0.9679152380087926,
+      "constraint_type": "capacity|credential",
+      "is_constrained": true
+    },
+    {
+      "rank": 4,
+      "census_code": 4930,
+      "occupation_name": "Sales Engineers",
+      "expected_inflow": 202668.0093787563,
+      "pct_of_displaced": 0.00633749664637398,
+      "current_employment": 59340.0,
+      "absorption_rate": 3.4153692177073864,
+      "constraint_type": "capacity",
+      "is_constrained": true
+    },
+    {
+      "rank": 5,
+      "census_code": 5840,
+      "occupation_name": "Insurance Claims and Policy Processing Clerks",
+      "expected_inflow": 196378.61844325135,
+      "pct_of_displaced": 0.006140825281792671,
+      "current_employment": 241650.0,
+      "absorption_rate": 0.8126572250910463,
+      "constraint_type": "capacity",
+      "is_constrained": true
+    },
+    {
+      "rank": 6,
+      "census_code": 420,
+      "occupation_name": "Social and Community Service Managers",
+      "expected_inflow": 193824.40527807834,
+      "pct_of_displaced": 0.006060954179204612,
+      "current_employment": 173650.0,
+      "absorption_rate": 1.11617855040644,
+      "constraint_type": "capacity",
+      "is_constrained": true
+    },
+    {
+      "rank": 7,
+      "census_code": 5350,
+      "occupation_name": "Order Clerks",
+      "expected_inflow": 191131.02083861703,
+      "pct_of_displaced": 0.005976731144178981,
+      "current_employment": 91830.0,
+      "absorption_rate": 2.0813570819842866,
+      "constraint_type": "capacity",
+      "is_constrained": true
+    },
+    {
+      "rank": 8,
+      "census_code": 4710,
+      "occupation_name": "First-Line Supervisors of Non-Retail Sales Workers",
+      "expected_inflow": 187035.46665150978,
+      "pct_of_displaced": 0.005848661790730465,
+      "current_employment": 227150.0,
+      "absorption_rate": 0.8234006896390481,
+      "constraint_type": "capacity",
+      "is_constrained": true
+    },
+    {
+      "rank": 9,
+      "census_code": 5160,
+      "occupation_name": "Tellers",
+      "expected_inflow": 182818.7014591215,
+      "pct_of_displaced": 0.005716802128481725,
+      "current_employment": 340820.0,
+      "absorption_rate": 0.5364083723347266,
+      "constraint_type": "capacity",
+      "is_constrained": true
+    },
+    {
+      "rank": 10,
+      "census_code": 40,
+      "occupation_name": "Advertising and Promotions Managers",
+      "expected_inflow": 181070.05488652422,
+      "pct_of_displaced": 0.005662121363503085,
+      "current_employment": 20630.0,
+      "absorption_rate": 8.777026412337577,
+      "constraint_type": "capacity",
+      "is_constrained": true
+    },
+    {
+      "rank": 11,
+      "census_code": 135,
+      "occupation_name": "Compensation and Benefits Managers",
+      "expected_inflow": 177207.66777003446,
+      "pct_of_displaced": 0.00554134322257801,
+      "current_employment": 18690.0,
+      "absorption_rate": 9.48141614606926,
+      "constraint_type": "capacity",
+      "is_constrained": true
+    },
+    {
+      "rank": 12,
+      "census_code": 5340,
+      "occupation_name": "New Accounts Clerks",
+      "expected_inflow": 173392.80125624154,
+      "pct_of_displaced": 0.005422051066841954,
+      "current_employment": 41180.0,
+      "absorption_rate": 4.210607121326895,
+      "constraint_type": "capacity",
+      "is_constrained": true
+    },
+    {
+      "rank": 13,
+      "census_code": 340,
+      "occupation_name": "Lodging Managers",
+      "expected_inflow": 169411.43332093064,
+      "pct_of_displaced": 0.0052975523557954604,
+      "current_employment": 41980.0,
+      "absorption_rate": 4.035527234895918,
+      "constraint_type": "capacity",
+      "is_constrained": true
+    },
+    {
+      "rank": 14,
+      "census_code": 2340,
+      "occupation_name": "Adult Basic Education, Adult Secondary Education, and English as a Second Language Instructors",
+      "expected_inflow": 167662.29714941324,
+      "pct_of_displaced": 0.005242856280894333,
+      "current_employment": 915830.0,
+      "absorption_rate": 0.1830714184394628,
+      "constraint_type": "credential",
+      "is_constrained": true
+    },
+    {
+      "rank": 15,
+      "census_code": 530,
+      "occupation_name": "nan",
+      "expected_inflow": 166311.35676693532,
+      "pct_of_displaced": 0.005200611921907194,
+      "current_employment": null,
+      "absorption_rate": 166311.35676693532,
+      "constraint_type": "capacity",
+      "is_constrained": true
+    },
+    {
+      "rank": 16,
+      "census_code": 150,
+      "occupation_name": "Purchasing Managers",
+      "expected_inflow": 164967.46187570743,
+      "pct_of_displaced": 0.005158587877795136,
+      "current_employment": 77530.0,
+      "absorption_rate": 2.1277887511377203,
+      "constraint_type": "capacity",
+      "is_constrained": true
+    },
+    {
+      "rank": 17,
+      "census_code": 4800,
+      "occupation_name": "Advertising Sales Agents",
+      "expected_inflow": 164357.03231172037,
+      "pct_of_displaced": 0.005139499540536216,
+      "current_employment": 108100.0,
+      "absorption_rate": 1.520416580126923,
+      "constraint_type": "capacity",
+      "is_constrained": true
+    },
+    {
+      "rank": 18,
+      "census_code": 5220,
+      "occupation_name": "Court, Municipal, and License Clerks",
+      "expected_inflow": 164044.5212563666,
+      "pct_of_displaced": 0.005129727214990955,
+      "current_employment": 157960.0,
+      "absorption_rate": 1.0385193799466106,
+      "constraint_type": "capacity",
+      "is_constrained": true
+    },
+    {
+      "rank": 19,
+      "census_code": 325,
+      "occupation_name": "Funeral Home Managers",
+      "expected_inflow": 162715.61732093064,
+      "pct_of_displaced": 0.005088171943095827,
+      "current_employment": 14200.0,
+      "absorption_rate": 11.458846290206383,
+      "constraint_type": "capacity",
+      "is_constrained": true
+    },
+    {
+      "rank": 20,
+      "census_code": 410,
+      "occupation_name": "Property, Real Estate, and Community Association Managers",
+      "expected_inflow": 159767.94871971992,
+      "pct_of_displaced": 0.0049959973570224865,
+      "current_employment": 284120.0,
+      "absorption_rate": 0.5623255973522453,
+      "constraint_type": "capacity",
+      "is_constrained": true
+    }
+  ],
+  "flow_statistics": {
+    "total_pathways": 46384,
+    "n_feasible_destinations": 193,
+    "n_constrained_destinations": 254,
+    "feasible_share_of_inflow": 0.3710382026853652,
+    "constrained_share_of_inflow": 0.6289617973146349
+  },
+  "limitations": {
+    "institutional_barriers_underweighted": true,
+    "reason": "Estimated from completed transitions; blocked attempts unobserved",
+    "gamma_inst_gamma_sem_ratio": 0.015232914735970273,
+    "demand_side_ignored": true,
+    "capacity_constraints_post_hoc": true,
+    "interpretation": "Rankings reflect skill transferability, not realized reallocation",
+    "credential_gated_occupations_flagged": 27
+  },
+  "verdict": "partial"
+}

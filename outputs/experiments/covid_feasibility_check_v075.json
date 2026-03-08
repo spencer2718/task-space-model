@@ -1,0 +1,68 @@
+{
+  "version": "0.7.5-feasibility",
+  "sample_size": {
+    "covid_period": {
+      "total": 0,
+      "monthly_breakdown": {},
+      "note": "COVID period (2020-2021) was intentionally excluded from verified_transitions.parquet"
+    },
+    "pre_covid_comparison": {
+      "total": 27258,
+      "monthly_breakdown": {
+        "201803": 1697,
+        "201806": 1844,
+        "201807": 1513,
+        "201808": 1519,
+        "201809": 1509,
+        "201810": 1445,
+        "201811": 1455,
+        "201812": 1321,
+        "201901": 1412,
+        "201902": 1479,
+        "201903": 1732,
+        "201906": 1724,
+        "201907": 1414,
+        "201908": 1452,
+        "201909": 1397,
+        "201910": 1319,
+        "201911": 1364,
+        "201912": 1662
+      }
+    },
+    "assessment": "BLOCKER",
+    "blocker_detail": "COVID period data not in current extract. Would require new IPUMS download and reprocessing.",
+    "data_gap": "2019-12 to 2022-02 (26 months)"
+  },
+  "dingel_neiman": {
+    "accessible": true,
+    "url_verified": true,
+    "format": "CSV with SOC codes and teleworkable score (0-1)",
+    "total_occupations": 764,
+    "coverage_estimate": "81.4% of our 472 Census occupations",
+    "crosswalk_effort": "TRIVIAL",
+    "crosswalk_method": "Direct join on soc_6digit column",
+    "data_location": "data/external/dingel_neiman/onet_teleworkable_blscodes.csv"
+  },
+  "essential_worker": {
+    "occupation_level_available": true,
+    "industry_level_available": true,
+    "source": "LMI Institute / C2ER - CISA Critical Infrastructure Workers (SOC codes)",
+    "download_url": "https://www.lmiontheweb.org/wp-content/uploads/sites/4/2020/03/SOC-Codes-CISA-Critical-Infrastructure-Workers-with-OES-Data-Rev-1.xlsx",
+    "total_essential_socs": 472,
+    "coverage_estimate": "56.6% of our 472 Census occupations",
+    "crosswalk_effort": "MODERATE",
+    "crosswalk_method": "SOC code direct match; binary classification (essential/not)",
+    "note": "Coverage lower than Dingel-Neiman; some Census codes have no mapped essential SOCs"
+  },
+  "transition_quality": {
+    "bounce_back_rate_precovid": 4.1,
+    "bounce_back_rate_covid": null,
+    "ratio": null,
+    "measurement_error_concern": "UNKNOWN",
+    "note": "COVID data not available. Pre-COVID baseline: 4.10% bounce-back within ~12 months (CPS rotation compatible). COVID comparison blocked.",
+    "cps_design_limitation": "CPS rotation (4-in, 8-out, 4-in) means consecutive observations ~12 months apart, not 3-4 months"
+  },
+  "overall_assessment": "RECONSIDER",
+  "recommendation": "COVID period data is not available in current extract. Three options: (1) Re-download CPS 2020-2021 from IPUMS and reprocess - estimated 1-2 days additional work; (2) Use post-COVID (2022-2024) as alternative treatment period (remote work persistence); (3) Defer COVID test entirely. Dingel-Neiman and essential worker data ARE available if sample obtained.",
+  "decision_required": true
+}

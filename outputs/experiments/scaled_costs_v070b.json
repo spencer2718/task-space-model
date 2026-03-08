@@ -1,0 +1,149 @@
+{
+  "version": "0.7b.0",
+  "wage_data": {
+    "oes_year": 2023,
+    "coverage": 0.9821029082774049,
+    "mean_annual_wage": 71991.63256412797,
+    "n_occupations_with_wages": 439
+  },
+  "model_m1": {
+    "gamma_sem": 8.934559924187134,
+    "gamma_sem_se": 0.04607540954676725,
+    "gamma_sem_t": 193.91167679406993,
+    "gamma_sem_p": 0.0,
+    "gamma_inst": 0.1361181601472474,
+    "gamma_inst_se": 0.004418232000633803,
+    "gamma_inst_t": 30.808287144658998,
+    "gamma_inst_p": 2.0295113837157186e-208,
+    "beta_wage": -0.06330008218350558,
+    "beta_wage_se": 0.009482565811188913,
+    "beta_wage_t": -6.675417122738544,
+    "beta_wage_p": 2.465299529752252e-11,
+    "log_likelihood": -162530.98133965774,
+    "n_cases": 79332,
+    "n_obs": 872652,
+    "converged": true,
+    "model_variant": "M1"
+  },
+  "model_m2": {
+    "gamma_sem": 8.877327574515352,
+    "gamma_sem_se": 0.046044273577516344,
+    "gamma_sem_t": 192.79981819172835,
+    "gamma_sem_p": 0.0,
+    "gamma_inst": 0.14753806963691404,
+    "gamma_inst_se": 0.004410411685002498,
+    "gamma_inst_t": 33.45222173671764,
+    "gamma_inst_p": 2.3892440982711617e-245,
+    "beta_wage": 0.010667220499427648,
+    "beta_wage_se": 0.0011083727549376053,
+    "beta_wage_t": 9.624217531427997,
+    "beta_wage_p": 6.31859816703836e-22,
+    "log_likelihood": -162507.56299912784,
+    "n_cases": 79332,
+    "n_obs": 872652,
+    "converged": true,
+    "model_variant": "M2"
+  },
+  "model_m3": {
+    "gamma_sem": 8.934559924187122,
+    "gamma_sem_se": 0.0460754095414652,
+    "gamma_sem_t": 193.9116768163837,
+    "gamma_sem_p": 0.0,
+    "gamma_inst": 0.13611816014724723,
+    "gamma_inst_se": 0.0044182320107445825,
+    "gamma_inst_t": 30.808287074156596,
+    "gamma_inst_p": 2.02951579657201e-208,
+    "beta_wage": -0.06330008218350466,
+    "beta_wage_se": 0.009482566340936296,
+    "beta_wage_t": -6.675416749813585,
+    "beta_wage_p": 2.4653057990915445e-11,
+    "log_likelihood": -162530.98133965777,
+    "n_cases": 79332,
+    "n_obs": 872652,
+    "converged": true,
+    "model_variant": "M3"
+  },
+  "switching_costs": {
+    "sc_sem_per_unit": -141.1461030695985,
+    "sc_inst_per_unit": -2.150363087249141,
+    "d_wasserstein_median": 0.5213485769027878,
+    "d_inst_median": 1.3591731266149871,
+    "sc_typical_wage_years": -76.50903569136325,
+    "sc_typical_dollars": -5508010.385328376,
+    "mean_annual_wage": 71991.63256412797
+  },
+  "benchmark_comparison": {
+    "dix_carneiro_range": [
+      1.4,
+      2.7
+    ],
+    "our_estimate_wage_years": -76.50903569136325,
+    "within_range": false
+  },
+  "diagnostics": {
+    "beta_wage_positive": false,
+    "gamma_sem_positive": true,
+    "gamma_inst_positive": true
+  },
+  "verdict": "misidentified",
+  "external_calibration": {
+    "calibration_source": "Dix-Carneiro (2014) median",
+    "benchmark_wage_years": 2.0,
+    "d_wasserstein_median": 0.5213485769027878,
+    "sc_per_unit_wasserstein_wage_years": 3.8362049665149964,
+    "sc_per_unit_wasserstein_dollars": 276174.65839003044,
+    "mean_annual_wage": 71991.63256412797,
+    "examples": [
+      {
+        "from": "Cashiers",
+        "to": "Retail Salespersons",
+        "d_wass": 0.3511,
+        "cost_wage_years": 1.35,
+        "cost_dollars": 96965.0
+      },
+      {
+        "from": "Cashiers",
+        "to": "Registered Nurses",
+        "d_wass": 0.6485,
+        "cost_wage_years": 2.49,
+        "cost_dollars": 179099.0
+      },
+      {
+        "from": "Software Developers",
+        "to": "Data Scientists",
+        "d_wass": 0.4408,
+        "cost_wage_years": 1.69,
+        "cost_dollars": 121738.0
+      },
+      {
+        "from": "Truck Drivers",
+        "to": "Material Movers",
+        "d_wass": 0.4988,
+        "cost_wage_years": 1.91,
+        "cost_dollars": 137756.0
+      },
+      {
+        "from": "Accountants",
+        "to": "Software Developers",
+        "d_wass": 0.5532,
+        "cost_wage_years": 2.12,
+        "cost_dollars": 152780.0
+      },
+      {
+        "from": "Retail Salespersons",
+        "to": "Accountants",
+        "d_wass": 0.5468,
+        "cost_wage_years": 2.1,
+        "cost_dollars": 151012.0
+      }
+    ]
+  },
+  "wage_identification_failure": {
+    "diagnosed": true,
+    "reason": "Occupation-mean wages do not capture entry wages switchers receive",
+    "m1_beta_wage": -0.06330008218350558,
+    "m2_beta_wage": 0.010667220499427648,
+    "data_requirement": "Individual-level wages at transition (LEHD, admin data)"
+  },
+  "revised_verdict": "calibrated"
+}

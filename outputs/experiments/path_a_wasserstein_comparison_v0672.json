@@ -1,0 +1,35 @@
+{
+  "experiment": "path_a_wasserstein_vs_kernel",
+  "version": "0.6.7.2",
+  "timestamp": "2025-12-15T19:31:59.578304",
+  "comparison": {
+    "kernel": {
+      "alpha": 5.688010311408561,
+      "alpha_t": 160.27741885313208,
+      "beta": 0.2781817526813173,
+      "beta_t": 71.04733730136667,
+      "log_likelihood": -192627.39829913163,
+      "n_transitions": 89329
+    },
+    "wasserstein": {
+      "alpha": 8.935746374132371,
+      "alpha_t": 206.4572509630531,
+      "beta": 0.14188684373511873,
+      "beta_t": 34.591195264702144,
+      "log_likelihood": -183051.3697222054,
+      "n_transitions": 89329
+    },
+    "differences": {
+      "delta_alpha": 3.24773606272381,
+      "delta_alpha_pct": 57.097928535919806,
+      "delta_log_lik": 9576.028576926241,
+      "delta_beta": -0.13629490894619856
+    }
+  },
+  "interpretation": "OT >> Kernel: Adopt OT (metric structure matters)",
+  "pre_committed_thresholds": {
+    "adopt_OT_if": "\u0394 log-lik > 100 OR \u0394\u03b1 > 10%",
+    "stay_kernel_if": "\u0394 log-lik < -100 OR \u0394\u03b1 < -10%",
+    "prefer_kernel_otherwise": "OT \u2248 Kernel (simpler)"
+  }
+}

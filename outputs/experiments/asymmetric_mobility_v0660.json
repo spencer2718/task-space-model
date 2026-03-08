@@ -1,0 +1,128 @@
+{
+  "version": "0.6.6.0",
+  "timestamp": "2025-12-15T14:27:33.751165",
+  "hypothesis": "beta_up > beta_down (credentials are one-way gates)",
+  "sample": {
+    "n_transitions": 89329,
+    "n_alternatives": 10,
+    "n_census_occupations": 447
+  },
+  "distance_statistics": {
+    "d_sem": {
+      "name": "semantic",
+      "mean": 0.9569081864687717,
+      "std": 0.05575896044128824,
+      "min": 0.06970260292291641,
+      "max": 0.9999863505363464,
+      "p10": 0.9174939393997192,
+      "p50": 0.9721764922142029,
+      "p90": 0.992033839225769,
+      "frac_zero": 0.0
+    },
+    "d_up": {
+      "name": "upward",
+      "mean": 0.4903381239555577,
+      "std": 0.7644407484701341,
+      "min": 0.0,
+      "max": 5.931524547803617,
+      "p10": 0.0,
+      "p50": 0.09302325581395365,
+      "p90": 1.4883720930232556,
+      "frac_zero": 0.43315175409556483
+    },
+    "d_down": {
+      "name": "downward",
+      "mean": 1.4905548535422941,
+      "std": 1.3769284731212883,
+      "min": 0.0,
+      "max": 7.627906976744186,
+      "p10": 0.0,
+      "p50": 1.15374677002584,
+      "p90": 3.4186046511627906,
+      "frac_zero": 0.19523279260842086
+    },
+    "d_sym": {
+      "name": "symmetric",
+      "mean": 1.9808929774978516,
+      "std": 1.228291321680992,
+      "min": 0.0,
+      "max": 7.627906976744186,
+      "p10": 0.5,
+      "p50": 1.8363479758828598,
+      "p90": 3.589147286821705,
+      "frac_zero": 0.029474022130596602
+    }
+  },
+  "distance_correlations": {
+    "sem_up": -0.02291342380243822,
+    "sem_down": 0.17449219970813346,
+    "sem_sym": 0.18134730689890566,
+    "up_down": -0.4615335140357325,
+    "up_sym": 0.10497681569397131,
+    "down_sym": 0.8337708083829821
+  },
+  "models": {
+    "symmetric": {
+      "alpha": 5.688010311408561,
+      "alpha_se": 0.035488532022222595,
+      "alpha_t": 160.27741885313208,
+      "alpha_p": 0.0,
+      "beta": 0.2781817526813173,
+      "beta_se": 0.003915442340947043,
+      "beta_t": 71.04733730136667,
+      "beta_p": 0.0,
+      "log_likelihood": -192627.39829913163,
+      "n_transitions": 89329
+    },
+    "asymmetric": {
+      "n_transitions": 89329,
+      "n_choice_rows": 982619,
+      "n_alternatives": 11,
+      "alpha": 5.691179070130822,
+      "alpha_se": 0.03552198402498329,
+      "alpha_t": 160.21568688641113,
+      "alpha_p": 0.0,
+      "beta_up": 0.282138935457408,
+      "beta_up_se": 0.0043502123608567585,
+      "beta_up_t": 64.8563591966443,
+      "beta_up_p": 0.0,
+      "beta_down": 0.2704381410604019,
+      "beta_down_se": 0.0054133316886389275,
+      "beta_down_t": 49.95779985696722,
+      "beta_down_p": 0.0,
+      "log_likelihood": -192625.23520749956,
+      "converged": true,
+      "asymmetry_ratio": 1.0432660657669315,
+      "lr_test_statistic": 4.326183264143765,
+      "lr_test_pvalue": 0.037530311909647285,
+      "ll_restricted": -192627.39829913163,
+      "assumptions": [
+        "IIA (Independence of Irrelevant Alternatives) assumed",
+        "Random sampling of alternatives (10:1 ratio)",
+        "Upward barrier = max(0, Zone_dest - Zone_origin)",
+        "Downward barrier = max(0, Zone_origin - Zone_dest)",
+        "LR test: H0: beta_up = beta_down"
+      ]
+    }
+  },
+  "hypothesis_tests": {
+    "lr_test_statistic": 4.326183264143765,
+    "lr_test_pvalue": 0.037530311909647285,
+    "asymmetry_ratio": 1.0432660657669315,
+    "ll_restricted": -192627.39829913163,
+    "ll_unrestricted": -192625.23520749956
+  },
+  "odds_ratios": {
+    "semantic": 0.0033756105404950235,
+    "upward": 0.754168896453276,
+    "downward": 0.7630450996970758
+  },
+  "interpretation": {
+    "beta_up_significant": true,
+    "beta_down_significant": true,
+    "asymmetry_significant": true,
+    "beta_down_near_zero": false,
+    "asymmetry_ratio": 1.0432660657669315
+  },
+  "verdict": "SURPRISING NULL: Barriers appear symmetric"
+}

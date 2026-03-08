@@ -1,0 +1,84 @@
+{
+  "version": "0.7.3.2",
+  "sample_n": 89329,
+  "n_origins": 417,
+  "n_destinations": 447,
+  "null_ll": -214201.58682380564,
+  "models": {
+    "cosine_onet": {
+      "alpha": 4.548390240290305,
+      "alpha_se": 0.03433580977318801,
+      "gamma": 0.3000359971844369,
+      "gamma_se": 0.0038758079774245855,
+      "ll": -196961.40008589294,
+      "pseudo_r2": 0.08048580308648157,
+      "converged": true
+    },
+    "cosine_embed": {
+      "alpha": 7.404084902731876,
+      "alpha_se": 0.03628376045400562,
+      "gamma": 0.13886062274748787,
+      "gamma_se": 0.0041200863269149155,
+      "ll": -184042.78585316802,
+      "pseudo_r2": 0.1407963471131759,
+      "converged": true
+    },
+    "euclidean_dwa": {
+      "alpha": 9.763652932482074,
+      "alpha_se": 0.09635850642151861,
+      "gamma": 0.365380903658453,
+      "gamma_se": 0.0037770247190150007,
+      "ll": -201230.218376604,
+      "pseudo_r2": 0.06055682705035892,
+      "converged": true
+    },
+    "wasserstein": {
+      "alpha": 8.95305365502874,
+      "alpha_se": 0.04339198830545261,
+      "gamma": 0.1339566016270947,
+      "gamma_se": 0.004087913876232307,
+      "ll": -183115.56702681744,
+      "pseudo_r2": 0.14512506773611544,
+      "converged": true
+    }
+  },
+  "pairwise_vs_wasserstein": {
+    "cosine_onet": {
+      "delta_ll": 13845.833059075492,
+      "vuong_z": 46.32579220700904,
+      "vuong_p": 0.0,
+      "lr_stat": 27691.666118150984,
+      "test_type": "vuong"
+    },
+    "cosine_embed": {
+      "delta_ll": 927.2188263505814,
+      "vuong_z": 3.102315801199754,
+      "vuong_p": 0.0019201300143658617,
+      "lr_stat": 1854.4376527011627,
+      "test_type": "vuong"
+    },
+    "euclidean_dwa": {
+      "delta_ll": 18114.651349786553,
+      "vuong_z": 60.60852898862415,
+      "vuong_p": 0.0,
+      "lr_stat": 36229.302699573105,
+      "test_type": "vuong"
+    }
+  },
+  "best_alternative": "cosine_embed",
+  "best_alternative_pseudo_r2": 0.1407963471131759,
+  "wasserstein_pseudo_r2": 0.14512506773611544,
+  "pseudo_r2_ratio": 1.030744552054749,
+  "gate_statistical": false,
+  "gate_practical": false,
+  "gate_passed": false,
+  "notes": [
+    "cosine_onet: 78.3% of pairs at max distance (1.0) due to sparse DWA vectors",
+    "\u03c1(wasserstein, cosine_embed) = 0.95 \u2014 both use MPNet embeddings",
+    "\u03c1(wasserstein, euclidean_dwa) = 0.28 \u2014 different approaches"
+  ],
+  "interpretation": [
+    "Wasserstein > cosine_embed: Distributional treatment matters beyond centroid averaging",
+    "Wasserstein >> euclidean_dwa: Ground metric (semantic similarity) matters"
+  ]
+}

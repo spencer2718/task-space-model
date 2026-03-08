@@ -1,0 +1,71 @@
+{
+  "version": "0.7.2.5",
+  "test": "C'",
+  "description": "Robot exposure and employment decline (1990-2005)",
+  "timestamp": "2025-12-19T11:06:11.048515",
+  "sample": {
+    "n_occupations": 617,
+    "n_robot_exposed_dwas": 106,
+    "n_high_exposure_occs": 108,
+    "crosswalk_coverage": "92.5%"
+  },
+  "robot_exposure_stats": {
+    "n_occupations": 923,
+    "mean": 0.05517949950019576,
+    "std": 0.10303113261139603,
+    "min": 0.0,
+    "p25": 0.0,
+    "median": 0.0,
+    "p75": 0.06666666666666667,
+    "max": 0.6363636363636364,
+    "n_high_exposure": 108
+  },
+  "results": {
+    "delta_ln_emp": {
+      "continuous": {
+        "model1": {
+          "beta": -0.390647892292503,
+          "se": 0.2963318824845892,
+          "pvalue": 0.1874105001248807,
+          "r2": 0.003926087648132404,
+          "n": 616
+        },
+        "model2": {
+          "beta": -0.6564329253582294,
+          "se": 0.2918044369255579,
+          "pvalue": 0.02447659906297107,
+          "r2": 0.08877121576142222,
+          "delta_r2": 0.08484512811328981,
+          "n": 616
+        }
+      },
+      "binary": {
+        "model1": {
+          "beta": -0.09610443559849956,
+          "se": 0.09015374350195912,
+          "pvalue": 0.28642090906092743,
+          "r2": 0.002450012385887157,
+          "n": 616
+        },
+        "model2": {
+          "beta": -0.14318336790962458,
+          "se": 0.08914361688163855,
+          "pvalue": 0.10822777927906413,
+          "r2": 0.08417250319636238,
+          "delta_r2": 0.08172249081047522,
+          "n": 616
+        }
+      },
+      "verdict": "+"
+    }
+  },
+  "interpretation": {
+    "delta_ln_emp": "+"
+  },
+  "summary": {
+    "verdict": "+",
+    "beta_robot_exposure": -0.6564329253582294,
+    "p_value": 0.02447659906297107,
+    "interpretation": "Robot-exposed occupations experienced significantly larger employment declines"
+  }
+}

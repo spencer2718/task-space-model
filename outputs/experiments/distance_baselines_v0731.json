@@ -1,0 +1,69 @@
+{
+  "matrices": {
+    "cosine_onet": {
+      "shape": [
+        447,
+        447
+      ],
+      "min": 0.08451375568883772,
+      "max": 1.0,
+      "median": 1.0,
+      "mean": 0.9847098720102484,
+      "std": 0.05078100631963635,
+      "symmetric": true,
+      "diagonal_zero": true
+    },
+    "cosine_embed": {
+      "shape": [
+        447,
+        447
+      ],
+      "min": 0.0033961277215225536,
+      "max": 0.805785983268378,
+      "median": 0.3332498967018557,
+      "mean": 0.33217890257693916,
+      "std": 0.12217659599361898,
+      "symmetric": true,
+      "diagonal_zero": true
+    },
+    "euclidean_dwa": {
+      "shape": [
+        447,
+        447
+      ],
+      "min": 0.06583203409217893,
+      "max": 0.6062182914885844,
+      "median": 0.33605974382949694,
+      "mean": 0.34000503306325847,
+      "std": 0.04324715312503643,
+      "symmetric": true,
+      "diagonal_zero": true
+    },
+    "wasserstein": {
+      "shape": [
+        447,
+        447
+      ],
+      "min": 0.062124597220385804,
+      "max": 0.8323121813340726,
+      "median": 0.5913412756740781,
+      "mean": 0.583698577299893,
+      "std": 0.0788870070268659,
+      "symmetric": true,
+      "diagonal_zero": false
+    }
+  },
+  "correlations": {
+    "wasserstein_vs_euclidean_dwa": 0.2839049029807445,
+    "wasserstein_vs_cosine_onet": 0.4907163681783339,
+    "wasserstein_vs_cosine_embed": 0.9527449549051672,
+    "euclidean_dwa_vs_cosine_onet": 0.20943344925365806,
+    "euclidean_dwa_vs_cosine_embed": 0.22828342420824263,
+    "cosine_onet_vs_cosine_embed": 0.46656709020749226
+  },
+  "high_correlation_warning": false,
+  "version": "0.7.3.1",
+  "census_codes_n": 447,
+  "gate_passed": true,
+  "wasserstein_diagonal_note": "Non-zero diagonal due to many-to-one O*NET\u2192Census aggregation"
+}

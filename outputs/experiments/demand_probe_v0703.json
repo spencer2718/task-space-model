@@ -1,0 +1,50 @@
+{
+  "experiment": "demand_probe_v0703",
+  "timestamp": "2025-12-17T01:59:31.162984+00:00",
+  "data_summary": {
+    "bls_occupations": 832,
+    "crosswalk_linkage_rate": 0.888,
+    "census_with_openings": 440,
+    "holdout_origins": 424,
+    "holdout_transitions": 8880
+  },
+  "geometry_only": {
+    "spearman_rho": -0.0293,
+    "top5_overlap": 0.0,
+    "top10_overlap": 0.0,
+    "n_ranked": 401,
+    "top5_predicted": [
+      "2050",
+      "4110",
+      "20",
+      "4120",
+      "4130"
+    ]
+  },
+  "demand_weighted": {
+    "spearman_rho": 0.1309,
+    "top5_overlap": 0.0,
+    "top10_overlap": 0.0,
+    "n_ranked": 401,
+    "top5_predicted": [
+      "2050",
+      "4110",
+      "20",
+      "4120",
+      "4130"
+    ]
+  },
+  "comparison": {
+    "rho_delta": 0.1602,
+    "top5_delta": 0,
+    "rankings_identical": true,
+    "interpretation": "WARNING: Rankings identical - may indicate implementation error or dominant geometry signal"
+  },
+  "observed_top5": [
+    "430",
+    "6260",
+    "9620",
+    "4760",
+    "5240"
+  ]
+}

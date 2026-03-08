@@ -1,0 +1,137 @@
+{
+  "version": "0.7.2.3",
+  "test": "B",
+  "description": "Autor-Dorn polarization: CSH_resid vs RSH (proper CZ aggregation)",
+  "timestamp": "2025-12-19T11:20:22.824562",
+  "validation": {
+    "r_csh_rsh": 0.4784205694271855,
+    "csh_resid_variance_retained": 0.7323472620734537,
+    "n_cz_with_csh": 741,
+    "methodology": "Independent CZ-level CSH from IPUMS 1980 Census via occupation weights"
+  },
+  "sample": {
+    "n_cz": 722,
+    "n_periods": 3,
+    "period": "1980-2000",
+    "n_obs": 2166
+  },
+  "outcomes": {
+    "d_sh_routine33a": {
+      "model1": {
+        "beta_rsh": -0.13128529794354807,
+        "se_rsh": 0.015037850991252615,
+        "pvalue_rsh": 2.539461000756191e-18,
+        "r2": 0.3575716515780666,
+        "n": 2166
+      },
+      "model2": {
+        "beta_rsh": -0.14489376228015352,
+        "se_rsh": 0.015414291114801493,
+        "pvalue_rsh": 5.4582392211118104e-21,
+        "beta_csh_resid": -1.0335763838452054,
+        "se_csh_resid": 0.31479854238344673,
+        "pvalue_csh_resid": 0.0010260134861090578,
+        "r2": 0.36523456955608635,
+        "delta_r2": 0.007662917978019768,
+        "n": 2166
+      },
+      "verdict": "0"
+    },
+    "d_shocc1_clericretail_nc": {
+      "model1": {
+        "beta_rsh": -0.2256467210983135,
+        "se_rsh": 0.019799246948791486,
+        "pvalue_rsh": 4.34107804989847e-30,
+        "r2": 0.32109510139185793,
+        "n": 2166
+      },
+      "model2": {
+        "beta_rsh": -0.2198913387593697,
+        "se_rsh": 0.020494205935252207,
+        "pvalue_rsh": 7.404407403742696e-27,
+        "beta_csh_resid": 0.43712700554546313,
+        "se_csh_resid": 0.3309704276950246,
+        "pvalue_csh_resid": 0.18658694020193722,
+        "r2": 0.32203499227901256,
+        "delta_r2": 0.0009398908871546263,
+        "n": 2166
+      },
+      "verdict": "0"
+    },
+    "d_shocc1_operator_nc": {
+      "model1": {
+        "beta_rsh": -0.026458982106568944,
+        "se_rsh": 0.017545629909991055,
+        "pvalue_rsh": 0.13155201512938616,
+        "r2": 0.2976232885572224,
+        "n": 2166
+      },
+      "model2": {
+        "beta_rsh": -0.0703966481001133,
+        "se_rsh": 0.01633779656397045,
+        "pvalue_rsh": 1.641268074835216e-05,
+        "beta_csh_resid": -3.337109376114569,
+        "se_csh_resid": 0.34228372561027187,
+        "pvalue_csh_resid": 1.8530334028640655e-22,
+        "r2": 0.3529952909504034,
+        "delta_r2": 0.055372002393180964,
+        "n": 2166
+      },
+      "verdict": "+"
+    },
+    "d_shocc1_service_nc": {
+      "model1": {
+        "beta_rsh": 0.14685090053336794,
+        "se_rsh": 0.022981708662989344,
+        "pvalue_rsh": 1.6599047748909202e-10,
+        "r2": 0.20154174705087935,
+        "n": 2166
+      },
+      "model2": {
+        "beta_rsh": 0.14966974342049838,
+        "se_rsh": 0.02422652888639776,
+        "pvalue_rsh": 6.494845075123125e-10,
+        "beta_csh_resid": 0.21409391727403448,
+        "se_csh_resid": 0.36428318578648067,
+        "pvalue_csh_resid": 0.5567250343007912,
+        "r2": 0.2017588353180012,
+        "delta_r2": 0.00021708826712185658,
+        "n": 2166
+      },
+      "verdict": "0"
+    },
+    "d_shocc1_mgmtproftech_nc": {
+      "model1": {
+        "beta_rsh": -0.01861317284177165,
+        "se_rsh": 0.01797475179389311,
+        "pvalue_rsh": 0.3004272253255098,
+        "r2": 0.4135769808664962,
+        "n": 2166
+      },
+      "model2": {
+        "beta_rsh": -0.01143205427053944,
+        "se_rsh": 0.01839069677438488,
+        "pvalue_rsh": 0.5341907174721892,
+        "beta_csh_resid": 0.5454130885916985,
+        "se_csh_resid": 0.31088483002789224,
+        "pvalue_csh_resid": 0.07936378537005445,
+        "r2": 0.41491665324166893,
+        "delta_r2": 0.0013396723751727402,
+        "n": 2166
+      },
+      "verdict": "0"
+    }
+  },
+  "interpretation_matrix": {
+    "d_sh_routine33a": "0",
+    "d_shocc1_clericretail_nc": "0",
+    "d_shocc1_operator_nc": "+",
+    "d_shocc1_service_nc": "0",
+    "d_shocc1_mgmtproftech_nc": "0"
+  },
+  "summary": {
+    "plus": 1,
+    "minus": 0,
+    "zero": 4
+  }
+}

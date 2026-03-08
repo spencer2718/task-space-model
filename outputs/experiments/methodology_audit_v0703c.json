@@ -1,0 +1,110 @@
+{
+  "experiment": "methodology_audit_v0703c",
+  "timestamp": "2025-12-17T02:17:09.603093+00:00",
+  "sample": {
+    "description": "All 2024+ holdout transitions",
+    "n_transitions": 8880,
+    "n_origins": 424
+  },
+  "model_parameters": {
+    "gamma_sem": 8.9346,
+    "gamma_inst": 0.1361
+  },
+  "methodologies": {
+    "v070c_aggregate": {
+      "method": "v070c_aggregate",
+      "description": "Model probability weighted avg, Spearman over ALL destinations",
+      "spearman": 0.1878,
+      "n_destinations": 447,
+      "n_origins": 381
+    },
+    "v070c_per_origin_min5": {
+      "method": "v070c_per_origin",
+      "description": "Model probability, per-origin, min_dest\u22655",
+      "mean_spearman": 0.1275,
+      "n_origins_evaluated": 233,
+      "min_destinations_filter": 5
+    },
+    "v070c_per_origin_min3": {
+      "method": "v070c_per_origin",
+      "description": "Model probability, per-origin, min_dest\u22653",
+      "mean_spearman": 0.1151,
+      "n_origins_evaluated": 286,
+      "min_destinations_filter": 3
+    },
+    "v0703b_aggregate": {
+      "method": "v0703b_aggregate",
+      "description": "Raw 1/distance summed, Spearman over COMMON destinations",
+      "spearman": 0.0432,
+      "n_destinations_common": 383,
+      "n_origins": 381
+    },
+    "v0703b_per_origin_min5": {
+      "method": "v0703b_per_origin",
+      "description": "Raw 1/distance, per-origin, min_dest\u22655, common only",
+      "mean_spearman": 0.3117,
+      "n_origins_evaluated": 177,
+      "min_destinations_filter": 5
+    },
+    "v0703b_per_origin_min3": {
+      "method": "v0703b_per_origin",
+      "description": "Raw 1/distance, per-origin, min_dest\u22653, common only",
+      "mean_spearman": 0.3165,
+      "n_origins_evaluated": 193,
+      "min_destinations_filter": 3
+    }
+  },
+  "original_reported": {
+    "v070c": {
+      "aggregate_spearman": 0.4319,
+      "per_origin_spearman": 0.1402,
+      "n_origins_evaluated": 60,
+      "sample": "Exposed origins only (AIOE \u2265 Q75), year \u2265 2024"
+    },
+    "v0703b": {
+      "aggregate_spearman": 0.043,
+      "per_origin_spearman": 0.316,
+      "sample": "All origins, year \u2265 2024"
+    }
+  },
+  "reconciliation": {
+    "aggregate_discrepancy": {
+      "v070c_original": 0.4319,
+      "v070c_on_full_sample": 0.1878,
+      "v0703b_on_full_sample": 0.0432,
+      "explanation": "v0.7.0c's 0.432 was computed on EXPOSED origins only using MODEL probabilities over ALL destinations. When applied to full sample, similar methodology gives 0.1878. v0.7.0.3b's 0.043 uses raw 1/distance over COMMON destinations."
+    },
+    "per_origin_discrepancy": {
+      "v070c_original": 0.1402,
+      "v070c_on_full_sample_min5": 0.1275,
+      "v0703b_on_full_sample_min3": 0.3165,
+      "explanation": "v0.7.0c's 0.140 required \u22655 destinations per origin and used MODEL probabilities. v0.7.0.3b's 0.316 required only \u22653 destinations and used raw 1/distance on COMMON destinations only, which is a more favorable metric."
+    }
+  },
+  "verdict": {
+    "true_aggregate_spearman": {
+      "value": 0.1878,
+      "methodology": "Model probability, all destinations",
+      "interpretation": "How well does the model rank all destinations by aggregate inflow?"
+    },
+    "true_per_origin_spearman": {
+      "value_min5": 0.1275,
+      "value_min3": 0.1151,
+      "n_origins_min5": 233,
+      "n_origins_min3": 286,
+      "methodology": "Model probability, per-origin, full sample",
+      "interpretation": "Given origin A, how well does model rank destinations for workers from A?"
+    },
+    "discrepancy_explained": true,
+    "explanation": "The 0.432 in v0.7.0c came from a RESTRICTED sample (exposed origins only, n=60) using model probabilities over ALL destinations. The 0.043 in v0.7.0.3b used ALL origins with raw 1/distance over COMMON destinations. These are fundamentally different metrics. On the full sample with v0.7.0c methodology: aggregate \u03c1 = 0.1878, per-origin \u03c1 = 0.1275 (\u22655) / 0.1151 (\u22653).",
+    "recommended_headline": {
+      "metric": "Per-origin Spearman (model probability, \u22655 destinations)",
+      "value": 0.1275,
+      "n_origins": 233,
+      "sample": "All 2024+ origins"
+    },
+    "warnings": [
+      "Original 0.432 does not replicate on full sample (0.1878). The original was computed on exposed origins only."
+    ]
+  }
+}

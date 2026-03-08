@@ -1,0 +1,208 @@
+{
+  "total_codes": 330,
+  "mapped_codes": 280,
+  "unmapped_codes": 50,
+  "unweighted_coverage": 0.8484848484848485,
+  "weighted_coverage": 0.9188799858093262,
+  "unmapped_by_category": {
+    "professional": [
+      68,
+      106,
+      177
+    ],
+    "technical": [
+      205,
+      208,
+      235
+    ],
+    "administrative": [
+      308,
+      349,
+      386,
+      389
+    ],
+    "service": [
+      408,
+      418,
+      427,
+      450,
+      451,
+      459,
+      469
+    ],
+    "other": [
+      470,
+      471,
+      472
+    ],
+    "farm_forest_fish": [
+      498
+    ],
+    "precision_production": [
+      518,
+      579,
+      583,
+      594,
+      616,
+      617,
+      644,
+      669,
+      684
+    ],
+    "operators": [
+      703,
+      707,
+      713,
+      723,
+      724,
+      733,
+      738,
+      739,
+      743,
+      745,
+      749,
+      764,
+      785
+    ],
+    "transport": [
+      825,
+      834,
+      844,
+      848,
+      853,
+      859
+    ],
+    "laborers": [
+      873
+    ]
+  },
+  "top_unmapped": [
+    {
+      "occ1990dd": 785,
+      "title": "Assemblers",
+      "category": "operators",
+      "emp_1980": 0.017485076561570168
+    },
+    {
+      "occ1990dd": 418,
+      "title": "Police and detectives, public service",
+      "category": "service",
+      "emp_1980": 0.005938754417002201
+    },
+    {
+      "occ1990dd": 518,
+      "title": "Industrial machinery repairers",
+      "category": "precision_production",
+      "emp_1980": 0.005553597118705511
+    },
+    {
+      "occ1990dd": 308,
+      "title": "Computer operators",
+      "category": "administrative",
+      "emp_1980": 0.0047766780480742455
+    },
+    {
+      "occ1990dd": 389,
+      "title": "Administrative support occupations, n.e.c.",
+      "category": "administrative",
+      "emp_1980": 0.004358786623924971
+    },
+    {
+      "occ1990dd": 579,
+      "title": "Painters, construction and maintenance",
+      "category": "precision_production",
+      "emp_1980": 0.003638437483459711
+    },
+    {
+      "occ1990dd": 235,
+      "title": "Technicians, n.e.c.",
+      "category": "technical",
+      "emp_1980": 0.003399719251319766
+    },
+    {
+      "occ1990dd": 451,
+      "title": "Unknown (code 451)",
+      "category": "service",
+      "emp_1980": 0.003269331529736519
+    },
+    {
+      "occ1990dd": 859,
+      "title": "Miscellaneous material moving equipment operators",
+      "category": "transport",
+      "emp_1980": 0.0027442150749266148
+    },
+    {
+      "occ1990dd": 844,
+      "title": "Operating engineers",
+      "category": "transport",
+      "emp_1980": 0.002539092442020774
+    },
+    {
+      "occ1990dd": 703,
+      "title": "Lathe and turning machine set-up operators",
+      "category": "operators",
+      "emp_1980": 0.0021939007565379143
+    },
+    {
+      "occ1990dd": 848,
+      "title": "Hoist and winch operators",
+      "category": "transport",
+      "emp_1980": 0.001856601214967668
+    },
+    {
+      "occ1990dd": 408,
+      "title": "Unknown (code 408)",
+      "category": "service",
+      "emp_1980": 0.0015881637809798121
+    },
+    {
+      "occ1990dd": 208,
+      "title": "Health technologists and technicians, n.e.c.",
+      "category": "technical",
+      "emp_1980": 0.0015224296366795897
+    },
+    {
+      "occ1990dd": 749,
+      "title": "Miscellaneous textile machine operators",
+      "category": "operators",
+      "emp_1980": 0.0015076223062351346
+    },
+    {
+      "occ1990dd": 469,
+      "title": "Personal service occupations, n.e.c.",
+      "category": "service",
+      "emp_1980": 0.0014841920929029584
+    },
+    {
+      "occ1990dd": 386,
+      "title": "Statistical clerks",
+      "category": "administrative",
+      "emp_1980": 0.0013751582009717822
+    },
+    {
+      "occ1990dd": 738,
+      "title": "Winding and twisting machine operators",
+      "category": "operators",
+      "emp_1980": 0.001147255185060203
+    },
+    {
+      "occ1990dd": 873,
+      "title": "Unknown (code 873)",
+      "category": "laborers",
+      "emp_1980": 0.001065885997377336
+    },
+    {
+      "occ1990dd": 616,
+      "title": "Mining machine operators",
+      "category": "precision_production",
+      "emp_1980": 0.000997228897176683
+    }
+  ],
+  "confidence_distribution": {
+    "medium": 308,
+    "high": 160,
+    "low": 149,
+    "unmapped": 50
+  },
+  "gate_passed": true
+}

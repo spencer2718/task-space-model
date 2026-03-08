@@ -1,0 +1,36 @@
+{
+  "version": "0.7.1.2",
+  "specification": "baseline (mpnet, nn_median, full, no_threshold)",
+  "model_coefficients": {
+    "alpha": 8.935746374132371,
+    "beta": 0.14188684373511873,
+    "alpha_t": 206.4572509630531,
+    "beta_t": 34.591195264702144,
+    "log_likelihood": -183051.3697222054,
+    "n_transitions": 89329
+  },
+  "delta_ll_vs_uniform": 362084.0869760301,
+  "performance_battery": {
+    "mpr": {
+      "mean": 0.7380919488079712,
+      "median": 0.8251121076233183,
+      "std": 0.25657698907494897,
+      "p25": 0.5762331838565022,
+      "p75": 0.9596412556053812
+    },
+    "rcm": {
+      "mean": 0.5549540069423141,
+      "median": 0.5566629717937068,
+      "std": 0.2505196611207861
+    },
+    "dispersion": {
+      "n_eff_mean": 206.85426409504169,
+      "n_eff_median": 161.5754749761702,
+      "n_eff_std": 100.94761338793985,
+      "n_destinations": 447,
+      "n_eff_ratio": 0.46276121721485836
+    },
+    "n_transitions": 89329,
+    "top_k_note": "Top-k overlap NOT reported: N_eff/J = 0.46 > 0.3. Mean effective consideration set = 206.9 destinations. Distribution too diffuse for top-k to be meaningful."
+  }
+}

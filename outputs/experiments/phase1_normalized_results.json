@@ -1,0 +1,69 @@
+{
+  "config": {
+    "name": "phase1_normalized",
+    "version": "0.6.3",
+    "description": "Normalized kernel overlap validation (Phase I primary result)",
+    "onet_path": "data/onet/db_30_0_excel",
+    "oes_path": "data/external/oes",
+    "output_dir": "outputs/experiments",
+    "similarity": "normalized_kernel",
+    "similarity_args": {},
+    "shock": null,
+    "shock_args": {},
+    "target": "wage_comovement",
+    "oes_years": [
+      2019,
+      2020,
+      2021,
+      2022,
+      2023
+    ],
+    "cluster_by": "origin",
+    "controls": [],
+    "run_permutation": true,
+    "n_permutations": 1000,
+    "run_cv": true,
+    "n_folds": 5,
+    "seed": 42
+  },
+  "git_commit": "a9ab21a07ece6991a33529b9dfaaa4143b1327d6",
+  "timestamp": "2025-12-14T08:40:40.133178",
+  "data": {
+    "n_occupations": 894,
+    "n_activities": 2087,
+    "n_comovement_codes": 1173,
+    "crosswalk_coverage": 794
+  },
+  "similarity": {
+    "type": "normalized_kernel",
+    "sigma": 0.22300386428833008
+  },
+  "regression": {
+    "beta": 0.337091169068892,
+    "se": 0.045635332851673795,
+    "t": 7.386626721109328,
+    "p": 4.296563105299356e-13,
+    "r2": 0.005227014395636886,
+    "n_pairs": 314821,
+    "n_clusters": 701
+  },
+  "permutation": {
+    "observed_t": 40.67198082995357,
+    "observed_r2": 0.005227014395636886,
+    "null_t_mean": 0.05467622369614233,
+    "null_t_std": 1.0029040398289806,
+    "null_r2_mean": 3.204370728746686e-06,
+    "null_r2_std": 4.358839619977391e-06,
+    "p_value": 0.0,
+    "percentile": 100.0,
+    "n_permutations": 1000
+  },
+  "cross_validation": {
+    "train_r2_mean": 0.005227602672939558,
+    "train_r2_std": 0.00011343847074397153,
+    "test_r2_mean": 0.005214408393476111,
+    "test_r2_std": 0.00045339102249398176,
+    "overfit_ratio": 1.0025303502272576,
+    "n_folds": 5
+  }
+}

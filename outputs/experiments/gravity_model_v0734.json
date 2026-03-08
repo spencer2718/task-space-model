@@ -1,0 +1,54 @@
+{
+  "version": "0.7.3.4",
+  "sample": {
+    "n_pairs_total": 199362,
+    "n_pairs_positive_flow": 24875,
+    "n_pairs_zero_flow": 174487,
+    "total_transitions": 89329,
+    "n_occupations": 447
+  },
+  "mass_only_model": {
+    "r2": 0.22062904518533255,
+    "beta_emp_origin": 0.09047890252710765,
+    "beta_emp_origin_se": 0.0005333057874784486,
+    "beta_emp_dest": 0.08830301857358402,
+    "beta_emp_dest_se": 0.0005298189852801532
+  },
+  "models": {
+    "cosine_embed": {
+      "beta_distance": -0.5773809558511751,
+      "beta_distance_se": 0.007024301249664962,
+      "t_stat": -82.19763579739899,
+      "r2_full": 0.24617689925745756,
+      "partial_r2_distance": 0.02554785407212501
+    },
+    "wasserstein": {
+      "beta_distance": -1.040906249710039,
+      "beta_distance_se": 0.010815795852277111,
+      "t_stat": -96.23945051541362,
+      "r2_full": 0.2552305095397046,
+      "partial_r2_distance": 0.03460146435437206
+    },
+    "euclidean_dwa": {
+      "beta_distance": -0.5142322621645672,
+      "beta_distance_se": 0.020314260590765285,
+      "t_stat": -25.313855745177033,
+      "r2_full": 0.22312613088465572,
+      "partial_r2_distance": 0.002497085699323165
+    },
+    "cosine_onet": {
+      "beta_distance": -1.5554632846921608,
+      "beta_distance_se": 0.016826644934066822,
+      "t_stat": -92.44048892616775,
+      "r2_full": 0.25266276838257584,
+      "partial_r2_distance": 0.03203372319724329
+    }
+  },
+  "comparison": {
+    "embedding_avg_partial_r2": 0.030074659213248534,
+    "onet_avg_partial_r2": 0.017265404448283228,
+    "ratio": 1.74190296574483
+  },
+  "cortes_gallipoli_benchmark": "15%",
+  "interpretation": "Task distance explains 3.5% of variance, below C-G's 15% benchmark. Consistent with C-G finding that task-specific costs are a modest share of switching costs."
+}

@@ -1,0 +1,188 @@
+{
+  "experiment": "demand_probe_decomposition_v0703b",
+  "timestamp": "2025-12-17T02:07:18.503281+00:00",
+  "occupation_2050": {
+    "census_code": 2050,
+    "soc_code": "21-2021",
+    "title": "Directors, religious activities and education",
+    "bls_openings": 13.8,
+    "avg_distance_from_origins": 0.6155,
+    "observed_rank": 250,
+    "observed_inflow_count": 6,
+    "interpretation": "Low average distance = central in task space. But low openings = not high demand."
+  },
+  "origin_outflow": {
+    "top10_origins": [
+      {
+        "census_code": 430,
+        "soc_code": "11-9199",
+        "title": "Managers, all other",
+        "outflow_count": 382
+      },
+      {
+        "census_code": 6260,
+        "soc_code": "47-2061",
+        "title": "Construction laborers",
+        "outflow_count": 205
+      },
+      {
+        "census_code": 4760,
+        "soc_code": "41-2031",
+        "title": "Retail salespersons",
+        "outflow_count": 181
+      },
+      {
+        "census_code": 9620,
+        "soc_code": "53-7062",
+        "title": "Laborers and freight, stock, and material movers, ",
+        "outflow_count": 177
+      },
+      {
+        "census_code": 9130,
+        "soc_code": "53-3031",
+        "title": "Driver/sales workers",
+        "outflow_count": 162
+      },
+      {
+        "census_code": 4700,
+        "soc_code": "41-1011",
+        "title": "First-line supervisors of retail sales workers",
+        "outflow_count": 156
+      },
+      {
+        "census_code": 4220,
+        "soc_code": "37-2011",
+        "title": "Janitors and cleaners, except maids and housekeepi",
+        "outflow_count": 136
+      },
+      {
+        "census_code": 4720,
+        "soc_code": "41-2011",
+        "title": "Cashiers",
+        "outflow_count": 135
+      },
+      {
+        "census_code": 5240,
+        "soc_code": "43-4051",
+        "title": "Customer service representatives",
+        "outflow_count": 135
+      },
+      {
+        "census_code": 4020,
+        "soc_code": "35-2011",
+        "title": "Cooks, fast food",
+        "outflow_count": 126
+      }
+    ],
+    "total_origins": 424,
+    "max_outflow": 382,
+    "median_outflow": 8.0
+  },
+  "full_flow_model": {
+    "full_flow_spearman": 0.7905,
+    "geometry_only_spearman": 0.0432,
+    "demand_only_spearman": 0.7978,
+    "n_destinations_compared": 383,
+    "formula": "outflow \u00d7 openings \u00d7 (1/distance)"
+  },
+  "destination_comparison": {
+    "observed_top5": [
+      {
+        "census_code": 430,
+        "soc_code": "11-9199",
+        "title": "Managers, all other",
+        "bls_openings": 106.7,
+        "avg_distance_from_origins": 0.5683,
+        "observed_inflow": 358
+      },
+      {
+        "census_code": 6260,
+        "soc_code": "47-2061",
+        "title": "Construction laborers",
+        "bls_openings": 175.60000000000002,
+        "avg_distance_from_origins": 0.5899,
+        "observed_inflow": 207
+      },
+      {
+        "census_code": 9620,
+        "soc_code": "53-7062",
+        "title": "Laborers and freight, stock, and material movers, ",
+        "bls_openings": 384.3,
+        "avg_distance_from_origins": 0.5847,
+        "observed_inflow": 179
+      },
+      {
+        "census_code": 4760,
+        "soc_code": "41-2031",
+        "title": "Retail salespersons",
+        "bls_openings": 555.8,
+        "avg_distance_from_origins": 0.5557,
+        "observed_inflow": 177
+      },
+      {
+        "census_code": 5240,
+        "soc_code": "43-4051",
+        "title": "Customer service representatives",
+        "bls_openings": 341.7,
+        "avg_distance_from_origins": 0.5773,
+        "observed_inflow": 164
+      }
+    ],
+    "predicted_top5": [
+      {
+        "census_code": 2050,
+        "soc_code": "21-2021",
+        "title": "Directors, religious activities and education",
+        "bls_openings": 13.8,
+        "avg_distance_from_origins": 0.6155,
+        "observed_inflow": 6
+      },
+      {
+        "census_code": 4110,
+        "soc_code": "35-3031",
+        "title": "Waiters and waitresses",
+        "bls_openings": 456.7,
+        "avg_distance_from_origins": 0.6119,
+        "observed_inflow": 91
+      },
+      {
+        "census_code": 20,
+        "soc_code": "11-1021",
+        "title": "General and operations managers",
+        "bls_openings": 308.7,
+        "avg_distance_from_origins": 0.5571,
+        "observed_inflow": 71
+      },
+      {
+        "census_code": 4120,
+        "soc_code": "35-3041",
+        "title": "Food servers, nonrestaurant",
+        "bls_openings": 48.0,
+        "avg_distance_from_origins": 0.6,
+        "observed_inflow": 12
+      },
+      {
+        "census_code": 4130,
+        "soc_code": "35-9011",
+        "title": "Dining room and cafeteria attendants and bartender",
+        "bls_openings": 99.6,
+        "avg_distance_from_origins": 0.6047,
+        "observed_inflow": 22
+      }
+    ],
+    "summary": {
+      "observed_avg_openings": 312.8,
+      "predicted_avg_openings": 185.4,
+      "observed_avg_distance": 0.5752,
+      "predicted_avg_distance": 0.5978
+    },
+    "distinguishing_features": "Observed top-5 have 1.7\u00d7 more openings but are 1.0\u00d7 further on average. Geometry favors centrality; flows favor high-demand destinations."
+  },
+  "per_origin_validation": {
+    "mean_per_origin_spearman": 0.3165,
+    "n_origins_evaluated": 193,
+    "expected_from_v070c": 0.43,
+    "matches_v070c": 0,
+    "interpretation": "Per-origin \u03c1 measures pathway accuracy: given origin A, do we rank destinations correctly? Aggregate \u03c1 measures total flow prediction."
+  }
+}

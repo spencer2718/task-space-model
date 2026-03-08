@@ -1,0 +1,157 @@
+{
+  "experiment": "sensitivity_switching_costs_v0702",
+  "timestamp": "2025-12-17T01:49:27.400139Z",
+  "d_wasserstein_median": 0.5213,
+  "mean_annual_wage": 71992.0,
+  "calibration_results": [
+    {
+      "source": "Lee & Wolpin (2006)",
+      "anchor_wage_years": 0.75,
+      "sc_per_unit_wasserstein": 1.439,
+      "median_transition_cost": 0.75,
+      "example_transitions": [
+        {
+          "from": "Cashiers",
+          "to": "Retail Salespersons",
+          "d_wass": 0.3511,
+          "cost_wage_years": 0.51,
+          "cost_dollars": 36362.0
+        },
+        {
+          "from": "Software Developers",
+          "to": "Data Scientists",
+          "d_wass": 0.4408,
+          "cost_wage_years": 0.63,
+          "cost_dollars": 45652.0
+        },
+        {
+          "from": "Accountants",
+          "to": "Software Developers",
+          "d_wass": 0.5532,
+          "cost_wage_years": 0.8,
+          "cost_dollars": 57293.0
+        },
+        {
+          "from": "Cashiers",
+          "to": "Registered Nurses",
+          "d_wass": 0.6485,
+          "cost_wage_years": 0.93,
+          "cost_dollars": 67163.0
+        }
+      ]
+    },
+    {
+      "source": "Dix-Carneiro mid",
+      "anchor_wage_years": 2.0,
+      "sc_per_unit_wasserstein": 3.836,
+      "median_transition_cost": 2.0,
+      "example_transitions": [
+        {
+          "from": "Cashiers",
+          "to": "Retail Salespersons",
+          "d_wass": 0.3511,
+          "cost_wage_years": 1.35,
+          "cost_dollars": 96965.0
+        },
+        {
+          "from": "Software Developers",
+          "to": "Data Scientists",
+          "d_wass": 0.4408,
+          "cost_wage_years": 1.69,
+          "cost_dollars": 121738.0
+        },
+        {
+          "from": "Accountants",
+          "to": "Software Developers",
+          "d_wass": 0.5532,
+          "cost_wage_years": 2.12,
+          "cost_dollars": 152781.0
+        },
+        {
+          "from": "Cashiers",
+          "to": "Registered Nurses",
+          "d_wass": 0.6485,
+          "cost_wage_years": 2.49,
+          "cost_dollars": 179100.0
+        }
+      ]
+    },
+    {
+      "source": "Dix-Carneiro upper",
+      "anchor_wage_years": 2.7,
+      "sc_per_unit_wasserstein": 5.179,
+      "median_transition_cost": 2.7,
+      "example_transitions": [
+        {
+          "from": "Cashiers",
+          "to": "Retail Salespersons",
+          "d_wass": 0.3511,
+          "cost_wage_years": 1.82,
+          "cost_dollars": 130903.0
+        },
+        {
+          "from": "Software Developers",
+          "to": "Data Scientists",
+          "d_wass": 0.4408,
+          "cost_wage_years": 2.28,
+          "cost_dollars": 164347.0
+        },
+        {
+          "from": "Accountants",
+          "to": "Software Developers",
+          "d_wass": 0.5532,
+          "cost_wage_years": 2.86,
+          "cost_dollars": 206254.0
+        },
+        {
+          "from": "Cashiers",
+          "to": "Registered Nurses",
+          "d_wass": 0.6485,
+          "cost_wage_years": 3.36,
+          "cost_dollars": 241785.0
+        }
+      ]
+    },
+    {
+      "source": "Artuc et al. (2010)",
+      "anchor_wage_years": 6.5,
+      "sc_per_unit_wasserstein": 12.468,
+      "median_transition_cost": 6.5,
+      "example_transitions": [
+        {
+          "from": "Cashiers",
+          "to": "Retail Salespersons",
+          "d_wass": 0.3511,
+          "cost_wage_years": 4.38,
+          "cost_dollars": 315138.0
+        },
+        {
+          "from": "Software Developers",
+          "to": "Data Scientists",
+          "d_wass": 0.4408,
+          "cost_wage_years": 5.5,
+          "cost_dollars": 395650.0
+        },
+        {
+          "from": "Accountants",
+          "to": "Software Developers",
+          "d_wass": 0.5532,
+          "cost_wage_years": 6.9,
+          "cost_dollars": 496537.0
+        },
+        {
+          "from": "Cashiers",
+          "to": "Registered Nurses",
+          "d_wass": 0.6485,
+          "cost_wage_years": 8.09,
+          "cost_dollars": 582076.0
+        }
+      ]
+    }
+  ],
+  "qualitative_check": {
+    "orderings_preserved": true,
+    "all_examples_valid": true,
+    "notes": "All orderings identical across calibration points (scale-invariant as expected)"
+  }
+}

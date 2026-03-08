@@ -1,0 +1,47 @@
+{
+  "version": "0.6.8.1",
+  "timestamp": "2025-12-15T22:51:24.343222",
+  "task": "Path C: RTI Construct Validity",
+  "crosswalk_coverage": {
+    "onet_matched": 651,
+    "onet_total": 894,
+    "onet_coverage": 0.7281879194630873,
+    "occ1990dd_matched": 296,
+    "occ1990dd_total": 330,
+    "occ1990dd_coverage": 0.896969696969697
+  },
+  "n_occ1990dd_matched": 296,
+  "semantic_exposure_statistics": {
+    "mean": 0.5875329710245015,
+    "std": 0.02521243956576987,
+    "min": 0.5197634203446461,
+    "max": 0.6895629213134603
+  },
+  "correlations": {
+    "semantic_exposure_vs_rti": -0.05155133281593127,
+    "semantic_exposure_vs_routine": -0.05826070435133132,
+    "semantic_exposure_vs_abstract": -0.051460021065194296,
+    "semantic_exposure_vs_manual": 0.09326244508012083
+  },
+  "pvalues": {
+    "rti": 0.3768270296437495,
+    "task_routine": 0.3178127765783411,
+    "task_abstract": 0.3776739436215758,
+    "task_manual": 0.10932148270346849
+  },
+  "spearman_correlation": {
+    "rti": -0.08112428549634065,
+    "pvalue": 0.16389063420716304
+  },
+  "interpretation": "low",
+  "verdict": "Semantic geometry is DISTINCT from RTI construct (r = -0.052)",
+  "sign_interpretation": "Negative correlation: Higher semantic exposure (peripheral task space position) associates with lower RTI (more abstract).",
+  "semantic_exposure_definition": "mean_wasserstein_distance",
+  "aggregation_method": "mean",
+  "data_sources": {
+    "dorn_rti": "occ1990dd_task_alm.dta",
+    "wasserstein": "d_wasserstein_onet.npz",
+    "ipums_crosswalk": "cps_1992-2002-occ2010-xwalk.xlsx",
+    "dorn_crosswalk": "occ1990_occ1990dd.dta"
+  }
+}

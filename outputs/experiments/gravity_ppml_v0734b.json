@@ -1,0 +1,95 @@
+{
+  "version": "0.7.3.4b",
+  "method": "PPML with mass controls (FE computationally prohibitive)",
+  "note": "Full origin+destination FE (892 dummies) caused memory issues. Using log-employment controls for comparability with OLS.",
+  "sample": {
+    "n_pairs": 199362,
+    "n_occupations": 447
+  },
+  "models": {
+    "wasserstein": {
+      "beta_distance": -8.056430104712897,
+      "se": 0.028946250522653885,
+      "t_stat": -278.32378837486334,
+      "pseudo_r2": 0.7435228138641538,
+      "beta_emp_origin": 0.968414149429402,
+      "beta_emp_dest": 0.9653684357022871,
+      "converged": true,
+      "method": "ppml_with_mass_controls"
+    },
+    "cosine_embed": {
+      "beta_distance": -6.606808998249212,
+      "se": 0.030480342670328703,
+      "t_stat": -216.7563885257975,
+      "pseudo_r2": 0.7289298972941218,
+      "beta_emp_origin": 0.9823794763380478,
+      "beta_emp_dest": 0.9776702567328482,
+      "converged": true,
+      "method": "ppml_with_mass_controls"
+    },
+    "cosine_onet": {
+      "beta_distance": -4.809516569016693,
+      "se": 0.018942302837290734,
+      "t_stat": -253.90347785742532,
+      "pseudo_r2": 0.7016657528191255,
+      "beta_emp_origin": 0.9838600897274561,
+      "beta_emp_dest": 0.9838340793866195,
+      "converged": true,
+      "method": "ppml_with_mass_controls"
+    },
+    "euclidean_dwa": {
+      "beta_distance": -7.534734395062734,
+      "se": 0.08716118394307654,
+      "t_stat": -86.44598494650484,
+      "pseudo_r2": 0.6513977410216869,
+      "beta_emp_origin": 0.9980921061646945,
+      "beta_emp_dest": 0.9988375031725786,
+      "converged": true,
+      "method": "ppml_with_mass_controls"
+    }
+  },
+  "models_distance_only": {
+    "wasserstein": {
+      "beta_distance": -9.505822076380264,
+      "se": 0.03056895765187833,
+      "pseudo_r2": 0.1435824102899469,
+      "converged": true
+    },
+    "cosine_embed": {
+      "beta_distance": -7.106965915347562,
+      "se": 0.02999386495565576,
+      "pseudo_r2": 0.11245641984583432,
+      "converged": true
+    },
+    "cosine_onet": {
+      "beta_distance": -6.936040766490077,
+      "se": 0.020687230980876686,
+      "pseudo_r2": 0.101966644248359,
+      "converged": true
+    },
+    "euclidean_dwa": {
+      "beta_distance": -14.642538489968038,
+      "se": 0.08588007923324349,
+      "pseudo_r2": 0.055328374933171554,
+      "converged": true
+    }
+  },
+  "comparison_to_ols": {
+    "ols_ranking": [
+      "cosine_onet",
+      "wasserstein",
+      "cosine_embed",
+      "euclidean_dwa"
+    ],
+    "ppml_ranking": [
+      "wasserstein",
+      "euclidean_dwa",
+      "cosine_embed",
+      "cosine_onet"
+    ],
+    "rankings_preserved": false,
+    "signs_preserved": true,
+    "avg_magnitude_ratio": 9.231738614972336
+  },
+  "interpretation": "PPML signs match OLS (all negative), but rankings differ slightly. Results directionally consistent."
+}

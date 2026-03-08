@@ -1,0 +1,39 @@
+{
+  "version": "0.7.3.3",
+  "sample_n": 89329,
+  "models": {
+    "wasserstein_identity": {
+      "alpha": 4.711656388672537,
+      "alpha_se": 0.0393295169841764,
+      "gamma": 0.3104139634506882,
+      "gamma_se": 0.0038651221924822844,
+      "ll": -198307.79066415117,
+      "pseudo_r2": 0.07420017935127687
+    },
+    "wasserstein_embedding": {
+      "alpha": 8.95305365502874,
+      "alpha_se": 0.04339198830545261,
+      "gamma": 0.1339566016270947,
+      "gamma_se": 0.004087913876232307,
+      "ll": -183115.56702681744,
+      "pseudo_r2": 0.14512506773611544
+    }
+  },
+  "comparison": {
+    "delta_ll": 15192.223637333722,
+    "delta_pseudo_r2": 0.07092488838483857,
+    "pseudo_r2_ratio": 1.955858719007504,
+    "embedding_improvement_pct": 95.5858719007504
+  },
+  "distance_correlation": {
+    "pearson_r": 0.6092293041583065,
+    "spearman_rho": 0.36120972613593416
+  },
+  "gate_passed": true,
+  "interpretation": "Embedding ground metric substantially improves over identity; semantic task similarity matters",
+  "notes": [
+    "Wasserstein-identity = Total Variation distance (ground cost = 1 if different DWA)",
+    "Wasserstein-embedding = Original Wasserstein with MPNet cosine ground metric",
+    "r(identity, embedding) = 0.6092 \u2014 distances are moderately correlated"
+  ]
+}

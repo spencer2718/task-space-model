@@ -1,0 +1,176 @@
+{
+  "version": "0.6.8.2",
+  "timestamp": "2025-12-15T22:40:51.325462",
+  "task": "Path F: Asymmetric barriers test with Wasserstein",
+  "hypothesis": "Verify symmetric barrier finding is geometry-robust",
+  "sample": {
+    "n_transitions": 89329,
+    "n_alternatives": 10,
+    "n_census_occupations": 447
+  },
+  "distance_statistics": {
+    "wasserstein": {
+      "name": "wasserstein",
+      "mean": 0.5836985772998932,
+      "std": 0.0788870070268659,
+      "min": 0.062124597220385804,
+      "max": 0.8323121813340726,
+      "p10": 0.4835323316835342,
+      "p50": 0.5913412756740781,
+      "p90": 0.6748942890190818,
+      "frac_zero": 0.0
+    },
+    "kernel": {
+      "name": "kernel",
+      "mean": 0.9569081864687717,
+      "std": 0.05575896044128824,
+      "min": 0.06970260292291641,
+      "max": 0.9999863505363464,
+      "p10": 0.9174939393997192,
+      "p50": 0.9721764922142029,
+      "p90": 0.992033839225769,
+      "frac_zero": 0.0
+    },
+    "institutional_up": {
+      "name": "upward",
+      "mean": 0.4903381239555577,
+      "std": 0.7644407484701341,
+      "min": 0.0,
+      "max": 5.931524547803617,
+      "p10": 0.0,
+      "p50": 0.09302325581395365,
+      "p90": 1.4883720930232556,
+      "frac_zero": 0.43315175409556483
+    },
+    "institutional_down": {
+      "name": "downward",
+      "mean": 1.4905548535422941,
+      "std": 1.3769284731212883,
+      "min": 0.0,
+      "max": 7.627906976744186,
+      "p10": 0.0,
+      "p50": 1.15374677002584,
+      "p90": 3.4186046511627906,
+      "frac_zero": 0.19523279260842086
+    },
+    "institutional_sym": {
+      "name": "symmetric_inst",
+      "mean": 1.9808929774978516,
+      "std": 1.228291321680992,
+      "min": 0.0,
+      "max": 7.627906976744186,
+      "p10": 0.5,
+      "p50": 1.8363479758828598,
+      "p90": 3.589147286821705,
+      "frac_zero": 0.029474022130596602
+    }
+  },
+  "distance_correlations": {
+    "wasserstein_based": {
+      "sem_up": -0.03667395581942293,
+      "sem_down": 0.3470540651426164,
+      "sem_sym": 0.3662270911071597,
+      "up_down": -0.4615335140357325,
+      "up_sym": 0.10497681569397131,
+      "down_sym": 0.8337708083829821
+    },
+    "kernel_based": {
+      "sem_up": -0.02291342380243822,
+      "sem_down": 0.17449219970813346,
+      "sem_sym": 0.18134730689890566,
+      "up_down": -0.4615335140357325,
+      "up_sym": 0.10497681569397131,
+      "down_sym": 0.8337708083829821
+    }
+  },
+  "models": {
+    "wasserstein_symmetric": {
+      "alpha": 8.935746374132371,
+      "alpha_se": 0.04328133951435536,
+      "alpha_t": 206.4572509630531,
+      "beta": 0.14188684373511873,
+      "beta_se": 0.004101819629225249,
+      "beta_t": 34.591195264702144,
+      "log_likelihood": -183051.3697222054
+    },
+    "wasserstein_asymmetric": {
+      "n_transitions": 89329,
+      "n_choice_rows": 982619,
+      "n_alternatives": 11,
+      "alpha": 9.001173314721516,
+      "alpha_se": 0.04349467866524312,
+      "alpha_t": 206.94884043170117,
+      "alpha_p": 0.0,
+      "beta_up": 0.17080149493541652,
+      "beta_up_se": 0.004562034153518969,
+      "beta_up_t": 37.439766820611624,
+      "beta_up_p": 8.813783906155967e-307,
+      "beta_down": 0.08095381146093203,
+      "beta_down_se": 0.00565591636792382,
+      "beta_down_t": 14.313120314162042,
+      "beta_down_p": 1.8119736522985887e-46,
+      "log_likelihood": -182930.29739936764,
+      "converged": true,
+      "asymmetry_ratio": 2.10986353641724,
+      "lr_test_statistic": 242.14464567549294,
+      "lr_test_pvalue": 0.0,
+      "ll_restricted": -183051.3697222054,
+      "assumptions": [
+        "IIA (Independence of Irrelevant Alternatives) assumed",
+        "Random sampling of alternatives (10:1 ratio)",
+        "Upward barrier = max(0, Zone_dest - Zone_origin)",
+        "Downward barrier = max(0, Zone_origin - Zone_dest)",
+        "LR test: H0: beta_up = beta_down"
+      ]
+    },
+    "kernel_asymmetric": {
+      "n_transitions": 89329,
+      "n_choice_rows": 982619,
+      "n_alternatives": 11,
+      "alpha": 5.691179070130822,
+      "alpha_se": 0.03552198402498329,
+      "alpha_t": 160.21568688641113,
+      "alpha_p": 0.0,
+      "beta_up": 0.282138935457408,
+      "beta_up_se": 0.0043502123608567585,
+      "beta_up_t": 64.8563591966443,
+      "beta_up_p": 0.0,
+      "beta_down": 0.2704381410604019,
+      "beta_down_se": 0.0054133316886389275,
+      "beta_down_t": 49.95779985696722,
+      "beta_down_p": 0.0,
+      "log_likelihood": -192625.23520749956,
+      "converged": true,
+      "asymmetry_ratio": 1.0432660657669315,
+      "lr_test_statistic": 4.326183264143765,
+      "lr_test_pvalue": 0.037530311909647285,
+      "ll_restricted": -192627.39829913163,
+      "assumptions": [
+        "IIA (Independence of Irrelevant Alternatives) assumed",
+        "Random sampling of alternatives (10:1 ratio)",
+        "Upward barrier = max(0, Zone_dest - Zone_origin)",
+        "Downward barrier = max(0, Zone_origin - Zone_dest)",
+        "LR test: H0: beta_up = beta_down"
+      ]
+    }
+  },
+  "comparison": {
+    "alpha_diff": 3.309994244590694,
+    "beta_up_diff": -0.11133744052199146,
+    "beta_down_diff": -0.1894843295994699,
+    "asymmetry_ratio_kernel": 1.0432660657669315,
+    "asymmetry_ratio_wasserstein": 2.10986353641724,
+    "ratio_difference": 1.0665974706503083,
+    "log_likelihood_diff": 9694.937808131916
+  },
+  "interpretation": {
+    "symmetric_robust": false,
+    "verdict": "ASYMMETRIC: Wasserstein reveals asymmetry kernel missed"
+  },
+  "provenance": {
+    "semantic_distance_source": "d_wasserstein_onet.npz (aggregated to census)",
+    "institutional_source": "build_asymmetric_institutional_distance()",
+    "transitions_source": "verified_transitions.parquet",
+    "aggregation_method": "mean"
+  }
+}

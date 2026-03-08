@@ -1,0 +1,80 @@
+{
+  "version": "0.7.4.1",
+  "phase": "full",
+  "sample_sizes": {
+    "pre_covid": 71219,
+    "post_covid": 34897,
+    "excluded_2020_2021": 0,
+    "pre_covid_valid": 60225,
+    "post_covid_valid": 29104
+  },
+  "pre_covid": {
+    "alpha": 8.952882947351906,
+    "se_alpha": 0.052621078951587345,
+    "gamma": 0.14164365132115136,
+    "se_gamma": 0.004979601521114236,
+    "ll": -123263.39400876718,
+    "pseudo_r2": 0.14645366577757923,
+    "n_transitions": 60225
+  },
+  "post_covid": {
+    "alpha": 8.899649305865097,
+    "se_alpha": 0.07592004805892169,
+    "gamma": 0.1413536154946855,
+    "se_gamma": 0.0072240996346611,
+    "ll": -59844.6131203222,
+    "pseudo_r2": 0.14248412165246027,
+    "n_transitions": 29104
+  },
+  "pooled": {
+    "alpha": 8.916142912910166,
+    "se_alpha": 0.043170228758042876,
+    "gamma": 0.13596086885416633,
+    "se_gamma": 0.004093195044828286,
+    "ll": -183152.39013020444,
+    "pseudo_r2": 0.14495315909653428,
+    "n_transitions": 89329
+  },
+  "structural_break": {
+    "lr_stat": 0.5385844530537724,
+    "df": 2,
+    "p_value": 0.7639199853428991,
+    "delta_alpha": 0.03734963394469071,
+    "se_delta_alpha": 0.09243642508778138,
+    "delta_gamma": -0.005525888337458319,
+    "se_delta_gamma": 0.008761254351766013
+  },
+  "remote_work": {
+    "dn_coverage": 0.9239373601789709,
+    "n_matched": 413,
+    "delta_2": -0.03332300192552369,
+    "se_delta_2": 0.08858538629015525,
+    "p_delta_2": 0.7067918832602806,
+    "delta_3": -0.5609695983681149,
+    "se_delta_3": 0.019091688035672117,
+    "p_delta_3": 0.0,
+    "delta_4": -0.0860453752553765,
+    "se_delta_4": 0.03325991707306883,
+    "p_delta_4": 0.00967989529852975,
+    "power_flag": false
+  },
+  "robustness": {
+    "cosine_embed": {
+      "alpha_pre": 7.394105456246078,
+      "alpha_post": 7.3577368148339515,
+      "pct_change": -0.49185992311489857
+    },
+    "exclude_2022": {
+      "delta_4": -0.09664128609414889,
+      "se_delta_4": 0.040035209979270694,
+      "p_delta_4": 0.015782476668392942,
+      "n_post_covid": 17615
+    }
+  },
+  "coefficient_changes": {
+    "alpha_pct_change": -0.5945977602952421,
+    "gamma_pct_change": -0.20476443791205173
+  },
+  "interpretation": "geometry_stable",
+  "flags": []
+}
