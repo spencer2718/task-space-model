@@ -631,6 +631,8 @@ Following \citet{McFadden1978}, we estimate using sampled alternatives: for each
 \medskip
 \noindent\textit{Identification note.} This reduced-form choice model tests whether a distance metric assigns higher probability to realized transitions than alternatives. It does not separately identify worker retraining costs, employer screening preferences, vacancy distributions, or unobserved institutional constraints. The model provides a probabilistic scoring comparison between distance constructions; mechanism interpretations are stated as ``consistent with,'' not ``identified as.''
 
+Two additional estimation caveats apply. First, pseudo-$R^2$ values in Tables 2--5 are computed in-sample: the same 89,329 transitions used for estimation are used for performance comparison. With two estimated parameters ($\alpha$, $\beta$) across 89,329 choice occasions, overfitting risk is minimal, and the 2024 holdout comparison for the shock integration module (\cref{subsec:shock-integration}) provides out-of-sample confirmation. However, the reported pseudo-$R^2$ values should be interpreted as relative performance across specifications rather than out-of-sample prediction accuracy. Second, when multiple O*NET-SOC codes map to a single Census occupation code, task distributions and distances are aggregated using unweighted means. Employment-weighted aggregation would better represent the typical worker's task profile within each Census code but requires linking OES employment data to the crosswalk, which we leave to future work.
+
 
 \begin{table}[h!]
 \centering
@@ -1564,9 +1566,9 @@ This section documents scope conditions that define where the framework applies.
 \label{subsec:limitation-friction}
 
 
-Our institutional distance coefficient ($\gamma_{\mathrm{inst}} = 0.154$, $t = 35$) is estimated from completed transitions. Workers who successfully became nurses or teachers appear in our data; workers blocked by credential requirements do not. This creates selection bias \citep{Heckman1979}: we estimate the friction experienced by successful transitioners, not the blocking probability for all who attempt.
+Our institutional distance coefficient ($\gamma_{\mathrm{inst}} = 0.139$, $t = 33.8$) is estimated from completed transitions. Workers who successfully became nurses or teachers appear in our data; workers blocked by credential requirements do not. This creates selection bias \citep{Heckman1979}: we estimate the friction experienced by successful transitioners, not the blocking probability for all who attempt.
 
-\citet{Jackson2023} finds licensing alone reduces entry probability by 24\% with no effect on exit probability---a gate structure our friction-based model cannot capture. \citet{KleinerXu2020} find licensed workers are 24\% less likely to switch occupations overall. These magnitudes suggest substantial selection: nearly one-quarter of potential transitions may be institutionally blocked and thus absent from our data. The ratio $\gamma_{\mathrm{inst}}/\gamma_{\mathrm{sem}} = 0.021$ likely understates true credential effects.
+\citet{Jackson2023} finds licensing alone reduces entry probability by 24\% with no effect on exit probability---a gate structure our friction-based model cannot capture. \citet{KleinerXu2020} find licensed workers are 24\% less likely to switch occupations overall. These magnitudes suggest substantial selection: nearly one-quarter of potential transitions may be institutionally blocked and thus absent from our data. The ratio $\gamma_{\mathrm{inst}}/\gamma_{\mathrm{sem}} = 0.019$ likely understates true credential effects.
 
 Our estimates should be interpreted as characterizing observed mobility patterns among successful transitioners, not latent worker preferences for transitions that may be prevented. Future work should incorporate exogenous credential classification (nursing, teaching, licensed trades) to model gates directly.
 
