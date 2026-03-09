@@ -2,7 +2,7 @@
 
 Infrastructure for analyzing how task-level technological change propagates to labor market outcomes.
 
-**Version 0.7.5.1** — COVID Structural Stability
+**Version 0.7.8** — Paper Alignment Complete
 
 ---
 
@@ -11,7 +11,7 @@ Infrastructure for analyzing how task-level technological change propagates to l
 | If you want to... | Start here |
 |-------------------|------------|
 | Understand the research | `paper/main.tex` (full theory) |
-| Run the main validation | `scripts/run_distance_comparison_v0732.py` |
+| Reproduce key tables | `scripts/reproduce_tables.py` |
 | Understand distance metrics | `src/task_space/similarity/DISTANCE_GUIDE.md` |
 | See current scientific state | `LEDGER.md` |
 | Contribute as engineer | `CLAUDE.md` |
@@ -40,58 +40,59 @@ See `paper/main.tex` for formal theory and specifications.
 
 | Module | Status | Evidence |
 |--------|--------|----------|
-| **T** (Embedding-informed distance) | ✓ Robust | 100% win rate (81/81 specs); median ΔLL = +13,052 |
-| **I** (Institutional distance) | ✓ Validated | t = 34.6 conditional on T |
-| **S** (Shock integration) | ✓ Validated | ΔLL = +23,119 on holdout |
-| **M** (Switching costs) | ⚠️ Calibrated | External anchor (Dix-Carneiro) |
+| **T** (Embedding-informed distance) | ✓ Validated | Centroid pseudo-R² = 14.1%; 74.9% improvement over O*NET baselines |
+| **I** (Institutional distance) | ✓ Validated | β = 0.139, t = 33.7 conditional on T |
+| **S** (Shock integration) | ✓ Validated | ΔLL = +23,119 on out-of-period comparison |
+| **M** (Switching costs) | ⚠️ Calibrated | External anchor (Dix-Carneiro 2014) |
 | Pathway ranking | ✓ Validated | MPR = 0.74; per-origin ρ ≈ 0.13 |
 | Demand decomposition | ✓ Quantified | Demand ρ = 0.80; geometry ρ = 0.04 |
-| Structural stability | ✓ Validated | Aggregate Δα < 1% (p = 0.76); telework heterogeneity δ₄ = -0.086 (p = 0.01) |
-| Retrospective battery | ⚠️ Partial | Test B: 1+/5; COVID stability: aggregate stable, telework heterogeneity |
+| Structural stability | ✓ Validated | Aggregate Δα < 1% (p = 0.72); telework heterogeneity δ₄ = −0.086 (p = 0.01) |
 
 **Scope:** The framework measures structural feasibility (where workers CAN go), not realized reallocation (where they DO go). Empirically: demand dominates aggregate inflows (ρ = 0.80); geometry ranks destinations correctly (MPR = 0.74). Feasibility is the supply-side input to equilibrium analysis.
 
 ---
 
-## Validation Details
+## Key Results
 
-### T Module: Distance Metric Attribution
+### T Module: Distance Metric Comparison
 
-Task distance comparison shows embedding ground metric (+96%) dominates distributional treatment (+3%). Wasserstein preserves theoretical grounding; cosine_embed achieves comparable predictive performance (ρ = 0.95).
+The 2×2 factorial design isolates the embedding representation as the mechanism. Centroid is the primary specification.
 
-| Metric | Kernel | Wasserstein | Δ |
-|--------|--------|-------------|---|
-| α (semantic) | 5.688 | 8.936 | +57% |
-| Log-likelihood | -192,627 | -183,051 | +9,576 |
+| Representation | Aggregation | α | Pseudo-R² |
+|---------------|-------------|---|-----------|
+| Embedding (MPNet) | Cosine centroid | 7.40 | 14.08% |
+| Embedding (MPNet) | Wasserstein | 8.39 | 13.76% |
+| O*NET importance | Cosine | 4.55 | 8.05% |
+| O*NET importance | Euclidean | 9.76 | 6.06% |
 
-The core mechanism is **semantic task substitutability**: embeddings capture that "operating forklift" ≈ "driving delivery vehicle."
+The embedding ground metric improves explanatory power by +83% over an identity ground metric (7.52% → 13.76%). The core mechanism is **semantic task substitutability**: embeddings capture that "operating forklift" ≈ "driving delivery vehicle."
 
 ### I Module: Institutional Distance
 
-| Component | Coefficient | t-stat |
-|-----------|-------------|--------|
-| d_sem (Wasserstein) | 8.936 | 206.5 |
-| d_inst (Job Zone + Cert) | 0.142 | 34.6 |
+| Parameter | Coefficient | SE | t-stat |
+|-----------|-------------|-----|--------|
+| α (semantic) | 7.404 | 0.036 | 204.0 |
+| β (institutional) | 0.139 | 0.004 | 33.7 |
 
-Sample: 89,329 verified CPS transitions (2015–2019, 2022–2024). Separability holds.
+Sample: 89,329 verified CPS transitions (2015–2019, 2022–2024). Estimated with sampled alternatives (J = 11). Separability holds.
 
 ### S Module: Shock Integration
 
 | Test | Result |
 |------|--------|
-| AIOE-Wasserstein correlation | r = 0.02 |
+| AIOE-distance correlation | r = 0.02 |
 | Geometry vs Historical baseline | ΔLL = +23,119 |
 
-AIOE and Wasserstein are orthogonal—shock profiles identify exposed occupations, geometry identifies compatible destinations.
+AIOE and embedding distance are orthogonal — shock profiles identify exposed occupations, geometry identifies compatible destinations.
 
-### M Module: Switching Costs
+### Structural Stability (Pre/Post COVID)
 
-| Parameter | Value |
-|-----------|-------|
-| SC per unit Wasserstein | 3.84 wage-years |
-| Source | External calibration (Dix-Carneiro 2014) |
+| Period | α | Pseudo-R² |
+|--------|---|-----------|
+| Pre-COVID (2015–2019) | 7.394 | 14.1% |
+| Post-COVID (2022–2024) | 7.358 | 13.9% |
 
-Endogenous identification failed (β_wage < 0). Individual-level wage data required.
+Structural break test: χ²(2) = 0.67, p = 0.72. Task-distance penalties are stable across the largest labor market disruption in decades.
 
 ---
 
@@ -100,6 +101,9 @@ Endogenous identification failed (β_wage < 0). Individual-level wage data requi
 ```bash
 # Install
 pip install -e ".[dev,notebooks]"
+
+# Reproduce key tables
+python scripts/reproduce_tables.py
 
 # Run tests
 pytest tests/unit tests/integration -v
@@ -118,20 +122,30 @@ See [`data/README.md`](data/README.md) for complete data documentation including
 ```
 src/task_space/          # Core implementation
     data/                # O*NET loading, crosswalks, AIOE
-    similarity/          # Kernel, overlap, wasserstein
+    similarity/          # Kernel, overlap, wasserstein, embeddings
     shocks/              # Shock profiles, propagation
     validation/          # Regression, diagnostics, reallocation
     mobility/            # CPS mobility validation
 
 tests/
     unit/                # Fast unit tests
-    integration/         # Slower integration tests
+    integration/         # Regression tests against canonical values
+
+scripts/
+    reproduce_tables.py  # Reproduce paper Tables 2, 3, 5
+    run_*_v07*.py        # Versioned experiment scripts
 
 paper/
-    main.tex             # Theory + specifications
+    main.tex             # Working paper (full theory + results)
+    references.bib       # Bibliography
+
+figures/
+    fig1_ai_exposure.py  # AI task exposure by occupation group
+    fig2_pseudo_r2.py    # Main result: embedding vs O*NET comparison
+    fig3_task_scatter.py # Tasks in semantic space visualization
 ```
 
-See `CLAUDE.md` for developer context, `LEDGER.md` for scientific state. Use [`templates/sprint_summary.md`](templates/sprint_summary.md) when writing sprint summaries (one per sprint when updating LEDGER and the paper).
+See `CLAUDE.md` for developer context, `LEDGER.md` for scientific state.
 
 ---
 
@@ -143,23 +157,6 @@ See `CLAUDE.md` for developer context, `LEDGER.md` for scientific state. Use [`t
 | 0.9 | Institutional barrier enhancement | CPS licensing supplement |
 | 1.0 | Modality-specific shock profiles | Taxonomy design, benchmarks |
 | 1.1 | Full GE with propagation | Individual wage data (LEHD) |
-
----
-
-## Version History
-
-| Version | What Changed |
-|---------|--------------|
-| **0.7.5.0** | COVID structural stability. Aggregate geometry invariant; elevated hiring standards for teleworkable occupations post-COVID. |
-| 0.7.4.1 | Pre/post COVID comparison implementation. |
-| 0.7.4.0 | Attribution reframe: embedding-informed distance. Ground metric validation (+96% vs identity). Gravity model (3.5% partial R², consistent with C-G). |
-| 0.7.3.0 | Retrospective battery (Test B: 1+/5). IPUMS pipeline. Documentation schema (MS10, Decision Authority). |
-| 0.7.2.0 | Multiverse robustness (81/81). Performance battery (MPR=0.74). MS7-MS9 methodology regime. |
-| 0.7.1.0 | Demand decomposition validated. Metric correction (ρ = 0.43 → 0.13). |
-| 0.7.0.1 | Oracle architecture framing. Documentation hierarchy. |
-| 0.6.9.0 | LEDGER.md created. Asymmetric barriers → heterogeneous. |
-| 0.6.8.0 | Wasserstein validated. |
-| 0.6.7.x | Wasserstein module, geometry comparison. |
 
 ---
 

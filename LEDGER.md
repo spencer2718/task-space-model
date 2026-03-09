@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.8.5
+**Current Version:** 0.7.8.6
 **Last Updated:** 2026-03-09
 **Paper Draft:** `paper/main.tex`
 
@@ -759,6 +759,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.8.6 | 2026-03-09 | README refresh — all numbers corrected, centroid as primary, version history trimmed. |
 | 0.7.8.5 | 2026-03-09 | Fix fig2 top tick zero-length bug: separate gap (0.4) from bracket_ext (1.5). |
 | 0.7.8.4 | 2026-03-09 | Precise improvement percentage (74.9%) across all files; fix fig2 bracket padding. |
 | 0.7.8.3 | 2026-03-09 | Programmatic fig2 bracket alignment from text extents — no hardcoded positions. |
