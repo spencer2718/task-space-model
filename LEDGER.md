@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.7.7
+**Current Version:** 0.7.8.0
 **Last Updated:** 2026-03-09
 **Paper Draft:** `paper/main.tex`
 
@@ -759,6 +759,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.8.0 | 2026-03-09 | Regenerate fig2 with corrected values (13.76%/14.08%), centroid-first ordering, +83% bracket. |
 | 0.7.7.7 | 2026-03-09 | Origin-exclusion robustness test: Δα = +4.2%, not material. Disclosure added to paper. |
 | 0.7.7.6 | 2026-03-09 | Software hygiene — cache ordering guard, hash fix, stale artifact cleanup, canonical tests updated, reproduce_tables.py added. |
 | 0.7.7.5 | 2026-03-09 | Comprehensive consistency pass — 10 issues from adversarial audit (t-stats, p-values, table vintages, holdout wording, improvement percentages, HC1, naming, scale notes). |

@@ -3,7 +3,7 @@
 | File | Target slide | Size | Takeaway | Data source |
 |------|-------------|------|----------|-------------|
 | fig1_ai_exposure.png | Slide 2 (Motivation) | 16:9 (9.0" x 6.5") | AI can theoretically perform 12–97% of tasks across occupation categories — motivates need for distance measures | Eloundou et al. (2023) γ scores |
-| fig2_pseudo_r2.png | Slide 5 (Main Result: Embeddings Dominate) | 16:9 (9.0" x 5.0") | Embedding-based measures achieve 14.1–14.5% pseudo-R², vs 6–8% for O*NET — ~75% relative improvement. Ground metric swap nearly doubles R². | Tables 2 & 3 (hardcoded) |
+| fig2_pseudo_r2.png | Slide 5 (Main Result: Embeddings Dominate) | 16:9 (9.0" x 5.0") | Embedding-based measures achieve 13.8–14.1% pseudo-R², vs 6–8% for O*NET — ~75% relative improvement. Ground metric swap improves R² by over 80%. | Tables 2 & 3 (hardcoded) |
 | fig3_task_scatter.png | Slide 3 (Core Idea: Tasks in Semantic Space) | Half-slide (7.5" x 5.0") | Semantically related tasks cluster together in embedding space — vehicle operation near vehicle operation, quantitative analysis near quantitative analysis | MPNet embeddings of 30 selected DWAs via UMAP |
 
 ## fig1_ai_exposure.png
@@ -33,6 +33,6 @@
 - **Target slide:** 5 (Main Result: Embeddings Dominate)
 - **Size:** 16:9 full-slide (9.0" x 5.0")
 - **Data:** Table 2 (4 specifications), Table 3 (ground metric comparison)
-- **Takeaway:** Embedding-based measures achieve 14.1–14.5% pseudo-R², vs 6–8% for O*NET — a ~75% relative improvement. Ground metric swap nearly doubles R².
+- **Takeaway:** Embedding-based measures achieve 13.8–14.1% pseudo-R², vs 6–8% for O*NET — a ~75% relative improvement. Ground metric swap improves R² by over 80%.
 - **Title:** Omitted (slide title covers it)
 - **Font:** DejaVu Sans (Calibri not available on this system)
