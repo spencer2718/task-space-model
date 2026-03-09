@@ -7,7 +7,7 @@ import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 import matplotlib.pyplot as plt
-from figures.style import setup, annotate_bracket, bar_label
+from figures.style import setup, bar_label
 from figures.style import PRIMARY, SECONDARY, DARK, MID
 
 font = setup()
@@ -19,17 +19,15 @@ specs = [
     ("O*NET + Cosine",           8.05),
     ("O*NET + Euclidean",        6.06),
 ]
-ground_identity  = 7.52
-ground_embedding = 13.76
 
 # Reverse so best is at top (barh draws bottom-up)
 labels = [s[0] for s in specs][::-1]
 values = [s[1] for s in specs][::-1]
 colors = [SECONDARY, SECONDARY, PRIMARY, PRIMARY]
 
-# Bar positions — extra spacing between top two bars for ghost bar annotation
+# Bar positions — even spacing
 bar_height = 0.55
-positions = [0, 1.2, 2.4, 4.2]  # wider gap before top bar for bracket annotation
+positions = [0, 1.2, 2.4, 3.6]
 
 # === Figure ===
 fig, ax = plt.subplots(figsize=(9.0, 5.0))
@@ -46,30 +44,23 @@ for pos, label in zip(positions, labels):
 for pos, val in zip(positions, values):
     bar_label(ax, val, pos, val)
 
-# === Ghost bar for identity ground metric (on Wasserstein bar) ===
-wass_y = positions[-2]  # Wasserstein bar is second from top after reversal
-ax.barh(wass_y, ground_identity, height=bar_height, color='none',
-        edgecolor=MID, linewidth=1.2, linestyle='--', zorder=1)
+# === Vertical bracket: O*NET Cosine → Embedding Centroid ===
+y_bottom = positions[1]  # O*NET Cosine
+y_top = positions[3]     # Embedding Centroid
+x_bracket = 16.5
 
-# Identity label — below the ghost bar with white background pad
-label_y = wass_y - (bar_height / 2) - 0.15
-ax.annotate(f'{ground_identity:.1f}%  (identity ground metric)',
-            xy=(ground_identity, label_y), xycoords='data',
-            xytext=(6, 0), textcoords='offset points',
-            ha='left', va='center', fontsize=11.5, color=MID, style='italic',
-            bbox=dict(facecolor='white', edgecolor='none', pad=2),
-            zorder=4)
-
-# Bracket annotation using style helper
-pct_improvement = (ground_embedding - ground_identity) / ground_identity * 100
-annotate_bracket(ax, y=wass_y + 0.38, x_left=ground_identity + 0.15,
-                 x_right=ground_embedding + 0.15,
-                 label=f'Same Wasserstein, different\nground metric  →  +{pct_improvement:.0f}%',
-                 offset_y=10, fontsize=11.5)
+ax.plot([x_bracket, x_bracket], [y_bottom, y_top], color=MID, lw=1.0, zorder=3)
+ax.plot([x_bracket - 0.3, x_bracket], [y_bottom, y_bottom], color=MID, lw=1.0, zorder=3)
+ax.plot([x_bracket - 0.3, x_bracket], [y_top, y_top], color=MID, lw=1.0, zorder=3)
+ax.annotate('Embedding\nrepresentation\n→ ~75%',
+            xy=(x_bracket, (y_bottom + y_top) / 2), xycoords='data',
+            xytext=(8, 0), textcoords='offset points',
+            ha='left', va='center', fontsize=11.5, color=MID,
+            linespacing=1.3)
 
 # === Axes ===
-ax.set_xlim(0, 18.5)
-ax.set_ylim(-0.6, 5.6)
+ax.set_xlim(0, 22)
+ax.set_ylim(-0.6, 4.8)
 ax.set_xticks([0, 5, 10, 15])
 ax.set_xticklabels(['0%', '5%', '10%', '15%'], fontsize=12)
 ax.set_yticks([])

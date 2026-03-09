@@ -24,8 +24,8 @@
 | Consistency pass | v0.7.7.5 | 10 adversarial audit fixes | ✅ Complete |
 | Software hygiene | v0.7.7.6 | Cache fixes, stale artifacts, tests, reproducibility | ✅ Complete |
 | Origin-exclusion robustness | v0.7.7.7 | Test + disclosure | ✅ Complete |
-| Figure update | v0.7.8.0 | Regenerate fig2 with corrected values | ✅ Complete |
-| Overleaf sync | v0.7.8.1 | Carry corrections to publishable draft | Pending |
+| Figure corrections | v0.7.8.0–v0.7.8.1 | Update fig2 with corrected values and simplified annotation | ✅ Complete |
+| Overleaf sync | v0.7.9.0 | Carry all corrections to publishable draft | Pending |
 
 ---
 
