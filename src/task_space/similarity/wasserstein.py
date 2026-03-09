@@ -5,8 +5,8 @@ This module computes exact Earth Mover's Distance (W₁) between occupation
 measures using the POT library. Key optimization: exploit 99% sparsity by
 extracting ~40×40 subproblems from the 2087×2087 ground metric.
 
-Novel contribution: No prior economics literature applies Wasserstein to
-occupation-task distributions. See paper Section 3.6.
+Wasserstein provides theoretical grounding as minimum task transformation cost.
+Centroid averaging is the primary specification (marginally outperforms); see paper Section 3.
 """
 
 from dataclasses import dataclass, field

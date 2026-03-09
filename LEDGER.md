@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.8.6
+**Current Version:** 0.7.8.7
 **Last Updated:** 2026-03-09
 **Paper Draft:** `paper/main.tex`
 
@@ -39,7 +39,7 @@ These are inviolable. Agents must not contradict or re-litigate.
 | HC3 | Kernel bandwidth σ = 0.223 (occupation) | Calibrated to NN median | v0.6.1 |
 | HC4 | Asymmetry is HETEROGENEOUS | Ratio varies 0.06–2.79 by sample | v0.6.8 |
 | HC5 | Do not row-normalize kernel matrices | Destroys signal with 2,087 activities | v0.6.1 |
-| HC6 | Institutional barriers are FRICTION not GATES | γ_inst/γ_sem = 0.015; credential-blocking unobserved | v0.7.0 |
+| HC6 | Institutional barriers are FRICTION not GATES | γ_inst/γ_sem = 0.019; credential-blocking unobserved | v0.7.0 |
 | HC7 | Technology acts on TASKS, not occupations | Occupations are task distributions; outcomes aggregate task-level effects | v0.7.0.1 |
 | HC8 | Oracle outputs are (Δρ, ΔL, ΔW) | Task distribution changes, employment changes, wage changes | v0.7.0.1 |
 
@@ -51,7 +51,7 @@ Critical metrics used throughout validation. Understanding these is essential fo
 
 | Metric | Definition | Interpretation |
 |--------|------------|----------------|
-| **Pseudo-R²** | McFadden's pseudo-R² = 1 - (LL_model / LL_null) | Proportion of choice uncertainty resolved by model. 14.5% is strong for discrete choice models; indicates substantial predictive power over random choice. |
+| **Pseudo-R²** | McFadden's pseudo-R² = 1 - (LL_model / LL_null) | Proportion of choice uncertainty resolved by model. 14.1% is strong for discrete choice models; indicates substantial predictive power over random choice. |
 | **MPR** | Mean Percentile Rank of realized destinations in geometry-ranked list | Average position of actual transitions in model's ranking. MPR = 0.74 means realized destinations rank in top 26% on average, confirming model captures feasibility structure. |
 | **ΔLL** | Log-likelihood improvement over baseline model | Absolute improvement in probabilistic fit. ΔLL = +23,119 means geometry substantially outperforms historical transition rates; larger values indicate better prediction. |
 | **Partial R²** | Incremental variance explained by adding distance to gravity model | Measures distance contribution beyond employment size effects. 3.5% for task distance is consistent with Cortes-Gallipoli (15%) given that task costs are one component of total switching costs. |
@@ -196,11 +196,11 @@ Deviations implemented without this protocol constitute MS2 (metric definition) 
 | Effect | Comparison | Result |
 |--------|------------|--------|
 | Embedding vs O*NET | cosine_embed (14.1%) vs cosine_onet (8.1%) | +74.9% relative |
-| Distributional vs Simple | wasserstein (14.5%) vs cosine_embed (14.1%) | +3% relative |
+| Distributional vs Simple | cosine_embed (14.1%) vs wasserstein (13.8%) | centroid marginally outperforms |
 
 **Implication:** The embedding choice is the primary driver. Wasserstein vs cosine-on-centroids is marginal for individual choice prediction (ρ = 0.95 correlation between distance matrices).
 
-**Ground metric validation (v0.7.3.3):** Wasserstein-embedding >> Wasserstein-identity (+96%), confirming semantic task similarity (knowing "operating forklift" ≈ "driving delivery vehicle") is economically meaningful.
+**Ground metric validation (v0.7.3.3):** Wasserstein-embedding >> Wasserstein-identity (+83%, corrected v0.7.7.0), confirming semantic task similarity (knowing "operating forklift" ≈ "driving delivery vehicle") is economically meaningful.
 
 **Gravity model divergence (v0.7.3.4):** Rankings shift between frameworks—Wasserstein best for aggregate flows, cosine_onet competitive. This reflects extensive vs intensive margin dynamics: individual workers use fine-grained similarity (embeddings excel), aggregate flows depend on connectivity structure (binary-like measures capture extensive margin).
 
@@ -214,11 +214,11 @@ Canonical phrasing for key claims. All documents (main.tex, README, CLAUDE.md) m
 
 | Claim ID | Canonical Text | Evidence Class | Status | Primary Location |
 |----------|----------------|----------------|--------|------------------|
-| T-E1 | Embedding-informed distance improves individual transition prediction vs O*NET-based measures (14.5% vs 6-8% pseudo-R²) | E1 | VALIDATED | main.tex §5.1 |
-| T-E1b | Embedding ground metric captures semantic task substitutability; identity ground metric underperforms by 96% | E1 | VALIDATED | main.tex §5.1 |
+| T-E1 | Embedding-informed distance improves individual transition prediction vs O*NET-based measures (13.8-14.1% vs 6-8% pseudo-R²) | E1 | VALIDATED | main.tex §5.1 |
+| T-E1b | Embedding ground metric captures semantic task substitutability; identity ground metric underperforms by 83% (corrected v0.7.7.0) | E1 | VALIDATED | main.tex §5.1 |
 | T-E1c | Wasserstein and cosine-on-centroids produce nearly identical rankings (ρ = 0.95); distributional treatment marginal | E1 | VALIDATED | main.tex §5.1 |
 | T-E3 | Pattern consistent with feasibility/skill-proximity mechanisms | E3 | CONSISTENT | main.tex §5.1 discussion |
-| I-E1 | Institutional distance provides incremental validity over task distance (t = 34.6) | E1 | VALIDATED | main.tex §5.2 |
+| I-E1 | Institutional distance provides incremental validity over task distance (t = 33.7) | E1 | VALIDATED | main.tex §5.2 |
 | I-E3 | Residual institutional effect interpreted as non-skill barriers | E3 | CONSISTENT | main.tex §5.2 discussion |
 | S-E1 | AIOE integration improves holdout LL (ΔLL = +23,119) | E1 | VALIDATED | main.tex §5.3 |
 | P-E2 | Per-origin pathway ranking: modest signal (ρ ≈ 0.13) | E2 | VALIDATED | main.tex §5.5 |
@@ -226,7 +226,7 @@ Canonical phrasing for key claims. All documents (main.tex, README, CLAUDE.md) m
 | D-E1 | Demand-only correlation with aggregate inflows: ρ = 0.80 | E1 | VALIDATED | main.tex §5.5 |
 | G-E1 | Gravity model: task distance explains 3.5% partial R², consistent with Cortes-Gallipoli benchmark | E1 | VALIDATED | main.tex §5.6 |
 | G-E3 | Individual choice and aggregate flow prediction respond differently to distance metrics; reflects intensive vs extensive margin dynamics | E3 | CONSISTENT | main.tex §5.6 |
-| COVID-E1 | Task-distance geometry is structurally stable across pre/post COVID (Δα < 1%, LR p = 0.76, n = 89,329) | E1 | VALIDATED | main.tex §5.7 |
+| COVID-E1 | Task-distance geometry is structurally stable across pre/post COVID (Δα < 1%, LR p = 0.72, n = 89,329) | E1 | VALIDATED | main.tex §5.7 |
 | COVID-E1b | Teleworkable occupations show elevated hiring standards post-COVID (δ₄ = -0.086, p = 0.01) | E1 | VALIDATED | main.tex §5.7 |
 | COVID-E3 | Elevated hiring standards consistent with applicant pool expansion enabling selectivity | E3 | CONSISTENT | main.tex §5.7 |
 
@@ -305,7 +305,7 @@ Head-to-head comparison of four distance metrics on conditional logit (n=89,329)
 
 **Key findings:**
 1. **Embedding choice dominates:** Both wasserstein and cosine_embed vastly outperform cosine_onet and euclidean_dwa
-2. **Distributional treatment marginal:** ΔPseudo-R² = 0.43 percentage points (14.51% vs 14.08%)
+2. **Distributional treatment marginal:** centroid 14.08% marginally outperforms corrected Wasserstein 13.76%
 3. **cosine_onet worst:** Confirms sparsity limitation (78% of pairs at max distance)
 4. **ρ(wasserstein, cosine_embed) = 0.95:** High distance correlation; different aggregation yields similar rankings
 
@@ -318,7 +318,9 @@ Tests whether embedding-based ground metric adds value over identity ground metr
 | Metric | α | γ | LL | Pseudo-R² |
 |--------|---|---|-----|-----------|
 | wasserstein_identity | 4.712 | 0.310 | -198,308 | 7.42% |
-| wasserstein_embedding | 8.953 | 0.134 | -183,116 | 14.51% |
+| wasserstein_embedding | 8.953* | 0.134* | -183,116* | 14.51%* |
+
+*Uncorrected. After diagonal correction: α=8.39, β=0.154, R²=13.76%. Centroid (14.08%) is primary.
 
 **Comparison:**
 - ΔLL = +15,192
@@ -333,7 +335,7 @@ Tests whether embedding-based ground metric adds value over identity ground metr
 
 **Attribution summary (v0.7.3.2 + v0.7.3.3):**
 1. Semantic embeddings (vs O*NET/identity): +74.9-83% improvement
-2. Distributional treatment (Wasserstein vs cosine centroid): +3% improvement
+2. Distributional treatment (Wasserstein vs cosine centroid): no improvement; centroid marginally outperforms
 
 The MPNet embedding is doing the work. The Wasserstein formulation provides marginal additional value.
 
@@ -341,8 +343,8 @@ The MPNet embedding is doing the work. The Wasserstein formulation provides marg
 
 | Component | Coefficient | t-stat | Interpretation |
 |-----------|-------------|--------|----------------|
-| d_sem (Wasserstein) | 8.936 | 206.5 | Skill transformation cost |
-| d_inst (Job Zone + Cert) | 0.142 | 34.6 | Non-skill barriers |
+| d_sem (Centroid) | 7.404 | 204.0 | Skill transformation cost |
+| d_inst (Job Zone + Cert) | 0.139 | 33.7 | Non-skill barriers |
 
 **Sample:** 89,329 verified CPS transitions (2015–2019, 2022–2024)
 
@@ -466,10 +468,10 @@ Bilateral flow gravity model: ln(Flow_ij + 1) = α + β₁·ln(Emp_i) + β₂·l
 
 | Period | α | SE(α) | γ | SE(γ) | Pseudo-R² |
 |--------|---|-------|---|-------|-----------|
-| Pre-COVID (2015-2019) | 8.953 | 0.053 | 0.142 | 0.005 | 14.6% |
-| Post-COVID (2022-2024) | 8.900 | 0.076 | 0.141 | 0.007 | 14.2% |
+| Pre-COVID (2015-2019) | 7.394 | 0.044 | 0.146 | 0.005 | 14.1% |
+| Post-COVID (2022-2024) | 7.358 | 0.063 | 0.144 | 0.007 | 13.9% |
 
-**Structural break test:** LR χ²(2) = 0.54, p = 0.76. Coefficient change < 1%.
+**Structural break test:** LR χ²(2) = 0.67, p = 0.72. Coefficient change < 1%.
 
 **Sample:** Pre-COVID n = 60,225; Post-COVID n = 29,104.
 
@@ -663,7 +665,7 @@ Deprecated approaches. Do not retry.
 
 ### Institutional Barrier Enhancement (Phase 0.9)
 
-- **Problem:** γ_inst/γ_sem = 0.015 underweights credentials
+- **Problem:** γ_inst/γ_sem = 0.019 underweights credentials
 - **Root cause:** Estimated from completed transitions; blocked attempts unobserved
 - **Alternative:** Exogenous credential classification (nursing, teaching, licensed trades)
 - **Data:** CPS licensing supplement (2015+)
@@ -759,6 +761,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.8.7 | 2026-03-09 | Heroic consistency pass — DISTANCE_GUIDE rewrite, LEDGER current-state sections updated, stale test archived, wasserstein.py docstring fixed. |
 | 0.7.8.6 | 2026-03-09 | README refresh — all numbers corrected, centroid as primary, version history trimmed. |
 | 0.7.8.5 | 2026-03-09 | Fix fig2 top tick zero-length bug: separate gap (0.4) from bracket_ext (1.5). |
 | 0.7.8.4 | 2026-03-09 | Precise improvement percentage (74.9%) across all files; fix fig2 bracket padding. |
