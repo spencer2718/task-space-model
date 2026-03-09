@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.8.8
+**Current Version:** 0.7.8.9
 **Last Updated:** 2026-03-09
 **Paper Draft:** `paper/main.tex`
 
@@ -763,6 +763,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.8.9 | 2026-03-09 | Remove unused experiments/, notebooks/, templates/ directories. |
 | 0.7.8.8 | 2026-03-09 | Final consistency pass — paper t-stat 33.8→33.7, β SE 0.004→0.0041, LEDGER 2×2 table asterisks, ground metric ratio annotations. |
 | 0.7.8.7 | 2026-03-09 | Heroic consistency pass — DISTANCE_GUIDE rewrite, LEDGER current-state sections updated, stale test archived, wasserstein.py docstring fixed. |
 | 0.7.8.6 | 2026-03-09 | README refresh — all numbers corrected, centroid as primary, version history trimmed. |
