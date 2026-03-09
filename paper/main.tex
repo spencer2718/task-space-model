@@ -1180,25 +1180,25 @@ Scope & Quantified & Supply-demand decomposition & Demand integration (Phase 0.8
 
 \textbf{Objective:} Test whether embedding-based task distance captures structural skill transferability or contingent revealed preferences. COVID provides a natural experiment: the largest labor market disruption in decades. If task-distance penalties reflect structural skill constraints, they should be invariant across this disruption; if they reflect contingent labor market conditions, they should shift.
 
-\textbf{Specification:} We split the CPS sample into pre-COVID (2015--2019, $n = 60{,}225$) and post-COVID (2022--2024, $n = 29{,}104$) periods, excluding 2020--2021 to avoid acute disruption effects. We estimate the same conditional logit specification used for $\mathcal{T}$ module validation (embedding Wasserstein) separately by period, then conduct a likelihood ratio test for structural break.\footnote{Pre/post estimates use the embedding-Wasserstein specification; centroid specification was not re-estimated by period. Aggregate stability conclusion ($\Delta\alpha < 1\%$) is robust to specification choice given $\rho = 0.95$ correlation between distance matrices.}
+\textbf{Specification:} We split the CPS sample into pre-COVID (2015--2019, $n = 60{,}225$) and post-COVID (2022--2024, $n = 29{,}104$) periods, excluding 2020--2021 to avoid acute disruption effects. We estimate the same conditional logit specification used for $\mathcal{T}$ module validation (embedding centroid) separately by period, then conduct a likelihood ratio test for structural break.
 
 
 \begin{table}[h!]
 \centering
-\caption{Pre/Post COVID Comparison (Wasserstein Specification)}
+\caption{Structural Stability: Pre/Post COVID Comparison (Centroid Specification)}
 \label{tab:covid-stability}
 \begin{tabular}{lcccccc}
 \toprule
 \textbf{Period} & $\alpha$ & \textbf{SE} & $\gamma$ & \textbf{SE} & \textbf{Pseudo-$R^2$} \\
 \midrule
-Pre-COVID (2015--2019) & 8.953 & 0.053 & 0.142 & 0.005 & 14.6\% \\
-Post-COVID (2022--2024) & 8.900 & 0.076 & 0.141 & 0.007 & 14.2\% \\
+Pre-COVID (2015--2019) & 7.394 & 0.044 & 0.146 & 0.005 & 14.1\% \\
+Post-COVID (2022--2024) & 7.358 & 0.063 & 0.144 & 0.007 & 13.9\% \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 
-\textbf{Aggregate stability:} The likelihood ratio test for structural break yields $\chi^2(2) = 0.54$, $p = 0.76$---we cannot reject parameter equality across periods. The task-distance penalty ($\alpha$) changes by less than 1\% (8.953 $\to$ 8.900). This invariance across the largest labor market disruption in decades supports the interpretation that embedding-based distance captures structural skill transferability constraints rather than contingent revealed preferences. This finding is consistent with \citet{PizzinelliShibata2023}'s evidence that aggregate occupational mismatch remained stable through COVID despite massive employment disruption.
+\textbf{Aggregate stability:} The likelihood ratio test for structural break yields $\chi^2(2) = 0.67$, $p = 0.72$---we cannot reject parameter equality across periods. The task-distance penalty ($\alpha$) changes by less than 1\% (7.394 $\to$ 7.358). This invariance across the largest labor market disruption in decades supports the interpretation that embedding-based distance captures structural skill transferability constraints rather than contingent revealed preferences. This finding is consistent with \citet{PizzinelliShibata2023}'s evidence that aggregate occupational mismatch remained stable through COVID despite massive employment disruption.
 
 
 \subsubsection{Heterogeneity by Teleworkability}
