@@ -5,11 +5,10 @@
 | fig1_ai_exposure.png | 2 — Motivation | 9.0″ × 6.5″ | Done |
 | fig2_pseudo_r2.png | 6 — Main Result | 9.0″ × 5.0″ | Done |
 | fig3_task_scatter.png | 3 — Tasks in Semantic Space | 6.0″ × 4.2″ | Done |
-| fig5_shared_dwas.png | 4 — Example (left panel) | 4.3″ × 4.2″ | NEW |
-| fig6_embedding_similarity.png | 4 — Example (right panel) | 4.5″ × 4.2″ | NEW |
-| fig7_sankey_pipeline.png | B1 — Data Pipeline (backup) | 9.0″ × 4.2″ | NEW |
-
-Note: fig4_scope.png (Slide 7) is TBD — not yet specified.
+| fig4_scope.png | 7 — What the Measure Captures | 4.0″ × 3.8″ | NEW |
+| fig5_shared_dwas.png | 4 — Example (left panel) | 4.3″ × 4.2″ | Done |
+| fig6_embedding_similarity.png | 4 — Example (right panel) | 4.5″ × 4.2″ | Done |
+| fig7_sankey_pipeline.png | B1 — Data Pipeline (backup) | 9.0″ × 4.2″ | Done |
 
 ## fig1 — AI Task Exposure
 - **Data:** Eloundou et al. (2023) γ = E1 + E2, averaged to 2-digit SOC
@@ -24,6 +23,10 @@ Note: fig4_scope.png (Slide 7) is TBD — not yet specified.
 - **Data:** MPNet embeddings of 30 selected DWAs, semantic anchor projection
 - **Source:** `fig3_selected_dwas.csv` (30 DWAs, 6 clusters)
 - **Takeaway:** Related tasks cluster in interpretable quadrants
+
+## fig4 — Supply-Demand Decomposition
+- **Data:** Hardcoded from `outputs/experiments/demand_probe_decomposition_v0703b.json`
+- **Takeaway:** Aggregate inflows are demand-dominated (ρ = 0.80); geometry captures per-origin pathway direction (ρ = 0.13)
 
 ## fig5 — Shared DWAs (Pipelayers vs Cement Masons)
 - **Data:** Hardcoded from O*NET Tasks-to-DWAs mapping

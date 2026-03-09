@@ -41,15 +41,19 @@ fig.subplots_adjust(hspace=0.45)
 
 # --- Top panel: O*NET Cosine ---
 ax1.hist(onet_vals, bins=60, color=SECONDARY, alpha=0.7, edgecolor='none')
+ax1.set_yscale('log')
+ax1.set_ylim(bottom=0.8)
 ax1.axvline(d_onet_pair, color=DARK, linestyle='--', linewidth=1.2, zorder=3)
+fig.canvas.draw()
 ax1.annotate(f'Pipe\u2013Cement: {d_onet_pair:.2f}',
-             xy=(d_onet_pair, ax1.get_ylim()[1] * 0.3),
-             xytext=(-60, 25), textcoords='offset points',
+             xy=(d_onet_pair, 100),
+             xytext=(-50, 35), textcoords='offset points',
              fontsize=8, color=DARK, fontweight='bold',
              arrowprops=dict(arrowstyle='->', color=DARK, lw=0.8))
 ax1.set_title("O*NET Cosine Distance", fontsize=10, color=DARK, pad=6)
-ax1.set_ylabel('Pairs', fontsize=9, color=MID)
+ax1.set_ylabel('Pairs', fontsize=8, color=MID)
 ax1.set_xlim(0, 1.05)
+ax1.tick_params(axis='both', labelsize=8)
 
 # --- Bottom panel: Embedding Centroid ---
 ax2.hist(embed_vals, bins=60, color=PRIMARY, alpha=0.7, edgecolor='none')
@@ -62,9 +66,10 @@ ax2.annotate(f'Pipe\u2013Cement: {d_embed_pair:.2f}',
              fontsize=8, color=DARK, fontweight='bold',
              arrowprops=dict(arrowstyle='->', color=DARK, lw=0.8))
 ax2.set_title("Embedding Centroid Distance", fontsize=10, color=PRIMARY, pad=6)
-ax2.set_ylabel('Pairs', fontsize=9, color=MID)
+ax2.set_ylabel('Pairs', fontsize=8, color=MID)
 ax2.set_xlabel('Distance', fontsize=9, color=MID)
 ax2.set_xlim(0, 1.05)
+ax2.tick_params(axis='both', labelsize=8)
 
 # Subtitle
 fig.text(0.5, -0.04, 'Embeddings detect similarity that O*NET misses',

@@ -38,7 +38,7 @@ cement_dwas = [
 # === Layout ===
 fig, ax = plt.subplots(figsize=(4.3, 4.2))
 ax.set_xlim(0, 10)
-ax.set_ylim(0, 10)
+ax.set_ylim(3.5, 10)
 ax.axis('off')
 
 # Node drawing helper
@@ -90,6 +90,12 @@ ax.text(5.0, 8.6, 'shared', ha='center', va='center',
         fontsize=7.5, color=MID, fontstyle='italic')
 ax.text(8.2, 8.6, 'unique', ha='center', va='center',
         fontsize=7.5, color=SECONDARY, fontstyle='italic')
+
+# Vertical ellipses indicating more DWAs exist
+ax.text(1.8, 8.25, '⋮', ha='center', va='center', fontsize=10, color=PRIMARY)
+ax.text(1.8, 4.35, '⋮', ha='center', va='center', fontsize=10, color=PRIMARY)
+ax.text(8.2, 8.25, '⋮', ha='center', va='center', fontsize=10, color=SECONDARY)
+ax.text(8.2, 4.35, '⋮', ha='center', va='center', fontsize=10, color=SECONDARY)
 
 # Subtitle
 ax.text(5.0, 3.8,
