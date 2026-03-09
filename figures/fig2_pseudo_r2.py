@@ -47,19 +47,21 @@ for pos, val in zip(positions, values):
 # === Vertical bracket: O*NET Cosine → Embedding Centroid ===
 y_bottom = positions[1]  # O*NET Cosine
 y_top = positions[3]     # Embedding Centroid
-x_bracket = 16.5
+# Anchor bracket to the longest bar tip + fixed offset
+x_bracket = max(values) + 2.5
+tick_len = 0.4  # horizontal tick length
 
 ax.plot([x_bracket, x_bracket], [y_bottom, y_top], color=MID, lw=1.0, zorder=3)
-ax.plot([x_bracket - 0.3, x_bracket], [y_bottom, y_bottom], color=MID, lw=1.0, zorder=3)
-ax.plot([x_bracket - 0.3, x_bracket], [y_top, y_top], color=MID, lw=1.0, zorder=3)
-ax.annotate('Embedding\nrepresentation\n→ ~75%',
+ax.plot([x_bracket - tick_len, x_bracket], [y_bottom, y_bottom], color=MID, lw=1.0, zorder=3)
+ax.plot([x_bracket - tick_len, x_bracket], [y_top, y_top], color=MID, lw=1.0, zorder=3)
+ax.annotate('Embedding\nrepresentation\n+ ~75%',
             xy=(x_bracket, (y_bottom + y_top) / 2), xycoords='data',
             xytext=(8, 0), textcoords='offset points',
             ha='left', va='center', fontsize=11.5, color=MID,
             linespacing=1.3)
 
 # === Axes ===
-ax.set_xlim(0, 22)
+ax.set_xlim(0, x_bracket + 6)
 ax.set_ylim(-0.6, 4.8)
 ax.set_xticks([0, 5, 10, 15])
 ax.set_xticklabels(['0%', '5%', '10%', '15%'], fontsize=12)
