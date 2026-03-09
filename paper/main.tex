@@ -105,7 +105,7 @@ The paper's contributions are framed as module validation checkpoints, with our 
 
 First, the $\mathcal{T}$ module is validated through a 2$\times$2 methodology comparison isolating embedding choice from aggregation method. Embedding-based distances (using sentence embeddings of Detailed Work Activities) achieve 13.8--14.1\% pseudo-$R^2$ for predicting individual transitions, compared to 6--8\% for traditional O*NET-based measures---a $\sim$70\% relative improvement. The mechanism is the embedding ground metric: semantic task similarity captures that ``operating forklift'' $\approx$ ``driving delivery vehicle'' even as distinct task labels. Wasserstein optimal transport provides theoretical grounding as minimum semantic transformation cost; simpler centroid-averaging methods approximate this geometry closely ($\rho = 0.95$ correlation in distance rankings) and marginally outperform Wasserstein after correcting for diagonal bias. The contribution is the 2$\times$2 factorial design isolating the embedding representation from the aggregation method, and the validation against a large US transition sample in a choice-model framework. The finding that most of the predictive gain comes from the embedding representation, not the distributional treatment, has not been established in prior work.
 
-Second, the $\mathcal{I}$ module is validated: institutional distance (job zones plus certification requirements) adds predictive power conditional on embedding-based semantic distance ($\beta = 0.154$, $t = 32.8$). The separability assumption holds---skill barriers and credential barriers are distinct friction sources. Directional asymmetry (upward vs.\ downward barriers) is sample-dependent: ratio varies from 0.06 to 2.79 across specifications. Neither pure ``credential gate'' nor pure ``symmetric friction'' theories are universally supported; this heterogeneity constrains future $\mathcal{I}$ specifications.
+Second, the $\mathcal{I}$ module is validated: institutional distance (job zones plus certification requirements) adds predictive power conditional on embedding-based semantic distance ($\beta = 0.139$, $t = 33.8$). The separability assumption holds---skill barriers and credential barriers are distinct friction sources. Directional asymmetry (upward vs.\ downward barriers) is sample-dependent: ratio varies from 0.06 to 2.79 across specifications. Neither pure ``credential gate'' nor pure ``symmetric friction'' theories are universally supported; this heterogeneity constrains future $\mathcal{I}$ specifications.
 
 Third, $\mathcal{S}$ integration is validated: external AI Occupational Exposure scores \citep{FeltenRajSeamans2021} are orthogonal to embedding geometry ($r = 0.02$). Shock profiles identify which occupations contain exposed tasks; geometry identifies \emph{where} exposed workers can feasibly transition. The orthogonality confirms these are complementary constructs. Geometry substantially outperforms historical baselines in probabilistic scoring ($\Delta \text{log-likelihood} = +23{,}119$).
 
@@ -368,7 +368,7 @@ By construction, $d_{\mathrm{inst}}^{\mathrm{up}}(i,j) + d_{\mathrm{inst}}^{\mat
 
 \begin{remark}[Barriers as friction versus gates]
 \label{rem:friction-vs-gates}
-A critical distinction: ``friction'' is continuous and affects all transitions proportionally; ``gates'' are discontinuous and block certain transitions entirely. Our institutional distance coefficient is estimated from completed transitions only. Workers blocked by credential requirements do not appear in our data. This selection bias means $\gamma_{\mathrm{inst}}$ estimates friction experienced by successful transitioners, not the prohibitive effect on blocked workers. The low ratio $\gamma_{\mathrm{inst}}/\gamma_{\mathrm{sem}} = 0.021$ (\cref{subsec:cps-mobility}) likely understates true credential effects.
+A critical distinction: ``friction'' is continuous and affects all transitions proportionally; ``gates'' are discontinuous and block certain transitions entirely. Our institutional distance coefficient is estimated from completed transitions only. Workers blocked by credential requirements do not appear in our data. This selection bias means $\gamma_{\mathrm{inst}}$ estimates friction experienced by successful transitioners, not the prohibitive effect on blocked workers. The low ratio $\gamma_{\mathrm{inst}}/\gamma_{\mathrm{sem}} = 0.019$ (\cref{subsec:cps-mobility}) likely understates true credential effects.
 \end{remark}
 
 
@@ -757,8 +757,8 @@ O*NET mapping & 89,329 & 84.2\% & Census $\to$ O*NET \\
 \toprule
 \textbf{Parameter} & \textbf{Coefficient} & \textbf{Std. Error} & \textbf{$t$-statistic} & \textbf{$p$-value} \\
 \midrule
-$\alpha$ (semantic) & 7.400 & 0.036 & 206.5 & $< 10^{-100}$ \\
-$\beta$ (institutional) & 0.154 & 0.004 & 34.6 & $< 10^{-100}$ \\
+$\alpha$ (semantic) & 7.404 & 0.036 & 204.0 & $< 10^{-100}$ \\
+$\beta$ (institutional) & 0.139 & 0.004 & 33.8 & $< 10^{-100}$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1048,7 +1048,7 @@ KL divergence & 0.854 & Moderate divergence \\
 \end{table}
 
 
-\textbf{Interpretation:} Predicted destinations are skill-compatible but credential-gated or capacity-constrained. The ratio $\gamma_{\mathrm{inst}}/\gamma_{\mathrm{sem}} = 0.021$ means credentials barely register---because blocked transitions are unobserved. This is selection bias inherent in revealed preference estimation (\cref{rem:friction-vs-gates}), not model failure.
+\textbf{Interpretation:} Predicted destinations are skill-compatible but credential-gated or capacity-constrained. The ratio $\gamma_{\mathrm{inst}}/\gamma_{\mathrm{sem}} = 0.019$ means credentials barely register---because blocked transitions are unobserved. This is selection bias inherent in revealed preference estimation (\cref{rem:friction-vs-gates}), not model failure.
 
 \textbf{Scope validated:} The geometry correctly captures supply-side feasibility constraints. Combined with the demand decomposition ($\rho \approx 0.80$ for aggregate flows), this quantifies the scope claim: the framework measures where workers \emph{can} go given skill architecture, not where they \emph{do} go given labor market conditions.
 
@@ -1180,25 +1180,25 @@ Scope & Quantified & Supply-demand decomposition & Demand integration (Phase 0.8
 
 \textbf{Objective:} Test whether embedding-based task distance captures structural skill transferability or contingent revealed preferences. COVID provides a natural experiment: the largest labor market disruption in decades. If task-distance penalties reflect structural skill constraints, they should be invariant across this disruption; if they reflect contingent labor market conditions, they should shift.
 
-\textbf{Specification:} We split the CPS sample into pre-COVID (2015--2019, $n = 60{,}225$) and post-COVID (2022--2024, $n = 29{,}104$) periods, excluding 2020--2021 to avoid acute disruption effects. We estimate the same conditional logit specification used for $\mathcal{T}$ module validation (embedding centroid) separately by period, then conduct a likelihood ratio test for structural break.
+\textbf{Specification:} We split the CPS sample into pre-COVID (2015--2019, $n = 60{,}225$) and post-COVID (2022--2024, $n = 29{,}104$) periods, excluding 2020--2021 to avoid acute disruption effects. We estimate the same conditional logit specification used for $\mathcal{T}$ module validation (embedding Wasserstein) separately by period, then conduct a likelihood ratio test for structural break.\footnote{Pre/post estimates use the embedding-Wasserstein specification; centroid specification was not re-estimated by period. Aggregate stability conclusion ($\Delta\alpha < 1\%$) is robust to specification choice given $\rho = 0.95$ correlation between distance matrices.}
 
 
 \begin{table}[h!]
 \centering
-\caption{Structural Stability: Pre/Post COVID Comparison (Centroid Specification)}
+\caption{Pre/Post COVID Comparison (Wasserstein Specification)}
 \label{tab:covid-stability}
 \begin{tabular}{lcccccc}
 \toprule
 \textbf{Period} & $\alpha$ & \textbf{SE} & $\gamma$ & \textbf{SE} & \textbf{Pseudo-$R^2$} \\
 \midrule
-Pre-COVID (2015--2019) & 7.40 & 0.044 & 0.162 & 0.005 & 14.1\% \\
-Post-COVID (2022--2024) & 7.35 & 0.064 & 0.161 & 0.007 & 13.9\% \\
+Pre-COVID (2015--2019) & 8.953 & 0.053 & 0.142 & 0.005 & 14.6\% \\
+Post-COVID (2022--2024) & 8.900 & 0.076 & 0.141 & 0.007 & 14.2\% \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 
-\textbf{Aggregate stability:} The likelihood ratio test for structural break yields $\chi^2(2) = 0.54$, $p = 0.76$---we cannot reject parameter equality across periods. The task-distance penalty ($\alpha$) changes by less than 1\% (7.40 $\to$ 7.35). This invariance across the largest labor market disruption in decades supports the interpretation that embedding-based distance captures structural skill transferability constraints rather than contingent revealed preferences. This finding is consistent with \citet{PizzinelliShibata2023}'s evidence that aggregate occupational mismatch remained stable through COVID despite massive employment disruption.
+\textbf{Aggregate stability:} The likelihood ratio test for structural break yields $\chi^2(2) = 0.54$, $p = 0.76$---we cannot reject parameter equality across periods. The task-distance penalty ($\alpha$) changes by less than 1\% (8.953 $\to$ 8.900). This invariance across the largest labor market disruption in decades supports the interpretation that embedding-based distance captures structural skill transferability constraints rather than contingent revealed preferences. This finding is consistent with \citet{PizzinelliShibata2023}'s evidence that aggregate occupational mismatch remained stable through COVID despite massive employment disruption.
 
 
 \subsubsection{Heterogeneity by Teleworkability}
@@ -1692,7 +1692,7 @@ The framework demonstrates capability for substantive analysis: a pre/post COVID
 \textbf{Informative constraints from this phase:}
 \begin{itemize}
     \item Embedding ground metric matters: semantic task substitutability drives $\sim$70\% improvement over O*NET baselines
-    \item Distributional treatment (Wasserstein) provides theoretical grounding but marginal empirical advantage (+3\%); centroid approximates well ($\rho = 0.95$)
+    \item Distributional treatment (Wasserstein) provides theoretical grounding but no empirical advantage; centroid marginally outperforms ($\rho = 0.95$)
     \item Directional barrier patterns are sample-dependent
     \item Semantic geometry captures mobility friction, not automation susceptibility ($r = -0.05$ with RTI)
     \item Aggregate wage data insufficient for structural $\mathcal{M}$ estimation

@@ -56,7 +56,7 @@ Each document has ONE purpose. No redundancy.
 
 ## Critical Implementation Rules
 
-- **Wasserstein is primary** — Not kernel overlap (HC1). Primary for theoretical grounding; cosine_embed is acceptable approximation (ρ = 0.95)
+- **Centroid is primary specification** — Cosine distance on embedding centroids marginally outperforms Wasserstein after diagonal correction; Wasserstein provides theoretical grounding (HC1). Both use MPNet embeddings (ρ = 0.95 correlation).
 - **Embedding ground metric is the mechanism** — Semantic task similarity, not distributional treatment, drives improvement over O*NET methods
 - **RTI requires 16-element composite** — Single element yields R² ≈ 0 (HC2)
 - **Do not row-normalize kernels** — Destroys signal (HC5)
@@ -67,17 +67,24 @@ Each document has ONE purpose. No redundancy.
 
 ---
 
-## Contribution Framing (v0.7.4.0)
+## Contribution Framing (v0.7.7.0)
 
-The core contribution is **semantic task substitutability** as the basis for occupation distance:
+The core contribution is **the 2×2 factorial design** isolating embedding representation from aggregation method, validated on 89,329 CPS transitions in a choice-model framework:
 
-1. **Embedding choice drives improvement** (+75-96% over identity ground metric)
-2. **Distributional treatment is secondary** (+3% from Wasserstein vs centroid)
+1. **Embedding representation drives improvement** (~70% over O*NET baselines; +83% over identity ground metric)
+2. **Distributional treatment adds nothing** — centroid marginally outperforms Wasserstein after diagonal correction
 3. **Mechanism**: Embeddings capture that "operating forklift" ≈ "driving delivery vehicle"
 
-This reframes from "Wasserstein geometry" to "embedding-informed distance." See Attribution Audit in LEDGER.md.
+Three key precedents to position against:
+- Dawson et al. (2021): skill co-occurrence from job ads → transition prediction (Australia, XGBoost, 76% binary accuracy)
+- Frank et al. (2024): O*NET structured skills → CPS transition rates (36K transitions, OLS R²)
+- O*NET (2024): SBERT on task statements for relatedness (not transition-validated)
+
+Our delta: the factorial decomposition + choice-model framework + scale (89K US transitions).
 
 **Structural stability (v0.7.5.0):** COVID comparison validates that task-distance geometry is structural, not contingent. Aggregate coefficients invariant (Δα < 1%); teleworkable occupations show elevated hiring standards post-COVID (δ₄ < 0), consistent with applicant pool expansion enabling selectivity.
+
+**Diagonal correction (v0.7.7.0):** Embedding Wasserstein matrix had 170/447 nonzero diagonal entries from SOC→Census aggregation. Correcting this reduces pseudo-R² from 14.5% to 13.8% and flips the ranking: centroid (14.1%) now outperforms Wasserstein (13.8%). All published numbers use corrected values.
 
 ---
 
@@ -171,7 +178,7 @@ Experiments run at **x.y.0.z** increments (e.g., 0.7.0.2, 0.7.0.3). After experi
 
 ## Version
 
-**0.7.5.1** — Codebase polish for external review
+**0.7.7.2** — Paper corrections: diagonal audit, prior art citations, data integrity fixes
 
 ---
 

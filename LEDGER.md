@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.7.0
+**Current Version:** 0.7.7.2
 **Last Updated:** 2026-03-09
 **Paper Draft:** `paper/main.tex`
 
@@ -758,6 +758,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.7.2 | 2026-03-09 | Fix Frank et al. citation (full author list + DOI), revert fabricated COVID table to actual estimates, fix γ/α ratios and t-statistics, update CLAUDE.md and SPEC.md. |
 | 0.7.7.0 | 2026-03-09 | Diagonal correction audit: zeroing Wasserstein diagonal costs −0.79pp (14.54%→13.76%); corrected metric still +83% over identity. Not a material bias. |
 | 0.7.6.0 | 2026-03-09 | Publication figures for embeddings_v8.pdf |
 | 0.7.5.1 | 2025-01-15 | Codebase polish for external review. HC1 default fix; metrics glossary; distance guide; code documentation. |
