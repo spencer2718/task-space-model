@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.7.4
+**Current Version:** 0.7.7.5
 **Last Updated:** 2026-03-09
 **Paper Draft:** `paper/main.tex`
 
@@ -34,7 +34,7 @@ These are inviolable. Agents must not contradict or re-litigate.
 
 | ID | Constraint | Rationale | Locked |
 |----|------------|-----------|--------|
-| HC1 | Wasserstein is PRIMARY geometry | ΔLL = +9,576 over kernel | v0.6.7 |
+| HC1 | Centroid is PRIMARY specification; Wasserstein provides theoretical grounding | Centroid marginally outperforms Wasserstein (ρ = 0.95); diagonal correction v0.7.7.0 | v0.7.7.5 |
 | HC2 | RTI requires 16-element AA composite | Single O*NET element yields R² ≈ 0 | v0.6.5 |
 | HC3 | Kernel bandwidth σ = 0.223 (occupation) | Calibrated to NN median | v0.6.1 |
 | HC4 | Asymmetry is HETEROGENEOUS | Ratio varies 0.06–2.79 by sample | v0.6.8 |
@@ -759,6 +759,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.7.5 | 2026-03-09 | Comprehensive consistency pass — 10 issues from adversarial audit (t-stats, p-values, table vintages, holdout wording, improvement percentages, HC1, naming, scale notes). |
 | 0.7.7.4 | 2026-03-09 | Add in-sample pseudo-R² and crosswalk aggregation disclosures to limitations. Fix stale γ values in §6.1. |
 | 0.7.7.3 | 2026-03-09 | Re-estimate pre/post COVID with centroid specification. α change −0.49%, structural break p = 0.72. Table 9 now uses centroid values. |
 | 0.7.7.2 | 2026-03-09 | Fix Frank et al. citation (full author list + DOI), revert fabricated COVID table to actual estimates, fix γ/α ratios and t-statistics, update CLAUDE.md and SPEC.md. |

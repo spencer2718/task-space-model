@@ -18,8 +18,10 @@
 |-------|---------|-------|--------|
 | Diagonal audit | v0.7.7.0 | Quantify bias, corrected numbers | ✅ Complete |
 | Paper numbers + citations | v0.7.7.1 | Working paper updates | ✅ Complete (with issues) |
-| Data integrity fixes | v0.7.7.2 | Fix fabricated table, refs, ratios | 🔄 In progress |
-| Centroid COVID re-estimation | v0.7.7.3 | Re-run pre/post COVID with centroid spec | Pending |
+| Data integrity fixes | v0.7.7.2 | Fix fabricated table, refs, ratios | ✅ Complete |
+| Centroid COVID re-estimation | v0.7.7.3 | Re-run pre/post COVID with centroid spec | ✅ Complete |
+| Disclosures | v0.7.7.4 | In-sample and crosswalk aggregation caveats | ✅ Complete |
+| Consistency pass | v0.7.7.5 | 10 adversarial audit fixes | ✅ Complete |
 | Overleaf sync | v0.7.8.0 | Carry corrections to publishable draft | Pending |
 
 ---
