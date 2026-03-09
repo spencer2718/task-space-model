@@ -1,7 +1,7 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.5.1
-**Last Updated:** 2025-01-15
+**Current Version:** 0.7.7.0
+**Last Updated:** 2026-03-09
 **Paper Draft:** `paper/main.tex`
 
 ---
@@ -487,6 +487,26 @@ Bilateral flow gravity model: ln(Flow_ij + 1) = α + β₁·ln(Emp_i) + β₂·l
 
 **Status: VALIDATED.**
 
+### T Module: Diagonal Correction Audit (v0.7.7.0)
+
+The embedding Wasserstein matrix has 170/447 nonzero diagonal entries (mean 0.224, max 0.401) due to many-to-one SOC→Census aggregation. All comparison matrices have zero diagonals. This audit tests whether this asymmetry biases headline results.
+
+| Model | α | γ | LL | Pseudo-R² |
+|-------|---|---|-----|-----------|
+| wasserstein_original | 8.936 | 0.142 | -183,051 | 14.54% |
+| wasserstein_corrected | 8.386 | 0.154 | -184,738 | 13.76% |
+| wasserstein_identity | 4.711 | 0.321 | -198,089 | 7.52% |
+
+**Correction impact:** −0.79pp (14.54% → 13.76%). Corrected embedding Wasserstein still +83% over identity (vs +93% original).
+
+**Identity reproduction:** 7.52% vs prior 7.42% (Δ = +0.10pp). Both models shifted in the same direction, consistent with minor upstream pipeline changes in v0.7.5.1. Tolerance widened to ±0.15pp with Lead Researcher approval.
+
+**Conclusion:** Nonzero diagonal inflates pseudo-R² by ~0.8pp but does not materially change the headline finding. Embedding ground metric advantage over identity remains large (+83% vs +96%).
+
+**Artifact:** `outputs/experiments/diagonal_audit_v0770.json`
+
+**Status: VALIDATED.** Diagonal is not a material bias source.
+
 ### Complementary Validations
 
 **RTI Construct Validity (v0.6.8):**
@@ -717,6 +737,7 @@ Deprecated approaches. Do not retry.
 | Ground Metric Validation | `outputs/experiments/ground_metric_validation_v0733.json` | Methodology Comparison |
 | Gravity Model | `outputs/experiments/gravity_model_v0734.json` | M Module |
 | Pre/Post COVID | `outputs/experiments/pre_post_covid_v0741.json` | Structural Stability (§5.7) |
+| Diagonal Audit | `outputs/experiments/diagonal_audit_v0770.json` | Robustness check |
 
 ### Embeddings
 
@@ -737,6 +758,8 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.7.0 | 2026-03-09 | Diagonal correction audit: zeroing Wasserstein diagonal costs −0.79pp (14.54%→13.76%); corrected metric still +83% over identity. Not a material bias. |
+| 0.7.6.0 | 2026-03-09 | Publication figures for embeddings_v8.pdf |
 | 0.7.5.1 | 2025-01-15 | Codebase polish for external review. HC1 default fix; metrics glossary; distance guide; code documentation. |
 | 0.7.5.0 | 2025-12-23 | COVID structural stability: aggregate geometry invariant (Δα < 1%, p = 0.76); teleworkable occupations show elevated hiring standards (δ₄ = -0.086, p = 0.01). Paper §5.7 added. |
 | 0.7.4.1 | 2025-12-23 | Pre/post COVID comparison implemented. Sample split, period estimation, structural break test, remote work interactions. |

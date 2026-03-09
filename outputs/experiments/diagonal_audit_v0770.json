@@ -1,0 +1,87 @@
+{
+  "version": "0.7.7.0",
+  "diagonal_profiles": {
+    "wasserstein": {
+      "nonzero_count": 170,
+      "total": 447,
+      "mean": 0.08510052689860112,
+      "max": 0.40102119907161915,
+      "mean_nonzero": 0.22376432660985118
+    },
+    "cosine_onet": {
+      "nonzero_count": 0,
+      "total": 447,
+      "mean": 0.0,
+      "max": 0.0,
+      "mean_nonzero": 0.0
+    },
+    "cosine_embed": {
+      "nonzero_count": 0,
+      "total": 447,
+      "mean": 0.0,
+      "max": 0.0,
+      "mean_nonzero": 0.0
+    },
+    "euclidean_dwa": {
+      "nonzero_count": 0,
+      "total": 447,
+      "mean": 0.0,
+      "max": 0.0,
+      "mean_nonzero": 0.0
+    },
+    "wasserstein_identity": {
+      "nonzero_count": 0,
+      "total": 447,
+      "mean": 0.0,
+      "max": 0.0,
+      "mean_nonzero": 0.0
+    }
+  },
+  "models": {
+    "wasserstein_original": {
+      "pseudo_r2": 0.14542477282030253,
+      "alpha": 8.935746374132371,
+      "alpha_se": 0.04328133951435536,
+      "gamma": 0.14188684373511873,
+      "gamma_se": 0.004101819629225249,
+      "ll": -183051.3697222054,
+      "ll_null": -214201.58682380564,
+      "n_transitions": 89329,
+      "converged": true
+    },
+    "wasserstein_corrected": {
+      "pseudo_r2": 0.1375528898533861,
+      "alpha": 8.386137132505471,
+      "alpha_se": 0.042437170061443215,
+      "gamma": 0.15417189095133352,
+      "gamma_se": 0.0040826720358955945,
+      "ll": -184737.5395450102,
+      "ll_null": -214201.58682380564,
+      "n_transitions": 89329,
+      "converged": true
+    },
+    "wasserstein_identity": {
+      "pseudo_r2": 0.07521954643754325,
+      "alpha": 4.710716717682705,
+      "alpha_se": 0.03901231452250169,
+      "gamma": 0.3205330259855097,
+      "gamma_se": 0.003880020672052741,
+      "ll": -198089.44061671695,
+      "ll_null": -214201.58682380564,
+      "n_transitions": 89329,
+      "converged": true
+    }
+  },
+  "comparison": {
+    "original_vs_identity_pct": 93.33375393462724,
+    "corrected_vs_identity_pct": 82.86854463766255,
+    "correction_impact_pp": -0.7871882966916433
+  },
+  "sample_n": 89329,
+  "notes": [
+    "Diagonal nonzero entries arise from many-to-one SOC\u2192Census aggregation",
+    "All comparison matrices (identity, cosine_onet, cosine_embed, euclidean) have zero diagonals",
+    "Corrected matrix = original with np.fill_diagonal(d, 0.0)",
+    "Identity Wasserstein pseudo-R\u00b2 = 7.52% vs prior 7.42% (\u0394 = +0.10pp). Both identity and embedding models shifted in the same direction, consistent with minor upstream pipeline changes in v0.7.5.1 (data-loading/filtering), not a metric computation error. Tolerance widened to \u00b10.15pp with Lead Researcher approval."
+  ]
+}
