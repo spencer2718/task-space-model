@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.8.7
+**Current Version:** 0.7.8.8
 **Last Updated:** 2026-03-09
 **Paper Draft:** `paper/main.tex`
 
@@ -291,10 +291,12 @@ Head-to-head comparison of four distance metrics on conditional logit (n=89,329)
 
 | Metric | α | γ | LL | Pseudo-R² |
 |--------|---|---|-----|-----------|
-| wasserstein | 8.953 | 0.134 | -183,116 | 14.51% |
+| wasserstein | 8.953* | 0.134* | -183,116* | 14.51%* |
 | cosine_embed | 7.404 | 0.139 | -184,043 | 14.08% |
 | cosine_onet | 4.548 | 0.300 | -196,961 | 8.05% |
 | euclidean_dwa | 9.764 | 0.365 | -201,230 | 6.06% |
+
+*Uncorrected. After diagonal correction (v0.7.7.0): α=8.39, R²=13.76%. Centroid (14.08%) is primary specification.
 
 **Gate evaluation (Wasserstein vs best alternative = cosine_embed):**
 - ΔLL = +927
@@ -325,13 +327,13 @@ Tests whether embedding-based ground metric adds value over identity ground metr
 **Comparison:**
 - ΔLL = +15,192
 - Δpseudo-R² = +7.09 percentage points
-- Pseudo-R² ratio = 1.96 (96% improvement)
+- Pseudo-R² ratio = 1.96 (96% improvement, uncorrected; corrected ratio = 13.76/7.52 = 1.83, i.e., +83%)
 
 **Gate: PASSED.** Embedding ground metric substantially improves over identity (criterion: ≥5% improvement).
 
 **Distance correlation:** r(identity, embedding) = 0.61, ρ = 0.36
 
-**Key finding:** Semantic task similarity (via MPNet embeddings) nearly doubles explanatory power compared to raw task overlap. Knowing that "operating forklift" ≈ "driving delivery vehicle" provides substantial value beyond just knowing "different tasks."
+**Key finding:** Semantic task similarity (via MPNet embeddings) improves explanatory power by over 80% compared to raw task overlap (corrected: 7.52% → 13.76%). Knowing that "operating forklift" ≈ "driving delivery vehicle" provides substantial value beyond just knowing "different tasks."
 
 **Attribution summary (v0.7.3.2 + v0.7.3.3):**
 1. Semantic embeddings (vs O*NET/identity): +74.9-83% improvement
@@ -761,6 +763,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.8.8 | 2026-03-09 | Final consistency pass — paper t-stat 33.8→33.7, β SE 0.004→0.0041, LEDGER 2×2 table asterisks, ground metric ratio annotations. |
 | 0.7.8.7 | 2026-03-09 | Heroic consistency pass — DISTANCE_GUIDE rewrite, LEDGER current-state sections updated, stale test archived, wasserstein.py docstring fixed. |
 | 0.7.8.6 | 2026-03-09 | README refresh — all numbers corrected, centroid as primary, version history trimmed. |
 | 0.7.8.5 | 2026-03-09 | Fix fig2 top tick zero-length bug: separate gap (0.4) from bracket_ext (1.5). |
