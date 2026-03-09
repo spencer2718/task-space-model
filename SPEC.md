@@ -22,6 +22,8 @@
 | Centroid COVID re-estimation | v0.7.7.3 | Re-run pre/post COVID with centroid spec | ✅ Complete |
 | Disclosures | v0.7.7.4 | In-sample and crosswalk aggregation caveats | ✅ Complete |
 | Consistency pass | v0.7.7.5 | 10 adversarial audit fixes | ✅ Complete |
+| Software hygiene | v0.7.7.6 | Cache fixes, stale artifacts, tests, reproducibility | ✅ Complete |
+| Origin-exclusion robustness | v0.7.7.7 | Test + disclosure | Pending |
 | Overleaf sync | v0.7.8.0 | Carry corrections to publishable draft | Pending |
 
 ---

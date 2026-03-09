@@ -52,7 +52,9 @@ def get_embeddings(
     """
     Get text embeddings, using cache if available.
 
-    This is THE canonical way to get embeddings. Do not compute elsewhere.
+    IMPORTANT: Cache is keyed on sorted text content. Embeddings are stored
+    in the caller's order, and the caller's order is verified on cache load
+    to prevent silent reordering bugs.
 
     Args:
         texts: List of texts to embed
@@ -60,20 +62,40 @@ def get_embeddings(
         force_recompute: Bypass cache
 
     Returns:
-        (n_texts, embedding_dim) array
+        (n_texts, embedding_dim) array in the same order as input texts
     """
     text_hash = _hash_texts(texts)
     cache_path = _get_cache_path("embeddings", f"{model}_{text_hash}")
 
     if not force_recompute and cache_path.exists():
-        data = np.load(cache_path)
-        return data['embeddings']
+        data = np.load(cache_path, allow_pickle=True)
+        cached_embeddings = data['embeddings']
+        # Verify the caller's text order matches what was cached
+        if 'text_order_hash' in data.files:
+            order_hash = hashlib.sha256('|'.join(texts).encode('utf-8')).hexdigest()[:16]
+            cached_order_hash = str(data['text_order_hash'])
+            if order_hash != cached_order_hash:
+                # Different order — recompute rather than return wrong ordering
+                import warnings
+                warnings.warn(
+                    f"Cached embeddings have different text order. Recomputing. "
+                    f"Expected {order_hash}, got {cached_order_hash}"
+                )
+                return get_embeddings(texts, model, force_recompute=True)
+        return cached_embeddings
 
     # Compute using internal function (testable)
     embeddings = _compute_embeddings_impl(texts, model)
 
-    # Cache
-    np.savez_compressed(cache_path, embeddings=embeddings, model=model, n_texts=len(texts))
+    # Cache with order verification hash
+    order_hash = hashlib.sha256('|'.join(texts).encode('utf-8')).hexdigest()[:16]
+    np.savez_compressed(
+        cache_path,
+        embeddings=embeddings,
+        model=model,
+        n_texts=len(texts),
+        text_order_hash=np.array(order_hash),
+    )
 
     return embeddings
 
@@ -94,9 +116,7 @@ def get_distance_matrix(
     Returns:
         (n, n) distance matrix
     """
-    # Hash based on embedding shape and first/last values (fast proxy)
-    emb_id = f"{embeddings.shape}_{embeddings[0,0]:.6f}_{embeddings[-1,-1]:.6f}"
-    emb_hash = hashlib.sha256(emb_id.encode()).hexdigest()[:16]
+    emb_hash = hashlib.sha256(embeddings.tobytes()).hexdigest()[:16]
     cache_path = _get_cache_path("distances", f"{metric}_{emb_hash}")
 
     if not force_recompute and cache_path.exists():

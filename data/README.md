@@ -123,6 +123,16 @@ data/
 
 ---
 
+## Distance Matrix Storage Note
+
+Semantic distance matrices (wasserstein, cosine_embed, etc.) are stored
+pre-aggregated at Census level (447×447). The institutional distance matrix
+is stored at O*NET level (923×923) and aggregated to Census level on-the-fly
+by `load_institutional_census()`. This means institutional distances depend on
+the current crosswalk file at runtime.
+
+---
+
 ## Consistency Note
 
 Sample sizes and specifications must match `paper/main.tex` (External Data Integration):
