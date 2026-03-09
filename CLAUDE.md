@@ -71,7 +71,7 @@ Each document has ONE purpose. No redundancy.
 
 The core contribution is **the 2×2 factorial design** isolating embedding representation from aggregation method, validated on 89,329 CPS transitions in a choice-model framework:
 
-1. **Embedding representation drives improvement** (~70% over O*NET baselines; +83% over identity ground metric)
+1. **Embedding representation drives improvement** (74.9% over O*NET baselines; +83% over identity ground metric)
 2. **Distributional treatment adds nothing** — centroid marginally outperforms Wasserstein after diagonal correction
 3. **Mechanism**: Embeddings capture that "operating forklift" ≈ "driving delivery vehicle"
 

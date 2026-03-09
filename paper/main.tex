@@ -103,7 +103,7 @@ A complete framework would map $(\mathcal{T}, \mathcal{I}, \mathcal{S}, \mathcal
 
 The paper's contributions are framed as module validation checkpoints, with our primary contribution being \emph{the 2$\times$2 decomposition and the choice-model framework} rather than conceptual innovation. Prior work has validated occupational similarity against transition data: \citet{frank2024network} show O*NET skill similarity predicts CPS transitions, and \citet{dawson2021skill} validate skill-based occupation distance against Australian survey transitions. Embedding approaches (e.g., occ2vec, JobBERT) typically validate against O*NET's own similarity measures or expert ratings---potentially circular targets. We validate against revealed worker behavior: 89,329 actual CPS transitions, using a factorial design that isolates which design choice---representation or aggregation---drives predictive improvement.
 
-First, the $\mathcal{T}$ module is validated through a 2$\times$2 methodology comparison isolating embedding choice from aggregation method. Embedding-based distances (using sentence embeddings of Detailed Work Activities) achieve 13.8--14.1\% pseudo-$R^2$ for predicting individual transitions, compared to 6--8\% for traditional O*NET-based measures---a $\sim$75\% relative improvement. The mechanism is the embedding ground metric: semantic task similarity captures that ``operating forklift'' $\approx$ ``driving delivery vehicle'' even as distinct task labels. Wasserstein optimal transport provides theoretical grounding as minimum semantic transformation cost; simpler centroid-averaging methods approximate this geometry closely ($\rho = 0.95$ correlation in distance rankings) and marginally outperform Wasserstein after correcting for diagonal bias. The contribution is the 2$\times$2 factorial design isolating the embedding representation from the aggregation method, and the validation against a large US transition sample in a choice-model framework. The finding that most of the predictive gain comes from the embedding representation, not the distributional treatment, has not been established in prior work.
+First, the $\mathcal{T}$ module is validated through a 2$\times$2 methodology comparison isolating embedding choice from aggregation method. Embedding-based distances (using sentence embeddings of Detailed Work Activities) achieve 13.8--14.1\% pseudo-$R^2$ for predicting individual transitions, compared to 6--8\% for traditional O*NET-based measures---a 74.9\% relative improvement. The mechanism is the embedding ground metric: semantic task similarity captures that ``operating forklift'' $\approx$ ``driving delivery vehicle'' even as distinct task labels. Wasserstein optimal transport provides theoretical grounding as minimum semantic transformation cost; simpler centroid-averaging methods approximate this geometry closely ($\rho = 0.95$ correlation in distance rankings) and marginally outperform Wasserstein after correcting for diagonal bias. The contribution is the 2$\times$2 factorial design isolating the embedding representation from the aggregation method, and the validation against a large US transition sample in a choice-model framework. The finding that most of the predictive gain comes from the embedding representation, not the distributional treatment, has not been established in prior work.
 
 Second, the $\mathcal{I}$ module is validated: institutional distance (job zones plus certification requirements) adds predictive power conditional on embedding-based semantic distance ($\beta = 0.139$, $t = 33.8$). The separability assumption holds---skill barriers and credential barriers are distinct friction sources. Directional asymmetry (upward vs.\ downward barriers) is sample-dependent: ratio varies from 0.06 to 2.79 across specifications. Neither pure ``credential gate'' nor pure ``symmetric friction'' theories are universally supported; this heterogeneity constrains future $\mathcal{I}$ specifications.
 
@@ -152,7 +152,7 @@ Three additional precedents merit discussion. \citet{dawson2021skill} build occu
 
 Relative to this literature, the present paper's contribution is the 2$\times$2 factorial design isolating the embedding representation from the aggregation method, and the validation against a large US transition sample in a choice-model framework. The finding that most of the predictive gain comes from the embedding representation, not the distributional treatment, has not been established in prior work.
 
-Our contribution is methodological: validating embedding-based distance against \emph{revealed} worker behavior (89,329 CPS transitions) rather than O*NET self-similarity. The 2$\times$2 design isolates what matters: the embedding ground metric, not the aggregation method, drives the $\sim$75\% improvement over traditional measures. This validation target---actual mobility patterns---addresses circularity concerns and quantifies practical predictive gains.
+Our contribution is methodological: validating embedding-based distance against \emph{revealed} worker behavior (89,329 CPS transitions) rather than O*NET self-similarity. The 2$\times$2 design isolates what matters: the embedding ground metric, not the aggregation method, drives the 74.9\% improvement over traditional measures. This validation target---actual mobility patterns---addresses circularity concerns and quantifies practical predictive gains.
 
 Optimal transport in economics provides theoretical foundation for principled distance metrics \citep{Galichon2016}. The Wasserstein ``earth mover's'' interpretation---minimum cost to transform one skill portfolio into another---is economically intuitive. We find that simpler centroid-based methods approximate Wasserstein geometry closely ($\rho = 0.95$) and marginally outperform after correcting for diagonal bias, suggesting that for mobility prediction, the embedding representation matters more than the distributional treatment.
 
@@ -306,7 +306,7 @@ and $e_a$ is the embedding vector for task $a$.
 \label{rem:embedding-vs-distributional}
 The 2$\times$2 design isolates these effects. Results (\cref{subsec:geometry-comparison}) show:
 \begin{itemize}
-    \item \textbf{Embedding effect:} $\sim$75\% improvement in pseudo-$R^2$ (embedding vs.\ O*NET methods)
+    \item \textbf{Embedding effect:} 74.9\% improvement in pseudo-$R^2$ (embedding vs.\ O*NET methods)
     \item \textbf{Distributional effect:} Wasserstein adds nothing beyond centroid; centroid marginally outperforms
 \end{itemize}
 The embedding ground metric---semantic task substitutability---is the mechanism. Wasserstein provides theoretical grounding (minimum transformation cost) but no additional empirical advantage after correcting for diagonal bias in the distance matrix; simpler centroid methods approximate the geometry closely ($\rho = 0.95$ correlation in distance rankings) and marginally outperform.
@@ -653,7 +653,7 @@ O*NET importance & Euclidean & 9.76 & 6.06\% & baseline \\
 
 \textbf{Results:} The 2$\times$2 comparison isolates two effects:
 \begin{itemize}
-    \item \textbf{Embedding effect:} Embedding-based methods (13.8--14.1\% pseudo-$R^2$) vs.\ O*NET-based methods (6.1--8.1\%) represents a $\sim$75\% relative improvement. This is the dominant effect.
+    \item \textbf{Embedding effect:} Embedding-based methods (13.8--14.1\% pseudo-$R^2$) vs.\ O*NET-based methods (6.1--8.1\%) represents a 74.9\% relative improvement. This is the dominant effect.
     \item \textbf{Distributional effect:} Wasserstein (13.8\%) vs.\ cosine-on-centroids (14.08\%)---Wasserstein adds nothing beyond centroid; centroid marginally outperforms. This strengthens the paper's core argument that the embedding representation, not the distributional treatment, drives the gain.
 \end{itemize}
 
@@ -1166,7 +1166,7 @@ Embedding-based semantic exposure is essentially orthogonal to Autor-Dorn RTI. T
 \toprule
 \textbf{Module} & \textbf{Status} & \textbf{Validated} & \textbf{Remaining} \\
 \midrule
-$\mathcal{T}$ & Operational & Embedding $\gg$ O*NET ($\sim$75\%) & Domain-specific embeddings \\
+$\mathcal{T}$ & Operational & Embedding $\gg$ O*NET (74.9\%) & Domain-specific embeddings \\
 $\mathcal{I}$ & Operational & Separable, significant & Licensing vs.\ job zones; gate modeling \\
 $\mathcal{S}$ & Validated & AIOE linkage; $\Delta$LL = +23,119 & Modality-specific profiles \\
 $\mathcal{M}$ & Preliminary & Costs calibrated externally & Endogenous estimation; GE extension \\
@@ -1235,7 +1235,7 @@ The modular architecture enables incremental extension. This section records com
 
 \textbf{Completed extensions:}
 \begin{itemize}
-    \item 2$\times$2 methodology comparison (\cref{subsec:geometry-comparison}): Embedding effect ($\sim$75\%) dominates distributional effect (centroid marginally outperforms Wasserstein)
+    \item 2$\times$2 methodology comparison (\cref{subsec:geometry-comparison}): Embedding effect (74.9\%) dominates distributional effect (centroid marginally outperforms Wasserstein)
     \item Ground metric validation (\cref{subsec:geometry-comparison}): Embedding ground metric +83\% over identity
     \item Asymmetric institutional distance (\cref{subsubsec:asymmetric-test}): Heterogeneous, sample-dependent asymmetry
     \item RTI construct validity (\cref{subsec:complementary}): Orthogonal to RTI ($r = -0.05$)
@@ -1422,7 +1422,7 @@ The research program follows pre-committed decision rules. Each path specifies a
 
 \textbf{Objective:} Isolate embedding contribution from distributional (Wasserstein) contribution.
 
-\textbf{Status: RESOLVED.} Embedding effect ($\sim$75\%) dominates distributional effect (centroid marginally outperforms Wasserstein). The embedding ground metric (semantic task substitutability) is the validated mechanism.
+\textbf{Status: RESOLVED.} Embedding effect (74.9\%) dominates distributional effect (centroid marginally outperforms Wasserstein). The embedding ground metric (semantic task substitutability) is the validated mechanism.
 
 \textbf{Pre-committed interpretation applied:}
 \begin{table}[h!]
@@ -1431,7 +1431,7 @@ The research program follows pre-committed decision rules. Each path specifies a
 \toprule
 \textbf{Outcome} & \textbf{Pre-committed Interpretation} & \textbf{Actual Result} \\
 \midrule
-Embedding $\gg$ O*NET & Semantic task substitutability matters & \textbf{Confirmed ($\sim$75\%)} \\
+Embedding $\gg$ O*NET & Semantic task substitutability matters & \textbf{Confirmed (74.9\%)} \\
 Wasserstein $\gg$ Centroid & Distributional treatment adds value & Not confirmed (centroid marginally outperforms) \\
 \bottomrule
 \end{tabular}
@@ -1445,7 +1445,7 @@ Wasserstein $\gg$ Centroid & Distributional treatment adds value & Not confirmed
 
 \textbf{Objective:} Test whether domain-specific embeddings (JobBERT-v2, trained on ESCO skills) outperform general-purpose embeddings (MPNet).
 
-\textbf{Status: DEFERRED.} With embedding-informed distance validated as primary geometry, domain-specific comparison is lower priority. The embedding effect ($\sim$75\%) is large; further embedding optimization unlikely to produce comparable improvement.
+\textbf{Status: DEFERRED.} With embedding-informed distance validated as primary geometry, domain-specific comparison is lower priority. The embedding effect (74.9\%) is large; further embedding optimization unlikely to produce comparable improvement.
 
 \textbf{Pre-committed interpretations:}
 \begin{table}[h!]
@@ -1677,7 +1677,7 @@ This paper proposes a modular task-space framework for analyzing labor market ad
 
 \textbf{Module status:}
 \begin{enumerate}
-    \item \textbf{$\mathcal{T}$ module (task representation):} Validated. Embedding-informed distance substantially outperforms O*NET-based measures ($\sim$75\% in pseudo-$R^2$). The mechanism is semantic task substitutability: sentence embeddings capture that similar tasks are interchangeable even when distinctly labeled. Wasserstein optimal transport provides theoretical grounding (minimum transformation cost) but does not outperform simpler centroid methods after diagonal bias correction; centroid-based distance is marginally preferred ($\rho = 0.95$ correlation with Wasserstein).
+    \item \textbf{$\mathcal{T}$ module (task representation):} Validated. Embedding-informed distance substantially outperforms O*NET-based measures (74.9\% in pseudo-$R^2$). The mechanism is semantic task substitutability: sentence embeddings capture that similar tasks are interchangeable even when distinctly labeled. Wasserstein optimal transport provides theoretical grounding (minimum transformation cost) but does not outperform simpler centroid methods after diagonal bias correction; centroid-based distance is marginally preferred ($\rho = 0.95$ correlation with Wasserstein).
     
     \item \textbf{$\mathcal{I}$ module (institutional structure):} Validated. Institutional distance is associated with mobility conditional on semantic distance ($t = 33.8$). Separability holds. Directional asymmetry is sample-dependent---an informative constraint.
     
@@ -1693,7 +1693,7 @@ The framework demonstrates capability for substantive analysis: a pre/post COVID
 
 \textbf{Informative constraints from this phase:}
 \begin{itemize}
-    \item Embedding ground metric matters: semantic task substitutability drives $\sim$75\% improvement over O*NET baselines
+    \item Embedding ground metric matters: semantic task substitutability drives 74.9\% improvement over O*NET baselines
     \item Distributional treatment (Wasserstein) provides theoretical grounding but no empirical advantage; centroid marginally outperforms ($\rho = 0.95$)
     \item Directional barrier patterns are sample-dependent
     \item Semantic geometry captures mobility friction, not automation susceptibility ($r = -0.05$ with RTI)

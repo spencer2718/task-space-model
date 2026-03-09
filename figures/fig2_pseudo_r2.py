@@ -90,7 +90,7 @@ for child in ax.get_children():
     except Exception:
         continue
 
-padding = 0.6  # data units of padding after text
+padding = 1.5  # data units of padding after text
 
 if 'top' in label_right_edges and 'bottom' in label_right_edges:
     # Vertical line x = rightmost label edge + padding
@@ -110,7 +110,7 @@ if 'top' in label_right_edges and 'bottom' in label_right_edges:
     # Bottom tick: from label edge+padding to vertical line (spans the whitespace)
     ax.plot([x_tick_bottom, x_bracket], [y_bottom, y_bottom], color=MID, lw=1.0, zorder=3)
 
-    ax.annotate('Embedding\nrepresentation\n+ ~75%',
+    ax.annotate('Embedding\nrepresentation\n+74.9%',
                 xy=(x_bracket, (y_bottom + y_top) / 2), xycoords='data',
                 xytext=(8, 0), textcoords='offset points',
                 ha='left', va='center', fontsize=11.5, color=MID,

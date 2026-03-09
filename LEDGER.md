@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.8.3
+**Current Version:** 0.7.8.4
 **Last Updated:** 2026-03-09
 **Paper Draft:** `paper/main.tex`
 
@@ -195,7 +195,7 @@ Deviations implemented without this protocol constitute MS2 (metric definition) 
 
 | Effect | Comparison | Result |
 |--------|------------|--------|
-| Embedding vs O*NET | cosine_embed (14.1%) vs cosine_onet (8.1%) | +75% relative |
+| Embedding vs O*NET | cosine_embed (14.1%) vs cosine_onet (8.1%) | +74.9% relative |
 | Distributional vs Simple | wasserstein (14.5%) vs cosine_embed (14.1%) | +3% relative |
 
 **Implication:** The embedding choice is the primary driver. Wasserstein vs cosine-on-centroids is marginal for individual choice prediction (ρ = 0.95 correlation between distance matrices).
@@ -332,7 +332,7 @@ Tests whether embedding-based ground metric adds value over identity ground metr
 **Key finding:** Semantic task similarity (via MPNet embeddings) nearly doubles explanatory power compared to raw task overlap. Knowing that "operating forklift" ≈ "driving delivery vehicle" provides substantial value beyond just knowing "different tasks."
 
 **Attribution summary (v0.7.3.2 + v0.7.3.3):**
-1. Semantic embeddings (vs O*NET/identity): +75-96% improvement
+1. Semantic embeddings (vs O*NET/identity): +74.9-83% improvement
 2. Distributional treatment (Wasserstein vs cosine centroid): +3% improvement
 
 The MPNet embedding is doing the work. The Wasserstein formulation provides marginal additional value.
@@ -759,9 +759,10 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.8.4 | 2026-03-09 | Precise improvement percentage (74.9%) across all files; fix fig2 bracket padding. |
 | 0.7.8.3 | 2026-03-09 | Programmatic fig2 bracket alignment from text extents — no hardcoded positions. |
 | 0.7.8.2 | 2026-03-09 | Fix fig2 bracket alignment (dynamic x position) and label text (→ to +). |
-| 0.7.8.1 | 2026-03-09 | Redesign fig2 annotation: replace ground metric ghost bar with embedding representation bracket (~75%). |
+| 0.7.8.1 | 2026-03-09 | Redesign fig2 annotation: replace ground metric ghost bar with embedding representation bracket (74.9%). |
 | 0.7.8.0 | 2026-03-09 | Regenerate fig2 with corrected values (13.76%/14.08%), centroid-first ordering, +83% bracket. |
 | 0.7.7.7 | 2026-03-09 | Origin-exclusion robustness test: Δα = +4.2%, not material. Disclosure added to paper. |
 | 0.7.7.6 | 2026-03-09 | Software hygiene — cache ordering guard, hash fix, stale artifact cleanup, canonical tests updated, reproduce_tables.py added. |
