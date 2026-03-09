@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.8.2
+**Current Version:** 0.7.8.3
 **Last Updated:** 2026-03-09
 **Paper Draft:** `paper/main.tex`
 
@@ -759,6 +759,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.8.3 | 2026-03-09 | Programmatic fig2 bracket alignment from text extents — no hardcoded positions. |
 | 0.7.8.2 | 2026-03-09 | Fix fig2 bracket alignment (dynamic x position) and label text (→ to +). |
 | 0.7.8.1 | 2026-03-09 | Redesign fig2 annotation: replace ground metric ghost bar with embedding representation bracket (~75%). |
 | 0.7.8.0 | 2026-03-09 | Regenerate fig2 with corrected values (13.76%/14.08%), centroid-first ordering, +83% bracket. |

@@ -44,24 +44,8 @@ for pos, label in zip(positions, labels):
 for pos, val in zip(positions, values):
     bar_label(ax, val, pos, val)
 
-# === Vertical bracket: O*NET Cosine → Embedding Centroid ===
-y_bottom = positions[1]  # O*NET Cosine
-y_top = positions[3]     # Embedding Centroid
-# Anchor bracket to the longest bar tip + fixed offset
-x_bracket = max(values) + 2.5
-tick_len = 0.4  # horizontal tick length
-
-ax.plot([x_bracket, x_bracket], [y_bottom, y_top], color=MID, lw=1.0, zorder=3)
-ax.plot([x_bracket - tick_len, x_bracket], [y_bottom, y_bottom], color=MID, lw=1.0, zorder=3)
-ax.plot([x_bracket - tick_len, x_bracket], [y_top, y_top], color=MID, lw=1.0, zorder=3)
-ax.annotate('Embedding\nrepresentation\n+ ~75%',
-            xy=(x_bracket, (y_bottom + y_top) / 2), xycoords='data',
-            xytext=(8, 0), textcoords='offset points',
-            ha='left', va='center', fontsize=11.5, color=MID,
-            linespacing=1.3)
-
-# === Axes ===
-ax.set_xlim(0, x_bracket + 6)
+# === Axes (set before measuring text) ===
+ax.set_xlim(0, 22)
 ax.set_ylim(-0.6, 4.8)
 ax.set_xticks([0, 5, 10, 15])
 ax.set_xticklabels(['0%', '5%', '10%', '15%'], fontsize=12)
@@ -71,6 +55,72 @@ ax.tick_params(axis='y', length=0)
 ax.tick_params(axis='x', length=4)
 
 plt.tight_layout()
+
+# === Vertical bracket: O*NET Cosine → Embedding Centroid ===
+# Render first pass to measure value label text extents
+fig.canvas.draw()
+renderer = fig.canvas.get_renderer()
+
+# Find the value label annotations (the bold percentage texts)
+# They were created by bar_label() which calls ax.annotate()
+# Collect all annotations, match by position to identify the two we need
+bracket_bars = {
+    'top': positions[3],     # Embedding Centroid
+    'bottom': positions[1],  # O*NET Cosine
+}
+
+label_right_edges = {}
+import matplotlib.text as mtext
+for child in ax.get_children():
+    if not isinstance(child, mtext.Annotation):
+        continue
+    try:
+        text_str = child.get_text()
+        if '%' not in text_str:
+            continue
+        # Annotation's xy attribute holds the data-coordinate anchor
+        y_data = child.xy[1]
+        # Match to bracket bars by y position
+        for key, bar_y in bracket_bars.items():
+            if abs(y_data - bar_y) < 0.3:
+                # Get right edge of text in data coords
+                bbox = child.get_window_extent(renderer)
+                data_bbox = ax.transData.inverted().transform(bbox)
+                label_right_edges[key] = data_bbox[1, 0]  # right x in data coords
+    except Exception:
+        continue
+
+padding = 0.6  # data units of padding after text
+
+if 'top' in label_right_edges and 'bottom' in label_right_edges:
+    # Vertical line x = rightmost label edge + padding
+    x_bracket = max(label_right_edges.values()) + padding
+
+    y_bottom = bracket_bars['bottom']
+    y_top = bracket_bars['top']
+
+    # Horizontal ticks: each starts at its own label's right edge + padding
+    x_tick_top = label_right_edges['top'] + padding
+    x_tick_bottom = label_right_edges['bottom'] + padding
+
+    # Vertical line
+    ax.plot([x_bracket, x_bracket], [y_bottom, y_top], color=MID, lw=1.0, zorder=3)
+    # Top tick: from label edge+padding to vertical line
+    ax.plot([x_tick_top, x_bracket], [y_top, y_top], color=MID, lw=1.0, zorder=3)
+    # Bottom tick: from label edge+padding to vertical line (spans the whitespace)
+    ax.plot([x_tick_bottom, x_bracket], [y_bottom, y_bottom], color=MID, lw=1.0, zorder=3)
+
+    ax.annotate('Embedding\nrepresentation\n+ ~75%',
+                xy=(x_bracket, (y_bottom + y_top) / 2), xycoords='data',
+                xytext=(8, 0), textcoords='offset points',
+                ha='left', va='center', fontsize=11.5, color=MID,
+                linespacing=1.3)
+
+    # Adjust xlim to fit annotation
+    ax.set_xlim(0, x_bracket + 6.5)
+else:
+    print("WARNING: Could not find label text extents, bracket not drawn")
+
 plt.savefig('figures/fig2_pseudo_r2.png', dpi=300, bbox_inches='tight',
             facecolor='white', edgecolor='none')
 plt.close()
