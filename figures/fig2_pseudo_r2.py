@@ -90,25 +90,26 @@ for child in ax.get_children():
     except Exception:
         continue
 
-padding = 1.5  # data units of padding after text
+gap = 0.4       # small gap between label text and start of horizontal tick
+bracket_ext = 1.5  # how far the vertical line extends beyond the top label
 
 if 'top' in label_right_edges and 'bottom' in label_right_edges:
-    # Vertical line x = rightmost label edge + padding
-    x_bracket = max(label_right_edges.values()) + padding
-
     y_bottom = bracket_bars['bottom']
     y_top = bracket_bars['top']
 
-    # Horizontal ticks: each starts at its own label's right edge + padding
-    x_tick_top = label_right_edges['top'] + padding
-    x_tick_bottom = label_right_edges['bottom'] + padding
+    # Vertical line sits well past the rightmost (top) label
+    x_bracket = label_right_edges['top'] + gap + bracket_ext
+
+    # Each horizontal tick starts just after its own label
+    x_tick_top_start = label_right_edges['top'] + gap
+    x_tick_bottom_start = label_right_edges['bottom'] + gap
 
     # Vertical line
     ax.plot([x_bracket, x_bracket], [y_bottom, y_top], color=MID, lw=1.0, zorder=3)
-    # Top tick: from label edge+padding to vertical line
-    ax.plot([x_tick_top, x_bracket], [y_top, y_top], color=MID, lw=1.0, zorder=3)
-    # Bottom tick: from label edge+padding to vertical line (spans the whitespace)
-    ax.plot([x_tick_bottom, x_bracket], [y_bottom, y_bottom], color=MID, lw=1.0, zorder=3)
+    # Top tick
+    ax.plot([x_tick_top_start, x_bracket], [y_top, y_top], color=MID, lw=1.0, zorder=3)
+    # Bottom tick (longer, spans the whitespace)
+    ax.plot([x_tick_bottom_start, x_bracket], [y_bottom, y_bottom], color=MID, lw=1.0, zorder=3)
 
     ax.annotate('Embedding\nrepresentation\n+74.9%',
                 xy=(x_bracket, (y_bottom + y_top) / 2), xycoords='data',
@@ -116,7 +117,6 @@ if 'top' in label_right_edges and 'bottom' in label_right_edges:
                 ha='left', va='center', fontsize=11.5, color=MID,
                 linespacing=1.3)
 
-    # Adjust xlim to fit annotation
     ax.set_xlim(0, x_bracket + 6.5)
 else:
     print("WARNING: Could not find label text extents, bracket not drawn")
