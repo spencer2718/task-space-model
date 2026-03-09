@@ -53,6 +53,9 @@ ax1.annotate(f'Pipe\u2013Cement: {d_onet_pair:.2f}',
 ax1.set_title("O*NET Cosine Distance", fontsize=10, color=DARK, pad=6)
 ax1.set_ylabel('Pairs', fontsize=8, color=MID)
 ax1.set_xlim(0, 1.05)
+ax1.set_yticks([1, 10, 100, 1000, 10000, 100000])
+from matplotlib.ticker import FuncFormatter
+ax1.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f'{int(x):,}' if x >= 1 else ''))
 ax1.tick_params(axis='both', labelsize=8)
 
 # --- Bottom panel: Embedding Centroid ---
@@ -72,7 +75,7 @@ ax2.set_xlim(0, 1.05)
 ax2.tick_params(axis='both', labelsize=8)
 
 # Subtitle
-fig.text(0.5, -0.04, 'Embeddings detect similarity that O*NET misses',
+fig.text(0.5, -0.04, '78% of O*NET pairs at max distance — embeddings recover a usable distribution',
          ha='center', fontsize=8, color=MID, fontstyle='italic')
 
 plt.savefig('figures/fig6_embedding_similarity.png', dpi=300, bbox_inches='tight',

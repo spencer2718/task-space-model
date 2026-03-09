@@ -1,56 +1,36 @@
 """
-Figure 4 — Supply-Demand Decomposition (scope)
-Target: Slide 7 ("What the Measure Captures")
-Data: Hardcoded from outputs/experiments/demand_probe_decomposition_v0703b.json
+Figure 4 — Supply-demand decomposition (scope)
+Target: Slide 7 (What the Measure Captures)
 """
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 import matplotlib.pyplot as plt
-from figures.style import setup, bar_label
-from figures.style import PRIMARY, SECONDARY, DARK, MID
+from figures.style import setup, PRIMARY, SECONDARY, DARK, MID
 
 font = setup()
 
-# === Data ===
-metrics = [
-    ("Demand only\n(BLS openings → aggregate inflows)",           0.798),
-    ("Per-origin geometry\n(embedding distance → destination ranking)", 0.128),
-    ("Aggregate geometry\n(embedding distance → total inflows)",   0.043),
-]
-
-# Reverse so top bar is demand (barh draws bottom-up)
-labels = [m[0] for m in metrics][::-1]
-values = [m[1] for m in metrics][::-1]
-colors = [PRIMARY, PRIMARY, SECONDARY]  # bottom two are geometry (PRIMARY), top is demand
-
-# === Figure ===
-bar_height = 0.55
-positions = [0, 1.2, 2.4]
+labels = ["Demand\n(BLS openings)", "Per-origin\ngeometry", "Aggregate\ngeometry"]
+values = [0.798, 0.128, 0.043]
+colors = [SECONDARY, PRIMARY, PRIMARY]
 
 fig, ax = plt.subplots(figsize=(4.0, 3.8))
 
-bars = ax.barh(positions, values, color=colors, height=bar_height,
-               edgecolor='none', zorder=2)
+bars = ax.bar(range(len(labels)), values, color=colors, width=0.6,
+              edgecolor='none', zorder=2)
 
-# Spec name labels
-for pos, label in zip(positions, labels):
-    ax.text(-0.02, pos, label, ha='right', va='center', fontsize=9,
-            color=DARK, fontweight='medium')
+# Value labels above bars
+for i, (v, bar) in enumerate(zip(values, bars)):
+    ax.text(bar.get_x() + bar.get_width() / 2, v + 0.02,
+            f'{v:.2f}', ha='center', va='bottom',
+            fontsize=11, color=DARK, fontweight='bold')
 
-# Value labels
-for pos, val in zip(positions, values):
-    bar_label(ax, val, pos, val, fmt='{:.2f}', fontsize=11)
-
-# Axes
-ax.set_xlim(0, 1.15)
-ax.set_ylim(-0.6, 3.2)
-ax.set_xticks([0, 0.5, 1.0])
-ax.set_xticklabels(['0', '0.50', '1.00'], fontsize=9)
-ax.set_yticks([])
-ax.set_xlabel("Spearman ρ", fontsize=11, labelpad=8)
-ax.tick_params(axis='y', length=0)
-ax.tick_params(axis='x', length=4)
+ax.set_xticks(range(len(labels)))
+ax.set_xticklabels(labels, fontsize=9, color=DARK)
+ax.set_ylabel('Spearman ρ', fontsize=11, color=MID)
+ax.set_ylim(0, 1.0)
+ax.tick_params(axis='y', labelsize=9)
+ax.tick_params(axis='x', length=0)
 
 plt.tight_layout()
 plt.savefig('figures/fig4_scope.png', dpi=300, bbox_inches='tight',
