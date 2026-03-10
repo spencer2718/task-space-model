@@ -10,7 +10,7 @@ SECONDARY = '#A0937D'  # warm tan — "theirs" / O*NET / comparison
 # ─── Extended palette (multi-category plots) ───
 RED       = '#C75C5C'  # muted red
 ORANGE    = '#D4845A'  # amber
-GREEN     = '#6B9E78'  # sage
+GREEN     = '#44AA99'  # teal (colorblind-safe, Tol palette)
 PURPLE    = '#8B6BAE'  # muted purple
 
 # ─── Neutrals ───
