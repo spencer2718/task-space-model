@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 import pandas as pd
 import matplotlib.pyplot as plt
-from figures.style import setup, PRIMARY, MID, DARK
+from figures.style import setup, PRIMARY, MID, DARK, add_subtitle
 
 font = setup()
 
@@ -62,9 +62,7 @@ ax.set_xlabel('Share of tasks theoretically feasible (γ)', fontsize=12,
 ax.tick_params(axis='y', length=0)
 ax.tick_params(axis='x', length=4)
 
-fig.text(0.5, 0.005,
-         'Eloundou et al. (2023) γ = E1 + E2: LLM + complementary software',
-         ha='center', fontsize=9, color=MID, style='italic')
+add_subtitle(fig, 'Eloundou et al. (2023) γ = E1 + E2: LLM + complementary software', y=0.005)
 
 plt.tight_layout()
 plt.savefig('figures/fig1_ai_exposure.png', dpi=300, bbox_inches='tight',

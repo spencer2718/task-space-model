@@ -1,14 +1,41 @@
 """Shared style module for presentation figures."""
 import matplotlib.pyplot as plt
 from matplotlib.font_manager import findfont, FontProperties
+from matplotlib.ticker import FuncFormatter
 
-# Colors
-PRIMARY   = '#4A7FB5'  # steel blue — primary data
-SECONDARY = '#A0937D'  # warm gray — secondary/comparison
-DARK      = '#2D2D2D'  # charcoal — titles, labels
-MID       = '#777777'  # medium gray — annotations
-GRID      = '#E0E0E0'  # light gray — gridlines
-BG        = '#FFFFFF'   # white — always
+# ─── Core semantic colors ───
+PRIMARY   = '#4A7FB5'  # steel blue — "ours" / embedding data
+SECONDARY = '#A0937D'  # warm tan — "theirs" / O*NET / comparison
+
+# ─── Extended palette (multi-category plots) ───
+RED       = '#C75C5C'  # muted red
+ORANGE    = '#D4845A'  # amber
+GREEN     = '#6B9E78'  # sage
+PURPLE    = '#8B6BAE'  # muted purple
+
+# ─── Neutrals ───
+DARK      = '#2D2D2D'  # charcoal — titles, occupation labels
+MID       = '#777777'  # medium gray — annotations, subtitles
+GRID      = '#E0E0E0'  # light gray — gridlines, separators
+BG        = '#FFFFFF'
+
+# ─── Font size scale ───
+FONT_TITLE = 11        # panel titles, occupation headers
+FONT_LABEL = 9         # axis labels, bar labels
+FONT_TICK  = 8         # tick labels, annotation text
+FONT_NOTE  = 7.5       # subtitles, column headers, footnotes
+
+
+def lighten(hex_color, factor=0.85):
+    """Mix hex_color toward white. factor=0 returns original, factor=1 returns white."""
+    r = int(hex_color[1:3], 16)
+    g = int(hex_color[3:5], 16)
+    b = int(hex_color[5:7], 16)
+    r = int(r + (255 - r) * factor)
+    g = int(g + (255 - g) * factor)
+    b = int(b + (255 - b) * factor)
+    return f'#{r:02x}{g:02x}{b:02x}'
+
 
 def setup():
     """Apply full rcParams preamble. Returns detected font name."""
@@ -32,6 +59,13 @@ def setup():
     return font
 
 
+def add_subtitle(fig, text, y=-0.03, fontsize=None):
+    """Add italic caption below the plot area."""
+    fig.text(0.5, y, text, ha='center',
+             fontsize=fontsize or FONT_TICK,
+             color=MID, fontstyle='italic')
+
+
 def annotate_bracket(ax, y, x_left, x_right, label, *, offset_y=12,
                      fontsize=11.5, color=MID):
     """Draw a bracket between x_left and x_right at height y with label above."""
@@ -48,9 +82,19 @@ def annotate_bracket(ax, y, x_left, x_right, label, *, offset_y=12,
 
 
 def bar_label(ax, x, y, value, *, fmt='{:.1f}%', offset=(6, 0),
-              fontsize=13, color=DARK, **kwargs):
+              fontsize=None, color=DARK, **kwargs):
     """Place a value label at a bar tip using offset points."""
     ax.annotate(fmt.format(value), xy=(x, y), xycoords='data',
                 xytext=offset, textcoords='offset points',
-                ha='left', va='center', fontsize=fontsize, color=color,
-                fontweight='bold', **kwargs)
+                ha='left', va='center',
+                fontsize=fontsize or (FONT_TITLE + 2),
+                color=color, fontweight='bold', **kwargs)
+
+
+def format_log_ticks(ax, axis='y'):
+    """Replace scientific notation with plain integers on a log-scale axis."""
+    formatter = FuncFormatter(lambda x, _: f'{int(x):,}' if x >= 1 else '')
+    if axis == 'y':
+        ax.yaxis.set_major_formatter(formatter)
+    else:
+        ax.xaxis.set_major_formatter(formatter)

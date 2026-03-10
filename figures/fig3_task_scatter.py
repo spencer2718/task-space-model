@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from sklearn.metrics.pairwise import cosine_similarity as cos_sim
 
-from figures.style import setup, DARK, MID, GRID
+from figures.style import setup, DARK, MID, GRID, PRIMARY, SECONDARY, RED, ORANGE, GREEN, PURPLE, add_subtitle
 from src.task_space.data.onet import get_dwa_titles
 from src.task_space.data.artifacts import get_embeddings
 from src.task_space.domain import build_dwa_activity_domain
@@ -19,12 +19,12 @@ from src.task_space.domain import build_dwa_activity_domain
 font = setup()
 
 CLUSTER_COLORS = {
-    'Healthcare':          '#C75C5C',
-    'Vehicle & Equipment': '#D4845A',
-    'Construction':        '#A0937D',
-    'Quantitative':        '#4A7FB5',
-    'Communication':       '#6B9E78',
-    'Technology':          '#8B6BAE',
+    'Healthcare':          RED,
+    'Vehicle & Equipment': ORANGE,
+    'Construction':        SECONDARY,
+    'Quantitative':        PRIMARY,
+    'Communication':       GREEN,
+    'Technology':          PURPLE,
 }
 
 # === Semantic anchor phrases ===
@@ -303,9 +303,7 @@ ax.spines['bottom'].set_color(GRID)
 ax.spines['left'].set_color(GRID)
 
 plt.tight_layout()
-fig.text(0.5, -0.03,
-         '30 selected DWAs from 2,087 — projected onto interpretable semantic axes',
-         ha='center', fontsize=8, color=MID, fontstyle='italic')
+add_subtitle(fig, '30 selected DWAs from 2,087 — projected onto interpretable semantic axes')
 plt.savefig('figures/fig3_task_scatter.png', dpi=300, bbox_inches='tight',
             facecolor='white', edgecolor='none')
 plt.close()
