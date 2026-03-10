@@ -93,11 +93,11 @@ LABELED = {
 LABEL_OFFSETS = {
     'Feed patients.':         (-8, -12),
     'Prescribe medications.': (-10, -8),
-    'Inspect motor vehicles.': (-10, 10),
+    'Inspect motor vehicles.': (0, 12),
     'Operate forklifts or other loaders.': (0, -14),
     'Apply mortar.':          (10, 2),
     'Cut glass.':             (8, 5),
-    'Balance receipts.':      (10, 8),
+    'Balance receipts.':      (0, 10),
     'Calculate financial data.': (10, -6),
     'Write grant proposals.': (8, 8),
     'Transcribe spoken or written information.': (0, -14),
