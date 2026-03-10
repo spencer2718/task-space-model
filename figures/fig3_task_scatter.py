@@ -40,6 +40,7 @@ CURATED = {
         'Move patients to or from treatment areas.',
         'Hold patients to ensure proper positioning or safety.',
         'Test patient vision.',
+        'Prescribe medications.',
     ],
     'Vehicle & Equipment': [
         'Pilot aircraft.',
@@ -76,7 +77,7 @@ CURATED = {
 # === Label config: 1 label per theme ===
 LABELED = {
     'Feed patients.',
-    'Test patient vision.',
+    'Prescribe medications.',
     'Secure cargo.',
     'Operate forklifts or other loaders.',
     'Cut glass.',
@@ -90,7 +91,7 @@ LABELED = {
 # Annotation offsets (dx, dy) in points
 LABEL_OFFSETS = {
     'Feed patients.':         (-8, -12),
-    'Test patient vision.':   (10, 6),
+    'Prescribe medications.': (-10, -8),
     'Secure cargo.':          (10, 6),
     'Operate forklifts or other loaders.': (-10, 16),
     'Apply mortar.':          (-10, -8),
