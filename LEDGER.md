@@ -764,11 +764,7 @@ Deprecated approaches. Do not retry.
 | Version | Date | Changes |
 |---------|------|---------|
 | 0.7.9.3 | 2026-03-09 | Captions for fig3/fig4, swap fig5/fig6 to Budget vs Credit Analysts. |
-| 0.7.10.21 | 2026-03-10 | Fig3 micro-nudge Inspect down, Transcribe up. |
-| 0.7.10.20 | 2026-03-10 | Fig3 label nudges — Balance and Inspect centered above dots. |
-| 0.7.10.19 | 2026-03-10 | Fig3 label nudges — Balance right, Inspect left, Forklifts centered. |
-| 0.7.10.18 | 2026-03-10 | Fig3 label repositioning pass 2 — swap Edit→Transcribe, fix overlaps. |
-| 0.7.10.17 | 2026-03-10 | Fig3 label repositioning — clear overlaps between themes. |
+| 0.7.10.21 | 2026-03-10 | Fig3 label positioning finalized. Swap Edit→Transcribe label, add HA_OVERRIDE for independent alignment control. |
 | 0.7.10.16 | 2026-03-10 | Fig3 rebalance 6 per theme = 30 DWAs, 10 labels. Added Transcribe, Type documents, Prepare budgets. |
 | 0.7.10.15 | 2026-03-10 | Fig3 swap Test patient vision for Prescribe medications label. 29 DWAs, 10 labels. |
 | 0.7.10.14 | 2026-03-10 | Fig3 three more labels (Apply mortar, Calculate financial data, Edit written materials), legend upper-left. 28 DWAs, 10 labels. |

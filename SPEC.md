@@ -16,7 +16,7 @@
 | Core figures | v0.7.9.0–v0.7.9.8 | Figs 1–7, aspect ratios | ✅ Complete |
 | Style system | v0.7.9.7 | Centralized palette, helpers | ✅ Complete |
 | Embedding explainer | v0.7.9.9–v0.7.10.4 | Figs 8–9 (flowchart, analogy) | ✅ Complete |
-| Fig3 formatting | v0.7.10.5–v0.7.10.15 | Task scatter: hand-curated, colorblind-safe | ✅ Complete |
+| Fig3 formatting | v0.7.10.5–v0.7.10.21 | Task scatter: hand-curated, colorblind-safe, 6×5=30 | ✅ Complete |
 | Presentation script | — | pptxgenjs deck with final figures | Pending |
 | Overleaf sync | v0.7.11.0 | Carry corrections to publishable draft | Pending |
 

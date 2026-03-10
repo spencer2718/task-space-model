@@ -33,8 +33,10 @@ Note: fig numbering is by creation order, not slide order.
 
 ## fig3 — Tasks in Semantic Space
 - **Slide:** 4 — Tasks in Semantic Space
-- **Data:** MPNet embeddings of 29 hand-curated DWAs, semantic anchor projection
-- **Source:** `fig3_selected_dwas.csv` (29 DWAs, 5 themes, 10 labels)
+- **Data:** MPNet embeddings of 30 hand-curated DWAs, semantic anchor projection
+- **Source:** `fig3_selected_dwas.csv` (30 DWAs, 5 themes × 6 dots, 10 labels)
+- **Themes:** Healthcare (RED), Vehicle & Equipment (ORANGE), Construction (tan), Quantitative (steel blue), Communication (teal)
+- **Axes:** x = Non-Routine − Routine, y = Cognitive − Manual (cosine similarity to anchor phrases, z-scored × 2.5)
 - **Takeaway:** Related tasks cluster in interpretable quadrants
 
 ## fig5 — Shared DWAs (Budget Analysts vs Credit Analysts)
@@ -67,4 +69,4 @@ Note: fig numbering is by creation order, not slide order.
 ## Shared style
 - **Module:** `style.py` — colors, fonts, rcParams
 - **Font:** DejaVu Sans (Calibri not available on build system)
-- **Colors:** Steel blue (#4A7FB5) primary, warm tan (#A0937D) secondary, teal (#44AA99) colorblind-safe green
+- **Colors:** Steel blue (#4A7FB5) primary, warm tan (#A0937D) secondary, muted red (#C75C5C), amber (#D4845A), teal (#44AA99, Tol colorblind-safe), purple (#8B6BAE)
