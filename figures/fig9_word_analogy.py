@@ -1,5 +1,5 @@
 """
-Figure 9 — Word analogy illustration (King-Queen parallelogram)
+Figure 9 — Word analogy illustration (Atlanta/Denver parallelogram)
 Target: Slide 3 (right panel)
 Classic word embedding analogy from Mikolov et al. (2013).
 This is an ILLUSTRATION of the concept, not computed from MPNet.
@@ -14,12 +14,11 @@ from figures.style import (setup, PRIMARY, DARK, MID, GRID,
 font = setup()
 
 # Illustrative positions — approximate parallelogram (not perfect)
-# Based on typical Word2Vec PCA projections from literature
 points = {
-    'Man':    (1.5, 1.0),
-    'Woman':  (4.1, 1.3),
-    'King':   (1.8, 3.2),
-    'Queen':  (4.3, 3.6),
+    'Georgia':  (1.3, 1.0),
+    'Colorado': (4.0, 1.4),
+    'Atlanta':  (1.7, 3.3),
+    'Denver':   (4.5, 3.5),
 }
 
 fig, ax = plt.subplots(figsize=(4.5, 4.0))
@@ -31,41 +30,37 @@ ax.set_ylim(0, 4.8)
 ax.tick_params(axis='both', labelsize=FONT_TICK)
 ax.set_aspect('equal')
 
-# Points
+# Points and labels
 for word, (x, y) in points.items():
     ax.scatter(x, y, s=80, c=PRIMARY, edgecolors='white', linewidths=0.8, zorder=4)
-    # Offset labels to avoid overlapping dots
-    offset = (8, 8) if word in ('King', 'Man') else (-8, 8)
-    ha = 'left' if word in ('King', 'Man') else 'right'
+    # Top row (cities) — labels above; bottom row (states) — labels below
+    if word in ('Atlanta', 'Denver'):
+        offset = (0, 10)
+        va = 'bottom'
+    else:
+        offset = (0, -10)
+        va = 'top'
     ax.annotate(word, xy=(x, y), xytext=offset, textcoords='offset points',
                 fontsize=FONT_TITLE, fontweight='bold', color=DARK,
-                ha=ha, va='bottom', zorder=5)
+                ha='center', va=va, zorder=5)
 
-# Dashed arrows showing the two relationship vectors
-arrow_kw = dict(arrowstyle='->', color=MID, lw=1.2, linestyle='--',
-                shrinkA=8, shrinkB=8)
+# Grey dashed path: Atlanta → Georgia → Colorado → Denver
+path_arrow = dict(arrowstyle='->', color=MID, lw=1.0, linestyle='--',
+                  shrinkA=4, shrinkB=4)
 
-# Man → Woman (gender direction)
-ax.annotate('', xy=points['Woman'], xytext=points['Man'],
-            arrowprops=arrow_kw, zorder=3)
-mid_mw = ((points['Man'][0] + points['Woman'][0]) / 2,
-          (points['Man'][1] + points['Woman'][1]) / 2)
-ax.text(mid_mw[0], mid_mw[1] - 0.25, 'gender', ha='center', fontsize=FONT_TICK,
-        color=MID, fontstyle='italic')
+# Atlanta → Georgia  (the "− Georgia" step)
+ax.annotate('', xy=points['Georgia'], xytext=points['Atlanta'], arrowprops=path_arrow, zorder=3)
 
-# Man → King (royalty direction)
-ax.annotate('', xy=points['King'], xytext=points['Man'],
-            arrowprops=arrow_kw, zorder=3)
-mid_mk = ((points['Man'][0] + points['King'][0]) / 2,
-          (points['Man'][1] + points['King'][1]) / 2)
-ax.text(mid_mk[0] - 0.35, mid_mk[1], 'royalty', ha='center', fontsize=FONT_TICK,
-        color=MID, fontstyle='italic', rotation=75)
+# Georgia → Colorado  (the "+ Colorado" step)
+ax.annotate('', xy=points['Colorado'], xytext=points['Georgia'], arrowprops=path_arrow, zorder=3)
 
-# King → Queen (same gender direction, completing the parallelogram)
-ax.annotate('', xy=points['Queen'], xytext=points['King'],
-            arrowprops=dict(arrowstyle='->', color=PRIMARY, lw=1.5, linestyle='-',
-                            shrinkA=8, shrinkB=8),
-            zorder=3)
+# Colorado → Denver  (the "≈ Denver" arrival)
+ax.annotate('', xy=points['Denver'], xytext=points['Colorado'], arrowprops=path_arrow, zorder=3)
+
+# Blue solid arrow: Atlanta → Denver (the direct result)
+ax.annotate('', xy=points['Denver'], xytext=points['Atlanta'],
+            arrowprops=dict(arrowstyle='->', color=PRIMARY, lw=1.5,
+                            shrinkA=4, shrinkB=4), zorder=3)
 
 # Remove axis labels (grid numbers are enough)
 ax.set_xlabel('')
@@ -73,7 +68,7 @@ ax.set_ylabel('')
 
 # Attribution + formula subtitle
 add_subtitle(fig,
-             r'$\mathbf{king} - \mathbf{man} + \mathbf{woman} \approx \mathbf{queen}$'
+             r'$\mathbf{Atlanta} - \mathbf{Georgia} + \mathbf{Colorado} \approx \mathbf{Denver}$'
              + '\n' + 'Mikolov et al. (2013) \u2014 directions encode meaning',
              y=-0.08, fontsize=FONT_TICK)
 
