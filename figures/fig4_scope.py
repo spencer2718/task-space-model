@@ -33,6 +33,9 @@ ax.tick_params(axis='y', labelsize=9)
 ax.tick_params(axis='x', length=0)
 
 plt.tight_layout()
+fig.text(0.5, -0.02,
+         'Geometry ranks destinations correctly (MPR = 0.74) but does not predict aggregate flows',
+         ha='center', fontsize=8, color=MID, fontstyle='italic')
 plt.savefig('figures/fig4_scope.png', dpi=300, bbox_inches='tight',
             facecolor='white', edgecolor='none')
 plt.close()

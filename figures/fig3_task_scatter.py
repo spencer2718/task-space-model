@@ -303,6 +303,9 @@ ax.spines['bottom'].set_color(GRID)
 ax.spines['left'].set_color(GRID)
 
 plt.tight_layout()
+fig.text(0.5, -0.03,
+         '30 selected DWAs from 2,087 — projected onto interpretable semantic axes',
+         ha='center', fontsize=8, color=MID, fontstyle='italic')
 plt.savefig('figures/fig3_task_scatter.png', dpi=300, bbox_inches='tight',
             facecolor='white', edgecolor='none')
 plt.close()

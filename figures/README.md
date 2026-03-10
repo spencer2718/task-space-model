@@ -5,7 +5,7 @@
 | fig1_ai_exposure.png | 2 — Motivation | 9.0″ × 6.5″ | Done |
 | fig2_pseudo_r2.png | 6 — Main Result | 9.0″ × 5.0″ | Done |
 | fig3_task_scatter.png | 3 — Tasks in Semantic Space | 6.0″ × 4.2″ | Done |
-| fig4_scope.png | 7 — What the Measure Captures | 4.0″ × 3.8″ | NEW |
+| fig4_scope.png | 7 — What the Measure Captures | 4.0″ × 3.8″ | Done |
 | fig5_shared_dwas.png | 4 — Example (left panel) | 4.3″ × 4.2″ | Done |
 | fig6_embedding_similarity.png | 4 — Example (right panel) | 4.5″ × 4.2″ | Done |
 | fig7_sankey_pipeline.png | B1 — Data Pipeline (backup) | 9.0″ × 4.2″ | Done |
@@ -28,15 +28,15 @@
 - **Data:** Hardcoded from `outputs/experiments/demand_probe_decomposition_v0703b.json`
 - **Takeaway:** Aggregate inflows are demand-dominated (ρ = 0.80); geometry captures per-origin pathway direction (ρ = 0.13)
 
-## fig5 — Shared DWAs (Pipelayers vs Cement Masons)
+## fig5 — Shared DWAs (Budget Analysts vs Credit Analysts)
 - **Data:** Hardcoded from O*NET Tasks-to-DWAs mapping
-- **Pair:** Pipelayers (47-2151.00) vs Cement Masons (47-2051.00)
-- **Takeaway:** Only 4 of 40 DWAs overlap — O*NET cosine distance = 0.88
+- **Pair:** Budget Analysts (13-2031.00) vs Credit Analysts (13-2041.00)
+- **Takeaway:** Only 3 of 19 DWAs overlap — O*NET cosine distance = 0.71
 
 ## fig6 — Embedding Similarity
 - **Data:** Census-level distance matrices from `.cache/artifacts/v1/mobility/`
-- **Pair:** Same as fig5 — Pipelayers (Census 6440) vs Cement Masons (Census 6250)
-- **Takeaway:** Embedding distance = 0.15 (7th percentile) vs O*NET = 0.88 — embeddings detect similarity that O*NET misses
+- **Pair:** Same as fig5 — Budget Analysts (Census 820) vs Credit Analysts (Census 830)
+- **Takeaway:** Embedding distance = 0.07 (1.3rd percentile) vs O*NET = 0.71 — embeddings detect similarity that O*NET misses
 
 ## fig7 — CPS Data Pipeline (Sankey)
 - **Data:** Hardcoded from paper Table 1

@@ -1,7 +1,7 @@
 """
-Figure 5 — DWA overlap diagram: Pipelayers vs Cement Masons
+Figure 5 — DWA overlap diagram: Budget Analysts vs Credit Analysts
 Target: Slide 4 (left panel)
-Shows shared and unshared DWAs between two construction occupations.
+Shows shared and unshared DWAs between two finance occupations.
 """
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
@@ -13,26 +13,23 @@ from figures.style import setup, PRIMARY, SECONDARY, DARK, MID, GRID
 
 font = setup()
 
-# === Data (hardcoded from O*NET Tasks-to-DWAs mapping) ===
+# === Data: Budget Analysts vs Credit Analysts ===
 shared_dwas = [
-    "Compact materials to\ncreate level bases",
-    "Cut metal components\nfor installation",
-    "Direct construction or\nextraction personnel",
-    "Drill holes in\nconstruction materials",
+    "Advise others on\nfinancial matters",
+    "Analyze business\nor financial data",
+    "Prepare financial\ndocuments or budgets",
 ]
 
-pipe_dwas = [
-    "Install plumbing\nor piping",
-    "Dig holes\nor trenches",
-    "Weld metal\ncomponents",
-    "Drive trucks or\ntruck-mounted equip.",
+left_dwas = [
+    "Analyze budgetary\nor accounting data",
+    "Discuss strategies\nwith managers",
+    "Verify accuracy of\nfinancial information",
 ]
 
-cement_dwas = [
-    "Finish concrete\nsurfaces",
-    "Install masonry\nmaterials",
-    "Apply sealants or\nprotective coatings",
-    "Position construction\nforms or molds",
+right_dwas = [
+    "Assess financial\nstatus of clients",
+    "Analyze market\nconditions or trends",
+    "Examine\nfinancial records",
 ]
 
 # === Layout ===
@@ -59,47 +56,47 @@ def draw_node(ax, x, y, text, color, width=2.6, height=0.7):
             color=DARK, zorder=3, linespacing=1.1)
 
 # Occupation labels
-ax.text(1.8, 9.3, 'Pipelayers', ha='center', va='center',
-        fontsize=12, fontweight='bold', color=PRIMARY)
-ax.text(8.2, 9.3, 'Cement Masons', ha='center', va='center',
-        fontsize=12, fontweight='bold', color=SECONDARY)
+ax.text(1.8, 9.3, 'Budget Analysts', ha='center', va='center',
+        fontsize=11, fontweight='bold', color=PRIMARY)
+ax.text(8.2, 9.3, 'Credit Analysts', ha='center', va='center',
+        fontsize=11, fontweight='bold', color=SECONDARY)
 
-# Pipelayer-only DWAs (left column)
-pipe_ys = [7.8, 6.8, 5.8, 4.8]
-for dwa, y in zip(pipe_dwas, pipe_ys):
+# Node y-positions (3 rows)
+ys = [7.4, 6.2, 5.0]
+
+# Left-only DWAs (Budget Analysts)
+for dwa, y in zip(left_dwas, ys):
     draw_node(ax, 1.8, y, dwa, PRIMARY)
 
-# Cement Mason-only DWAs (right column)
-cement_ys = [7.8, 6.8, 5.8, 4.8]
-for dwa, y in zip(cement_dwas, cement_ys):
+# Right-only DWAs (Credit Analysts)
+for dwa, y in zip(right_dwas, ys):
     draw_node(ax, 8.2, y, dwa, SECONDARY)
 
 # Shared DWAs (center column)
-shared_ys = [7.8, 6.8, 5.8, 4.8]
-for dwa, y in zip(shared_dwas, shared_ys):
+for dwa, y in zip(shared_dwas, ys):
     draw_node(ax, 5.0, y, dwa, MID, width=2.8)
-    # Lines to Pipelayers
+    # Lines to Budget Analysts
     ax.plot([3.1, 3.6], [y, y], color=GRID, lw=0.8, zorder=0)
-    # Lines to Cement Masons
+    # Lines to Credit Analysts
     ax.plot([6.4, 6.9], [y, y], color=GRID, lw=0.8, zorder=0)
 
 # Column headers
-ax.text(1.8, 8.6, 'unique', ha='center', va='center',
+ax.text(1.8, 8.2, 'unique', ha='center', va='center',
         fontsize=7.5, color=PRIMARY, fontstyle='italic')
-ax.text(5.0, 8.6, 'shared', ha='center', va='center',
+ax.text(5.0, 8.2, 'shared', ha='center', va='center',
         fontsize=7.5, color=MID, fontstyle='italic')
-ax.text(8.2, 8.6, 'unique', ha='center', va='center',
+ax.text(8.2, 8.2, 'unique', ha='center', va='center',
         fontsize=7.5, color=SECONDARY, fontstyle='italic')
 
 # Vertical ellipses indicating more DWAs exist
-ax.text(1.8, 8.25, '⋮', ha='center', va='center', fontsize=10, color=PRIMARY)
-ax.text(1.8, 4.35, '⋮', ha='center', va='center', fontsize=10, color=PRIMARY)
-ax.text(8.2, 8.25, '⋮', ha='center', va='center', fontsize=10, color=SECONDARY)
-ax.text(8.2, 4.35, '⋮', ha='center', va='center', fontsize=10, color=SECONDARY)
+ax.text(1.8, 7.9, '⋮', ha='center', va='center', fontsize=10, color=PRIMARY)
+ax.text(1.8, 4.55, '⋮', ha='center', va='center', fontsize=10, color=PRIMARY)
+ax.text(8.2, 7.9, '⋮', ha='center', va='center', fontsize=10, color=SECONDARY)
+ax.text(8.2, 4.55, '⋮', ha='center', va='center', fontsize=10, color=SECONDARY)
 
 # Subtitle
 ax.text(5.0, 3.8,
-        'Only 4 of 40 DWAs overlap — O*NET sees these as distant (d = 0.88)',
+        'Only 3 of 19 DWAs overlap — O*NET sees these as distant (d = 0.71)',
         ha='center', va='center', fontsize=7.5, color=MID, fontstyle='italic')
 
 plt.tight_layout()
