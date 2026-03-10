@@ -75,10 +75,12 @@ for dwa, y in zip(right_dwas, ys):
 # Shared DWAs (center column)
 for dwa, y in zip(shared_dwas, ys):
     draw_node(ax, 5.0, y, dwa, MID, width=2.8)
-    # Lines to Budget Analysts
-    ax.plot([3.1, 3.6], [y, y], color=GRID, lw=0.8, zorder=0)
-    # Lines to Credit Analysts
-    ax.plot([6.4, 6.9], [y, y], color=GRID, lw=0.8, zorder=0)
+
+# Vertical column separators
+sep_top = max(ys) + 0.5
+sep_bot = min(ys) - 0.5
+ax.plot([3.4, 3.4], [sep_bot, sep_top], color=GRID, lw=0.8, ls='--', zorder=0)
+ax.plot([6.6, 6.6], [sep_bot, sep_top], color=GRID, lw=0.8, ls='--', zorder=0)
 
 # Column headers
 ax.text(1.8, 8.2, 'unique', ha='center', va='center',
