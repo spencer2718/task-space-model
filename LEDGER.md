@@ -1,7 +1,7 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.9.7
-**Last Updated:** 2026-03-09
+**Current Version:** 0.7.9.9
+**Last Updated:** 2026-03-10
 **Paper Draft:** `paper/main.tex`
 
 ---
@@ -764,6 +764,8 @@ Deprecated approaches. Do not retry.
 | Version | Date | Changes |
 |---------|------|---------|
 | 0.7.9.3 | 2026-03-09 | Captions for fig3/fig4, swap fig5/fig6 to Budget vs Credit Analysts. |
+| 0.7.9.9 | 2026-03-10 | Embedding explainer figures — fig8 (flowchart), fig9 (word analogy parallelogram). |
+| 0.7.9.8 | 2026-03-10 | Align figure aspect ratios to presentation placeholders. |
 | 0.7.9.7 | 2026-03-10 | Style system upgrade — centralized palette (RED/ORANGE/GREEN/PURPLE), font scale constants, add_subtitle() and format_log_ticks() helpers. |
 | 0.7.9.2 | 2026-03-09 | Fig4 vertical bars, fig6 remove exponents and update subtitle. |
 | 0.7.9.1 | 2026-03-09 | Create fig4 (scope), fix fig5 centering/ellipses, fix fig6 log scale/sizing. |

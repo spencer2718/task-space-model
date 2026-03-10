@@ -9,6 +9,8 @@
 | fig5_shared_dwas.png | 4 — Example (left panel) | 4.3″ × 4.2″ | Done |
 | fig6_embedding_similarity.png | 4 — Example (right panel) | 4.5″ × 4.2″ | Done |
 | fig7_sankey_pipeline.png | B1 — Data Pipeline (backup) | 9.0″ × 4.2″ | Done |
+| fig8_embedding_flowchart.png | 3 — What is a Sentence Embedding? (left) | 3.8″ × 4.0″ | Done |
+| fig9_word_analogy.png | 3 — What is a Sentence Embedding? (right) | 4.5″ × 4.0″ | Done |
 
 ## fig1 — AI Task Exposure
 - **Data:** Eloundou et al. (2023) γ = E1 + E2, averaged to 2-digit SOC
@@ -41,6 +43,14 @@
 ## fig7 — CPS Data Pipeline (Sankey)
 - **Data:** Hardcoded from paper Table 1
 - **Takeaway:** 10M raw records → 89K verified transitions through 5 filtering stages
+
+## fig8 — Embedding Flowchart
+- **Data:** None (static diagram)
+- **Takeaway:** A sentence goes in, a high-dimensional vector comes out
+
+## fig9 — Word Analogy (King-Queen)
+- **Data:** None (toy positions, hardcoded)
+- **Takeaway:** Directions in embedding space encode semantic relationships
 
 ## Shared style
 - **Module:** `style.py` — colors, fonts, rcParams
