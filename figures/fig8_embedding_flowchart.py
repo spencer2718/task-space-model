@@ -26,6 +26,7 @@ y_sentence = 8.0
 y_model = 5.0
 y_vector = 2.0
 
+
 def draw_box(ax, cx, cy, w, h, text, fontsize, text_color=DARK,
              facecolor='white', edgecolor=GRID, linewidth=1.2):
     x0 = cx - w / 2
@@ -39,34 +40,39 @@ def draw_box(ax, cx, cy, w, h, text, fontsize, text_color=DARK,
     ax.text(cx, cy, text, ha='center', va='center',
             fontsize=fontsize, color=text_color, zorder=3)
 
-# Box 1: Sentence
+
+# Box 1: Sentence (actual O*NET DWA)
 draw_box(ax, cx, y_sentence, box_w, box_h,
-         '"Analyze financial data"',
+         '"Analyze business or\nfinancial data."',
          fontsize=FONT_TITLE, text_color=DARK,
          facecolor='white', edgecolor=GRID)
 
 # Box 2: Model
 draw_box(ax, cx, y_model, box_w, box_h,
-         'Sentence Embedding\nModel (MPNet)',
+         'Sentence Embedding\nModel (e.g., MPNet)',
          fontsize=FONT_LABEL, text_color='white',
          facecolor=PRIMARY, edgecolor=PRIMARY, linewidth=1.5)
 
-# Box 3: Vector
+# Box 3: Vector — actual MPNet embedding values, mathtext rendering
+vector_text = (r'$[\,-0.04,\;\; 0.06,\;\; -0.07,\;\; \ldots,\;\; -0.00\,]$'
+               '\n768 dimensions')
 draw_box(ax, cx, y_vector, box_w, box_h,
-         '[0.23, \u20130.41, 0.67, \u2026, 0.12]\n(768 dimensions)',
+         vector_text,
          fontsize=FONT_TICK, text_color=DARK,
          facecolor=lighten(PRIMARY, 0.9), edgecolor=GRID)
 
-# --- Arrows ---
+# --- Arrows (start/end at box edges with shrink padding) ---
 arrow_kw = dict(arrowstyle='->', color=MID, lw=1.5,
-                connectionstyle='arc3,rad=0', zorder=1)
+                shrinkA=5, shrinkB=5, zorder=1)
 
-ax.annotate('', xy=(cx, y_model + box_h / 2 + 0.15),
-            xytext=(cx, y_sentence - box_h / 2 - 0.15),
+# Sentence → Model
+ax.annotate('', xy=(cx, y_model + box_h / 2),
+            xytext=(cx, y_sentence - box_h / 2),
             arrowprops=arrow_kw)
 
-ax.annotate('', xy=(cx, y_vector + box_h / 2 + 0.15),
-            xytext=(cx, y_model - box_h / 2 - 0.15),
+# Model → Vector
+ax.annotate('', xy=(cx, y_vector + box_h / 2),
+            xytext=(cx, y_model - box_h / 2),
             arrowprops=arrow_kw)
 
 plt.savefig('figures/fig8_embedding_flowchart.png', dpi=300,
