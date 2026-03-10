@@ -36,7 +36,7 @@ print(f"Pairs: {len(embed_vals)}")
 print(f"O*NET: {(onet_vals > 0.99).mean():.1%} at max distance")
 
 # === Figure: two stacked panels ===
-fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(4.5, 4.2), sharex=False)
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(4.5, 4.0), sharex=False)
 fig.subplots_adjust(hspace=0.45)
 
 # --- Top panel: O*NET Cosine ---

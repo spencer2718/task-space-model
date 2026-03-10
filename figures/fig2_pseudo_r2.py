@@ -27,10 +27,10 @@ colors = [SECONDARY, SECONDARY, PRIMARY, PRIMARY]
 
 # Bar positions — even spacing
 bar_height = 0.55
-positions = [0, 1.2, 2.4, 3.6]
+positions = [0, 1.0, 2.0, 3.0]
 
 # === Figure ===
-fig, ax = plt.subplots(figsize=(9.0, 5.0))
+fig, ax = plt.subplots(figsize=(9.0, 4.2))
 
 bars = ax.barh(positions, values, color=colors, height=bar_height,
                edgecolor='none', zorder=2)
@@ -46,7 +46,7 @@ for pos, val in zip(positions, values):
 
 # === Axes (set before measuring text) ===
 ax.set_xlim(0, 22)
-ax.set_ylim(-0.6, 4.8)
+ax.set_ylim(-0.6, 3.8)
 ax.set_xticks([0, 5, 10, 15])
 ax.set_xticklabels(['0%', '5%', '10%', '15%'], fontsize=12)
 ax.set_yticks([])

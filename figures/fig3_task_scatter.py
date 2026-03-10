@@ -206,14 +206,14 @@ for _, lp in lp_df.iterrows():
     LABEL_OFFSETS[lp['label']] = [x_off, y_off, ha]
 
 # Collision resolution: check pairs and bump vertically
-fig_temp = plt.figure(figsize=(6.0, 4.2))
+fig_temp = plt.figure(figsize=(6.0, 4.0))
 ax_temp = fig_temp.add_subplot(111)
 ax_temp.set_xlim(-5.5, 5.5)
 ax_temp.set_ylim(-5.5, 5.5)
 dpi = fig_temp.dpi
 # Approximate points-per-data-unit
 ppdu_x = (6.0 * dpi) / 11.0  # 11 data units across
-ppdu_y = (4.2 * dpi) / 11.0
+ppdu_y = (4.0 * dpi) / 11.0
 plt.close(fig_temp)
 
 for i, lp1 in lp_df.iterrows():
@@ -249,7 +249,7 @@ for k, v in LABEL_OFFSETS.items():
     print(f"  {k:<35s}  {v}")
 
 # === Build figure ===
-fig, ax = plt.subplots(figsize=(6.0, 4.2))
+fig, ax = plt.subplots(figsize=(6.0, 4.0))
 
 # Background cloud
 ax.scatter(all_x, all_y, s=3, c='#E0E0E0', alpha=0.3,
