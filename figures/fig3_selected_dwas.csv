@@ -1,19 +1,16 @@
 dwa_id,description,cluster_name,semantic_x,semantic_y
-4.A.4.a.8.I02.D01,Operate gaming equipment.,Healthcare,1.1565090417861938,-1.5955836772918701
-4.A.4.a.5.I09.D04,Develop daily schedules for children or families.,Healthcare,1.1269495487213135,-1.5830974578857422
-4.A.4.a.5.I03.D03,Administer anesthetics or sedatives to control pain.,Healthcare,1.0459933280944824,-1.4612057209014893
-4.A.3.b.4.I08.D04,Maintain locomotives or other rail equipment in good working condition.,Vehicle & Equipment,-1.8751884698867798,-3.342245578765869
-4.A.3.a.3.I06.D03,Operate recycling equipment.,Vehicle & Equipment,-1.859239935874939,-3.3615546226501465
-4.A.3.a.3.I06.D01,Operate chemical processing or water treatment systems or equipment.,Vehicle & Equipment,-1.8178260326385498,-3.3834192752838135
-4.A.3.a.2.I13.D04,Prepare hazardous waste for processing or disposal.,Construction,-0.23285970091819763,-2.6670641899108887
-4.A.3.a.1.I10.D03,"Transport animals, crops, or equipment.",Construction,-0.21364422142505646,-2.6477174758911133
-4.A.3.a.1.I10.D09,Handle luggage or other possessions for patrons.,Construction,-0.1622844636440277,-2.6224989891052246
-4.A.2.a.4.I12.D03,Interpret design or operational test results.,Quantitative,2.1674580574035645,2.9493820667266846
-4.A.2.a.4.I06.D04,Analyze medical data to determine cause of death.,Quantitative,2.0880534648895264,3.113429069519043
-4.A.2.a.4.I07.D03,"Analyze operational data to evaluate operations, processes or products.",Quantitative,2.0151448249816895,3.10605525970459
-4.A.4.a.2.I03.D17,Communicate dining or order details to kitchen personnel.,Communication,-1.8038760423660278,0.867631733417511
-4.A.4.a.2.I11.D06,Coordinate operational activities with external stakeholders.,Communication,-1.8432402610778809,0.8819332122802734
-4.A.3.b.6.I11.D05,Maintain medical records.,Communication,-1.8474960327148438,0.8676387071609497
-4.A.2.b.2.I09.D02,Develop financial or business plans.,Technology,4.662205696105957,2.569758892059326
-4.A.2.b.2.I26.D02,Develop mathematical models of environmental conditions.,Technology,4.694998264312744,2.55572772026062
-4.A.2.b.2.I18.D19,Create maps.,Technology,4.667278289794922,2.6903703212738037
+4.A.4.a.5.I03.D01,Give medications or immunizations.,Healthcare,-2.343416929244995,-1.4032853841781616
+4.A.4.a.5.I09.D01,Feed patients.,Healthcare,-2.7942941188812256,-1.6949670314788818
+4.A.4.a.5.I11.D04,Position patients for treatment or examination.,Healthcare,-2.730769634246826,-1.1422457695007324
+4.A.3.b.4.I08.D01,Service green vehicles to make repairs or maintain good working order.,Vehicle & Equipment,-0.043547146022319794,-1.8714032173156738
+4.A.3.a.4.I01.D11,Pilot aircraft.,Vehicle & Equipment,0.0630195140838623,-2.060875654220581
+4.A.3.b.4.I03.D02,Repair electrical equipment.,Vehicle & Equipment,-0.34862831234931946,-1.750727891921997
+4.A.3.a.1.I05.D08,Remove excess materials from finished construction projects.,Construction,-1.4811210632324219,-2.05256986618042
+4.A.3.a.1.I07.D06,Apply adhesives to construction materials.,Construction,-1.350212812423706,-2.481889247894287
+4.A.3.a.1.I10.D10,Move construction or extraction materials to locations where they are needed.,Construction,-1.6002986431121826,-2.6630873680114746
+4.A.2.a.4.I07.D05,Interpret research or operational data.,Quantitative,2.7712905406951904,4.1760663986206055
+4.A.2.a.4.I07.D09,Analyze data to assess operational or project effectiveness.,Quantitative,2.7340247631073,4.0615363121032715
+4.A.2.a.4.I05.D01,Evaluate technical data to determine effect on designs or plans.,Quantitative,2.562690258026123,4.363198280334473
+4.A.3.b.6.I15.D04,Prepare operational reports.,Communication,-1.0335279703140259,1.761090874671936
+4.A.3.b.6.I15.D05,Write operational reports.,Communication,-0.9673125147819519,1.8875068426132202
+4.A.3.b.6.I02.D07,Document information related to legal proceedings.,Communication,-1.4085519313812256,1.9718530178070068

@@ -1,6 +1,6 @@
 """
-Figure 3 v4 — Task embeddings with Routine/Manual semantic axes
-Density-based DWA selection: tightest 3-DWA cluster per theme.
+Figure 3 v5 — Task embeddings with Routine/Manual semantic axes
+Density-based DWA selection with keyword-filtered theme assignment.
 Target: Slide 4 ("Tasks in Semantic Space")
 """
 import sys, os
@@ -39,25 +39,49 @@ anchors = {
     'manual':      "manual physical hands-on bodily labor using tools and equipment",
 }
 
-# === GWA-to-theme mapping ===
+# === Stage 1: Narrowed GWA-to-theme mapping ===
+# Removed broad GWAs that leak irrelevant DWAs:
+#   "Performing for or Working Directly with the Public" (casino operators)
+#   "Handling and Moving Objects" (luggage handlers)
+#   "Thinking Creatively" (financial planners)
+#   "Controlling Machines and Processes" (too generic)
+#   "Processing Information" (too generic)
+#   "Communicating with Supervisors" (internal comms)
+#   "Updating and Using Relevant Knowledge" (too broad)
 GWA_TO_THEME = {
     'Assisting and Caring for Others': 'Healthcare',
-    'Performing for or Working Directly with the Public': 'Healthcare',
-    'Handling and Moving Objects': 'Construction',
     'Performing General Physical Activities': 'Construction',
     'Repairing and Maintaining Mechanical Equipment': 'Vehicle & Equipment',
     'Operating Vehicles, Mechanized Devices, or Equipment': 'Vehicle & Equipment',
-    'Controlling Machines and Processes': 'Vehicle & Equipment',
     'Analyzing Data or Information': 'Quantitative',
-    'Processing Information': 'Quantitative',
     'Estimating the Quantifiable Characteristics of Products, Events, or Information': 'Quantitative',
-    'Communicating with Supervisors, Peers, or Subordinates': 'Communication',
     'Communicating with People Outside the Organization': 'Communication',
     'Documenting/Recording Information': 'Communication',
     'Interacting With Computers': 'Technology',
-    'Thinking Creatively': 'Technology',
-    'Updating and Using Relevant Knowledge': 'Technology',
 }
+
+# === Stage 2: Keyword confirmation ===
+THEME_KEYWORDS = {
+    'Healthcare':          ['patient', 'medical', 'health', 'treat', 'diagnos', 'nurs',
+                            'therap', 'immuniz', 'prescri', 'symptom'],
+    'Vehicle & Equipment': ['vehicle', 'drive', 'truck', 'aircraft', 'pilot', 'forklift',
+                            'engine', 'mechanic', 'tire', 'cargo', 'equipment'],
+    'Construction':        ['construct', 'build', 'weld', 'masonry', 'concrete', 'plumb',
+                            'excavat', 'trench', 'scaffold', 'install', 'roofing', 'mortar',
+                            'lumber'],
+    'Quantitative':        ['financial', 'data', 'statistic', 'calculat', 'budget', 'quantit',
+                            'forecast', 'analyz', 'audit', 'account'],
+    'Communication':       ['document', 'write', 'edit', 'report', 'present', 'correspond',
+                            'publish', 'transcri', 'proofread'],
+    'Technology':          ['software', 'computer', 'network', 'program', 'database', 'server',
+                            'code', 'cyber', 'web', 'digital'],
+}
+
+
+def passes_keyword_filter(title, theme):
+    title_lower = title.lower()
+    return any(kw in title_lower for kw in THEME_KEYWORDS[theme])
+
 
 # === Load embeddings ===
 print("Loading DWA domain and embeddings...")
@@ -71,10 +95,23 @@ print(f"Loaded {len(dwa_ids)} DWAs, embeddings shape: {embeddings.shape}")
 # === Load GWA metadata ===
 dwa_meta = pd.read_excel('data/onet/db_30_0_excel/DWA Reference.xlsx')
 dwa_meta = dwa_meta[['DWA ID', 'Element Name']].drop_duplicates(subset='DWA ID').sort_values('DWA ID')
-# Align to domain order
 dwa_id_to_gwa = dict(zip(dwa_meta['DWA ID'], dwa_meta['Element Name']))
 gwa_names = [dwa_id_to_gwa.get(aid, '') for aid in dwa_ids]
-themes = [GWA_TO_THEME.get(g, None) for g in gwa_names]
+
+# Two-stage theme assignment: GWA narrows, keyword confirms
+themes = []
+for i, gwa in enumerate(gwa_names):
+    candidate_theme = GWA_TO_THEME.get(gwa, None)
+    if candidate_theme and passes_keyword_filter(dwa_texts[i], candidate_theme):
+        themes.append(candidate_theme)
+    else:
+        themes.append(None)
+
+# Report pool sizes
+print("\nTheme pool sizes (after GWA + keyword filter):")
+for theme in CLUSTER_COLORS:
+    n = sum(1 for t in themes if t == theme)
+    print(f"  {theme:<22s}  {n}")
 
 # === Embed anchors ===
 anchor_texts = list(anchors.values())
@@ -88,28 +125,27 @@ sim_r  = cos_sim(embeddings, anchor_dict['routine']).flatten()
 sim_c  = cos_sim(embeddings, anchor_dict['cognitive']).flatten()
 sim_m  = cos_sim(embeddings, anchor_dict['manual']).flatten()
 
-raw_x = sim_nr - sim_r   # routine (left) → non-routine (right)
-raw_y = sim_c - sim_m    # manual (bottom) → cognitive (top)
+raw_x = sim_nr - sim_r
+raw_y = sim_c - sim_m
 
-print(f"Raw X: mean={raw_x.mean():.4f}, std={raw_x.std():.4f}")
+print(f"\nRaw X: mean={raw_x.mean():.4f}, std={raw_x.std():.4f}")
 print(f"Raw Y: mean={raw_y.mean():.4f}, std={raw_y.std():.4f}")
 
 if raw_x.std() < 0.01 or raw_y.std() < 0.01:
     print("STOP: Axis std < 0.01 — anchors not discriminating")
     sys.exit(1)
 
-# Rescale to ~±5
 all_x = (raw_x - raw_x.mean()) / raw_x.std() * 2.5
 all_y = (raw_y - raw_y.mean()) / raw_y.std() * 2.5
 
 
 # === Density-based selection: tightest triple per theme ===
 def find_densest_triple(idxs, all_x, all_y, max_search=30):
-    """Find 3 points with minimum total pairwise 2D distance."""
+    """Find 3 points with minimum total pairwise 2D distance.
+    Requires all three DWAs to start with different first words."""
     xs = np.array([all_x[i] for i in idxs])
     ys = np.array([all_y[i] for i in idxs])
 
-    # For large groups, narrow search to densest region
     if len(idxs) > 50:
         tree = cKDTree(np.column_stack([xs, ys]))
         k = min(10, len(idxs) - 1)
@@ -122,14 +158,15 @@ def find_densest_triple(idxs, all_x, all_y, max_search=30):
 
     best_dist = float('inf')
     best = None
-    texts = [dwa_texts[i] for i in search]
     for combo in combinations(range(len(search)), 3):
-        i, j, k = combo
-        # Text diversity: require different first words
-        first_words = {texts[i].split()[0], texts[j].split()[0], texts[k].split()[0]}
-        if len(first_words) < 2:
+        a, b, c = combo
+        ii, jj, kk = search[a], search[b], search[c]
+        # Diversity: all three must start with different words
+        fw = [dwa_texts[ii].split()[0].lower(),
+              dwa_texts[jj].split()[0].lower(),
+              dwa_texts[kk].split()[0].lower()]
+        if len(set(fw)) < 3:
             continue
-        ii, jj, kk = search[i], search[j], search[k]
         d = (np.hypot(all_x[ii] - all_x[jj], all_y[ii] - all_y[jj]) +
              np.hypot(all_x[ii] - all_x[kk], all_y[ii] - all_y[kk]) +
              np.hypot(all_x[jj] - all_x[kk], all_y[jj] - all_y[kk]))
@@ -140,13 +177,17 @@ def find_densest_triple(idxs, all_x, all_y, max_search=30):
 
 
 selected = []
+print("\n=== Selected triples ===")
 for theme in CLUSTER_COLORS:
     idxs = [i for i, t in enumerate(themes) if t == theme]
     if len(idxs) < 3:
-        print(f"WARNING: {theme} has only {len(idxs)} DWAs")
+        print(f"WARNING: {theme} has only {len(idxs)} DWAs — cannot form triple")
         continue
     triple, dist = find_densest_triple(idxs, all_x, all_y)
-    print(f"{theme}: dist={dist:.3f}")
+    if triple is None:
+        print(f"WARNING: {theme} — no diverse triple found")
+        continue
+    print(f"\n{theme}: total_dist={dist:.3f}")
     for idx in triple:
         print(f"  ({all_x[idx]:+.2f}, {all_y[idx]:+.2f})  {dwa_texts[idx]}")
         selected.append({
@@ -172,7 +213,6 @@ def short_label(text, max_len=25):
 
 
 # === Collision-aware label placement ===
-# Approximate points-per-data-unit for the figure
 fig_temp = plt.figure(figsize=(6.0, 4.0))
 ax_temp = fig_temp.add_subplot(111)
 ax_temp.set_xlim(-5.5, 5.5)
@@ -195,21 +235,31 @@ for _, row in sel_df.iterrows():
         'color': CLUSTER_COLORS[row['cluster_name']],
     })
 
-# Collision resolution — bump overlapping labels vertically
+# Collision resolution — bump overlapping labels vertically (±14 for cross-theme)
 for i in range(len(label_positions)):
     for j in range(i + 1, len(label_positions)):
         li, lj = label_positions[i], label_positions[j]
         dx = abs((li['x'] + li['x_off'] / ppdu_x) - (lj['x'] + lj['x_off'] / ppdu_x))
         dy = abs((li['y'] + li['y_off'] / ppdu_y) - (lj['y'] + lj['y_off'] / ppdu_y))
         if dx < 2.0 and dy < 0.6:
-            li['y_off'] += 8
-            lj['y_off'] -= 8
+            li['y_off'] += 14
+            lj['y_off'] -= 14
 
 # Legend collision: if label lands in upper-left quadrant, flip to other side
 for lp in label_positions:
     label_x = lp['x'] + lp['x_off'] / ppdu_x
     label_y = lp['y'] + lp['y_off'] / ppdu_y
     if label_x < -2.0 and label_y > 2.5:
+        lp['x_off'] = 10
+        lp['ha'] = 'left'
+
+# Boundary check: if label extends past axis limits, flip side
+for lp in label_positions:
+    label_x = lp['x'] + lp['x_off'] / ppdu_x
+    if label_x > 5.0 and lp['ha'] == 'left':
+        lp['x_off'] = -10
+        lp['ha'] = 'right'
+    elif label_x < -5.0 and lp['ha'] == 'right':
         lp['x_off'] = 10
         lp['ha'] = 'left'
 
@@ -237,7 +287,7 @@ for theme in CLUSTER_COLORS:
     ax.scatter(group['x'], group['y'], s=50, c=color,
                edgecolors='white', linewidths=0.5, alpha=0.9, zorder=2)
 
-# Labels for all 18 selected DWAs
+# Labels for all selected DWAs
 for lp in label_positions:
     ax.annotate(lp['label'], xy=(lp['x'], lp['y']), xycoords='data',
                 xytext=(lp['x_off'], lp['y_off']), textcoords='offset points',
@@ -268,7 +318,7 @@ ax.spines['bottom'].set_color(GRID)
 ax.spines['left'].set_color(GRID)
 
 plt.tight_layout()
-add_subtitle(fig, f'{len(sel_df)} selected DWAs from {len(dwa_ids):,} — projected onto interpretable semantic axes')
+add_subtitle(fig, f'{len(sel_df)} selected DWAs from {len(dwa_ids):,} \u2014 projected onto interpretable semantic axes')
 plt.savefig('figures/fig3_task_scatter.png', dpi=300, bbox_inches='tight',
             facecolor='white', edgecolor='none')
 plt.close()

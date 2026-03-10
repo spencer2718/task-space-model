@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.10.5
+**Current Version:** 0.7.10.6
 **Last Updated:** 2026-03-10
 **Paper Draft:** `paper/main.tex`
 
@@ -764,6 +764,7 @@ Deprecated approaches. Do not retry.
 | Version | Date | Changes |
 |---------|------|---------|
 | 0.7.9.3 | 2026-03-09 | Captions for fig3/fig4, swap fig5/fig6 to Budget vs Credit Analysts. |
+| 0.7.10.6 | 2026-03-10 | Fig3 keyword-filtered theme assignment + diversity filter. Technology theme empty (0 DWAs pass filter). |
 | 0.7.10.5 | 2026-03-10 | Fig3 programmatic DWA selection — density-based tightest triples, collision-aware labels, legend to upper-left. GWA mapping needs tightening. |
 | 0.7.10.4 | 2026-03-10 | Fig9 swap to Atlanta/Georgia/Colorado/Denver analogy. |
 | 0.7.10.3 | 2026-03-10 | Fig9 redesigned as Word2Vec illustration with attribution; fig8 arrow padding. |
