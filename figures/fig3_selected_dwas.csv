@@ -1,31 +1,19 @@
 dwa_id,description,cluster_name,semantic_x,semantic_y
-4.A.4.a.5.I09.D01,Feed patients.,Healthcare,-2.7942941188812256,-1.6949670314788818
-4.A.4.a.5.I03.D07,Immunize patients.,Healthcare,-1.5744609832763672,0.18368573486804962
-4.A.4.c.3.I06.D03,Prescribe medications.,Healthcare,-1.0481672286987305,-0.3209066092967987
-4.A.1.b.2.I01.D04,Test patient vision.,Healthcare,-0.4119163453578949,0.9824872612953186
-4.A.4.a.5.I07.D02,Administer first aid.,Healthcare,0.21658630669116974,-2.5569143295288086
-4.A.4.a.5.I07.D03,Treat medical emergencies.,Healthcare,2.3674023151397705,-1.6641474962234497
-4.A.3.a.4.I01.D10,Drive trucks or truck-mounted equipment.,Vehicle & Equipment,1.3313512802124023,-3.9820494651794434
-4.A.3.a.4.I01.D11,Pilot aircraft.,Vehicle & Equipment,0.0630195140838623,-2.060875654220581
-4.A.3.a.1.I06.D09,Secure cargo.,Vehicle & Equipment,1.7595007419586182,0.08151880651712418
-4.A.3.a.3.I08.D01,Operate forklifts or other loaders.,Vehicle & Equipment,0.5731407403945923,-5.122276306152344
-4.A.3.a.1.I06.D01,"Load shipments, belongings, or materials.",Vehicle & Equipment,-0.8637176752090454,-2.2139790058135986
-4.A.3.b.4.I07.D03,Repair tires.,Vehicle & Equipment,3.2867953777313232,-0.80846107006073
-4.A.3.a.2.I39.D01,Apply mortar.,Construction,0.05630004405975342,1.0852274894714355
-4.A.3.a.2.I12.D10,Cut glass.,Construction,3.6962735652923584,-1.3240141868591309
-4.A.3.a.1.I07.D01,Dig holes or trenches.,Construction,0.9146324396133423,-1.7155604362487793
-4.A.3.a.2.I35.D02,Weld metal components.,Construction,0.07162433862686157,-2.0911951065063477
-4.A.3.a.2.I41.D07,Align masonry materials.,Construction,-0.623231053352356,1.929243564605713
-4.A.3.a.2.I01.D08,Assemble temporary equipment or structures.,Construction,-0.8545246124267578,-5.072824478149414
-4.A.1.b.3.I03.D03,Calculate tax information.,Quantitative,-0.057270150631666183,5.153327465057373
-4.A.2.a.2.I04.D02,Balance receipts.,Quantitative,0.13227856159210205,2.5219318866729736
-4.A.4.b.4.I09.D04,Prepare operational budgets.,Quantitative,0.6513559222221375,2.231232166290283
-4.A.1.b.3.I03.D01,Calculate financial data.,Quantitative,2.684314489364624,6.282027244567871
-4.A.2.b.1.I07.D02,Edit documents.,Communication,1.0573666095733643,2.046536445617676
-4.A.4.c.1.I01.D07,Type documents.,Communication,0.8068466186523438,0.4606093764305115
-4.A.2.b.1.I07.D01,Edit written materials.,Communication,-0.4982199966907501,2.608262062072754
-4.A.3.b.6.I07.D02,Write grant proposals.,Communication,2.943415880203247,2.0400390625
-4.A.3.b.1.I03.D01,Install computer software.,Technology,1.8468244075775146,3.582634925842285
-4.A.3.b.1.I03.D04,Configure computer networks.,Technology,1.22716224193573,2.63765287399292
-4.A.2.b.2.I02.D10,Design software applications.,Technology,2.147447109222412,4.039585590362549
-4.A.1.b.2.I08.D03,Test software performance.,Technology,1.1292197704315186,2.9805350303649902
+4.A.4.a.8.I02.D01,Operate gaming equipment.,Healthcare,1.1565090417861938,-1.5955836772918701
+4.A.4.a.5.I09.D04,Develop daily schedules for children or families.,Healthcare,1.1269495487213135,-1.5830974578857422
+4.A.4.a.5.I03.D03,Administer anesthetics or sedatives to control pain.,Healthcare,1.0459933280944824,-1.4612057209014893
+4.A.3.b.4.I08.D04,Maintain locomotives or other rail equipment in good working condition.,Vehicle & Equipment,-1.8751884698867798,-3.342245578765869
+4.A.3.a.3.I06.D03,Operate recycling equipment.,Vehicle & Equipment,-1.859239935874939,-3.3615546226501465
+4.A.3.a.3.I06.D01,Operate chemical processing or water treatment systems or equipment.,Vehicle & Equipment,-1.8178260326385498,-3.3834192752838135
+4.A.3.a.2.I13.D04,Prepare hazardous waste for processing or disposal.,Construction,-0.23285970091819763,-2.6670641899108887
+4.A.3.a.1.I10.D03,"Transport animals, crops, or equipment.",Construction,-0.21364422142505646,-2.6477174758911133
+4.A.3.a.1.I10.D09,Handle luggage or other possessions for patrons.,Construction,-0.1622844636440277,-2.6224989891052246
+4.A.2.a.4.I12.D03,Interpret design or operational test results.,Quantitative,2.1674580574035645,2.9493820667266846
+4.A.2.a.4.I06.D04,Analyze medical data to determine cause of death.,Quantitative,2.0880534648895264,3.113429069519043
+4.A.2.a.4.I07.D03,"Analyze operational data to evaluate operations, processes or products.",Quantitative,2.0151448249816895,3.10605525970459
+4.A.4.a.2.I03.D17,Communicate dining or order details to kitchen personnel.,Communication,-1.8038760423660278,0.867631733417511
+4.A.4.a.2.I11.D06,Coordinate operational activities with external stakeholders.,Communication,-1.8432402610778809,0.8819332122802734
+4.A.3.b.6.I11.D05,Maintain medical records.,Communication,-1.8474960327148438,0.8676387071609497
+4.A.2.b.2.I09.D02,Develop financial or business plans.,Technology,4.662205696105957,2.569758892059326
+4.A.2.b.2.I26.D02,Develop mathematical models of environmental conditions.,Technology,4.694998264312744,2.55572772026062
+4.A.2.b.2.I18.D19,Create maps.,Technology,4.667278289794922,2.6903703212738037
