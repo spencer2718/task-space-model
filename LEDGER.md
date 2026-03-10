@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.10.2
+**Current Version:** 0.7.10.3
 **Last Updated:** 2026-03-10
 **Paper Draft:** `paper/main.tex`
 
@@ -764,6 +764,7 @@ Deprecated approaches. Do not retry.
 | Version | Date | Changes |
 |---------|------|---------|
 | 0.7.9.3 | 2026-03-09 | Captions for fig3/fig4, swap fig5/fig6 to Budget vs Credit Analysts. |
+| 0.7.10.3 | 2026-03-10 | Fig9 redesigned as Word2Vec illustration with attribution; fig8 arrow padding. |
 | 0.7.10.2 | 2026-03-10 | Docs alignment — figures README, SPEC, CLAUDE updated for presentation sprint. |
 | 0.7.10.1 | 2026-03-10 | Fig8/fig9 use live embeddings instead of hardcoded values. |
 | 0.7.10.0 | 2026-03-10 | Fig8 actual embedding values + arrow padding; fig9 real grid + formula + asymmetric parallelogram. |
