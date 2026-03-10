@@ -1,31 +1,25 @@
 dwa_id,description,cluster_name,semantic_x,semantic_y,labeled
-4.A.4.a.1.I05.D01,Communicate detailed medical information to patients or family members.,Healthcare,-1.0849798917770386,-0.07832935452461243,False
-4.A.3.b.6.I11.D03,Record vital statistics or other health information.,Healthcare,-0.9453577995300293,0.030192380771040916,False
-4.A.3.b.6.I06.D03,Prepare medical reports or documents.,Healthcare,-0.9303604960441589,-0.2019452154636383,False
-4.A.4.c.3.I06.D03,Prescribe medications.,Healthcare,-1.0481672286987305,-0.3209066092967987,True
-4.A.4.c.3.I02.D01,Order medical diagnostic or clinical tests.,Healthcare,-1.0324302911758423,0.17687922716140747,False
-4.A.1.b.2.I01.D08,Test biological specimens to gather information about patient conditions.,Healthcare,-1.2865993976593018,-0.27848559617996216,False
+4.A.4.a.5.I09.D01,Feed patients.,Healthcare,-2.7942941188812256,-1.6949670314788818,True
+4.A.4.a.5.I03.D01,Give medications or immunizations.,Healthcare,-2.343416929244995,-1.4032853841781616,False
+4.A.4.a.5.I11.D04,Position patients for treatment or examination.,Healthcare,-2.730769634246826,-1.1422457695007324,False
+4.A.3.a.1.I13.D02,Move patients to or from treatment areas.,Healthcare,-3.1716318130493164,-1.2589436769485474,False
+4.A.4.a.5.I11.D02,Hold patients to ensure proper positioning or safety.,Healthcare,-2.9198644161224365,-2.111271619796753,False
 4.A.3.a.4.I01.D11,Pilot aircraft.,Vehicle & Equipment,0.0630195140838623,-2.060875654220581,True
-4.A.3.b.4.I08.D01,Service green vehicles to make repairs or maintain good working order.,Vehicle & Equipment,-0.043547146022319794,-1.8714032173156738,False
-4.A.4.a.5.I10.D06,Assist passengers during vehicle boarding.,Vehicle & Equipment,-0.08269228041172028,-1.7738717794418335,False
-4.A.4.a.5.I10.D04,Assist patrons with entering or exiting vehicles or other forms of transportation.,Vehicle & Equipment,-0.17181843519210815,-2.3708925247192383,False
-4.A.3.b.4.I08.D03,Maintain watercraft engines or machinery.,Vehicle & Equipment,0.31313183903694153,-2.483091115951538,False
+4.A.1.b.2.I04.D01,Inspect motor vehicles.,Vehicle & Equipment,0.3079209625720978,-1.228173851966858,False
 4.A.3.a.1.I03.D25,Clean vehicles or vehicle components.,Vehicle & Equipment,0.5752435326576233,-2.3512158393859863,False
-4.A.3.a.2.I01.D03,Install masonry materials.,Construction,-0.29118838906288147,-0.3689342141151428,True
-4.A.1.b.2.I07.D12,Inspect plumbing systems or fixtures.,Construction,-0.5116904973983765,-0.7275264859199524,False
-4.A.3.a.2.I43.D03,Install plumbing or piping.,Construction,0.16564714908599854,-0.3188444674015045,False
-4.A.3.a.2.I01.D15,Install roofing materials.,Construction,-1.102236032485962,-0.05026206374168396,True
-4.A.3.a.2.I01.D01,Install carpet or flooring.,Construction,-0.6741689443588257,0.5247753858566284,False
+4.A.4.a.5.I10.D06,Assist passengers during vehicle boarding.,Vehicle & Equipment,-0.08269228041172028,-1.7738717794418335,False
+4.A.3.a.2.I04.D07,Install vehicle parts or accessories.,Vehicle & Equipment,0.30702388286590576,-2.6348772048950195,False
+4.A.3.a.2.I12.D10,Cut glass.,Construction,3.6962735652923584,-1.3240141868591309,True
+4.A.3.a.2.I35.D02,Weld metal components.,Construction,0.07162433862686157,-2.0911951065063477,False
 4.A.3.a.1.I07.D09,Spread concrete or other aggregate mixtures.,Construction,-0.008426191285252571,-1.4523435831069946,False
-4.A.4.b.4.I09.D06,Manage financial activities of the organization.,Quantitative,0.21271440386772156,1.8791860342025757,False
-4.A.2.a.3.I03.D01,Conduct financial or regulatory audits.,Quantitative,0.39530521631240845,1.7040975093841553,False
-4.A.1.a.1.I14.D03,Obtain personal or financial information about customers or applicants.,Quantitative,0.08464448153972626,2.302293539047241,False
-4.A.2.b.1.I03.D02,Authorize financial actions.,Quantitative,-0.1424708068370819,2.158322811126709,True
-4.A.3.b.6.I10.D03,Maintain financial or account records.,Quantitative,0.3638538420200348,2.343919515609741,False
-4.A.4.b.4.I09.D04,Prepare operational budgets.,Quantitative,0.6513559222221375,2.231232166290283,True
+4.A.3.a.2.I12.D05,"Cut tile, stone, or other masonry materials.",Construction,1.4558981657028198,-1.2199695110321045,False
+4.A.3.a.1.I07.D01,Dig holes or trenches.,Construction,0.9146324396133423,-1.7155604362487793,False
+4.A.2.a.2.I04.D02,Balance receipts.,Quantitative,0.13227856159210205,2.5219318866729736,True
+4.A.1.b.3.I03.D01,Calculate financial data.,Quantitative,2.684314489364624,6.282027244567871,False
+4.A.1.a.1.I04.D04,Gather financial records.,Quantitative,1.3749043941497803,4.295835971832275,False
+4.A.2.a.3.I03.D02,Examine financial records.,Quantitative,1.6170238256454468,5.33951473236084,False
+4.A.2.a.1.I09.D02,Assess financial status of clients.,Quantitative,1.6940662860870361,4.728421211242676,False
 4.A.3.b.6.I07.D02,Write grant proposals.,Communication,2.943415880203247,2.0400390625,True
-4.A.3.b.1.I01.D03,Write computer programming code.,Communication,3.217592477798462,2.301823616027832,False
 4.A.3.b.6.I03.D06,Write reports or evaluations.,Communication,3.4683046340942383,1.4543788433074951,False
-4.A.3.b.6.I16.D03,Write advertising or promotional material.,Communication,2.9797844886779785,0.9706090688705444,False
-4.A.2.b.1.I07.D02,Edit documents.,Communication,1.0573666095733643,2.046536445617676,True
-4.A.3.b.6.I12.D05,Write informational material.,Communication,1.577958345413208,4.015249252319336,False
+4.A.2.b.1.I07.D02,Edit documents.,Communication,1.0573666095733643,2.046536445617676,False
+4.A.2.b.1.I07.D01,Edit written materials.,Communication,-0.4982199966907501,2.608262062072754,False
