@@ -58,7 +58,7 @@ ax.set_xlim(0, 110)
 ax.set_xticks([0, 25, 50, 75, 100])
 ax.set_xticklabels(['0%', '25%', '50%', '75%', '100%'], fontsize=FONT_TICK)
 ax.set_yticks([])
-ax.set_xlabel('Share of tasks theoretically feasible (γ)', fontsize=FONT_TITLE,
+ax.set_xlabel('AI task exposure rate (γ)', fontsize=FONT_TITLE,
               labelpad=8)
 ax.tick_params(axis='y', length=0)
 ax.tick_params(axis='x', length=4)
