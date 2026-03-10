@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.10.11
+**Current Version:** 0.7.10.12
 **Last Updated:** 2026-03-10
 **Paper Draft:** `paper/main.tex`
 
@@ -764,6 +764,7 @@ Deprecated approaches. Do not retry.
 | Version | Date | Changes |
 |---------|------|---------|
 | 0.7.9.3 | 2026-03-09 | Captions for fig3/fig4, swap fig5/fig6 to Budget vs Credit Analysts. |
+| 0.7.10.12 | 2026-03-10 | Add "Test patient vision" label to fig3 Healthcare theme. 25 DWAs, 6 labels. |
 | 0.7.10.11 | 2026-03-10 | Change GREEN to colorblind-safe teal (#44AA99, Tol palette). Regenerate fig3. |
 | 0.7.10.10 | 2026-03-10 | Fig3 final — hand-curated 24 DWAs, 5 themes × ~5 dots, 1 label each, no adjustText. |
 | 0.7.10.9 | 2026-03-10 | Fig3 keyword-only clustering, restored background cloud. 5 themes × 6 dots = 30, 8 labels. |
