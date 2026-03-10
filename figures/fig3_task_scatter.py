@@ -38,13 +38,11 @@ CURATED = {
         'Give medications or immunizations.',
         'Position patients for treatment or examination.',
         'Move patients to or from treatment areas.',
-        'Hold patients to ensure proper positioning or safety.',
         'Test patient vision.',
         'Prescribe medications.',
     ],
     'Vehicle & Equipment': [
         'Pilot aircraft.',
-        'Secure cargo.',
         'Operate forklifts or other loaders.',
         'Inspect motor vehicles.',
         'Clean vehicles or vehicle components.',
@@ -65,12 +63,15 @@ CURATED = {
         'Gather financial records.',
         'Examine financial records.',
         'Assess financial status of clients.',
+        'Prepare operational budgets.',
     ],
     'Communication': [
         'Write grant proposals.',
         'Write reports or evaluations.',
         'Edit documents.',
         'Edit written materials.',
+        'Type documents.',
+        'Transcribe spoken or written information.',
     ],
 }
 
@@ -78,7 +79,7 @@ CURATED = {
 LABELED = {
     'Feed patients.',
     'Prescribe medications.',
-    'Secure cargo.',
+    'Inspect motor vehicles.',
     'Operate forklifts or other loaders.',
     'Cut glass.',
     'Apply mortar.',
@@ -92,7 +93,7 @@ LABELED = {
 LABEL_OFFSETS = {
     'Feed patients.':         (-8, -12),
     'Prescribe medications.': (-10, -8),
-    'Secure cargo.':          (10, 6),
+    'Inspect motor vehicles.': (10, 6),
     'Operate forklifts or other loaders.': (-10, 16),
     'Apply mortar.':          (-10, -8),
     'Cut glass.':             (8, 5),

@@ -3,13 +3,11 @@ dwa_id,description,cluster_name,semantic_x,semantic_y,labeled
 4.A.4.a.5.I03.D01,Give medications or immunizations.,Healthcare,-2.343416929244995,-1.4032853841781616,False
 4.A.4.a.5.I11.D04,Position patients for treatment or examination.,Healthcare,-2.730769634246826,-1.1422457695007324,False
 4.A.3.a.1.I13.D02,Move patients to or from treatment areas.,Healthcare,-3.1716318130493164,-1.2589436769485474,False
-4.A.4.a.5.I11.D02,Hold patients to ensure proper positioning or safety.,Healthcare,-2.9198644161224365,-2.111271619796753,False
 4.A.1.b.2.I01.D04,Test patient vision.,Healthcare,-0.4119163453578949,0.9824872612953186,False
 4.A.4.c.3.I06.D03,Prescribe medications.,Healthcare,-1.0481672286987305,-0.3209066092967987,True
 4.A.3.a.4.I01.D11,Pilot aircraft.,Vehicle & Equipment,0.0630195140838623,-2.060875654220581,False
-4.A.3.a.1.I06.D09,Secure cargo.,Vehicle & Equipment,1.7595007419586182,0.08151880651712418,True
 4.A.3.a.3.I08.D01,Operate forklifts or other loaders.,Vehicle & Equipment,0.5731407403945923,-5.122276306152344,True
-4.A.1.b.2.I04.D01,Inspect motor vehicles.,Vehicle & Equipment,0.3079209625720978,-1.228173851966858,False
+4.A.1.b.2.I04.D01,Inspect motor vehicles.,Vehicle & Equipment,0.3079209625720978,-1.228173851966858,True
 4.A.3.a.1.I03.D25,Clean vehicles or vehicle components.,Vehicle & Equipment,0.5752435326576233,-2.3512158393859863,False
 4.A.4.a.5.I10.D06,Assist passengers during vehicle boarding.,Vehicle & Equipment,-0.08269228041172028,-1.7738717794418335,False
 4.A.3.a.2.I04.D07,Install vehicle parts or accessories.,Vehicle & Equipment,0.30702388286590576,-2.6348772048950195,False
@@ -24,7 +22,10 @@ dwa_id,description,cluster_name,semantic_x,semantic_y,labeled
 4.A.1.a.1.I04.D04,Gather financial records.,Quantitative,1.3749043941497803,4.295835971832275,False
 4.A.2.a.3.I03.D02,Examine financial records.,Quantitative,1.6170238256454468,5.33951473236084,False
 4.A.2.a.1.I09.D02,Assess financial status of clients.,Quantitative,1.6940662860870361,4.728421211242676,False
+4.A.4.b.4.I09.D04,Prepare operational budgets.,Quantitative,0.6513559222221375,2.231232166290283,False
 4.A.3.b.6.I07.D02,Write grant proposals.,Communication,2.943415880203247,2.0400390625,True
 4.A.3.b.6.I03.D06,Write reports or evaluations.,Communication,3.4683046340942383,1.4543788433074951,False
 4.A.2.b.1.I07.D02,Edit documents.,Communication,1.0573666095733643,2.046536445617676,False
 4.A.2.b.1.I07.D01,Edit written materials.,Communication,-0.4982199966907501,2.608262062072754,True
+4.A.4.c.1.I01.D07,Type documents.,Communication,0.8068466186523438,0.4606093764305115,False
+4.A.3.b.6.I08.D16,Transcribe spoken or written information.,Communication,-3.160395383834839,2.3349556922912598,False

@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.10.15
+**Current Version:** 0.7.10.16
 **Last Updated:** 2026-03-10
 **Paper Draft:** `paper/main.tex`
 
@@ -764,6 +764,7 @@ Deprecated approaches. Do not retry.
 | Version | Date | Changes |
 |---------|------|---------|
 | 0.7.9.3 | 2026-03-09 | Captions for fig3/fig4, swap fig5/fig6 to Budget vs Credit Analysts. |
+| 0.7.10.16 | 2026-03-10 | Fig3 rebalance 6 per theme = 30 DWAs, 10 labels. Added Transcribe, Type documents, Prepare budgets. |
 | 0.7.10.15 | 2026-03-10 | Fig3 swap Test patient vision for Prescribe medications label. 29 DWAs, 10 labels. |
 | 0.7.10.14 | 2026-03-10 | Fig3 three more labels (Apply mortar, Calculate financial data, Edit written materials), legend upper-left. 28 DWAs, 10 labels. |
 | 0.7.10.13 | 2026-03-10 | Fig3 swap Pilot Aircraft for Secure Cargo + Operate Forklifts labels. 27 DWAs, 7 labels. |
