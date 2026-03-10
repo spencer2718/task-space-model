@@ -48,8 +48,8 @@ ax1.axvline(d_onet_pair, color=DARK, linestyle='--', linewidth=1.2, zorder=3)
 fig.canvas.draw()
 ax1.annotate(f'Budget\u2013Credit: {d_onet_pair:.2f}',
              xy=(d_onet_pair, 100),
-             xytext=(-80, 30), textcoords='offset points',
-             fontsize=8, color=DARK, fontweight='bold',
+             xytext=(-15, 30), textcoords='offset points',
+             fontsize=8, color=DARK, fontweight='bold', ha='right',
              arrowprops=dict(arrowstyle='->', color=DARK, lw=0.8))
 ax1.set_title("O*NET Cosine Distance", fontsize=10, color=DARK, pad=6)
 ax1.set_ylabel('Pairs', fontsize=8, color=MID)

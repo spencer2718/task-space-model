@@ -79,8 +79,8 @@ for dwa, y in zip(shared_dwas, ys):
 # Vertical column separators
 sep_top = max(ys) + 0.5
 sep_bot = min(ys) - 0.5
-ax.plot([3.4, 3.4], [sep_bot, sep_top], color=GRID, lw=0.8, ls='--', zorder=0)
-ax.plot([6.6, 6.6], [sep_bot, sep_top], color=GRID, lw=0.8, ls='--', zorder=0)
+ax.plot([3.35, 3.35], [sep_bot, sep_top], color=GRID, lw=0.8, ls='--', zorder=0)
+ax.plot([6.65, 6.65], [sep_bot, sep_top], color=GRID, lw=0.8, ls='--', zorder=0)
 
 # Column headers
 ax.text(1.8, 8.2, 'unique', ha='center', va='center',
@@ -91,14 +91,14 @@ ax.text(8.2, 8.2, 'unique', ha='center', va='center',
         fontsize=7.5, color=SECONDARY, fontstyle='italic')
 
 # Vertical ellipses indicating more DWAs exist
-ax.text(1.8, 7.9, '⋮', ha='center', va='center', fontsize=10, color=PRIMARY)
-ax.text(1.8, 4.55, '⋮', ha='center', va='center', fontsize=10, color=PRIMARY)
-ax.text(8.2, 7.9, '⋮', ha='center', va='center', fontsize=10, color=SECONDARY)
-ax.text(8.2, 4.55, '⋮', ha='center', va='center', fontsize=10, color=SECONDARY)
+ax.text(1.8, 8.05, '⋮', ha='center', va='center', fontsize=10, color=PRIMARY)
+ax.text(1.8, 4.25, '⋮', ha='center', va='center', fontsize=10, color=PRIMARY)
+ax.text(8.2, 8.05, '⋮', ha='center', va='center', fontsize=10, color=SECONDARY)
+ax.text(8.2, 4.25, '⋮', ha='center', va='center', fontsize=10, color=SECONDARY)
 
 # Subtitle
 ax.text(5.0, 3.8,
-        'Only 3 of 19 DWAs overlap — O*NET sees these as distant (d = 0.71)',
+        'Only 3 of 19 DWAs overlap — O*NET sees these as distant (d = 0.70)',
         ha='center', va='center', fontsize=7.5, color=MID, fontstyle='italic')
 
 plt.tight_layout()
