@@ -86,6 +86,8 @@ Our delta: the factorial decomposition + choice-model framework + scale (89K US 
 
 **Diagonal correction (v0.7.7.0):** Embedding Wasserstein matrix had 170/447 nonzero diagonal entries from SOC→Census aggregation. Correcting this reduces pseudo-R² from 14.5% to 13.8% and flips the ranking: centroid (14.1%) now outperforms Wasserstein (13.8%). All published numbers use corrected values.
 
+**Presentation (v0.7.10.x):** 9 figures across 11 slides + 1 backup. Figs 1–7 finalized; figs 8–9 (embedding explainer) in polish. Fig3 (task scatter) needs formatting pass.
+
 ---
 
 ## Decision Authority
