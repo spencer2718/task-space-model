@@ -1,10 +1,10 @@
 """
-Figure 3 v7 — Task embeddings with Routine/Manual semantic axes
-Short-name-first selection: only DWAs with titles ≤ 20 chars are candidates.
-5 themes × 6 dots × 2 labels, adjustText, spatial separation between groups.
+Figure 3 v8 — Task embeddings with Routine/Manual semantic axes
+Keyword-only clustering: match DWA titles against theme patterns.
+5 themes × 6 dots × 2 labels, adjustText.
 Target: Slide 4 ("Tasks in Semantic Space")
 """
-import sys, os
+import sys, os, re
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 import numpy as np
@@ -39,81 +39,50 @@ anchors = {
     'manual':      "manual physical hands-on bodily labor using tools and equipment",
 }
 
-# === Stage 1: Narrowed GWA-to-theme mapping ===
-GWA_TO_THEME = {
-    'Assisting and Caring for Others': 'Healthcare',
-    'Performing General Physical Activities': 'Construction',
-    'Repairing and Maintaining Mechanical Equipment': 'Vehicle & Equipment',
-    'Operating Vehicles, Mechanized Devices, or Equipment': 'Vehicle & Equipment',
-    'Analyzing Data or Information': 'Quantitative',
-    'Estimating the Quantifiable Characteristics of Products, Events, or Information': 'Quantitative',
-    'Communicating with People Outside the Organization': 'Communication',
-    'Documenting/Recording Information': 'Communication',
-}
-
-# === Stage 2: Keyword confirmation ===
-THEME_KEYWORDS = {
-    'Healthcare':          ['patient', 'medical', 'health', 'treat', 'diagnos', 'nurs',
-                            'therap', 'immuniz', 'prescri', 'symptom'],
+# === Theme definitions: keywords matched against DWA titles ===
+THEME_PATTERNS = {
+    'Healthcare':          ['patient', 'medical', 'health', 'nurs', 'treat', 'diagnos',
+                            'immuniz', 'prescri', 'symptom', 'therap'],
     'Vehicle & Equipment': ['vehicle', 'drive', 'truck', 'aircraft', 'pilot', 'forklift',
-                            'engine', 'mechanic', 'tire', 'cargo', 'equipment'],
-    'Construction':        ['construct', 'build', 'weld', 'masonry', 'concrete', 'plumb',
-                            'excavat', 'trench', 'scaffold', 'install', 'roofing', 'mortar',
-                            'lumber'],
-    'Quantitative':        ['financial', 'data', 'statistic', 'calculat', 'budget', 'quantit',
-                            'forecast', 'analyz', 'audit', 'account'],
-    'Communication':       ['document', 'write', 'edit', 'report', 'present', 'correspond',
-                            'publish', 'transcri', 'proofread'],
+                            'engine', 'tire', 'cargo', r'operat.*crane', 'tow '],
+    'Construction':        ['weld', 'masonry', 'concrete', 'plumb', 'mortar', 'excavat',
+                            'trench', 'scaffold', 'roofing', 'drywall', 'flooring', 'lumber'],
+    'Quantitative':        ['financial', 'statistic', 'budget', 'forecast', 'audit',
+                            'tax', 'accounting', 'actuari'],
+    'Communication':       ['edit document', 'edit written', r'write ', 'proofread',
+                            'transcri', 'publish', 'draft ', 'grant proposal'],
 }
 
-MAX_TITLE_LEN = 20
 
-
-def passes_keyword_filter(title, theme):
+def match_theme(title):
     title_lower = title.lower()
-    return any(kw in title_lower for kw in THEME_KEYWORDS[theme])
+    for theme, patterns in THEME_PATTERNS.items():
+        if any(re.search(p, title_lower) for p in patterns):
+            return theme
+    return None
 
 
 # === Load embeddings ===
 print("Loading DWA domain and embeddings...")
 domain = build_dwa_activity_domain()
-dwa_titles = get_dwa_titles()
+dwa_titles_dict = get_dwa_titles()
 dwa_ids = domain.activity_ids
-dwa_texts = [dwa_titles.get(aid, aid) for aid in dwa_ids]
+dwa_texts = [dwa_titles_dict.get(aid, aid) for aid in dwa_ids]
 titles_clean = [t.rstrip('.') for t in dwa_texts]
 embeddings = get_embeddings(dwa_texts, model="all-mpnet-base-v2")
 print(f"Loaded {len(dwa_ids)} DWAs, embeddings shape: {embeddings.shape}")
 
-# === Load GWA metadata ===
-dwa_meta = pd.read_excel('data/onet/db_30_0_excel/DWA Reference.xlsx')
-dwa_meta = dwa_meta[['DWA ID', 'Element Name']].drop_duplicates(subset='DWA ID').sort_values('DWA ID')
-dwa_id_to_gwa = dict(zip(dwa_meta['DWA ID'], dwa_meta['Element Name']))
-gwa_names = [dwa_id_to_gwa.get(aid, '') for aid in dwa_ids]
+# === Match themes ===
+themes = [match_theme(t) for t in dwa_texts]
 
-# === Build candidate pools: GWA + keyword + short title ===
-candidates_by_theme = {}
+print("\nTheme match counts:")
 for theme in CLUSTER_COLORS:
-    idxs = []
-    limit = MAX_TITLE_LEN
-    for i, gwa in enumerate(gwa_names):
-        candidate_theme = GWA_TO_THEME.get(gwa, None)
-        if (candidate_theme == theme
-                and passes_keyword_filter(dwa_texts[i], theme)
-                and len(titles_clean[i]) <= limit):
-            idxs.append(i)
-    # Relax to 25 if fewer than 6
+    idxs = [i for i, t in enumerate(themes) if t == theme]
+    print(f"  {theme:<22s}  {len(idxs)}")
     if len(idxs) < 6:
-        print(f"NOTE: {theme} has only {len(idxs)} candidates at ≤{MAX_TITLE_LEN} chars, relaxing to 25")
-        limit = 25
-        idxs = []
-        for i, gwa in enumerate(gwa_names):
-            candidate_theme = GWA_TO_THEME.get(gwa, None)
-            if (candidate_theme == theme
-                    and passes_keyword_filter(dwa_texts[i], theme)
-                    and len(titles_clean[i]) <= limit):
-                idxs.append(i)
-    candidates_by_theme[theme] = idxs
-    print(f"{theme}: {len(idxs)} short-titled candidates (≤{limit} chars)")
+        print(f"    WARNING: < 6 matches. Titles:")
+        for i in idxs:
+            print(f"      {titles_clean[i]}")
 
 # === Embed anchors ===
 anchor_texts = list(anchors.values())
@@ -141,72 +110,46 @@ all_x = (raw_x - raw_x.mean()) / raw_x.std() * 2.5
 all_y = (raw_y - raw_y.mean()) / raw_y.std() * 2.5
 
 
-# === Density-based selection with spatial separation ===
-def find_densest_group_separated(idxs, all_x, all_y, prior_centroids,
-                                 n=6, min_sep=1.0):
-    """Find n densest points whose centroid is separated from prior groups."""
-    xs = np.array([all_x[i] for i in idxs])
-    ys = np.array([all_y[i] for i in idxs])
-
+# === Density-based selection ===
+def find_densest_group(idxs, all_x, all_y, n=6):
+    """Find n points in the densest region using k-NN seed."""
     if len(idxs) <= n:
         return list(idxs)
+
+    xs = np.array([all_x[i] for i in idxs])
+    ys = np.array([all_y[i] for i in idxs])
 
     tree = cKDTree(np.column_stack([xs, ys]))
     k = min(n - 1, len(idxs) - 1)
     dists, _ = tree.query(np.column_stack([xs, ys]), k=k + 1)
     density = dists[:, 1:].mean(axis=1)
 
-    # Try seeds from densest to least dense
-    for seed_rank in np.argsort(density):
-        _, nn = tree.query(np.column_stack([xs, ys])[seed_rank:seed_rank + 1], k=n)
-        group = [idxs[i] for i in nn[0]]
-
-        cx = np.mean([all_x[i] for i in group])
-        cy = np.mean([all_y[i] for i in group])
-
-        too_close = False
-        for px, py in prior_centroids:
-            if np.hypot(cx - px, cy - py) < min_sep:
-                too_close = True
-                break
-
-        if not too_close:
-            return group
-
-    # Fallback: reduce min_sep and retry
-    if min_sep > 0.5:
-        print(f"  WARNING: reducing min_sep from {min_sep} to 0.5")
-        return find_densest_group_separated(idxs, all_x, all_y, prior_centroids,
-                                            n=n, min_sep=0.5)
-
-    # Final fallback: just use densest
     seed = np.argmin(density)
-    _, nn = tree.query(np.column_stack([xs, ys])[seed:seed + 1], k=n)
-    return [idxs[i] for i in nn[0]]
+    _, nn_idxs = tree.query(np.column_stack([xs, ys])[seed:seed + 1], k=n)
+    return [idxs[i] for i in nn_idxs[0]]
 
 
-def pick_labels(group, n=2):
-    """Pick the n shortest-titled DWAs for labeling."""
-    by_len = sorted(group, key=lambda i: len(titles_clean[i]))
-    return set(by_len[:n])
+def pick_labels(group, n=2, max_len=28):
+    """Pick the n shortest-titled DWAs that fit within max_len."""
+    candidates = [(i, len(titles_clean[i])) for i in group if len(titles_clean[i]) <= max_len]
+    candidates.sort(key=lambda x: x[1])
+    return set(c[0] for c in candidates[:n])
 
 
 selected = []
-prior_centroids = []
 print("\n=== Selected groups ===")
 for theme in CLUSTER_COLORS:
-    idxs = candidates_by_theme[theme]
+    idxs = [i for i, t in enumerate(themes) if t == theme]
     if len(idxs) < 3:
-        print(f"WARNING: {theme} has only {len(idxs)} candidates — skipping")
+        print(f"WARNING: {theme} has only {len(idxs)} matches — skipping")
         continue
 
     n_group = min(6, len(idxs))
-    group = find_densest_group_separated(idxs, all_x, all_y, prior_centroids, n=n_group)
+    group = find_densest_group(idxs, all_x, all_y, n=n_group)
     labeled_set = pick_labels(group, n=2)
 
     cx = np.mean([all_x[i] for i in group])
     cy = np.mean([all_y[i] for i in group])
-    prior_centroids.append((cx, cy))
 
     print(f"\n{theme} ({len(group)} dots, centroid=({cx:+.2f}, {cy:+.2f})):")
     for idx in group:
@@ -226,15 +169,6 @@ sel_df = pd.DataFrame(selected)
 n_labeled = sel_df['labeled'].sum()
 print(f"\nSelected {len(sel_df)} DWAs total, {n_labeled} labeled")
 
-# Print centroid separations
-print("\nCentroid separations:")
-for i in range(len(prior_centroids)):
-    for j in range(i + 1, len(prior_centroids)):
-        d = np.hypot(prior_centroids[i][0] - prior_centroids[j][0],
-                     prior_centroids[i][1] - prior_centroids[j][1])
-        themes_list = list(CLUSTER_COLORS.keys())
-        print(f"  {themes_list[i]:<22s} ↔ {themes_list[j]:<22s}  {d:.2f}")
-
 # Print final label strings
 print("\nFinal labels:")
 for _, row in sel_df[sel_df['labeled']].iterrows():
@@ -244,7 +178,7 @@ for _, row in sel_df[sel_df['labeled']].iterrows():
 # === Build figure ===
 fig, ax = plt.subplots(figsize=(6.0, 4.0))
 
-# Background cloud
+# Background cloud — ALL 2,087 DWAs
 ax.scatter(all_x, all_y, s=3, c='#E0E0E0', alpha=0.3,
            edgecolors='none', zorder=0, rasterized=True)
 
@@ -276,6 +210,20 @@ adjust_text(texts, ax=ax,
             force_points=(0.5, 0.5),
             expand_text=(1.1, 1.2),
             lim=1000)
+
+# Post-adjustText: flip any label that lands in legend region (lower-right)
+fig.canvas.draw()
+renderer = fig.canvas.get_renderer()
+for t in texts:
+    bbox = t.get_window_extent(renderer)
+    data_bbox = ax.transData.inverted().transform(bbox)
+    # If label center is in lower-right quadrant (legend area)
+    cx_label = (data_bbox[0, 0] + data_bbox[1, 0]) / 2
+    cy_label = (data_bbox[0, 1] + data_bbox[1, 1]) / 2
+    if cx_label > 2.0 and cy_label < -2.0:
+        # Move label to opposite side of its dot
+        pos = t.get_position()
+        t.set_position((pos[0] - 2.0, pos[1] + 1.0))
 
 # Legend — lower right
 handles = [Line2D([0], [0], marker='o', color='w',

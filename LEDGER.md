@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.10.8
+**Current Version:** 0.7.10.9
 **Last Updated:** 2026-03-10
 **Paper Draft:** `paper/main.tex`
 
@@ -764,6 +764,7 @@ Deprecated approaches. Do not retry.
 | Version | Date | Changes |
 |---------|------|---------|
 | 0.7.9.3 | 2026-03-09 | Captions for fig3/fig4, swap fig5/fig6 to Budget vs Credit Analysts. |
+| 0.7.10.9 | 2026-03-10 | Fig3 keyword-only clustering, restored background cloud. 5 themes × 6 dots = 30, 8 labels. |
 | 0.7.10.8 | 2026-03-10 | Fig3 short-name-first selection with spatial separation. Construction dropped (2 candidates). Healthcare reduced to 3. |
 | 0.7.10.7 | 2026-03-10 | Fig3 — 5 themes × 6 dots × 2 labels, adjustText, legend lower-right. Technology dropped. |
 | 0.7.10.6 | 2026-03-10 | Fig3 keyword-filtered theme assignment + diversity filter. Technology theme empty (0 DWAs pass filter). |
