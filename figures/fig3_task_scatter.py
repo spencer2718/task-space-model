@@ -86,26 +86,27 @@ LABELED = {
     'Balance receipts.',
     'Calculate financial data.',
     'Write grant proposals.',
-    'Edit written materials.',
+    'Transcribe spoken or written information.',
 }
 
 # Annotation offsets (dx, dy) in points
 LABEL_OFFSETS = {
     'Feed patients.':         (-8, -12),
     'Prescribe medications.': (-10, -8),
-    'Inspect motor vehicles.': (-10, 8),
+    'Inspect motor vehicles.': (10, 10),
     'Operate forklifts or other loaders.': (10, -10),
-    'Apply mortar.':          (10, -6),
+    'Apply mortar.':          (10, 2),
     'Cut glass.':             (8, 5),
-    'Balance receipts.':      (10, 0),
+    'Balance receipts.':      (-8, 8),
     'Calculate financial data.': (10, -6),
     'Write grant proposals.': (8, 8),
-    'Edit written materials.': (-10, 0),
+    'Transcribe spoken or written information.': (0, -14),
 }
 
 # Display-name overrides for long titles
 DISPLAY_NAME = {
     'Operate forklifts or other loaders.': 'Operate forklifts',
+    'Transcribe spoken or written information.': 'Transcribe information',
 }
 
 # === Semantic anchor phrases ===
@@ -202,7 +203,7 @@ for _, row in sel_df[sel_df['labeled']].iterrows():
     ax.annotate(label, xy=(row['x'], row['y']),
                 xytext=offset, textcoords='offset points',
                 fontsize=FONT_TICK, color=color, fontweight='bold',
-                ha='left' if offset[0] > 0 else 'right',
+                ha='center' if offset[0] == 0 else ('left' if offset[0] > 0 else 'right'),
                 va='center', zorder=3)
 
 # Legend — lower right

@@ -26,6 +26,6 @@ dwa_id,description,cluster_name,semantic_x,semantic_y,labeled
 4.A.3.b.6.I07.D02,Write grant proposals.,Communication,2.943415880203247,2.0400390625,True
 4.A.3.b.6.I03.D06,Write reports or evaluations.,Communication,3.4683046340942383,1.4543788433074951,False
 4.A.2.b.1.I07.D02,Edit documents.,Communication,1.0573666095733643,2.046536445617676,False
-4.A.2.b.1.I07.D01,Edit written materials.,Communication,-0.4982199966907501,2.608262062072754,True
+4.A.2.b.1.I07.D01,Edit written materials.,Communication,-0.4982199966907501,2.608262062072754,False
 4.A.4.c.1.I01.D07,Type documents.,Communication,0.8068466186523438,0.4606093764305115,False
-4.A.3.b.6.I08.D16,Transcribe spoken or written information.,Communication,-3.160395383834839,2.3349556922912598,False
+4.A.3.b.6.I08.D16,Transcribe spoken or written information.,Communication,-3.160395383834839,2.3349556922912598,True
