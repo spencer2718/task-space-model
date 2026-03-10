@@ -93,14 +93,14 @@ LABELED = {
 LABEL_OFFSETS = {
     'Feed patients.':         (-8, -12),
     'Prescribe medications.': (-10, -8),
-    'Inspect motor vehicles.': (10, 6),
-    'Operate forklifts or other loaders.': (-10, 16),
-    'Apply mortar.':          (-10, -8),
+    'Inspect motor vehicles.': (-10, 8),
+    'Operate forklifts or other loaders.': (10, -10),
+    'Apply mortar.':          (10, -6),
     'Cut glass.':             (8, 5),
-    'Balance receipts.':      (-8, -12),
+    'Balance receipts.':      (10, 0),
     'Calculate financial data.': (10, -6),
     'Write grant proposals.': (8, 8),
-    'Edit written materials.': (10, 6),
+    'Edit written materials.': (-10, 0),
 }
 
 # Display-name overrides for long titles
