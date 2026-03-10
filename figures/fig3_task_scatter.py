@@ -93,20 +93,25 @@ LABELED = {
 LABEL_OFFSETS = {
     'Feed patients.':         (-8, -12),
     'Prescribe medications.': (-10, -8),
-    'Inspect motor vehicles.': (0, 12),
+    'Inspect motor vehicles.': (3, 9),
     'Operate forklifts or other loaders.': (0, -14),
     'Apply mortar.':          (10, 2),
     'Cut glass.':             (8, 5),
     'Balance receipts.':      (0, 10),
     'Calculate financial data.': (10, -6),
     'Write grant proposals.': (8, 8),
-    'Transcribe spoken or written information.': (0, -14),
+    'Transcribe spoken or written information.': (0, -11),
 }
 
 # Display-name overrides for long titles
 DISPLAY_NAME = {
     'Operate forklifts or other loaders.': 'Operate forklifts',
     'Transcribe spoken or written information.': 'Transcribe information',
+}
+
+# Alignment overrides (bypass the offset-based ha logic)
+HA_OVERRIDE = {
+    'Inspect motor vehicles.': 'center',
 }
 
 # === Semantic anchor phrases ===
@@ -203,7 +208,8 @@ for _, row in sel_df[sel_df['labeled']].iterrows():
     ax.annotate(label, xy=(row['x'], row['y']),
                 xytext=offset, textcoords='offset points',
                 fontsize=FONT_TICK, color=color, fontweight='bold',
-                ha='center' if offset[0] == 0 else ('left' if offset[0] > 0 else 'right'),
+                ha=HA_OVERRIDE.get(row['description'],
+                   'center' if offset[0] == 0 else ('left' if offset[0] > 0 else 'right')),
                 va='center', zorder=3)
 
 # Legend — lower right
