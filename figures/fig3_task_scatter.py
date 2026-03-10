@@ -1,6 +1,7 @@
 """
-Figure 3 v6 — Task embeddings with Routine/Manual semantic axes
-5 themes × 6 dots × 2 labels, adjustText for collision-free placement.
+Figure 3 v7 — Task embeddings with Routine/Manual semantic axes
+Short-name-first selection: only DWAs with titles ≤ 20 chars are candidates.
+5 themes × 6 dots × 2 labels, adjustText, spatial separation between groups.
 Target: Slide 4 ("Tasks in Semantic Space")
 """
 import sys, os
@@ -15,7 +16,7 @@ from scipy.spatial import cKDTree
 from adjustText import adjust_text
 
 from figures.style import (setup, DARK, MID, GRID, PRIMARY, SECONDARY,
-                           RED, ORANGE, GREEN, FONT_LABEL, FONT_TICK, add_subtitle)
+                           RED, ORANGE, GREEN, FONT_TICK, add_subtitle)
 from src.task_space.data.onet import get_dwa_titles
 from src.task_space.data.artifacts import get_embeddings
 from src.task_space.domain import build_dwa_activity_domain
@@ -65,6 +66,8 @@ THEME_KEYWORDS = {
                             'publish', 'transcri', 'proofread'],
 }
 
+MAX_TITLE_LEN = 20
+
 
 def passes_keyword_filter(title, theme):
     title_lower = title.lower()
@@ -77,6 +80,7 @@ domain = build_dwa_activity_domain()
 dwa_titles = get_dwa_titles()
 dwa_ids = domain.activity_ids
 dwa_texts = [dwa_titles.get(aid, aid) for aid in dwa_ids]
+titles_clean = [t.rstrip('.') for t in dwa_texts]
 embeddings = get_embeddings(dwa_texts, model="all-mpnet-base-v2")
 print(f"Loaded {len(dwa_ids)} DWAs, embeddings shape: {embeddings.shape}")
 
@@ -86,19 +90,30 @@ dwa_meta = dwa_meta[['DWA ID', 'Element Name']].drop_duplicates(subset='DWA ID')
 dwa_id_to_gwa = dict(zip(dwa_meta['DWA ID'], dwa_meta['Element Name']))
 gwa_names = [dwa_id_to_gwa.get(aid, '') for aid in dwa_ids]
 
-# Two-stage theme assignment
-themes = []
-for i, gwa in enumerate(gwa_names):
-    candidate_theme = GWA_TO_THEME.get(gwa, None)
-    if candidate_theme and passes_keyword_filter(dwa_texts[i], candidate_theme):
-        themes.append(candidate_theme)
-    else:
-        themes.append(None)
-
-print("\nTheme pool sizes (after GWA + keyword filter):")
+# === Build candidate pools: GWA + keyword + short title ===
+candidates_by_theme = {}
 for theme in CLUSTER_COLORS:
-    n = sum(1 for t in themes if t == theme)
-    print(f"  {theme:<22s}  {n}")
+    idxs = []
+    limit = MAX_TITLE_LEN
+    for i, gwa in enumerate(gwa_names):
+        candidate_theme = GWA_TO_THEME.get(gwa, None)
+        if (candidate_theme == theme
+                and passes_keyword_filter(dwa_texts[i], theme)
+                and len(titles_clean[i]) <= limit):
+            idxs.append(i)
+    # Relax to 25 if fewer than 6
+    if len(idxs) < 6:
+        print(f"NOTE: {theme} has only {len(idxs)} candidates at ≤{MAX_TITLE_LEN} chars, relaxing to 25")
+        limit = 25
+        idxs = []
+        for i, gwa in enumerate(gwa_names):
+            candidate_theme = GWA_TO_THEME.get(gwa, None)
+            if (candidate_theme == theme
+                    and passes_keyword_filter(dwa_texts[i], theme)
+                    and len(titles_clean[i]) <= limit):
+                idxs.append(i)
+    candidates_by_theme[theme] = idxs
+    print(f"{theme}: {len(idxs)} short-titled candidates (≤{limit} chars)")
 
 # === Embed anchors ===
 anchor_texts = list(anchors.values())
@@ -126,59 +141,78 @@ all_x = (raw_x - raw_x.mean()) / raw_x.std() * 2.5
 all_y = (raw_y - raw_y.mean()) / raw_y.std() * 2.5
 
 
-# === Density-based selection: densest group of n per theme ===
-def find_densest_group(idxs, all_x, all_y, n=6):
-    """Find n points in the densest region using k-nearest neighbors."""
+# === Density-based selection with spatial separation ===
+def find_densest_group_separated(idxs, all_x, all_y, prior_centroids,
+                                 n=6, min_sep=1.0):
+    """Find n densest points whose centroid is separated from prior groups."""
     xs = np.array([all_x[i] for i in idxs])
     ys = np.array([all_y[i] for i in idxs])
+
+    if len(idxs) <= n:
+        return list(idxs)
 
     tree = cKDTree(np.column_stack([xs, ys]))
     k = min(n - 1, len(idxs) - 1)
     dists, _ = tree.query(np.column_stack([xs, ys]), k=k + 1)
     density = dists[:, 1:].mean(axis=1)
 
-    # Seed: the densest point and its k nearest neighbors
+    # Try seeds from densest to least dense
+    for seed_rank in np.argsort(density):
+        _, nn = tree.query(np.column_stack([xs, ys])[seed_rank:seed_rank + 1], k=n)
+        group = [idxs[i] for i in nn[0]]
+
+        cx = np.mean([all_x[i] for i in group])
+        cy = np.mean([all_y[i] for i in group])
+
+        too_close = False
+        for px, py in prior_centroids:
+            if np.hypot(cx - px, cy - py) < min_sep:
+                too_close = True
+                break
+
+        if not too_close:
+            return group
+
+    # Fallback: reduce min_sep and retry
+    if min_sep > 0.5:
+        print(f"  WARNING: reducing min_sep from {min_sep} to 0.5")
+        return find_densest_group_separated(idxs, all_x, all_y, prior_centroids,
+                                            n=n, min_sep=0.5)
+
+    # Final fallback: just use densest
     seed = np.argmin(density)
-    _, nn_idxs = tree.query(np.column_stack([xs, ys])[seed:seed + 1], k=min(n, len(idxs)))
-    group = [idxs[i] for i in nn_idxs[0]]
-    return group
+    _, nn = tree.query(np.column_stack([xs, ys])[seed:seed + 1], k=n)
+    return [idxs[i] for i in nn[0]]
 
 
-def pick_labels(group_idxs, n_labels=2):
+def pick_labels(group, n=2):
     """Pick the n shortest-titled DWAs for labeling."""
-    by_len = sorted(group_idxs, key=lambda i: len(dwa_texts[i]))
-    return set(by_len[:n_labels])
-
-
-def short_label(text, max_len=28):
-    """Trim DWA text to a short label."""
-    text = text.rstrip('.')
-    if len(text) <= max_len:
-        return text
-    cut = text[:max_len].rfind(' ')
-    return text[:cut] + '...' if cut > 10 else text[:max_len - 3] + '...'
+    by_len = sorted(group, key=lambda i: len(titles_clean[i]))
+    return set(by_len[:n])
 
 
 selected = []
+prior_centroids = []
 print("\n=== Selected groups ===")
 for theme in CLUSTER_COLORS:
-    idxs = [i for i, t in enumerate(themes) if t == theme]
-    n_available = len(idxs)
-    n_group = min(6, n_available)
-    if n_available < 3:
-        print(f"WARNING: {theme} has only {n_available} DWAs")
+    idxs = candidates_by_theme[theme]
+    if len(idxs) < 3:
+        print(f"WARNING: {theme} has only {len(idxs)} candidates — skipping")
         continue
-    if n_available < 6:
-        print(f"NOTE: {theme} has only {n_available} DWAs, using all")
 
-    group = find_densest_group(idxs, all_x, all_y, n=n_group)
-    labeled_set = pick_labels(group, n_labels=2)
+    n_group = min(6, len(idxs))
+    group = find_densest_group_separated(idxs, all_x, all_y, prior_centroids, n=n_group)
+    labeled_set = pick_labels(group, n=2)
 
-    print(f"\n{theme} ({n_group} dots, 2 labeled):")
+    cx = np.mean([all_x[i] for i in group])
+    cy = np.mean([all_y[i] for i in group])
+    prior_centroids.append((cx, cy))
+
+    print(f"\n{theme} ({len(group)} dots, centroid=({cx:+.2f}, {cy:+.2f})):")
     for idx in group:
         is_labeled = idx in labeled_set
         marker = '  *' if is_labeled else '   '
-        print(f" {marker} ({all_x[idx]:+.2f}, {all_y[idx]:+.2f})  {dwa_texts[idx]}")
+        print(f" {marker} ({all_x[idx]:+.2f}, {all_y[idx]:+.2f})  [{len(titles_clean[idx]):2d}] {titles_clean[idx]}")
         selected.append({
             'dwa_id': dwa_ids[idx],
             'description': dwa_texts[idx],
@@ -189,7 +223,23 @@ for theme in CLUSTER_COLORS:
         })
 
 sel_df = pd.DataFrame(selected)
-print(f"\nSelected {len(sel_df)} DWAs total, {sel_df['labeled'].sum()} labeled")
+n_labeled = sel_df['labeled'].sum()
+print(f"\nSelected {len(sel_df)} DWAs total, {n_labeled} labeled")
+
+# Print centroid separations
+print("\nCentroid separations:")
+for i in range(len(prior_centroids)):
+    for j in range(i + 1, len(prior_centroids)):
+        d = np.hypot(prior_centroids[i][0] - prior_centroids[j][0],
+                     prior_centroids[i][1] - prior_centroids[j][1])
+        themes_list = list(CLUSTER_COLORS.keys())
+        print(f"  {themes_list[i]:<22s} ↔ {themes_list[j]:<22s}  {d:.2f}")
+
+# Print final label strings
+print("\nFinal labels:")
+for _, row in sel_df[sel_df['labeled']].iterrows():
+    label = row['description'].rstrip('.')
+    print(f"  [{len(label):2d}] {label}")
 
 # === Build figure ===
 fig, ax = plt.subplots(figsize=(6.0, 4.0))
@@ -215,17 +265,17 @@ for theme in CLUSTER_COLORS:
 texts = []
 for _, row in sel_df.iterrows():
     if row['labeled']:
-        t = ax.text(row['x'], row['y'], short_label(row['description']),
-                    fontsize=FONT_LABEL, color=CLUSTER_COLORS[row['cluster_name']],
+        t = ax.text(row['x'], row['y'], row['description'].rstrip('.'),
+                    fontsize=FONT_TICK, color=CLUSTER_COLORS[row['cluster_name']],
                     zorder=3)
         texts.append(t)
 
 adjust_text(texts, ax=ax,
             arrowprops=dict(arrowstyle='-', color=GRID, lw=0.5),
-            force_text=(0.5, 0.8),
-            force_points=(0.8, 0.8),
-            expand_text=(1.2, 1.4),
-            lim=500)
+            force_text=(0.3, 0.5),
+            force_points=(0.5, 0.5),
+            expand_text=(1.1, 1.2),
+            lim=1000)
 
 # Legend — lower right
 handles = [Line2D([0], [0], marker='o', color='w',
@@ -235,9 +285,9 @@ ax.legend(handles=handles, loc='lower right', fontsize=FONT_TICK, framealpha=0.9
           edgecolor=GRID, fancybox=False, handletextpad=0.4)
 
 # Axis labels
-ax.set_xlabel('← Routine          Non-Routine →',
+ax.set_xlabel('\u2190 Routine          Non-Routine \u2192',
               fontsize=11, color=MID, labelpad=8)
-ax.set_ylabel('← Manual          Cognitive →',
+ax.set_ylabel('\u2190 Manual          Cognitive \u2192',
               fontsize=11, color=MID, labelpad=8)
 
 # Chrome

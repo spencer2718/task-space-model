@@ -1,31 +1,22 @@
 dwa_id,description,cluster_name,semantic_x,semantic_y,labeled
-4.A.4.a.5.I03.D01,Give medications or immunizations.,Healthcare,-2.343416929244995,-1.4032853841781616,True
-4.A.4.a.5.I11.D04,Position patients for treatment or examination.,Healthcare,-2.730769634246826,-1.1422457695007324,False
-4.A.4.a.5.I11.D03,Adjust positions of patients on beds or tables.,Healthcare,-1.9723230600357056,-1.0909308195114136,False
+4.A.4.a.5.I03.D07,Immunize patients.,Healthcare,-1.5744609832763672,0.18368573486804962,True
+4.A.4.a.5.I07.D03,Treat medical emergencies.,Healthcare,2.3674023151397705,-1.6641474962234497,False
 4.A.4.a.5.I09.D01,Feed patients.,Healthcare,-2.7942941188812256,-1.6949670314788818,True
-4.A.4.a.5.I06.D02,Fit patients for assistive devices.,Healthcare,-1.5482110977172852,-1.3537375926971436,False
-4.A.4.a.5.I11.D02,Hold patients to ensure proper positioning or safety.,Healthcare,-2.9198644161224365,-2.111271619796753,False
-4.A.3.b.4.I09.D02,Maintain medical laboratory equipment.,Vehicle & Equipment,-4.166196823120117,-2.642737865447998,False
-4.A.3.b.4.I02.D18,Maintain electromechanical equipment.,Vehicle & Equipment,-4.220249176025391,-2.9151246547698975,False
-4.A.3.b.4.I02.D10,Maintain extraction or excavation equipment.,Vehicle & Equipment,-3.7587320804595947,-2.6220486164093018,False
-4.A.3.b.4.I06.D01,Replace worn equipment components.,Vehicle & Equipment,-4.247276782989502,-2.231299877166748,True
-4.A.3.b.4.I01.D02,Perform basic equipment maintenance.,Vehicle & Equipment,-4.675011157989502,-2.9259700775146484,True
-4.A.3.b.4.I02.D07,Lubricate equipment to allow proper functioning.,Vehicle & Equipment,-4.110030651092529,-2.059731960296631,False
-4.A.3.a.1.I10.D10,Move construction or extraction materials to locations where they are needed.,Construction,-1.6002986431121826,-2.6630873680114746,False
-4.A.3.a.1.I07.D06,Apply adhesives to construction materials.,Construction,-1.350212812423706,-2.481889247894287,False
-4.A.3.a.1.I05.D08,Remove excess materials from finished construction projects.,Construction,-1.4811210632324219,-2.05256986618042,False
-4.A.3.a.1.I03.D11,Clean building walls or flooring.,Construction,-1.5209836959838867,-3.5734353065490723,True
-4.A.3.a.1.I07.D07,Assist skilled construction or extraction personnel.,Construction,-0.8041889071464539,-3.810319423675537,False
-4.A.3.a.1.I07.D10,Finish concrete surfaces.,Construction,-2.834207057952881,-1.7065649032592773,True
-4.A.2.a.4.I07.D03,"Analyze operational data to evaluate operations, processes or products.",Quantitative,2.0151448249816895,3.10605525970459,False
-4.A.2.a.4.I06.D04,Analyze medical data to determine cause of death.,Quantitative,2.0880534648895264,3.113429069519043,False
-4.A.2.a.4.I01.D03,Analyze geological samples.,Quantitative,1.64583420753479,3.055727481842041,True
-4.A.2.a.4.I05.D04,Analyze green technology design requirements.,Quantitative,2.293543815612793,2.8026299476623535,True
-4.A.2.a.4.I01.D01,Locate natural resources using geospatial or other environmental data.,Quantitative,2.196349859237671,2.72465181350708,False
-4.A.1.b.3.I04.D03,Calculate geographic positions from survey data.,Quantitative,1.730570912361145,3.655764102935791,False
-4.A.3.b.6.I14.D01,Prepare legal or investigatory documentation.,Communication,-0.4791356921195984,1.9273147583007812,False
-4.A.3.b.6.I02.D06,Prepare investigation or incident reports.,Communication,-0.3435606360435486,1.8999476432800293,False
-4.A.4.a.3.I02.D09,Present social services program information to the public.,Communication,-0.20771366357803345,1.6844215393066406,False
-4.A.3.b.6.I03.D08,Prepare technical or operational reports.,Communication,-0.6362661719322205,1.5606682300567627,False
+4.A.3.a.4.I01.D11,Pilot aircraft.,Vehicle & Equipment,0.0630195140838623,-2.060875654220581,True
+4.A.3.a.4.I01.D14,Drive passenger vehicles.,Vehicle & Equipment,3.4229180812835693,-1.9819104671478271,False
+4.A.3.b.4.I02.D09,Clear equipment jams.,Vehicle & Equipment,-1.4133074283599854,-0.08908387273550034,False
+4.A.3.b.4.I04.D07,Maintain test equipment.,Vehicle & Equipment,-2.893155574798584,-0.8727931380271912,False
+4.A.3.b.4.I07.D02,Replace vehicle glass.,Vehicle & Equipment,1.9495489597320557,0.7625259160995483,False
+4.A.3.b.4.I07.D03,Repair tires.,Vehicle & Equipment,3.2867953777313232,-0.80846107006073,True
+4.A.1.b.3.I03.D01,Calculate financial data.,Quantitative,2.684314489364624,6.282027244567871,False
+4.A.1.b.3.I03.D03,Calculate tax information.,Quantitative,-0.057270150631666183,5.153327465057373,False
+4.A.2.a.4.I02.D02,Analyze industry trends.,Quantitative,3.9585976600646973,3.823746681213379,True
+4.A.2.a.4.I02.D07,Analyze consumer trends.,Quantitative,5.921403884887695,4.2490668296813965,False
+4.A.2.a.4.I07.D16,Analyze traffic data.,Quantitative,2.4392597675323486,5.929351329803467,True
+4.A.2.a.4.I07.D17,Analyze energy usage data.,Quantitative,1.3289825916290283,3.985854148864746,False
 4.A.3.b.6.I12.D01,Document lesson plans.,Communication,-0.6923267841339111,2.292026996612549,True
-4.A.3.b.6.I15.D05,Write operational reports.,Communication,-0.9673125147819519,1.8875068426132202,True
+4.A.3.b.6.I15.D05,Write operational reports.,Communication,-0.9673125147819519,1.8875068426132202,False
+4.A.3.b.6.I14.D09,Prepare legal documents.,Communication,-0.5179648399353027,1.1288191080093384,False
+4.A.3.b.6.I09.D06,Document test results.,Communication,0.6884235739707947,3.480011463165283,True
+4.A.4.a.3.I02.D07,Report news to the public.,Communication,2.0866286754608154,3.1442105770111084,False
+4.A.3.b.6.I07.D02,Write grant proposals.,Communication,2.943415880203247,2.0400390625,False
