@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
-from figures.style import setup, PRIMARY, SECONDARY, DARK, MID, GRID
+from figures.style import setup, PRIMARY, SECONDARY, DARK, MID, GRID, FONT_TITLE, FONT_NOTE
 
 font = setup()
 
@@ -57,9 +57,9 @@ def draw_node(ax, x, y, text, color, width=2.6, height=0.7):
 
 # Occupation labels
 ax.text(1.8, 9.3, 'Budget Analysts', ha='center', va='center',
-        fontsize=11, fontweight='bold', color=PRIMARY)
+        fontsize=FONT_TITLE, fontweight='bold', color=PRIMARY)
 ax.text(8.2, 9.3, 'Credit Analysts', ha='center', va='center',
-        fontsize=11, fontweight='bold', color=SECONDARY)
+        fontsize=FONT_TITLE, fontweight='bold', color=SECONDARY)
 
 # Node y-positions (3 rows)
 ys = [7.4, 6.2, 5.0]
@@ -84,11 +84,11 @@ ax.plot([6.65, 6.65], [sep_bot, sep_top], color=GRID, lw=0.8, ls='--', zorder=0)
 
 # Column headers
 ax.text(1.8, 8.35, 'unique', ha='center', va='center',
-        fontsize=7.5, color=PRIMARY, fontstyle='italic')
+        fontsize=FONT_NOTE, color=PRIMARY, fontstyle='italic')
 ax.text(5.0, 8.35, 'shared', ha='center', va='center',
-        fontsize=7.5, color=MID, fontstyle='italic')
+        fontsize=FONT_NOTE, color=MID, fontstyle='italic')
 ax.text(8.2, 8.35, 'unique', ha='center', va='center',
-        fontsize=7.5, color=SECONDARY, fontstyle='italic')
+        fontsize=FONT_NOTE, color=SECONDARY, fontstyle='italic')
 
 # Vertical ellipses indicating more DWAs exist
 ax.text(1.8, 8.05, '⋮', ha='center', va='center', fontsize=10, color=PRIMARY)
@@ -99,7 +99,7 @@ ax.text(8.2, 4.25, '⋮', ha='center', va='center', fontsize=10, color=SECONDARY
 # Subtitle
 ax.text(5.0, 3.8,
         'Only 3 of 19 DWAs overlap — O*NET sees these as distant (d = 0.70)',
-        ha='center', va='center', fontsize=7.5, color=MID, fontstyle='italic')
+        ha='center', va='center', fontsize=FONT_NOTE, color=MID, fontstyle='italic')
 
 plt.tight_layout()
 plt.savefig('figures/fig5_shared_dwas.png', dpi=300, bbox_inches='tight',

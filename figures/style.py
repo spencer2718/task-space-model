@@ -49,7 +49,7 @@ def setup():
     rc = {
         'font.family': font, 'font.size': 14,
         'axes.spines.top': False, 'axes.spines.right': False,
-        'axes.edgecolor': MID, 'axes.labelcolor': DARK,
+        'axes.edgecolor': MID, 'axes.labelcolor': MID,
         'xtick.color': MID, 'ytick.color': MID, 'text.color': DARK,
         'figure.facecolor': BG, 'axes.facecolor': BG,
         'savefig.facecolor': BG, 'savefig.dpi': 300,

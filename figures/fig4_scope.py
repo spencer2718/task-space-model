@@ -6,7 +6,8 @@ import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 import matplotlib.pyplot as plt
-from figures.style import setup, PRIMARY, SECONDARY, DARK, MID, add_subtitle
+from figures.style import (setup, PRIMARY, SECONDARY, DARK, MID, add_subtitle,
+                           FONT_TITLE, FONT_TICK)
 
 font = setup()
 
@@ -23,13 +24,13 @@ bars = ax.bar(range(len(labels)), values, color=colors, width=0.6,
 for i, (v, bar) in enumerate(zip(values, bars)):
     ax.text(bar.get_x() + bar.get_width() / 2, v + 0.02,
             f'{v:.2f}', ha='center', va='bottom',
-            fontsize=11, color=DARK, fontweight='bold')
+            fontsize=FONT_TITLE, color=DARK, fontweight='bold')
 
 ax.set_xticks(range(len(labels)))
-ax.set_xticklabels(labels, fontsize=9, color=DARK)
-ax.set_ylabel('Spearman ρ', fontsize=11, color=MID)
+ax.set_xticklabels(labels, fontsize=FONT_TICK)
+ax.set_ylabel('Spearman ρ', fontsize=FONT_TITLE)
 ax.set_ylim(0, 1.0)
-ax.tick_params(axis='y', labelsize=9)
+ax.tick_params(axis='y', labelsize=FONT_TICK)
 ax.tick_params(axis='x', length=0)
 
 plt.tight_layout()

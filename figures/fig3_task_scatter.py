@@ -14,7 +14,7 @@ from matplotlib.lines import Line2D
 from sklearn.metrics.pairwise import cosine_similarity as cos_sim
 
 from figures.style import (setup, DARK, MID, GRID, PRIMARY, SECONDARY,
-                           RED, ORANGE, GREEN, FONT_TICK, add_subtitle)
+                           RED, ORANGE, GREEN, FONT_TITLE, FONT_TICK, add_subtitle)
 from src.task_space.data.onet import get_dwa_titles
 from src.task_space.data.artifacts import get_embeddings
 from src.task_space.domain import build_dwa_activity_domain
@@ -221,9 +221,9 @@ ax.legend(handles=handles, loc='upper left', fontsize=FONT_TICK, framealpha=0.9,
 
 # Axis labels
 ax.set_xlabel('\u2190 Routine          Non-Routine \u2192',
-              fontsize=11, color=MID, labelpad=8)
+              fontsize=FONT_TITLE, color=MID, labelpad=8)
 ax.set_ylabel('\u2190 Manual          Cognitive \u2192',
-              fontsize=11, color=MID, labelpad=8)
+              fontsize=FONT_TITLE, color=MID, labelpad=8)
 
 # Chrome
 ax.set_xlim(-5.5, 5.5)

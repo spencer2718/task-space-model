@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
-from figures.style import setup, PRIMARY, DARK, MID, GRID
+from figures.style import setup, PRIMARY, DARK, MID, GRID, FONT_TITLE, FONT_TICK
 
 font = setup()
 
@@ -58,12 +58,12 @@ for i, (label, count, pct) in enumerate(stages):
     # Count label above bar
     ax.text(x, y_center + height / 2 + 0.15,
             f'{count:,.0f}', ha='center', va='bottom',
-            fontsize=10, fontweight='bold', color=DARK)
+            fontsize=FONT_TITLE, fontweight='bold', color=DARK)
 
     # Stage label below bar
     ax.text(x, y_center - height / 2 - 0.15,
             label, ha='center', va='top',
-            fontsize=8.5, color=MID, linespacing=1.1)
+            fontsize=FONT_TICK, color=MID, linespacing=1.1)
 
     # Arrow between stages
     if i < len(stages) - 1:
@@ -74,7 +74,7 @@ for i, (label, count, pct) in enumerate(stages):
 final_x = len(stages) - 1
 ax.text(final_x, y_center - 1.3,
         '89,329 verified transitions',
-        ha='center', va='center', fontsize=10, fontweight='bold',
+        ha='center', va='center', fontsize=FONT_TITLE, fontweight='bold',
         color=PRIMARY)
 
 plt.tight_layout()
