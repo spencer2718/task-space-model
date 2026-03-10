@@ -3,9 +3,9 @@
 | File | Slide | Size | Status |
 |------|-------|------|--------|
 | fig1_ai_exposure.png | 2 — Motivation | 9.0″ × 6.5″ | ✅ Done |
-| fig8_embedding_flowchart.png | 3 — What is a Sentence Embedding? (left) | 3.8″ × 4.0″ | 🔄 Polishing |
-| fig9_word_analogy.png | 3 — What is a Sentence Embedding? (right) | 4.5″ × 4.0″ | 🔄 Polishing |
-| fig3_task_scatter.png | 4 — Tasks in Semantic Space | 6.0″ × 4.0″ | 🔄 Needs formatting |
+| fig8_embedding_flowchart.png | 3 — What is a Sentence Embedding? (left) | 3.8″ × 4.0″ | ✅ Done |
+| fig9_word_analogy.png | 3 — What is a Sentence Embedding? (right) | 4.5″ × 4.0″ | ✅ Done |
+| fig3_task_scatter.png | 4 — Tasks in Semantic Space | 6.0″ × 4.0″ | ✅ Done |
 | fig5_shared_dwas.png | 5 — Example: Why Embeddings Matter (left) | 4.1″ × 4.2″ | ✅ Done |
 | fig6_embedding_similarity.png | 5 — Example: Why Embeddings Matter (right) | 4.7″ × 4.0″ | ✅ Done |
 | fig2_pseudo_r2.png | 7 — Main Result | 9.2″ × 4.2″ | ✅ Done |
@@ -26,15 +26,15 @@ Note: fig numbering is by creation order, not slide order.
 - **Example sentence:** "Analyze business or financial data." (DWA from O*NET)
 - **Takeaway:** A sentence goes in, a 768-dimensional vector comes out
 
-## fig9 — Word Analogy (King-Queen)
+## fig9 — Word Analogy (Atlanta-Denver)
 - **Slide:** 3 — What is a Sentence Embedding? (right)
-- **Data:** Live MPNet embeddings of king/queen/man/woman, projected via PCA
+- **Data:** Illustrative positions (not computed) — Mikolov et al. (2013) analogy
 - **Takeaway:** Directions in embedding space encode semantic relationships
 
 ## fig3 — Tasks in Semantic Space
 - **Slide:** 4 — Tasks in Semantic Space
-- **Data:** MPNet embeddings of 30 selected DWAs, semantic anchor projection
-- **Source:** `fig3_selected_dwas.csv` (30 DWAs, 6 clusters)
+- **Data:** MPNet embeddings of 29 hand-curated DWAs, semantic anchor projection
+- **Source:** `fig3_selected_dwas.csv` (29 DWAs, 5 themes, 10 labels)
 - **Takeaway:** Related tasks cluster in interpretable quadrants
 
 ## fig5 — Shared DWAs (Budget Analysts vs Credit Analysts)
@@ -67,4 +67,4 @@ Note: fig numbering is by creation order, not slide order.
 ## Shared style
 - **Module:** `style.py` — colors, fonts, rcParams
 - **Font:** DejaVu Sans (Calibri not available on build system)
-- **Colors:** Steel blue (#4A7FB5) primary, warm gray (#A0937D) secondary
+- **Colors:** Steel blue (#4A7FB5) primary, warm tan (#A0937D) secondary, teal (#44AA99) colorblind-safe green
