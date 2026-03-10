@@ -87,7 +87,7 @@ def bar_label(ax, x, y, value, *, fmt='{:.1f}%', offset=(6, 0),
     ax.annotate(fmt.format(value), xy=(x, y), xycoords='data',
                 xytext=offset, textcoords='offset points',
                 ha='left', va='center',
-                fontsize=fontsize or (FONT_TITLE + 2),
+                fontsize=fontsize or FONT_TITLE,
                 color=color, fontweight='bold', **kwargs)
 
 

@@ -8,7 +8,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 import pandas as pd
 import matplotlib.pyplot as plt
-from figures.style import setup, PRIMARY, MID, DARK, add_subtitle
+from figures.style import (setup, PRIMARY, MID, DARK, add_subtitle,
+                           FONT_TITLE, FONT_LABEL, FONT_TICK)
 
 font = setup()
 
@@ -46,18 +47,18 @@ ax.barh(range(n), d['gamma'].values * 100, height=0.65,
 
 for i, row in d.iterrows():
     ax.text(-0.5, i, row['name'], ha='right', va='center',
-            fontsize=11, color=DARK)
+            fontsize=FONT_TITLE, color=DARK)
     ax.annotate(f'{row["gamma"] * 100:.0f}%',
                 xy=(row['gamma'] * 100, i), xycoords='data',
                 xytext=(6, 0), textcoords='offset points',
-                ha='left', va='center', fontsize=10, color=MID,
+                ha='left', va='center', fontsize=FONT_LABEL, color=MID,
                 fontweight='bold')
 
 ax.set_xlim(0, 110)
 ax.set_xticks([0, 25, 50, 75, 100])
-ax.set_xticklabels(['0%', '25%', '50%', '75%', '100%'], fontsize=11)
+ax.set_xticklabels(['0%', '25%', '50%', '75%', '100%'], fontsize=FONT_TICK)
 ax.set_yticks([])
-ax.set_xlabel('Share of tasks theoretically feasible (γ)', fontsize=12,
+ax.set_xlabel('Share of tasks theoretically feasible (γ)', fontsize=FONT_TITLE,
               labelpad=8)
 ax.tick_params(axis='y', length=0)
 ax.tick_params(axis='x', length=4)

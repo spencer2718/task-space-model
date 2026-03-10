@@ -7,8 +7,8 @@ import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 import matplotlib.pyplot as plt
-from figures.style import setup, bar_label
-from figures.style import PRIMARY, SECONDARY, DARK, MID
+from figures.style import (setup, bar_label, PRIMARY, SECONDARY, DARK, MID,
+                           FONT_TITLE, FONT_LABEL, FONT_TICK)
 
 font = setup()
 
@@ -37,7 +37,7 @@ bars = ax.barh(positions, values, color=colors, height=bar_height,
 
 # Spec name labels
 for pos, label in zip(positions, labels):
-    ax.text(-0.3, pos, label, ha='right', va='center', fontsize=14,
+    ax.text(-0.3, pos, label, ha='right', va='center', fontsize=FONT_TITLE,
             color=DARK, fontweight='medium')
 
 # Value labels using style helper
@@ -48,9 +48,9 @@ for pos, val in zip(positions, values):
 ax.set_xlim(0, 22)
 ax.set_ylim(-0.6, 3.8)
 ax.set_xticks([0, 5, 10, 15])
-ax.set_xticklabels(['0%', '5%', '10%', '15%'], fontsize=12)
+ax.set_xticklabels(['0%', '5%', '10%', '15%'], fontsize=FONT_TICK)
 ax.set_yticks([])
-ax.set_xlabel("McFadden's pseudo-R²", fontsize=13, labelpad=8)
+ax.set_xlabel("McFadden's pseudo-R²", fontsize=FONT_TITLE, labelpad=8)
 ax.tick_params(axis='y', length=0)
 ax.tick_params(axis='x', length=4)
 
@@ -114,7 +114,7 @@ if 'top' in label_right_edges and 'bottom' in label_right_edges:
     ax.annotate('Embedding\nrepresentation\n+74.9%',
                 xy=(x_bracket, (y_bottom + y_top) / 2), xycoords='data',
                 xytext=(8, 0), textcoords='offset points',
-                ha='left', va='center', fontsize=11.5, color=MID,
+                ha='left', va='center', fontsize=FONT_LABEL, color=MID,
                 linespacing=1.3)
 
     ax.set_xlim(0, x_bracket + 6.5)
