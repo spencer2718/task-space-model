@@ -13,16 +13,17 @@ dwa_id,description,cluster_name,semantic_x,semantic_y,labeled
 4.A.4.a.5.I10.D06,Assist passengers during vehicle boarding.,Vehicle & Equipment,-0.08269228041172028,-1.7738717794418335,False
 4.A.3.a.2.I04.D07,Install vehicle parts or accessories.,Vehicle & Equipment,0.30702388286590576,-2.6348772048950195,False
 4.A.3.a.2.I12.D10,Cut glass.,Construction,3.6962735652923584,-1.3240141868591309,True
+4.A.3.a.2.I39.D01,Apply mortar.,Construction,0.05630004405975342,1.0852274894714355,True
 4.A.3.a.2.I35.D02,Weld metal components.,Construction,0.07162433862686157,-2.0911951065063477,False
 4.A.3.a.1.I07.D09,Spread concrete or other aggregate mixtures.,Construction,-0.008426191285252571,-1.4523435831069946,False
 4.A.3.a.2.I12.D05,"Cut tile, stone, or other masonry materials.",Construction,1.4558981657028198,-1.2199695110321045,False
 4.A.3.a.1.I07.D01,Dig holes or trenches.,Construction,0.9146324396133423,-1.7155604362487793,False
 4.A.2.a.2.I04.D02,Balance receipts.,Quantitative,0.13227856159210205,2.5219318866729736,True
-4.A.1.b.3.I03.D01,Calculate financial data.,Quantitative,2.684314489364624,6.282027244567871,False
+4.A.1.b.3.I03.D01,Calculate financial data.,Quantitative,2.684314489364624,6.282027244567871,True
 4.A.1.a.1.I04.D04,Gather financial records.,Quantitative,1.3749043941497803,4.295835971832275,False
 4.A.2.a.3.I03.D02,Examine financial records.,Quantitative,1.6170238256454468,5.33951473236084,False
 4.A.2.a.1.I09.D02,Assess financial status of clients.,Quantitative,1.6940662860870361,4.728421211242676,False
 4.A.3.b.6.I07.D02,Write grant proposals.,Communication,2.943415880203247,2.0400390625,True
 4.A.3.b.6.I03.D06,Write reports or evaluations.,Communication,3.4683046340942383,1.4543788433074951,False
 4.A.2.b.1.I07.D02,Edit documents.,Communication,1.0573666095733643,2.046536445617676,False
-4.A.2.b.1.I07.D01,Edit written materials.,Communication,-0.4982199966907501,2.608262062072754,False
+4.A.2.b.1.I07.D01,Edit written materials.,Communication,-0.4982199966907501,2.608262062072754,True

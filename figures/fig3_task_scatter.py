@@ -52,6 +52,7 @@ CURATED = {
     ],
     'Construction': [
         'Cut glass.',
+        'Apply mortar.',
         'Weld metal components.',
         'Spread concrete or other aggregate mixtures.',
         'Cut tile, stone, or other masonry materials.',
@@ -79,8 +80,11 @@ LABELED = {
     'Secure cargo.',
     'Operate forklifts or other loaders.',
     'Cut glass.',
+    'Apply mortar.',
     'Balance receipts.',
+    'Calculate financial data.',
     'Write grant proposals.',
+    'Edit written materials.',
 }
 
 # Annotation offsets (dx, dy) in points
@@ -89,9 +93,12 @@ LABEL_OFFSETS = {
     'Test patient vision.':   (10, 6),
     'Secure cargo.':          (10, 6),
     'Operate forklifts or other loaders.': (-10, 16),
+    'Apply mortar.':          (-10, -8),
     'Cut glass.':             (8, 5),
     'Balance receipts.':      (-8, -12),
+    'Calculate financial data.': (10, -6),
     'Write grant proposals.': (8, 8),
+    'Edit written materials.': (10, 6),
 }
 
 # Display-name overrides for long titles
@@ -200,7 +207,7 @@ for _, row in sel_df[sel_df['labeled']].iterrows():
 handles = [Line2D([0], [0], marker='o', color='w',
                   markerfacecolor=CLUSTER_COLORS[t], markersize=8, label=t)
            for t in CLUSTER_COLORS]
-ax.legend(handles=handles, loc='lower right', fontsize=FONT_TICK, framealpha=0.9,
+ax.legend(handles=handles, loc='upper left', fontsize=FONT_TICK, framealpha=0.9,
           edgecolor=GRID, fancybox=False, handletextpad=0.4)
 
 # Axis labels
