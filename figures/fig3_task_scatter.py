@@ -43,6 +43,8 @@ CURATED = {
     ],
     'Vehicle & Equipment': [
         'Pilot aircraft.',
+        'Secure cargo.',
+        'Operate forklifts or other loaders.',
         'Inspect motor vehicles.',
         'Clean vehicles or vehicle components.',
         'Assist passengers during vehicle boarding.',
@@ -74,7 +76,8 @@ CURATED = {
 LABELED = {
     'Feed patients.',
     'Test patient vision.',
-    'Pilot aircraft.',
+    'Secure cargo.',
+    'Operate forklifts or other loaders.',
     'Cut glass.',
     'Balance receipts.',
     'Write grant proposals.',
@@ -84,10 +87,16 @@ LABELED = {
 LABEL_OFFSETS = {
     'Feed patients.':         (-8, -12),
     'Test patient vision.':   (10, 6),
-    'Pilot aircraft.':        (8, -10),
+    'Secure cargo.':          (10, 6),
+    'Operate forklifts or other loaders.': (-10, 16),
     'Cut glass.':             (8, 5),
     'Balance receipts.':      (-8, -12),
     'Write grant proposals.': (8, 8),
+}
+
+# Display-name overrides for long titles
+DISPLAY_NAME = {
+    'Operate forklifts or other loaders.': 'Operate forklifts',
 }
 
 # === Semantic anchor phrases ===
@@ -178,7 +187,7 @@ for theme in CLUSTER_COLORS:
 
 # Labels — 1 per theme, positioned via ax.annotate
 for _, row in sel_df[sel_df['labeled']].iterrows():
-    label = row['description'].rstrip('.')
+    label = DISPLAY_NAME.get(row['description'], row['description'].rstrip('.'))
     offset = LABEL_OFFSETS.get(row['description'], (8, 5))
     color = CLUSTER_COLORS[row['cluster_name']]
     ax.annotate(label, xy=(row['x'], row['y']),

@@ -5,7 +5,9 @@ dwa_id,description,cluster_name,semantic_x,semantic_y,labeled
 4.A.3.a.1.I13.D02,Move patients to or from treatment areas.,Healthcare,-3.1716318130493164,-1.2589436769485474,False
 4.A.4.a.5.I11.D02,Hold patients to ensure proper positioning or safety.,Healthcare,-2.9198644161224365,-2.111271619796753,False
 4.A.1.b.2.I01.D04,Test patient vision.,Healthcare,-0.4119163453578949,0.9824872612953186,True
-4.A.3.a.4.I01.D11,Pilot aircraft.,Vehicle & Equipment,0.0630195140838623,-2.060875654220581,True
+4.A.3.a.4.I01.D11,Pilot aircraft.,Vehicle & Equipment,0.0630195140838623,-2.060875654220581,False
+4.A.3.a.1.I06.D09,Secure cargo.,Vehicle & Equipment,1.7595007419586182,0.08151880651712418,True
+4.A.3.a.3.I08.D01,Operate forklifts or other loaders.,Vehicle & Equipment,0.5731407403945923,-5.122276306152344,True
 4.A.1.b.2.I04.D01,Inspect motor vehicles.,Vehicle & Equipment,0.3079209625720978,-1.228173851966858,False
 4.A.3.a.1.I03.D25,Clean vehicles or vehicle components.,Vehicle & Equipment,0.5752435326576233,-2.3512158393859863,False
 4.A.4.a.5.I10.D06,Assist passengers during vehicle boarding.,Vehicle & Equipment,-0.08269228041172028,-1.7738717794418335,False
