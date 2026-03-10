@@ -1,6 +1,6 @@
 """
-Figure 3 v5 — Task embeddings with Routine/Manual semantic axes
-Density-based DWA selection with keyword-filtered theme assignment.
+Figure 3 v6 — Task embeddings with Routine/Manual semantic axes
+5 themes × 6 dots × 2 labels, adjustText for collision-free placement.
 Target: Slide 4 ("Tasks in Semantic Space")
 """
 import sys, os
@@ -12,10 +12,10 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from sklearn.metrics.pairwise import cosine_similarity as cos_sim
 from scipy.spatial import cKDTree
-from itertools import combinations
+from adjustText import adjust_text
 
 from figures.style import (setup, DARK, MID, GRID, PRIMARY, SECONDARY,
-                           RED, ORANGE, GREEN, PURPLE, FONT_TICK, add_subtitle)
+                           RED, ORANGE, GREEN, FONT_LABEL, FONT_TICK, add_subtitle)
 from src.task_space.data.onet import get_dwa_titles
 from src.task_space.data.artifacts import get_embeddings
 from src.task_space.domain import build_dwa_activity_domain
@@ -28,7 +28,6 @@ CLUSTER_COLORS = {
     'Construction':        SECONDARY,
     'Quantitative':        PRIMARY,
     'Communication':       GREEN,
-    'Technology':          PURPLE,
 }
 
 # === Semantic anchor phrases ===
@@ -40,14 +39,6 @@ anchors = {
 }
 
 # === Stage 1: Narrowed GWA-to-theme mapping ===
-# Removed broad GWAs that leak irrelevant DWAs:
-#   "Performing for or Working Directly with the Public" (casino operators)
-#   "Handling and Moving Objects" (luggage handlers)
-#   "Thinking Creatively" (financial planners)
-#   "Controlling Machines and Processes" (too generic)
-#   "Processing Information" (too generic)
-#   "Communicating with Supervisors" (internal comms)
-#   "Updating and Using Relevant Knowledge" (too broad)
 GWA_TO_THEME = {
     'Assisting and Caring for Others': 'Healthcare',
     'Performing General Physical Activities': 'Construction',
@@ -57,7 +48,6 @@ GWA_TO_THEME = {
     'Estimating the Quantifiable Characteristics of Products, Events, or Information': 'Quantitative',
     'Communicating with People Outside the Organization': 'Communication',
     'Documenting/Recording Information': 'Communication',
-    'Interacting With Computers': 'Technology',
 }
 
 # === Stage 2: Keyword confirmation ===
@@ -73,8 +63,6 @@ THEME_KEYWORDS = {
                             'forecast', 'analyz', 'audit', 'account'],
     'Communication':       ['document', 'write', 'edit', 'report', 'present', 'correspond',
                             'publish', 'transcri', 'proofread'],
-    'Technology':          ['software', 'computer', 'network', 'program', 'database', 'server',
-                            'code', 'cyber', 'web', 'digital'],
 }
 
 
@@ -98,7 +86,7 @@ dwa_meta = dwa_meta[['DWA ID', 'Element Name']].drop_duplicates(subset='DWA ID')
 dwa_id_to_gwa = dict(zip(dwa_meta['DWA ID'], dwa_meta['Element Name']))
 gwa_names = [dwa_id_to_gwa.get(aid, '') for aid in dwa_ids]
 
-# Two-stage theme assignment: GWA narrows, keyword confirms
+# Two-stage theme assignment
 themes = []
 for i, gwa in enumerate(gwa_names):
     candidate_theme = GWA_TO_THEME.get(gwa, None)
@@ -107,7 +95,6 @@ for i, gwa in enumerate(gwa_names):
     else:
         themes.append(None)
 
-# Report pool sizes
 print("\nTheme pool sizes (after GWA + keyword filter):")
 for theme in CLUSTER_COLORS:
     n = sum(1 for t in themes if t == theme)
@@ -139,71 +126,31 @@ all_x = (raw_x - raw_x.mean()) / raw_x.std() * 2.5
 all_y = (raw_y - raw_y.mean()) / raw_y.std() * 2.5
 
 
-# === Density-based selection: tightest triple per theme ===
-def find_densest_triple(idxs, all_x, all_y, max_search=30):
-    """Find 3 points with minimum total pairwise 2D distance.
-    Requires all three DWAs to start with different first words."""
+# === Density-based selection: densest group of n per theme ===
+def find_densest_group(idxs, all_x, all_y, n=6):
+    """Find n points in the densest region using k-nearest neighbors."""
     xs = np.array([all_x[i] for i in idxs])
     ys = np.array([all_y[i] for i in idxs])
 
-    if len(idxs) > 50:
-        tree = cKDTree(np.column_stack([xs, ys]))
-        k = min(10, len(idxs) - 1)
-        dists, _ = tree.query(np.column_stack([xs, ys]), k=k + 1)
-        density = dists[:, 1:].mean(axis=1)
-        top = np.argsort(density)[:max_search]
-        search = [idxs[i] for i in top]
-    else:
-        search = list(idxs)
+    tree = cKDTree(np.column_stack([xs, ys]))
+    k = min(n - 1, len(idxs) - 1)
+    dists, _ = tree.query(np.column_stack([xs, ys]), k=k + 1)
+    density = dists[:, 1:].mean(axis=1)
 
-    best_dist = float('inf')
-    best = None
-    for combo in combinations(range(len(search)), 3):
-        a, b, c = combo
-        ii, jj, kk = search[a], search[b], search[c]
-        # Diversity: all three must start with different words
-        fw = [dwa_texts[ii].split()[0].lower(),
-              dwa_texts[jj].split()[0].lower(),
-              dwa_texts[kk].split()[0].lower()]
-        if len(set(fw)) < 3:
-            continue
-        d = (np.hypot(all_x[ii] - all_x[jj], all_y[ii] - all_y[jj]) +
-             np.hypot(all_x[ii] - all_x[kk], all_y[ii] - all_y[kk]) +
-             np.hypot(all_x[jj] - all_x[kk], all_y[jj] - all_y[kk]))
-        if d < best_dist:
-            best_dist = d
-            best = (ii, jj, kk)
-    return best, best_dist
+    # Seed: the densest point and its k nearest neighbors
+    seed = np.argmin(density)
+    _, nn_idxs = tree.query(np.column_stack([xs, ys])[seed:seed + 1], k=min(n, len(idxs)))
+    group = [idxs[i] for i in nn_idxs[0]]
+    return group
 
 
-selected = []
-print("\n=== Selected triples ===")
-for theme in CLUSTER_COLORS:
-    idxs = [i for i, t in enumerate(themes) if t == theme]
-    if len(idxs) < 3:
-        print(f"WARNING: {theme} has only {len(idxs)} DWAs — cannot form triple")
-        continue
-    triple, dist = find_densest_triple(idxs, all_x, all_y)
-    if triple is None:
-        print(f"WARNING: {theme} — no diverse triple found")
-        continue
-    print(f"\n{theme}: total_dist={dist:.3f}")
-    for idx in triple:
-        print(f"  ({all_x[idx]:+.2f}, {all_y[idx]:+.2f})  {dwa_texts[idx]}")
-        selected.append({
-            'dwa_id': dwa_ids[idx],
-            'description': dwa_texts[idx],
-            'cluster_name': theme,
-            'x': float(all_x[idx]),
-            'y': float(all_y[idx]),
-        })
-
-sel_df = pd.DataFrame(selected)
-print(f"\nSelected {len(sel_df)} DWAs total")
+def pick_labels(group_idxs, n_labels=2):
+    """Pick the n shortest-titled DWAs for labeling."""
+    by_len = sorted(group_idxs, key=lambda i: len(dwa_texts[i]))
+    return set(by_len[:n_labels])
 
 
-# === Short labels ===
-def short_label(text, max_len=25):
+def short_label(text, max_len=28):
     """Trim DWA text to a short label."""
     text = text.rstrip('.')
     if len(text) <= max_len:
@@ -212,60 +159,37 @@ def short_label(text, max_len=25):
     return text[:cut] + '...' if cut > 10 else text[:max_len - 3] + '...'
 
 
-# === Collision-aware label placement ===
-fig_temp = plt.figure(figsize=(6.0, 4.0))
-ax_temp = fig_temp.add_subplot(111)
-ax_temp.set_xlim(-5.5, 5.5)
-ax_temp.set_ylim(-5.5, 5.5)
-dpi = fig_temp.dpi
-ppdu_x = (6.0 * dpi) / 11.0
-ppdu_y = (4.0 * dpi) / 11.0
-plt.close(fig_temp)
+selected = []
+print("\n=== Selected groups ===")
+for theme in CLUSTER_COLORS:
+    idxs = [i for i, t in enumerate(themes) if t == theme]
+    n_available = len(idxs)
+    n_group = min(6, n_available)
+    if n_available < 3:
+        print(f"WARNING: {theme} has only {n_available} DWAs")
+        continue
+    if n_available < 6:
+        print(f"NOTE: {theme} has only {n_available} DWAs, using all")
 
-label_positions = []
-for _, row in sel_df.iterrows():
-    x, y = row['x'], row['y']
-    if x > 0:
-        x_off, ha = 10, 'left'
-    else:
-        x_off, ha = -10, 'right'
-    label_positions.append({
-        'x': x, 'y': y, 'x_off': x_off, 'y_off': 0, 'ha': ha,
-        'label': short_label(row['description']),
-        'color': CLUSTER_COLORS[row['cluster_name']],
-    })
+    group = find_densest_group(idxs, all_x, all_y, n=n_group)
+    labeled_set = pick_labels(group, n_labels=2)
 
-# Collision resolution — bump overlapping labels vertically (±14 for cross-theme)
-for i in range(len(label_positions)):
-    for j in range(i + 1, len(label_positions)):
-        li, lj = label_positions[i], label_positions[j]
-        dx = abs((li['x'] + li['x_off'] / ppdu_x) - (lj['x'] + lj['x_off'] / ppdu_x))
-        dy = abs((li['y'] + li['y_off'] / ppdu_y) - (lj['y'] + lj['y_off'] / ppdu_y))
-        if dx < 2.0 and dy < 0.6:
-            li['y_off'] += 14
-            lj['y_off'] -= 14
+    print(f"\n{theme} ({n_group} dots, 2 labeled):")
+    for idx in group:
+        is_labeled = idx in labeled_set
+        marker = '  *' if is_labeled else '   '
+        print(f" {marker} ({all_x[idx]:+.2f}, {all_y[idx]:+.2f})  {dwa_texts[idx]}")
+        selected.append({
+            'dwa_id': dwa_ids[idx],
+            'description': dwa_texts[idx],
+            'cluster_name': theme,
+            'x': float(all_x[idx]),
+            'y': float(all_y[idx]),
+            'labeled': is_labeled,
+        })
 
-# Legend collision: if label lands in upper-left quadrant, flip to other side
-for lp in label_positions:
-    label_x = lp['x'] + lp['x_off'] / ppdu_x
-    label_y = lp['y'] + lp['y_off'] / ppdu_y
-    if label_x < -2.0 and label_y > 2.5:
-        lp['x_off'] = 10
-        lp['ha'] = 'left'
-
-# Boundary check: if label extends past axis limits, flip side
-for lp in label_positions:
-    label_x = lp['x'] + lp['x_off'] / ppdu_x
-    if label_x > 5.0 and lp['ha'] == 'left':
-        lp['x_off'] = -10
-        lp['ha'] = 'right'
-    elif label_x < -5.0 and lp['ha'] == 'right':
-        lp['x_off'] = 10
-        lp['ha'] = 'left'
-
-print("\nLabel positions:")
-for lp in label_positions:
-    print(f"  {lp['label']:<25s}  x_off={lp['x_off']:+d}  y_off={lp['y_off']:+d}  ha={lp['ha']}")
+sel_df = pd.DataFrame(selected)
+print(f"\nSelected {len(sel_df)} DWAs total, {sel_df['labeled'].sum()} labeled")
 
 # === Build figure ===
 fig, ax = plt.subplots(figsize=(6.0, 4.0))
@@ -287,18 +211,27 @@ for theme in CLUSTER_COLORS:
     ax.scatter(group['x'], group['y'], s=50, c=color,
                edgecolors='white', linewidths=0.5, alpha=0.9, zorder=2)
 
-# Labels for all selected DWAs
-for lp in label_positions:
-    ax.annotate(lp['label'], xy=(lp['x'], lp['y']), xycoords='data',
-                xytext=(lp['x_off'], lp['y_off']), textcoords='offset points',
-                fontsize=9, color=lp['color'], ha=lp['ha'], va='center',
-                zorder=3)
+# Labels via adjustText
+texts = []
+for _, row in sel_df.iterrows():
+    if row['labeled']:
+        t = ax.text(row['x'], row['y'], short_label(row['description']),
+                    fontsize=FONT_LABEL, color=CLUSTER_COLORS[row['cluster_name']],
+                    zorder=3)
+        texts.append(t)
 
-# Legend — upper left
+adjust_text(texts, ax=ax,
+            arrowprops=dict(arrowstyle='-', color=GRID, lw=0.5),
+            force_text=(0.5, 0.8),
+            force_points=(0.8, 0.8),
+            expand_text=(1.2, 1.4),
+            lim=500)
+
+# Legend — lower right
 handles = [Line2D([0], [0], marker='o', color='w',
                   markerfacecolor=CLUSTER_COLORS[t], markersize=8, label=t)
            for t in CLUSTER_COLORS]
-ax.legend(handles=handles, loc='upper left', fontsize=FONT_TICK, framealpha=0.9,
+ax.legend(handles=handles, loc='lower right', fontsize=FONT_TICK, framealpha=0.9,
           edgecolor=GRID, fancybox=False, handletextpad=0.4)
 
 # Axis labels
@@ -325,7 +258,7 @@ plt.close()
 print(f"\nSaved figures/fig3_task_scatter.png  (font: {font})")
 
 # Save CSV
-out_df = sel_df[['dwa_id', 'description', 'cluster_name', 'x', 'y']]
-out_df.columns = ['dwa_id', 'description', 'cluster_name', 'semantic_x', 'semantic_y']
+out_df = sel_df[['dwa_id', 'description', 'cluster_name', 'x', 'y', 'labeled']]
+out_df.columns = ['dwa_id', 'description', 'cluster_name', 'semantic_x', 'semantic_y', 'labeled']
 out_df.to_csv('figures/fig3_selected_dwas.csv', index=False)
 print(f"Saved figures/fig3_selected_dwas.csv  ({len(out_df)} DWAs)")
