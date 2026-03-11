@@ -1,0 +1,530 @@
+\documentclass[12pt]{article}
+
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{amsthm}
+\usepackage{bm}
+\usepackage{geometry}
+\usepackage[numbers,super,sort&compress]{natbib}
+\usepackage{booktabs}
+\usepackage{multirow}
+\geometry{margin=1in}
+
+
+\usepackage[hidelinks]{hyperref}
+\hypersetup{linktoc=all}
+\usepackage[capitalize,noabbrev,nameinlink]{cleveref}
+
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{assumption}[definition]{Assumption}
+\newtheorem{remark}[definition]{Remark}
+
+
+
+
+\begin{document}
+
+
+\title{Task Embeddings and Occupational Mobility}
+
+\author{Spencer Hodge\thanks{Bagwell Center for the Study of Markets and Economic Opportunity, Kennesaw State University. Email: \texttt{shodge33@students.kennesaw.edu}. This research was supported by the Bagwell Center Undergraduate Research Fellowship, 2025--26. The author thanks Filippo Occhino for advising this research.}}
+
+\date{\today}
+
+\maketitle
+
+
+\begin{abstract}
+This paper constructs an embedding-based measure of occupational distance and tests it against 89,329 observed occupation-to-occupation transitions from the Current Population Survey (2015--2024). We embed O*NET Detailed Work Activities using sentence transformers, represent occupations as distributions over embedded tasks, and compare four distance specifications crossing representation (embeddings vs.\ O*NET weights) with aggregation (Wasserstein vs.\ centroid). Embedding-based measures achieve 13.8--14.1\% pseudo-$R^2$ for destination choice, compared to 6.1--8.1\% for O*NET-based measures. Centroid averaging marginally outperforms Wasserstein aggregation on the same embeddings. In the destination-choice model, the predictive gain comes from the embedding representation; optimal transport does not improve over centroid averaging. The measure ranks realized destinations in the top quartile of predicted probability on average, but aggregate inflows are demand-dominated ($\rho = 0.80$ with job openings). It is orthogonal to routine task intensity ($r = -0.05$) and stable across the pre/post COVID period ($\Delta\alpha < 1\%$, $p = 0.72$).
+\end{abstract}
+
+
+\vspace{1em}
+\noindent\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+\textbf{Authorship \& AI Disclosure}\\[0.3em]
+This research was conducted using AI-assisted methods. The research question and study design are the author's; implementation, statistical analysis, and drafting were performed by large language models (Claude, GPT) based on the author's direction and iterative feedback. All results are reproducible via the provided codebase at \texttt{github.com/spencer2718/task-space-model}. Methodology and interpretation have not yet undergone peer review.
+}}
+\vspace{1em}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+\label{sec:introduction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+This paper studies how to measure occupational distance for predicting worker mobility. Existing task-distance measures, typically constructed from O*NET importance ratings, treat each task category as a distinct dimension. Two tasks that involve closely related capabilities---say, two types of vehicle operation or two types of quantitative analysis---receive no credit for similarity unless they share the same O*NET label. This paper tests whether embedding task descriptions into a continuous semantic space, so that related capabilities are nearby, improves prediction of observed occupational transitions.
+
+We embed 2,087 O*NET Detailed Work Activities using sentence transformers (MPNet) and represent each occupation as a probability distribution over these embedded tasks. We compute pairwise occupation distances under four specifications organized in a 2$\times$2 comparison crossing the representation of inter-task similarity (sentence embeddings vs.\ O*NET importance weights) with the aggregation method (Wasserstein optimal transport vs.\ centroid averaging). We evaluate each specification against 89,329 persistence-filtered occupation-to-occupation transitions from the Current Population Survey (2015--2024), using a conditional logit model of destination choice with McFadden's pseudo-$R^2$ as the primary performance metric.
+
+We find that embedding-based measures substantially outperform conventional O*NET-based measures, while optimal transport does not improve over centroid averaging in the destination-choice model. Embedding-based specifications achieve pseudo-$R^2$ of 13.8--14.1\%, compared to 6.1--8.1\% for O*NET-based specifications---a 74.9\% relative improvement. Centroid averaging marginally outperforms Wasserstein on the same embeddings. A within-Wasserstein ground metric comparison confirms the pattern: holding the transport formulation fixed, switching from an identity ground metric (all tasks equally different) to the embedding ground metric (semantically similar tasks nearby) improves explanatory power by 83\%. These results indicate that, in the destination-choice model, the predictive gain comes from the semantic representation of inter-task similarity, not from optimal transport over centroid averaging. We also find that the resulting measure is informative about mobility feasibility, not labor demand or automation exposure. Aggregate occupational inflows are demand-dominated ($\rho = 0.80$ with job openings); the embedding-based distance captures supply-side pathway direction at the origin level ($\rho \approx 0.13$). The measure is essentially orthogonal to routine task intensity ($r = -0.05$), suggesting that it captures mobility friction rather than automation susceptibility. Task-distance penalties are stable across the pre/post COVID period ($\Delta\alpha < 1\%$, $p = 0.72$), with suggestive heterogeneity: the distance penalty for teleworkable destinations increased post-COVID ($\delta_4 = -0.086$, $p = 0.01$). A gravity model of aggregate bilateral flows yields a partial $R^2$ of 3.46\% for the embedding Wasserstein distance, close to the \citet{CortesGallipoli2018} task-only benchmark of approximately 3\%.
+
+The paper relates to three literatures: the task-based approach to technological change \citep{AutorLevyMurnane2003,AcemogluAutor2011}, the occupational mobility and switching-cost literature \citep{GathmannSchonberg2010,CortesGallipoli2018,Traiberman2019}, and recent work applying text embeddings to labor market measurement \citep{ZhangEtAl2021,DecorteEtAl2022,HampoleEtAl2024}. Relative to prior embedding-based work, the contribution is the validation target---observed occupational transitions rather than internal taxonomic similarity---and the four-specification comparison that isolates the source of improvement. \Cref{sec:literature} reviews related work. \Cref{sec:data} describes data and methods. \Cref{sec:results} presents results. \Cref{sec:discussion} discusses scope and limitations. \Cref{sec:conclusion} concludes.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Related Literature}
+\label{sec:literature}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsection{Task Content and Occupational Structure}
+
+The task-based approach to labor markets emphasizes that technology acts on tasks rather than occupations \citep{AutorLevyMurnane2003,AcemogluAutor2011}. Occupational task content---measured through O*NET ratings, DOT variables, or more recently text descriptions---has become a standard empirical object for studying employment polarization \citep{AutorDorn2013}, switching costs \citep{GathmannSchonberg2010}, and technology exposure \citep{Webb2020,FeltenRajSeamans2021}. This paper adopts task content as the empirical object for measuring occupational proximity.
+
+
+\subsection{Occupational Distance and Text Embeddings}
+
+Standard O*NET-based distance measures represent occupations as vectors of task-importance ratings and compute cosine or Euclidean distance in that space \citep{AutorDorn2013,CortesGallipoli2018}. These measures treat each O*NET category as a distinct dimension. Text embedding approaches offer an alternative: \citet{ZhangEtAl2021} embed occupation titles and validate against O*NET similarity; \citet{DecorteEtAl2022} fine-tune BERT for job-skill matching; \citet{HampoleEtAl2024} use embeddings for AI exposure assessment; and \citet{HampoleEtAl2025} apply a similar approach to study AI labor market effects at scale. \citet{Webb2020} matches patent text to job descriptions, performing cross-domain semantic matching across heterogeneous corpora. We perform intra-domain matching: embedding O*NET task descriptions against each other.
+
+A limitation of existing embedding-based work is that validation is typically conducted against O*NET-derived similarity or expert ratings. Since O*NET's taxonomic structure influences the embedding geometry learned from its descriptions, validating against O*NET similarity does not establish whether the embedding captures economically relevant information beyond the taxonomy itself. This paper validates against an external target: observed occupational transitions in the CPS.
+
+Three additional precedents merit discussion. Dawson et al. \cite{dawson2021skill} build occupation distance from skill co-occurrence in Australian job ads, validating against household survey transitions using XGBoost classification (76\% accuracy against random counterfactuals). They do not use neural text embeddings or compare aggregation operators. Frank et al. \cite{frank2024network} validate ONET-derived skill similarity (weighted Jaccard over importance ratings) against approximately 36,536 CPS transitions (2012--2018), showing skill similarity predicts observed transition rates using structured skill vectors rather than text embeddings. ONET's own related-occupations pipeline \cite{onet2024related} now uses SBERT embeddings of task statements for computing occupational relatedness, but has not been validated against transition data.
+
+\citet{Galichon2016} provides theoretical foundations for Wasserstein distance in economics. We compare the Wasserstein formulation against simpler centroid-based measures using the same embeddings.
+
+
+\subsection{Institutional Barriers and Switching Costs}
+
+This paper is a reduced-form measurement exercise: it constructs a task-distance measure and tests whether it predicts observed transitions. It does not estimate structural switching costs. We include an institutional distance control (Job Zone and certification differences) to separate skill-based from credential-based proximity, and note two relevant features of the literature.
+
+First, non-skill barriers to mobility are substantial. Licensing reduces entry probability by roughly 24\% \citep{Jackson2023}, occupation-specific human capital accounts for a large share of wage growth \citep{GathmannSchonberg2010,KambourovManovskii2009}, and overqualification stigma creates downward barriers \citep{Pedulla2016}. Because we observe only completed transitions \citep{Heckman1979}, our estimates identify friction among successful movers, not blocking probabilities.
+
+Second, \citet{CortesGallipoli2018} provide a direct reduced-form benchmark: in their gravity specification, task-related costs account for at most 15\% of total transition costs, with a task-only pseudo-$R^2$ of approximately 3\%. \citet{Traiberman2019} provides a structural benchmark using Danish administrative data; her methodology requires individual-level wages and full work histories unavailable in US household surveys.
+
+Relative to this prior work, the present contribution is the four-specification comparison isolating the embedding representation from the aggregation method, and the evaluation against a large US transition sample in a choice-model framework. The finding that most of the predictive gain comes from the embedding representation, and that optimal transport does not improve over centroid averaging in the destination-choice model, has not been established in prior work.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Data and Methods}
+\label{sec:data}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsection{Task Representation}
+\label{subsec:task-representation}
+
+O*NET provides 2,087 Detailed Work Activities (DWAs) linked to 894 occupations via importance ratings \citep{onet2024dwa,onet2024scales}. We represent each occupation $j$ as a probability distribution $\rho_j$ over activities: importance-weighted, filtered for relevance, and normalized. The distribution is sparse---the median occupation uses 19 of 2,087 DWAs.
+
+We embed all DWA text descriptions using MPNet (all-mpnet-base-v2, 768 dimensions). The embedding defines the ground metric: $d(a,b) = 1 - \cos(e_a, e_b)$, where $e_a$ is the embedding vector for activity $a$. Two activities with similar natural-language descriptions are nearby in this space, even if they carry different O*NET labels.
+
+
+\subsection{Distance Measures}
+\label{subsec:distance-design}
+
+We compare four distance specifications in a 2$\times$2 design.
+
+\textbf{Embedding $\times$ Wasserstein}. Wasserstein optimal transport distance using the embedding ground metric:
+$W(\rho_i, \rho_j) = \min_{\gamma \in \Pi(\rho_i, \rho_j)} \sum_{a,b} \gamma(a,b) \cdot d(a,b)$,
+where $\gamma$ is a transport plan with marginals $\rho_i$ and $\rho_j$.
+
+\textbf{Embedding $\times$ Centroid} (primary). Cosine distance between importance-weighted embedding centroids:
+$d_{\mathrm{centroid}}(i, j) = 1 - \cos(\bar{e}_i, \bar{e}_j)$, where $\bar{e}_j = \sum_a \rho_j(a) \cdot e_a / \sum_a \rho_j(a)$.
+
+\textbf{O*NET $\times$ Cosine}. Cosine distance on raw DWA importance weight vectors (no embedding).
+
+\textbf{O*NET $\times$ Euclidean}. Euclidean distance on raw DWA importance weight vectors.
+
+As a diagnostic, we also compare Wasserstein distance with the embedding ground metric against Wasserstein with an identity ground metric ($d(a,b) = \mathbf{1}[a \neq b]$) to assess how much of the Wasserstein specification's performance depends on the semantic structure of the ground metric.
+
+\textbf{Occupation universe.} Distances are computed on the O*NET SOC universe (894 occupations). CPS transitions are observed on Census occupation codes (447 occupations in our sample). We aggregate SOC-level task distributions to Census codes via a many-to-one crosswalk, producing a $447 \times 447$ distance matrix used in estimation.
+
+
+\subsection{Institutional Distance}
+\label{subsec:institutional-distance}
+
+We control for non-skill barriers using institutional distance:
+$d_{\mathrm{inst}}(i,j) = |\mathrm{Zone}_i - \mathrm{Zone}_j| + w \cdot |\mathrm{Cert}_i - \mathrm{Cert}_j|$,
+where Job Zone (1--5, 100\% coverage) captures preparation level and certification importance (1--5, 61.1\% coverage, median-imputed) captures credentialing requirements.
+
+
+\subsection{Estimation}
+\label{subsec:estimation}
+
+\textbf{Conditional logit.} The primary estimating equation is a conditional logit of destination choice:
+\[
+U_{kj} = \alpha \cdot (-d_{\mathrm{sem}}(i,j)) + \beta \cdot (-d_{\mathrm{inst}}(i,j)) + \varepsilon_{kj},
+\]
+where $k$ indexes a transitioning worker from origin $i$, $j$ indexes all 447 Census-code destinations, and distances are derived from SOC-level task representations mapped to Census codes. Performance is measured by McFadden's pseudo-$R^2$.\footnote{This reduced-form model tests whether a distance metric assigns higher probability to realized destinations. It does not separately identify retraining costs, employer preferences, or vacancy distributions.}
+
+Following McFadden \cite{McFadden1978}, we estimate using sampled alternatives: for each observed transition, the choice set consists of the realized destination plus 10 randomly drawn alternatives ($K = 10$). Pseudo-$R^2$ is computed against this sampled choice set.
+
+\textbf{Gravity model.} We also estimate $\ln(\text{Flow}_{ij} + 1) = \alpha + \beta_1 \ln(\text{Emp}_i) + \beta_2 \ln(\text{Emp}_j) + \beta_3 \cdot d(i,j) + \varepsilon_{ij}$ on 199,362 occupation pairs (including zeros) to test whether distance explains aggregate bilateral flows.
+
+\textbf{Decomposition.} We compute Spearman $\rho$ between model-predicted and observed destination rankings, averaged across origins (per-origin pathway direction) and at the aggregate level (total inflows). The demand proxy is BLS projected annual openings.
+
+
+\subsection{Data}
+\label{subsec:external-data}
+
+
+\begin{table}[h!]
+\centering
+\caption{CPS Sample Construction}
+\label{tab:cps-pipeline}
+\begin{tabular}{lrrp{5cm}}
+\toprule
+\textbf{Stage} & \textbf{Records} & \textbf{Retention} & \textbf{Notes} \\
+\midrule
+Raw CPS extract & 10,072,119 & 100\% & 83 monthly samples \\
+Employment filter & 4,407,432 & 43.8\% & Age 18--65, employed \\
+Consecutive month pairs & 2,353,725 & 53.4\% & CPSIDP linked \\
+Raw transitions & 157,606 & 6.74\% & OCC$(t) \neq$ OCC$(t-1)$ \\
+Persistence filter & 106,116 & 67.3\% & Persisted across waves \\
+O*NET mapping & 89,329 & 84.2\% & Census $\to$ O*NET \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The CPS sample draws from IPUMS Basic Monthly Files, January 2015 through September 2024, excluding 2020--2021 (\cref{tab:cps-pipeline}). The persistence filter requires occupation changes to persist across survey waves. Additional data sources include AI Occupational Exposure (AIOE) scores \citep{FeltenRajSeamans2021} (93.5\% coverage), OES wages (98.2\%), BLS projected openings (94.3\%), and \citet{DingelNeiman2020} teleworkability indices (92.4\%).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results}
+\label{sec:results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsection{Distance Metric Comparison}
+\label{subsec:geometry-comparison}
+
+
+\begin{table}[h!]
+\centering
+\caption{2$\times$2 Distance Metric Comparison}
+\label{tab:2x2-comparison}
+\begin{tabular}{llcccc}
+\toprule
+\textbf{Representation} & \textbf{Aggregation} & $\alpha$ & Pseudo-$R^2$ & $\Delta$ vs baseline \\
+\midrule
+Embedding (MPNet) & Cosine centroid & 7.40 & 14.08\% & +132\% \\
+Embedding (MPNet) & Wasserstein & 8.39 & 13.8\% & +127\% \\
+O*NET importance & Cosine & 4.55 & 8.05\% & +33\% \\
+O*NET importance & Euclidean & 9.76 & 6.06\% & baseline \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+Embedding-based measures achieve pseudo-$R^2$ of 13.8--14.1\%, compared to 6.1--8.1\% for O*NET-based measures (\cref{tab:2x2-comparison}). Most of the improvement is associated with the embedding representation rather than the aggregation method: centroid averaging marginally outperforms Wasserstein on the same embeddings.
+
+
+\begin{table}[h!]
+\centering
+\caption{Ground Metric Comparison}
+\label{tab:ground-metric}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Ground Metric} & $\alpha$ & $\beta$ & Pseudo-$R^2$ & $\Delta$ \\
+\midrule
+Identity (all tasks equally different) & 4.71 & 0.32 & 7.52\% & baseline \\
+Embedding (semantic similarity) & 8.39 & 0.154 & 13.76\% & +83\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+The ground metric comparison provides a within-Wasserstein diagnostic (\cref{tab:ground-metric}). Holding the transport formulation fixed, switching from an identity ground metric to the embedding ground metric improves pseudo-$R^2$ by 83\%. The identity ground metric produces results comparable to O*NET-based measures, confirming that, conditional on using optimal transport, the improvement comes from the semantic content of the ground metric.
+
+
+\begin{table}[h!]
+\centering
+\caption{Distance Matrix Correlations (Spearman $\rho$)}
+\label{tab:distance-correlations}
+\begin{tabular}{lc}
+\toprule
+\textbf{Pair} & \textbf{Spearman $\rho$} \\
+\midrule
+Wasserstein (embedding) vs.\ Cosine centroid (embedding) & 0.95 \\
+Wasserstein (embedding) vs.\ Wasserstein (identity) & 0.36 \\
+Wasserstein (embedding) vs.\ Euclidean (O*NET) & 0.28 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+The two embedding-based distance matrices are highly correlated ($\rho = 0.95$; \cref{tab:distance-correlations}), while their correlation with O*NET-based or identity-based measures is low ($\rho = 0.28$--$0.36$). Centroid averaging inherits the embedding structure rather than the task-overlap structure. Because the two embedding-based matrices are near-identical, subsequent sections that report Wasserstein-based results (supply-demand decomposition, AI exposure correlation, switching-cost calibration) would yield materially similar conclusions under centroid distance; we retain Wasserstein in those tables for continuity with the original estimation.
+
+
+\subsection{Institutional Distance}
+\label{subsec:cps-mobility}
+
+
+\begin{table}[h!]
+\centering
+\caption{Conditional Logit: Embedding-Centroid Specification (Primary)}
+\label{tab:clogit-centroid}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Parameter} & \textbf{Coefficient} & \textbf{Std. Error} & \textbf{$t$-statistic} & \textbf{$p$-value} \\
+\midrule
+$\alpha$ (semantic) & 7.404 & 0.036 & 204.0 & $< 10^{-100}$ \\
+$\beta$ (institutional) & 0.139 & 0.004 & 33.7 & $< 10^{-100}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+Both semantic and institutional distance are statistically significant predictors of destination choice (\cref{tab:clogit-centroid}). The institutional distance coefficient ($\beta = 0.139$) is much smaller in magnitude than the semantic coefficient ($\alpha = 7.404$). This likely understates true credential barriers, since workers blocked by licensing or credential requirements do not appear in transition data \citep{Jackson2023,Heckman1979}.
+
+
+We also test whether institutional barriers are directionally asymmetric---whether upward transitions (to higher Job Zones) face larger penalties than downward transitions. The evidence is unstable across specifications: the estimated upward/downward ratio ranges from 0.06 to 2.79 depending on the distance metric, age restriction, and occupation sample (see \cref{app:asymmetry} for details). We interpret this as indicating that directional asymmetry in Job Zone--based institutional distance is not a robust feature of these data and do not rely on it in subsequent analysis.
+
+
+\subsection{Supply-Side Feasibility}
+\label{subsec:pathway-validation}
+
+
+\begin{table}[h!]
+\centering
+\caption{Ranking Adequacy}
+\label{tab:performance-battery}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metric} & \textbf{Value} & \textbf{Interpretation} \\
+\midrule
+Mean Percentile Rank (MPR) & 0.74 (median 0.83) & Top 26\% on average \\
+Realized Cumulative Mass (RCM) & 0.56 & 56\% mass at/above realized \\
+Effective consideration set ($N_{\mathrm{eff}}$) & 207 of 447 (46\%) & Diffuse distribution \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+The model ranks realized destinations in the top 26\% of predicted probability on average (MPR $= 0.74$, median $= 0.83$; \cref{tab:performance-battery}). The probability mass is distributed broadly ($N_{\mathrm{eff}} = 207$ of 447 destinations), so the model identifies a wide set of skill-compatible destinations and ranks the realized choice relatively highly within that set, rather than concentrating on a single prediction.
+
+
+\begin{table}[h!]
+\centering
+\caption{Supply-Demand Decomposition}
+\label{tab:demand-decomposition}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Predictor} & \textbf{Spearman $\rho$} & \textbf{Interpretation} \\
+\midrule
+Demand-only (BLS openings) & 0.798 & Dominant for aggregate inflows \\
+Geometry-only (1/Wasserstein) & 0.043 & Negligible for aggregate \\
+Per-origin geometry & 0.128 & Modest for pathway direction \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+The decomposition in \cref{tab:demand-decomposition} clarifies the scope of this ranking performance. Aggregate inflows are demand-dominated ($\rho = 0.80$ with BLS openings); the distance measure alone achieves $\rho = 0.04$ at the aggregate level. Its contribution is to within-origin destination ranking (per-origin $\rho \approx 0.13$ on the 2024 holdout, $n = 233$ origins). The measure is informative about which destinations are skill-compatible for workers leaving a given origin, but not about which destinations receive the largest aggregate inflows.
+
+
+\subsection{Relation to AI Exposure Measures}
+\label{subsec:shock-integration}
+
+
+\begin{table}[h!]
+\centering
+\caption{Relation to AI Exposure}
+\label{tab:shock-integration}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metric} & \textbf{Value} & \textbf{Interpretation} \\
+\midrule
+AIOE-Wasserstein correlation & 0.020 & Empirically distinct \\
+\midrule
+\multicolumn{3}{l}{\textit{Holdout comparison ($n = 8{,}880$):}} \\
+Geometry log-likelihood & $-42{,}505$ & --- \\
+Historical baseline & $-65{,}625$ & --- \\
+$\Delta$LL & $+23{,}119$ & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+The embedding-based distance measure is empirically distinct from AI Occupational Exposure \citep{FeltenRajSeamans2021}: the two are essentially uncorrelated ($r = 0.02$; \cref{tab:shock-integration}). The distance measure and AI exposure thus appear to capture different constructs. On 2024 holdout data, the distance-based conditional logit outperforms a historical-baseline specification ($\Delta \text{LL} = +23{,}119$).
+
+
+\subsection{Pre/Post COVID Stability}
+\label{subsec:covid-stability}
+
+
+\begin{table}[h!]
+\centering
+\caption{Pre/Post COVID Comparison}
+\label{tab:covid-stability}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Period} & $\alpha$ & \textbf{SE} & $\beta$ & \textbf{SE} & \textbf{Pseudo-$R^2$} \\
+\midrule
+Pre-COVID (2015--2019) & 7.394 & 0.044 & 0.146 & 0.005 & 14.1\% \\
+Post-COVID (2022--2024) & 7.358 & 0.063 & 0.144 & 0.007 & 13.9\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+The semantic distance coefficient changes by less than 1\% between the pre-COVID ($n = 60{,}225$; 2015--2019) and post-COVID ($n = 29{,}104$; 2022--2024) subsamples (\cref{tab:covid-stability}). A likelihood ratio test for structural break yields $\chi^2(2) = 0.67$, $p = 0.72$. This is consistent with the interpretation that the embedding-based distance reflects skill-proximity constraints that are stable across labor market conditions, rather than transient revealed preferences. \citet{PizzinelliShibata2023} report similar aggregate stability.
+
+We find suggestive heterogeneity by teleworkability. Interacting task distance with destination teleworkability \citep{DingelNeiman2020} and period:
+\[
+U_{kj} = \alpha \cdot (-d_{\mathrm{sem}}) + \beta \cdot (-d_{\mathrm{inst}}) + \delta_3 \cdot (-d_{\mathrm{sem}} \times \mathrm{Telework}_j) + \delta_4 \cdot (-d_{\mathrm{sem}} \times \mathrm{Telework}_j \times \mathrm{Post}) + \varepsilon_{kj}
+\]
+yields $\delta_4 = -0.086$ ($p = 0.010$): the task-distance penalty for teleworkable destinations increased post-COVID. The coefficient is robust to excluding 2022 ($\delta_4 = -0.097$, $p = 0.016$) and to using centroid distance. One possible interpretation, following \citet{ModestinoShoagBallance2020}, is that remote work expansion increased applicant pools for teleworkable jobs, enabling more selective hiring on skill match \citep{HsuTambe2022,EmanuelHarrington2024}. However, we cannot rule out that remote work genuinely changed which tasks these occupations perform.
+
+
+\subsection{Aggregate Flow Benchmarking}
+\label{subsec:gravity}
+
+
+\begin{table}[h!]
+\centering
+\caption{Gravity Model}
+\label{tab:gravity-comparison}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Distance Metric} & $\beta_{\mathrm{distance}}$ & $t$-statistic & Partial $R^2$ \\
+\midrule
+Wasserstein (embedding) & $-1.041$ & $-96.2$ & 3.46\% \\
+Cosine (O*NET) & $-1.556$ & $-92.4$ & 3.20\% \\
+Cosine centroid (embedding) & $-0.577$ & $-82.2$ & 2.55\% \\
+Euclidean (O*NET) & $-0.514$ & $-25.3$ & 0.25\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+Task distance explains a modest share of aggregate bilateral flow variation (\cref{tab:gravity-comparison}). The best-performing metric (embedding Wasserstein) achieves partial $R^2 = 3.46\%$ beyond employment mass terms (mass-only $R^2 = 22.06\%$), consistent with the \citet{CortesGallipoli2018} benchmark of approximately 3\% for task-only specifications.
+
+Distance metrics rank differently in the gravity model than in the conditional logit: O*NET cosine, worst for individual prediction, is competitive for aggregate flows (partial $R^2 = 3.20\%$). This may reflect extensive-versus-intensive margin differences: individual destination choice among connected occupations benefits from fine-grained similarity, while aggregate flow volumes depend more on whether pairs are connected at all.
+
+
+\begin{table}[h!]
+\centering
+\caption{Correlation: Embedding Distance vs.\ RTI Components}
+\label{tab:rti-correlation}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Component} & \textbf{Pearson $r$} & \textbf{$p$-value} \\
+\midrule
+RTI (composite) & $-0.052$ & 0.377 \\
+Routine & $-0.058$ & 0.318 \\
+Abstract & $-0.051$ & 0.378 \\
+Manual & $+0.093$ & 0.109 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+Finally, the embedding-based distance is essentially orthogonal to the Autor-Dorn routine task intensity index (\cref{tab:rti-correlation}). The measure captures occupational proximity, not automation susceptibility.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Discussion}
+\label{sec:discussion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsection{Scope}
+
+The results establish scope conditions for the proposed measure. First, it is informative about within-origin destination ranking ($\rho \approx 0.13$) but not aggregate allocation. Aggregate inflows are demand-dominated ($\rho = 0.80$); the distance measure does not incorporate vacancy, wage, or geographic information. Applications that require aggregate reallocation forecasts would need to combine distance with demand-side data.
+
+Second, the measure captures occupational proximity for mobility, not automation susceptibility. It is orthogonal to routine task intensity ($r = -0.05$) and empirically distinct from AI exposure ($r = 0.02$). These are different constructs: exposure measures identify which occupations are affected by technology; distance measures characterize which transitions are skill-compatible.
+
+Third, estimates are identified from completed transitions. Workers blocked by licensing or credential requirements are absent from the data \citep{Jackson2023,Heckman1979}. The institutional distance coefficient likely understates the true barrier. Using direct licensing data (e.g., the CPS licensing supplement) rather than Job Zone proxies would improve identification of credential-based blocking.
+
+Fourth, in the destination-choice model, centroid averaging slightly outperforms Wasserstein ($\rho = 0.95$ correlation between the two distance matrices). Optimal transport is not needed for the main choice-model result; the predictive gain comes from the embedding representation, not from the aggregation method. (In the gravity model of aggregate flows, Wasserstein performs best among all metrics; see \cref{tab:gravity-comparison}.)
+
+
+\subsection{Limitations}
+
+Several limitations suggest directions for further work. Endogenous switching cost identification failed with our data---occupation-mean wages yield negative coefficients, indicating that aggregate wages do not capture entry wages for switchers (see \cref{app:switching-costs}). Structural estimation requires individual-level wages at transition. The analysis uses a single embedding model (MPNet); domain-specific models could perform differently. The distance measure is cross-sectional and does not model how occupational task content evolves. Incorporating time-varying vacancy data would sharpen the decomposition between feasibility and demand. Finally, the measure may be useful for identifying skill-adjacent destinations for displaced workers, but applications requiring reallocation forecasts would also need vacancy, wage, geographic, and institutional data.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion}
+\label{sec:conclusion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+This paper proposes an embedding-based measure of occupational distance constructed from O*NET task descriptions and tests it against 89,329 observed occupational transitions. A four-specification comparison establishes that most of the predictive gain comes from the embedding representation of inter-task similarity; in the destination-choice model, centroid averaging slightly outperforms Wasserstein, and optimal transport is not needed for the main result.
+
+The measure captures within-origin pathway feasibility but not aggregate allocation, and is empirically distinct from both routine task intensity and AI exposure indices. It is stable across the pre/post COVID period. Extending the analysis to equilibrium prediction would require richer vacancy, wage, and licensing data.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+\numberwithin{table}{section}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Notation}
+\label{app:formal-definitions}
+
+This appendix collects the formal definitions used in the main text.
+
+\begin{definition}[Occupation measure]
+An occupation $j$ is represented by a probability measure $\rho_j$ over a set of activities $T_n = \{a_1, \ldots, a_n\}$ ($n = 2{,}087$ DWAs): $\rho_j(a) = w_j(a) / \sum_{a'} w_j(a')$, where $w_j(a) = \max_{t \in \mathrm{Tasks}(j,a)} \mathrm{IM}_{j,t}$.
+\end{definition}
+
+\begin{definition}[Wasserstein distance]
+\label{def:wasserstein}
+$W(\rho_i, \rho_j) = \min_{\gamma \in \Pi(\rho_i, \rho_j)} \sum_{a,b} \gamma(a,b) \cdot d(a,b)$,
+where $\gamma$ is a transport plan with marginals $\rho_i$, $\rho_j$ and $d(a,b)$ is the ground metric (cosine distance in embedding space or identity).
+\end{definition}
+
+\begin{definition}[Effective distance]
+\label{def:effective-distance}
+$d_{\mathrm{eff}}(i,j) = d_{\mathrm{sem}}(i,j) + \lambda \cdot d_{\mathrm{inst}}(i,j)$,
+where $d_{\mathrm{sem}}$ is semantic distance and $d_{\mathrm{inst}}$ is institutional distance.
+\end{definition}
+
+
+\section{Switching Cost Calibration}
+\label{app:switching-costs}
+
+Endogenous switching cost identification was attempted and failed: adding destination wages to the conditional logit yields negative coefficients ($\beta_{\mathrm{wage}} = -0.063$, $t = -6.7$), indicating that occupation-mean wages do not capture entry wages for switchers. Structural estimation following \citet{Traiberman2019} requires individual-level wages at transition.
+
+As an interim approach, we anchor externally to \citet{DixCarneiro2014}'s median sectoral switching cost of 2.0 wage-years. With median Wasserstein distance 0.521, this implies 3.84 wage-years per unit distance. US estimates in the literature range from 0.5$\times$ to 6.5$\times$ annual wages; ordinal rankings of transition difficulty are invariant across this range by construction (the calibration is linear). This calibration uses the Wasserstein distance scale; because centroid and Wasserstein distances are rank-correlated ($\rho = 0.95$), ordinal rankings of transition difficulty are preserved under either metric. These magnitudes should be treated as rough planning numbers, not identified structural parameters.
+
+
+\section{Directional Asymmetry of Institutional Barriers}
+\label{app:asymmetry}
+
+
+\begin{table}[h!]
+\centering
+\caption{Directional Asymmetry by Distance Metric}
+\label{tab:asymmetric-geometry}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Geometry} & $\alpha$ & $\beta_{\mathrm{up}}$ & $\beta_{\mathrm{down}}$ & Ratio & LR $\chi^2$ \\
+\midrule
+O*NET cosine & 5.691 & 0.282 & 0.270 & 1.04 & 4.33 \\
+Embedding Wasserstein & 9.001 & 0.171 & 0.081 & 2.11 & 242.1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}[h!]
+\centering
+\caption{Asymmetry Robustness (Embedding Wasserstein)}
+\label{tab:asymmetric-robustness}
+\begin{tabular}{llcc}
+\toprule
+\textbf{Variant} & \textbf{Description} & \textbf{Ratio} & \textbf{95\% CI} \\
+\midrule
+S1 & Baseline & 2.11 & [1.80, 2.42] \\
+S2 & Job Zone only & 1.36 & [1.23, 1.50] \\
+R1 & Thick cells ($\geq 5$ transitions) & 2.79 & [2.33, 3.26] \\
+R2 & Prime age (25--54) & 1.12 & [0.96, 1.29] \\
+R3 & Excluding outlier occupations & 0.06 & [0.01, 0.11] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+Under O*NET cosine distance, upward and downward institutional barriers appear symmetric (\cref{tab:asymmetric-geometry}). Under embedding Wasserstein, the baseline specification shows upward asymmetry (ratio $= 2.11$), but restricting to prime-age workers yields near-symmetry (ratio $= 1.12$), and excluding outlier occupations eliminates asymmetry entirely (ratio $= 0.06$; \cref{tab:asymmetric-robustness}). We do not draw strong conclusions from these estimates.
+
+
+\bibliographystyle{apalike}
+\bibliography{references}
+
+
+\end{document}
