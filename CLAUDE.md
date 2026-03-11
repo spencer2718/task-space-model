@@ -46,7 +46,7 @@ Each document has ONE purpose. No redundancy.
 |------|-------|---------------|
 | paper/publishable/ | Lead Researcher | Engineer MUST NOT edit without explicit Lead instruction |
 | paper/publishable/build_deck.js | Lead Researcher | Engineer MUST NOT edit without explicit Lead instruction |
-| paper/main.tex | Writer (via Lead spec) | Engineer MUST NOT edit |
+| paper/main.tex | Lead Researcher | Engineer edits only to align with publishable, at Lead direction |
 | LEDGER.md | Lead Researcher | Engineer updates version header/history only |
 | CLAUDE.md | Lead Researcher | Engineer MUST NOT edit without explicit Lead instruction |
 | figures/*.py | Engineer | Lead provides specs |

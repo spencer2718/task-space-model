@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.10.24
+**Current Version:** 0.7.10.25
 **Last Updated:** 2026-03-11
 **Paper Draft:** `paper/main.tex`
 
@@ -763,6 +763,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.10.25 | 2026-03-11 | Advisory response — publishable reframing (structured-vector baseline language, lit review restructured, 5 new citations), working paper ownership to Lead. |
 | 0.7.10.24 | 2026-03-11 | Publishable disclosures (J=11, in-sample, unweighted, diagonal, origin exclusion), deck table fix, LEDGER holdout wording. |
 | 0.7.10.23 | 2026-03-11 | Audit fixes — holdout→out-of-period (LEDGER + publishable), beta SE 0.004→0.0041, ownership path. |
 | 0.7.9.3 | 2026-03-09 | Captions for fig3/fig4, swap fig5/fig6 to Budget vs Credit Analysts. |
