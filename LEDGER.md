@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.10.23
+**Current Version:** 0.7.10.24
 **Last Updated:** 2026-03-11
 **Paper Draft:** `paper/main.tex`
 
@@ -385,7 +385,7 @@ The MPNet embedding is doing the work. The Wasserstein formulation provides marg
 | Model probability, all destinations | 0.188 | 0.128 | 233 |
 | Raw 1/distance, common destinations | 0.043 | 0.316 | 177 |
 
-**CORRECTION:** Original v0.7.0c reported ρ = 0.43, but this was computed on a **restricted sample** (exposed origins only, n=60). On the full 2024+ holdout (n=424 origins), the model probability method yields ρ = 0.128 per-origin.
+**CORRECTION:** Original v0.7.0c reported ρ = 0.43, but this was computed on a **restricted sample** (exposed origins only, n=60). On the full 2024+ out-of-period comparison (n=424 origins), the model probability method yields ρ = 0.128 per-origin.
 
 **Methodology note:** The two per-origin metrics differ because:
 - Model probability evaluates over ALL 447 destinations (including zeros)
@@ -763,6 +763,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.10.24 | 2026-03-11 | Publishable disclosures (J=11, in-sample, unweighted, diagonal, origin exclusion), deck table fix, LEDGER holdout wording. |
 | 0.7.10.23 | 2026-03-11 | Audit fixes — holdout→out-of-period (LEDGER + publishable), beta SE 0.004→0.0041, ownership path. |
 | 0.7.9.3 | 2026-03-09 | Captions for fig3/fig4, swap fig5/fig6 to Budget vs Credit Analysts. |
 | 0.7.10.21 | 2026-03-10 | Fig3 label positioning finalized. Swap Edit→Transcribe label, add HA_OVERRIDE for independent alignment control. |

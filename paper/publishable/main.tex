@@ -148,7 +148,11 @@ U_{kj} = \alpha \cdot (-d_{\mathrm{sem}}(i,j)) + \beta \cdot (-d_{\mathrm{inst}}
 \]
 where $k$ indexes a transitioning worker from origin $i$, $j$ indexes all 447 Census-code destinations, and distances are derived from SOC-level task representations mapped to Census codes. Performance is measured by McFadden's pseudo-$R^2$.\footnote{This reduced-form model tests whether a distance metric assigns higher probability to realized destinations. It does not separately identify retraining costs, employer preferences, or vacancy distributions.}
 
-Following McFadden \cite{McFadden1978}, we estimate using sampled alternatives: for each observed transition, the choice set consists of the realized destination plus 10 randomly drawn alternatives ($K = 10$). Pseudo-$R^2$ is computed against this sampled choice set.
+Following McFadden \cite{McFadden1978}, we estimate using sampled alternatives: for each observed transition, the choice set consists of the realized destination plus 10 randomly drawn alternatives ($J = 11$ total). Pseudo-$R^2$ is computed against this sampled choice set and is not directly comparable to full-choice-set estimates over all 447 destinations.
+
+Pseudo-$R^2$ values in Tables 2--5 are computed in-sample. With two parameters estimated across 89,329 choice occasions, overfitting risk is minimal; the out-of-period shock comparison (\cref{tab:shock-integration}) provides additional confirmation.
+
+The sampled alternative set does not exclude the origin occupation. In approximately 2\% of choice sets the origin appears as an alternative; excluding it yields $\alpha = 7.70$ (vs.\ 7.40), a change of 4.2\%.
 
 \textbf{Gravity model.} We also estimate $\ln(\text{Flow}_{ij} + 1) = \alpha + \beta_1 \ln(\text{Emp}_i) + \beta_2 \ln(\text{Emp}_j) + \beta_3 \cdot d(i,j) + \varepsilon_{ij}$ on 199,362 occupation pairs (including zeros) to test whether distance explains aggregate bilateral flows.
 
@@ -177,7 +181,7 @@ O*NET mapping & 89,329 & 84.2\% & Census $\to$ O*NET \\
 \end{tabular}
 \end{table}
 
-The CPS sample draws from IPUMS Basic Monthly Files, January 2015 through September 2024, excluding 2020--2021 (\cref{tab:cps-pipeline}). The persistence filter requires occupation changes to persist across survey waves. Additional data sources include AI Occupational Exposure (AIOE) scores \citep{FeltenRajSeamans2021} (93.5\% coverage), OES wages (98.2\%), BLS projected openings (94.3\%), and \citet{DingelNeiman2020} teleworkability indices (92.4\%).
+The CPS sample draws from IPUMS Basic Monthly Files, January 2015 through September 2024, excluding 2020--2021 (\cref{tab:cps-pipeline}). The persistence filter requires occupation changes to persist across survey waves. Additional data sources include AI Occupational Exposure (AIOE) scores \citep{FeltenRajSeamans2021} (93.5\% coverage), OES wages (98.2\%), BLS projected openings (94.3\%), and \citet{DingelNeiman2020} teleworkability indices (92.4\%). When multiple O*NET-SOC codes map to a single Census occupation code, task distributions and distances are aggregated using unweighted means.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -225,7 +229,7 @@ Embedding (semantic similarity) & 8.39 & 0.154 & 13.76\% & +83\% \\
 \end{table}
 
 
-The ground metric comparison provides a within-Wasserstein diagnostic (\cref{tab:ground-metric}). Holding the transport formulation fixed, switching from an identity ground metric to the embedding ground metric improves pseudo-$R^2$ by 83\%. The identity ground metric produces results comparable to O*NET-based measures, confirming that, conditional on using optimal transport, the improvement comes from the semantic content of the ground metric.
+The ground metric comparison provides a within-Wasserstein diagnostic (\cref{tab:ground-metric}). Holding the transport formulation fixed, switching from an identity ground metric to the embedding ground metric improves pseudo-$R^2$ by 83\%. The identity ground metric produces results comparable to O*NET-based measures, confirming that, conditional on using optimal transport, the improvement comes from the semantic content of the ground metric. The Wasserstein values reflect a diagonal correction: 170 of 447 Census codes had nonzero self-distances from SOC-level aggregation, inflating the original estimate by approximately 0.8 percentage points.
 
 
 \begin{table}[h!]

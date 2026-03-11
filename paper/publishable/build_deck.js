@@ -213,7 +213,7 @@ const tableData = [
   [
     { text: "Text embeddings", options: { ...headerOpts } },
     { text: "Centroid (primary)", options: { ...starOpts } },
-    { text: "Wasserstein", options: { ...cellOpts } },
+    { text: "Wasserstein", options: { ...starOpts } },
   ],
 ];
 
