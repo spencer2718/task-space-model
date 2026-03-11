@@ -47,7 +47,7 @@ cp .env.example .env  # Only if you need API access
 - **Download:** https://www.onetcenter.org/database.html
 - **File:** `db_30_0_excel.zip`
 - **Extract to:** `data/onet/db_30_0_excel/`
-- **Contents:** 2,087 Detailed Work Activities (DWAs) linked to 894 occupations
+- **Contents:** 2,087 Detailed Work Activities (DWAs) linked to 894 O*NET-SOC occupations with DWA data
 
 ### CPS Microdata (IPUMS)
 

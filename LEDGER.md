@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.10.29
+**Current Version:** 0.7.11.0
 **Last Updated:** 2026-03-11
 **Paper Draft:** `paper/main.tex`
 
@@ -182,7 +182,7 @@ Deviations implemented without this protocol constitute MS2 (metric definition) 
 |---------|--------|--------------|-------|
 | T Module (v0.6.7) | ΔLL = +9,576 | ✓ VERIFIED | n=89,329, full sample |
 | I Module Asymmetric (v0.6.8) | Ratio = 2.11 | ✓ VERIFIED | n=89,329, baseline full sample; variants explicitly documented |
-| S Module (v0.7.0) | ΔLL = +23,119 | ✓ VERIFIED | Train n=97,236, Holdout n=8,880 |
+| S Module (v0.7.0) | ΔLL = +23,119 | ✓ VERIFIED | Train n=97,236, Out-of-period n=8,880 |
 | M Module Demand (v0.7.0.3) | Per-origin ρ ≈ 0.13 | ✓ CORRECTED | Now cites rigorous methodology (v0.7.1) |
 
 **Audit result:** All four flagged results now verified. See `outputs/experiments/ms1_compliance_audit_v0704.json`.
@@ -374,9 +374,9 @@ The MPNet embedding is doing the work. The Wasserstein formulation provides marg
 | AIOE-Wasserstein correlation | r | 0.020 |
 | Top-5 destination overlap | — | 0.0 |
 
-**Sample:** Train = 97,236 transitions (2015-2019, 2022-2023); Holdout = 8,880 transitions (2024)
+**Sample:** Train = 97,236 transitions (2015-2019, 2022-2023); Out-of-period = 8,880 transitions (2024)
 
-**Status: VALIDATED.** AIOE and Wasserstein are orthogonal—shock profiles identify exposed occupations, geometry identifies compatible destinations. Holdout validation (ΔLL = +23,119) confirms S module integration improves prediction.
+**Status: VALIDATED.** AIOE and Wasserstein are orthogonal—shock profiles identify exposed occupations, geometry identifies compatible destinations. Out-of-period validation (ΔLL = +23,119) confirms S module integration improves prediction.
 
 ### S Module: Pathway Accuracy Audit (v0.7.0.3c)
 
@@ -763,6 +763,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.11.0 | 2026-03-11 | Documentation consistency pass — CLAUDE.md, README.md, SPEC.md, LEDGER.md, data/README.md aligned to v0.7.10.x presentation sprint. |
 | 0.7.10.29 | 2026-03-11 | Audit pass 3 — corrected SchuStanTaska characterization (employer concentration → appendix mobility analysis), fixed 3 remaining C-G "approximately 15%" references in working paper (lines 116, 124, 1032). Frank et al. 36,536 transitions verified by Deep Researcher. |
 | 0.7.10.28 | 2026-03-11 | Bibliography/prose audit pass 2 — removed fabricated HampoleEtAl2024, fixed Jackson2023 author/title in working paper bib, corrected HampoleEtAl2025/onet2024related/KudlyakWolcott2019/dawson2021skill in working paper bib, softened C-G pseudo-R² attribution (both papers), corrected Macaluso/SchuStanTaska/KudlyakWolcott characterizations (both papers), clarified 894 occupation count, removed 46 orphan bib entries from publishable. |
 | 0.7.10.27 | 2026-03-11 | Bibliography audit — corrected all 5 placeholder entries (titles, authors, years, DOIs), updated cite keys, softened C-G characterization. |

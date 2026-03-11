@@ -36,7 +36,7 @@ Each document has ONE purpose. No redundancy.
 | `SPEC.md` | Current sprint planning | Lead Researcher |
 | `README.md` | Public-facing overview | Lead Researcher (at v0.x.y) |
 | `data/README.md` | Data acquisition | Engineer (when sources change) |
-| `paper/main.tex` | Authoritative theory & claims | Writer |
+| `paper/main.tex` | Authoritative theory & claims | Lead Researcher |
 
 **Principle:** Progressive disclosure. This file is minimal; detail lives in referenced docs.
 
@@ -79,7 +79,7 @@ Each document has ONE purpose. No redundancy.
 
 ---
 
-## Contribution Framing (v0.7.7.0)
+## Contribution Framing (v0.7.10.25)
 
 The core contribution is **the 2×2 factorial design** isolating embedding representation from aggregation method, validated on 89,329 CPS transitions in a choice-model framework:
 
@@ -98,7 +98,7 @@ Our delta: the factorial decomposition + choice-model framework + scale (89K US 
 
 **Diagonal correction (v0.7.7.0):** Embedding Wasserstein matrix had 170/447 nonzero diagonal entries from SOC→Census aggregation. Correcting this reduces pseudo-R² from 14.5% to 13.8% and flips the ranking: centroid (14.1%) now outperforms Wasserstein (13.8%). All published numbers use corrected values.
 
-**Presentation (v0.7.10.x):** 9 figures across 11 slides + 1 backup. Figs 1–7 finalized; figs 8–9 (embedding explainer) in polish. Fig3 (task scatter) needs formatting pass.
+**Presentation (v0.7.10.x):** 9 figures across 11 slides + 1 backup. All figures finalized. Deck script: paper/publishable/build_deck.js.
 
 ---
 
@@ -192,7 +192,7 @@ Experiments run at **x.y.0.z** increments (e.g., 0.7.0.2, 0.7.0.3). After experi
 
 ## Version
 
-**0.7.7.2** — Paper corrections: diagonal audit, prior art citations, data integrity fixes
+**0.7.10.29** — Presentation sprint complete: 9 figures finalized, publishable draft aligned, bibliography audited
 
 ---
 

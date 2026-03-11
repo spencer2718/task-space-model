@@ -2,7 +2,7 @@
 
 Infrastructure for analyzing how task-level technological change propagates to labor market outcomes.
 
-**Version 0.7.8** — Paper Alignment Complete
+**Version 0.7.10** — Presentation Sprint Complete
 
 ---
 
@@ -72,7 +72,7 @@ The embedding ground metric improves explanatory power by +83% over an identity 
 | Parameter | Coefficient | SE | t-stat |
 |-----------|-------------|-----|--------|
 | α (semantic) | 7.404 | 0.036 | 204.0 |
-| β (institutional) | 0.139 | 0.004 | 33.7 |
+| β (institutional) | 0.139 | 0.0041 | 33.7 |
 
 Sample: 89,329 verified CPS transitions (2015–2019, 2022–2024). Estimated with sampled alternatives (J = 11). Separability holds.
 
@@ -120,29 +120,24 @@ See [`data/README.md`](data/README.md) for complete data documentation including
 ## Repository Structure
 
 ```
-src/task_space/          # Core implementation
-    data/                # O*NET loading, crosswalks, AIOE
-    similarity/          # Kernel, overlap, wasserstein, embeddings
-    shocks/              # Shock profiles, propagation
-    validation/          # Regression, diagnostics, reallocation
-    mobility/            # CPS mobility validation
-
-tests/
-    unit/                # Fast unit tests
-    integration/         # Regression tests against canonical values
-
-scripts/
-    reproduce_tables.py  # Reproduce paper Tables 2, 3, 5
-    run_*_v07*.py        # Versioned experiment scripts
+src/task_space/              # Core implementation
+    data/                    # O*NET loading, crosswalks, AIOE
+    similarity/              # Kernel, overlap, wasserstein, embeddings
+    shocks/                  # Shock profiles, propagation
+    validation/              # Regression, diagnostics, reallocation
+    mobility/                # CPS mobility validation
 
 paper/
-    main.tex             # Working paper (full theory + results)
-    references.bib       # Bibliography
+    main.tex                 # Working paper (full theory + results)
+    publishable/main.tex     # Condensed publishable draft
+    publishable/build_deck.js # pptxgenjs presentation script
 
 figures/
-    fig1_ai_exposure.py  # AI task exposure by occupation group
-    fig2_pseudo_r2.py    # Main result: embedding vs O*NET comparison
-    fig3_task_scatter.py # Tasks in semantic space visualization
+    fig[1-9]_*.py            # Presentation figures (9 total)
+    style.py                 # Centralized palette + font constants
+
+scripts/
+    reproduce_tables.py      # Reproduce paper Tables 2, 3, 5
 ```
 
 See `CLAUDE.md` for developer context, `LEDGER.md` for scientific state.
