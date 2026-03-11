@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.10.27
+**Current Version:** 0.7.10.28
 **Last Updated:** 2026-03-11
 **Paper Draft:** `paper/main.tex`
 
@@ -763,6 +763,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.10.28 | 2026-03-11 | Bibliography/prose audit pass 2 — removed fabricated HampoleEtAl2024, fixed Jackson2023 author/title in working paper bib, corrected HampoleEtAl2025/onet2024related/KudlyakWolcott2019/dawson2021skill in working paper bib, softened C-G pseudo-R² attribution (both papers), corrected Macaluso/SchuStanTaska/KudlyakWolcott characterizations (both papers), clarified 894 occupation count, removed 46 orphan bib entries from publishable. |
 | 0.7.10.27 | 2026-03-11 | Bibliography audit — corrected all 5 placeholder entries (titles, authors, years, DOIs), updated cite keys, softened C-G characterization. |
 | 0.7.10.26 | 2026-03-11 | Working paper aligned to publishable reframing — structured-vector baseline language, new citations (Mouw, Macaluso, Schubert/Stansbury/Taska, Carrillo-Tudela, Kudlyak/Wolcott). |
 | 0.7.10.25 | 2026-03-11 | Advisory response — publishable reframing (structured-vector baseline language, lit review restructured, 5 new citations), working paper ownership to Lead. |
