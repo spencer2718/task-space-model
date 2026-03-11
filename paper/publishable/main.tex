@@ -260,7 +260,7 @@ The two embedding-based distance matrices are highly correlated ($\rho = 0.95$; 
 \textbf{Parameter} & \textbf{Coefficient} & \textbf{Std. Error} & \textbf{$t$-statistic} & \textbf{$p$-value} \\
 \midrule
 $\alpha$ (semantic) & 7.404 & 0.036 & 204.0 & $< 10^{-100}$ \\
-$\beta$ (institutional) & 0.139 & 0.004 & 33.7 & $< 10^{-100}$ \\
+$\beta$ (institutional) & 0.139 & 0.0041 & 33.7 & $< 10^{-100}$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -311,7 +311,7 @@ Per-origin geometry & 0.128 & Modest for pathway direction \\
 \end{table}
 
 
-The decomposition in \cref{tab:demand-decomposition} clarifies the scope of this ranking performance. Aggregate inflows are demand-dominated ($\rho = 0.80$ with BLS openings); the distance measure alone achieves $\rho = 0.04$ at the aggregate level. Its contribution is to within-origin destination ranking (per-origin $\rho \approx 0.13$ on the 2024 holdout, $n = 233$ origins). The measure is informative about which destinations are skill-compatible for workers leaving a given origin, but not about which destinations receive the largest aggregate inflows.
+The decomposition in \cref{tab:demand-decomposition} clarifies the scope of this ranking performance. Aggregate inflows are demand-dominated ($\rho = 0.80$ with BLS openings); the distance measure alone achieves $\rho = 0.04$ at the aggregate level. Its contribution is to within-origin destination ranking (per-origin $\rho \approx 0.13$ on the 2024 out-of-period comparison, $n = 233$ origins). The measure is informative about which destinations are skill-compatible for workers leaving a given origin, but not about which destinations receive the largest aggregate inflows.
 
 
 \subsection{Relation to AI Exposure Measures}
@@ -337,7 +337,7 @@ $\Delta$LL & $+23{,}119$ & --- \\
 \end{table}
 
 
-The embedding-based distance measure is empirically distinct from AI Occupational Exposure \citep{FeltenRajSeamans2021}: the two are essentially uncorrelated ($r = 0.02$; \cref{tab:shock-integration}). The distance measure and AI exposure thus appear to capture different constructs. On 2024 holdout data, the distance-based conditional logit outperforms a historical-baseline specification ($\Delta \text{LL} = +23{,}119$).
+The embedding-based distance measure is empirically distinct from AI Occupational Exposure \citep{FeltenRajSeamans2021}: the two are essentially uncorrelated ($r = 0.02$; \cref{tab:shock-integration}). The distance measure and AI exposure thus appear to capture different constructs. On 2024 out-of-period data, the distance-based conditional logit outperforms a historical-baseline specification ($\Delta \text{LL} = +23{,}119$).
 
 
 \subsection{Pre/Post COVID Stability}

@@ -45,7 +45,7 @@ Each document has ONE purpose. No redundancy.
 | Path | Owner | Edit authority |
 |------|-------|---------------|
 | paper/publishable/ | Lead Researcher | Engineer MUST NOT edit without explicit Lead instruction |
-| build_deck.js | Lead Researcher | Engineer MUST NOT edit without explicit Lead instruction |
+| paper/publishable/build_deck.js | Lead Researcher | Engineer MUST NOT edit without explicit Lead instruction |
 | paper/main.tex | Writer (via Lead spec) | Engineer MUST NOT edit |
 | LEDGER.md | Lead Researcher | Engineer updates version header/history only |
 | CLAUDE.md | Lead Researcher | Engineer MUST NOT edit without explicit Lead instruction |

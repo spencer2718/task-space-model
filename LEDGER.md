@@ -1,7 +1,7 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.10.21
-**Last Updated:** 2026-03-10
+**Current Version:** 0.7.10.23
+**Last Updated:** 2026-03-11
 **Paper Draft:** `paper/main.tex`
 
 ---
@@ -220,7 +220,7 @@ Canonical phrasing for key claims. All documents (main.tex, README, CLAUDE.md) m
 | T-E3 | Pattern consistent with feasibility/skill-proximity mechanisms | E3 | CONSISTENT | main.tex §5.1 discussion |
 | I-E1 | Institutional distance provides incremental validity over task distance (t = 33.7) | E1 | VALIDATED | main.tex §5.2 |
 | I-E3 | Residual institutional effect interpreted as non-skill barriers | E3 | CONSISTENT | main.tex §5.2 discussion |
-| S-E1 | AIOE integration improves holdout LL (ΔLL = +23,119) | E1 | VALIDATED | main.tex §5.3 |
+| S-E1 | AIOE integration improves out-of-period LL (ΔLL = +23,119) | E1 | VALIDATED | main.tex §5.3 |
 | P-E2 | Per-origin pathway ranking: modest signal (ρ ≈ 0.13) | E2 | VALIDATED | main.tex §5.5 |
 | P-E3 | Geometry captures supply-side feasibility; demand dominates aggregate flows | E3 | CONSISTENT | main.tex §5.5, §7 |
 | D-E1 | Demand-only correlation with aggregate inflows: ρ = 0.80 | E1 | VALIDATED | main.tex §5.5 |
@@ -763,6 +763,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.10.23 | 2026-03-11 | Audit fixes — holdout→out-of-period (LEDGER + publishable), beta SE 0.004→0.0041, ownership path. |
 | 0.7.9.3 | 2026-03-09 | Captions for fig3/fig4, swap fig5/fig6 to Budget vs Credit Analysts. |
 | 0.7.10.21 | 2026-03-10 | Fig3 label positioning finalized. Swap Edit→Transcribe label, add HA_OVERRIDE for independent alignment control. |
 | 0.7.10.16 | 2026-03-10 | Fig3 rebalance 6 per theme = 30 DWAs, 10 labels. Added Transcribe, Type documents, Prepare budgets. |
