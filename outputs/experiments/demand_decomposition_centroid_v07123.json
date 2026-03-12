@@ -1,0 +1,22 @@
+{
+  "experiment": "demand_decomposition_centroid_v07123",
+  "timestamp": "2026-03-12T18:12:55.599161+00:00",
+  "distance_metric": "cosine_embed (centroid)",
+  "full_flow_model": {
+    "full_flow_spearman": 0.787,
+    "geometry_only_spearman": -0.0,
+    "demand_only_spearman": 0.7978,
+    "n_destinations_compared": 383,
+    "formula": "outflow x openings x (1/distance)"
+  },
+  "per_origin_validation": {
+    "mean_per_origin_spearman": 0.2987,
+    "n_origins_evaluated": 193
+  },
+  "comparison_to_wasserstein": {
+    "wass_geometry_only": 0.0432,
+    "wass_demand_only": 0.7978,
+    "wass_per_origin": 0.3165,
+    "source": "demand_probe_decomposition_v0703b.json"
+  }
+}

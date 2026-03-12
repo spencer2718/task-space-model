@@ -1,0 +1,14 @@
+{
+  "experiment": "aioe_centroid_v07121",
+  "timestamp": "2026-03-12T18:12:52.270416+00:00",
+  "distance_metric": "cosine_embed (centroid)",
+  "aioe_centroid_pearson_r": -0.015545,
+  "aioe_centroid_pearson_p": 0.7513322817490327,
+  "aioe_centroid_spearman_rho": -0.056832,
+  "n_matched_occupations": 418,
+  "aioe_coverage": 0.9351,
+  "comparison_to_wasserstein": {
+    "wasserstein_r": 0.02,
+    "source": "outputs/experiments/shock_integration_v070a.json"
+  }
+}

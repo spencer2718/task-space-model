@@ -1,0 +1,24 @@
+{
+  "experiment": "gravity_centroid_v07125",
+  "timestamp": "2026-03-12T18:13:09.810595+00:00",
+  "n_pairs": 199362,
+  "results": {
+    "centroid": {
+      "beta_distance": -0.577381,
+      "beta_distance_se": 0.007024,
+      "t_stat": -82.2,
+      "r2_full": 0.246177,
+      "partial_r2": 2.5548,
+      "mass_only_r2": 22.0629
+    },
+    "wasserstein_verify": {
+      "beta_distance": -1.040906,
+      "beta_distance_se": 0.010816,
+      "t_stat": -96.24,
+      "r2_full": 0.255231,
+      "partial_r2": 3.4601,
+      "mass_only_r2": 22.0629,
+      "note": "Should match 3.46% from original"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "experiment": "rti_centroid_v07122",
+  "timestamp": "2026-03-12T18:12:53.762357+00:00",
+  "distance_metric": "cosine_embed (centroid)",
+  "n_matched_occ1990dd": 296,
+  "correlations_pearson": {
+    "rti_composite": -0.060128,
+    "task_routine": 0.001607,
+    "task_abstract": 0.088229,
+    "task_manual": 0.089523
+  },
+  "pvalues": {
+    "rti_composite": 0.30252091919961765,
+    "task_routine": 0.9780352249729825,
+    "task_abstract": 0.12990486223791525,
+    "task_manual": 0.12434875070276721
+  },
+  "spearman_rti": -0.022534,
+  "comparison_to_wasserstein": {
+    "wasserstein_rti_r": -0.052,
+    "source": "paper Table (RTI correlation)"
+  }
+}
