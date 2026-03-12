@@ -1,0 +1,31 @@
+{
+  "experiment": "distance_audit_v07120",
+  "timestamp": "2026-03-12T18:00:42.204873+00:00",
+  "centroid_matrix": {
+    "shape": [
+      447,
+      447
+    ],
+    "diagonal_all_zero": true,
+    "has_nan": false,
+    "has_negative": false,
+    "n_codes": 447,
+    "off_diag_mean": 0.332179,
+    "off_diag_std": 0.122177,
+    "median_distance": 0.33325
+  },
+  "wasserstein_matrix": {
+    "nonzero_diagonal_count": 170,
+    "max_diagonal": 0.401021,
+    "note": "Diagonal correction applied at runtime, not in cached file"
+  },
+  "codes_match": true,
+  "inter_matrix_correlation": {
+    "spearman_rho": 0.952745,
+    "spearman_p": 0.0,
+    "spearman_rho_diag_corrected": 0.952745,
+    "sanity_check_match": true,
+    "note": "Upper triangle excluding diagonal, 99681 pairs"
+  },
+  "verdict": "PASS"
+}

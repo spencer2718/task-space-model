@@ -1,7 +1,7 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.11.0
-**Last Updated:** 2026-03-11
+**Current Version:** 0.7.12.0
+**Last Updated:** 2026-03-12
 **Paper Draft:** `paper/main.tex`
 
 ---
@@ -763,6 +763,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.12.0 | 2026-03-12 | Distance matrix audit — added load_centroid_census() to mobility IO, verified centroid matrix clean (zero diagonal, no NaN), computed post-diagonal Spearman ρ = 0.9527 between centroid and Wasserstein. |
 | 0.7.11.0 | 2026-03-11 | Documentation consistency pass — CLAUDE.md, README.md, SPEC.md, LEDGER.md, data/README.md aligned to v0.7.10.x presentation sprint. |
 | 0.7.10.29 | 2026-03-11 | Audit pass 3 — corrected SchuStanTaska characterization (employer concentration → appendix mobility analysis), fixed 3 remaining C-G "approximately 15%" references in working paper (lines 116, 124, 1032). Frank et al. 36,536 transitions verified by Deep Researcher. |
 | 0.7.10.28 | 2026-03-11 | Bibliography/prose audit pass 2 — removed fabricated HampoleEtAl2024, fixed Jackson2023 author/title in working paper bib, corrected HampoleEtAl2025/onet2024related/KudlyakWolcott2019/dawson2021skill in working paper bib, softened C-G pseudo-R² attribution (both papers), corrected Macaluso/SchuStanTaska/KudlyakWolcott characterizations (both papers), clarified 894 occupation count, removed 46 orphan bib entries from publishable. |

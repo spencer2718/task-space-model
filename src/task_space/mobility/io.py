@@ -213,6 +213,43 @@ def load_wasserstein_census() -> Tuple[np.ndarray, List[int]]:
     return distances, codes
 
 
+def load_centroid_census() -> Tuple[np.ndarray, List[int]]:
+    """
+    Load Census-level centroid (cosine embedding) distance matrix.
+
+    This is the primary semantic distance matrix since v0.7.7.0 (HC1).
+    Cosine distance on MPNet occupation centroid embeddings (447x447).
+
+    Returns:
+        Tuple of:
+            - distances: (447, 447) centroid distance matrix
+            - census_codes: List of Census 2010 occupation codes
+
+    Artifacts read:
+        .cache/artifacts/v1/mobility/d_cosine_embed_census.npz
+        Keys: 'distances', 'census_codes'
+    """
+    path = _get_mobility_cache_path("d_cosine_embed_census.npz")
+
+    if not path.exists():
+        raise FileNotFoundError(
+            f"Centroid distances not found at {path}. "
+            "Run distance computation scripts first."
+        )
+
+    data = np.load(path)
+    distances = data["distances"]
+
+    if "census_codes" in data.files:
+        codes = [int(c) for c in data["census_codes"]]
+    elif "occupation_codes" in data.files:
+        codes = [int(c) for c in data["occupation_codes"]]
+    else:
+        raise ValueError(f"No occupation codes found in {path}")
+
+    return distances, codes
+
+
 def load_institutional_census() -> Tuple[np.ndarray, List[int]]:
     """
     Load Census-level institutional distance matrix.
@@ -330,6 +367,8 @@ def load_distance_matrix(
     # Dispatch to specialized loaders for known types
     if kind == "wasserstein":
         return load_wasserstein_census()
+    elif kind == "cosine_embed":
+        return load_centroid_census()
     elif kind == "institutional":
         return load_institutional_census()
 
@@ -440,6 +479,7 @@ __all__ = [
     "get_training_transitions",
     # Distance matrix loading
     "load_wasserstein_census",
+    "load_centroid_census",
     "load_institutional_census",
     "load_distance_matrix",
     # Aggregation
