@@ -36,7 +36,7 @@
 
 
 \begin{abstract}
-This paper constructs an embedding-based measure of occupational distance and tests it against 89,329 observed occupation-to-occupation transitions from the Current Population Survey (2015--2024). We embed O*NET Detailed Work Activities using sentence transformers, represent occupations as distributions over embedded tasks, and compare four distance specifications crossing representation (embeddings vs.\ O*NET weights) with aggregation (Wasserstein vs.\ centroid). Embedding-based measures achieve 13.8--14.1\% pseudo-$R^2$ for destination choice, compared to 6.1--8.1\% for non-embedding structured-vector baselines. Centroid averaging marginally outperforms Wasserstein aggregation on the same embeddings. In the destination-choice model, the predictive gain comes from the embedding representation; optimal transport does not improve over centroid averaging. The measure ranks realized destinations in the top quartile of predicted probability on average, but aggregate inflows are demand-dominated ($\rho = 0.80$ with job openings). It is orthogonal to routine task intensity ($r = -0.05$) and stable across the pre/post COVID period ($\Delta\alpha < 1\%$, $p = 0.72$).
+This paper constructs an embedding-based measure of occupational distance and tests it against 89,329 observed occupation-to-occupation transitions from the Current Population Survey (2015--2024). We embed O*NET Detailed Work Activities using sentence transformers, represent occupations as distributions over embedded tasks, and compare four distance specifications crossing representation (embeddings vs.\ O*NET weights) with aggregation (Wasserstein vs.\ centroid). Embedding-based measures achieve 13.8--14.1\% pseudo-$R^2$ for destination choice, compared to 6.1--8.1\% for non-embedding structured-vector baselines. Centroid averaging marginally outperforms Wasserstein aggregation on the same embeddings. In the destination-choice model, the predictive gain comes from the embedding representation; optimal transport does not improve over centroid averaging. The measure ranks realized destinations in the top quartile of predicted probability on average, but aggregate inflows are demand-dominated ($\rho = 0.80$ with job openings). It is orthogonal to routine task intensity ($r = -0.06$) and stable across the pre/post COVID period ($\Delta\alpha < 1\%$, $p = 0.72$).
 \end{abstract}
 
 
@@ -58,7 +58,7 @@ This paper studies how to measure occupational distance for predicting worker mo
 
 We embed 2,087 O*NET Detailed Work Activities using sentence transformers (MPNet) and represent each occupation as a probability distribution over these embedded tasks. We compute pairwise occupation distances under four specifications organized in a 2$\times$2 comparison crossing the representation of inter-task similarity (sentence embeddings vs.\ O*NET importance weights) with the aggregation method (Wasserstein optimal transport vs.\ centroid averaging). We evaluate each specification against 89,329 persistence-filtered occupation-to-occupation transitions from the Current Population Survey (2015--2024), using a conditional logit model of destination choice with McFadden's pseudo-$R^2$ as the primary performance metric.
 
-We find that embedding-based measures substantially outperform non-embedding O*NET structured-vector baselines, while optimal transport does not improve over centroid averaging in the destination-choice model. Embedding-based specifications achieve pseudo-$R^2$ of 13.8--14.1\%, compared to 6.1--8.1\% for O*NET-based specifications---a 74.9\% relative improvement. Centroid averaging marginally outperforms Wasserstein on the same embeddings. A within-Wasserstein ground metric comparison confirms the pattern: holding the transport formulation fixed, switching from an identity ground metric (all tasks equally different) to the embedding ground metric (semantically similar tasks nearby) improves explanatory power by 83\%. These results indicate that, in the destination-choice model, the predictive gain comes from the semantic representation of inter-task similarity, not from optimal transport over centroid averaging. We also find that the resulting measure is informative about mobility feasibility, not labor demand or automation exposure. Aggregate occupational inflows are demand-dominated ($\rho = 0.80$ with job openings); the embedding-based distance captures supply-side pathway direction at the origin level ($\rho \approx 0.13$). The measure is essentially orthogonal to routine task intensity ($r = -0.05$), suggesting that it captures mobility friction rather than automation susceptibility. Task-distance penalties are stable across the pre/post COVID period ($\Delta\alpha < 1\%$, $p = 0.72$), with suggestive heterogeneity: the distance penalty for teleworkable destinations increased post-COVID ($\delta_4 = -0.086$, $p = 0.01$). A gravity model of aggregate bilateral flows yields a partial $R^2$ of 3.46\% for the embedding Wasserstein distance, close to the \citet{CortesGallipoli2018} finding that task costs are a minority share of total transition costs.
+We find that embedding-based measures substantially outperform non-embedding O*NET structured-vector baselines, while optimal transport does not improve over centroid averaging in the destination-choice model. Embedding-based specifications achieve pseudo-$R^2$ of 13.8--14.1\%, compared to 6.1--8.1\% for O*NET-based specifications---a 74.9\% relative improvement. Centroid averaging marginally outperforms Wasserstein on the same embeddings. A within-Wasserstein ground metric comparison confirms the pattern: holding the transport formulation fixed, switching from an identity ground metric (all tasks equally different) to the embedding ground metric (semantically similar tasks nearby) improves explanatory power by 83\%. These results indicate that, in the destination-choice model, the predictive gain comes from the semantic representation of inter-task similarity, not from optimal transport over centroid averaging. We also find that the resulting measure is informative about mobility feasibility, not labor demand or automation exposure. Aggregate occupational inflows are demand-dominated ($\rho = 0.80$ with job openings); the embedding-based distance captures supply-side pathway direction at the origin level ($\rho \approx 0.12$). The measure is essentially orthogonal to routine task intensity ($r = -0.06$), suggesting that it captures mobility friction rather than automation susceptibility. Task-distance penalties are stable across the pre/post COVID period ($\Delta\alpha < 1\%$, $p = 0.72$), with suggestive heterogeneity: the distance penalty for teleworkable destinations increased post-COVID ($\delta_4 = -0.086$, $p = 0.01$). A gravity model of aggregate bilateral flows yields a partial $R^2$ of 2.55\% for the Embedding $\times$ Centroid distance, close to the \citet{CortesGallipoli2018} finding that task costs are a minority share of total transition costs.
 
 The paper relates to three literatures: the task-based approach to technological change \citep{AutorLevyMurnane2003,AcemogluAutor2011}, structured-vector occupational distance measures validated against mobility patterns \citep{GathmannSchonberg2010,CortesGallipoli2018,MouwEtAl2024,SchuStanTaska2024}, and recent work applying text embeddings to labor market measurement \citep{ZhangEtAl2021,DecorteEtAl2022,HampoleEtAl2025}. The contribution is not to overturn a single canonical benchmark, but to show that semantically enriched task representations outperform a class of interpretable structured-vector comparators in a destination-choice setting, and that the gain comes from representation rather than transport aggregation. \Cref{sec:literature} reviews related work. \Cref{sec:data} describes data and methods. \Cref{sec:results} presents results. \Cref{sec:discussion} discusses scope and limitations. \Cref{sec:conclusion} concludes.
 
@@ -202,14 +202,14 @@ The CPS sample draws from IPUMS Basic Monthly Files, January 2015 through Septem
 \centering
 \caption{2$\times$2 Distance Metric Comparison}
 \label{tab:2x2-comparison}
-\begin{tabular}{llcccc}
+\begin{tabular}{llccc}
 \toprule
-\textbf{Representation} & \textbf{Aggregation} & $\alpha$ & Pseudo-$R^2$ & $\Delta$ vs baseline \\
+\textbf{Specification} & \textbf{Note} & $\alpha$ & Pseudo-$R^2$ & $\Delta$ vs baseline \\
 \midrule
-Embedding (MPNet) & Cosine centroid & 7.40 & 14.08\% & +132\% \\
-Embedding (MPNet) & Wasserstein & 8.39 & 13.8\% & +127\% \\
-O*NET importance & Cosine & 4.55 & 8.05\% & +33\% \\
-O*NET importance & Euclidean & 9.76 & 6.06\% & baseline \\
+Embedding $\times$ Centroid & (primary) & 7.40 & 14.08\% & +132\% \\
+Embedding $\times$ Wasserstein & & 8.39 & 13.8\% & +127\% \\
+O*NET $\times$ Cosine & & 4.55 & 8.05\% & +33\% \\
+O*NET $\times$ Euclidean & & 9.76 & 6.06\% & baseline \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -244,15 +244,16 @@ The ground metric comparison provides a within-Wasserstein diagnostic (\cref{tab
 \toprule
 \textbf{Pair} & \textbf{Spearman $\rho$} \\
 \midrule
-Wasserstein (embedding) vs.\ Cosine centroid (embedding) & 0.95 \\
-Wasserstein (embedding) vs.\ Wasserstein (identity) & 0.36 \\
-Wasserstein (embedding) vs.\ Euclidean (O*NET) & 0.28 \\
+Embedding $\times$ Centroid vs.\ Embedding $\times$ Wasserstein & 0.95 \\
+Embedding $\times$ Centroid vs.\ O*NET $\times$ Cosine & 0.47 \\
+Embedding $\times$ Centroid vs.\ Wasserstein (identity) & 0.35 \\
+Embedding $\times$ Centroid vs.\ O*NET $\times$ Euclidean & 0.23 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 
-The two embedding-based distance matrices are highly correlated ($\rho = 0.95$; \cref{tab:distance-correlations}), while their correlation with O*NET-based or identity-based measures is low ($\rho = 0.28$--$0.36$). Centroid averaging inherits the embedding structure rather than the task-overlap structure. Because the two embedding-based matrices are near-identical, subsequent sections that report Wasserstein-based results (supply-demand decomposition, AI exposure correlation, switching-cost calibration) would yield materially similar conclusions under centroid distance; we retain Wasserstein in those tables for continuity with the original estimation.
+The two embedding-based distance matrices are highly correlated ($\rho = 0.95$; \cref{tab:distance-correlations}), while their correlation with O*NET-based or identity-based measures is low ($\rho = 0.23$--$0.47$). Centroid averaging inherits the embedding structure rather than the task-overlap structure.
 
 
 \subsection{Institutional Distance}
@@ -312,14 +313,13 @@ The model ranks realized destinations in the top 26\% of predicted probability o
 \textbf{Predictor} & \textbf{Spearman $\rho$} & \textbf{Interpretation} \\
 \midrule
 Demand-only (BLS openings) & 0.798 & Dominant for aggregate inflows \\
-Geometry-only (1/Wasserstein) & 0.043 & Negligible for aggregate \\
-Per-origin geometry & 0.128 & Modest for pathway direction \\
+Per-origin geometry & 0.118 & Modest for pathway direction \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 
-The decomposition in \cref{tab:demand-decomposition} clarifies the scope of this ranking performance. Aggregate inflows are demand-dominated ($\rho = 0.80$ with BLS openings); the distance measure alone achieves $\rho = 0.04$ at the aggregate level. Its contribution is to within-origin destination ranking (per-origin $\rho \approx 0.13$ on the 2024 out-of-period comparison, $n = 233$ origins). The measure is informative about which destinations are skill-compatible for workers leaving a given origin, but not about which destinations receive the largest aggregate inflows.
+The decomposition in \cref{tab:demand-decomposition} clarifies the scope of this ranking performance. Aggregate inflows are demand-dominated ($\rho = 0.80$ with BLS openings). The distance measure's contribution is to within-origin destination ranking (per-origin $\rho \approx 0.12$ on the 2024 out-of-period comparison, $n = 233$ origins). The measure is informative about which destinations are skill-compatible for workers leaving a given origin, but not about which destinations receive the largest aggregate inflows.
 
 
 \subsection{Relation to AI Exposure Measures}
@@ -334,18 +334,18 @@ The decomposition in \cref{tab:demand-decomposition} clarifies the scope of this
 \toprule
 \textbf{Metric} & \textbf{Value} & \textbf{Interpretation} \\
 \midrule
-AIOE-Wasserstein correlation & 0.020 & Empirically distinct \\
+AIOE--centroid correlation & $-0.016$ & Empirically distinct \\
 \midrule
-\multicolumn{3}{l}{\textit{Holdout comparison ($n = 8{,}880$):}} \\
-Geometry log-likelihood & $-42{,}505$ & --- \\
+\multicolumn{3}{l}{\textit{Out-of-period comparison ($n = 8{,}880$):}} \\
+Geometry log-likelihood & $-41{,}745$ & --- \\
 Historical baseline & $-65{,}625$ & --- \\
-$\Delta$LL & $+23{,}119$ & --- \\
+$\Delta$LL & $+23{,}879$ & --- \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 
-The embedding-based distance measure is empirically distinct from AI Occupational Exposure \citep{FeltenRajSeamans2021}: the two are essentially uncorrelated ($r = 0.02$; \cref{tab:shock-integration}). The distance measure and AI exposure thus appear to capture different constructs. On 2024 out-of-period data, the distance-based conditional logit outperforms a historical-baseline specification ($\Delta \text{LL} = +23{,}119$).
+The embedding-based distance measure is empirically distinct from AI Occupational Exposure \citep{FeltenRajSeamans2021}: the two are essentially uncorrelated ($r = -0.02$; \cref{tab:shock-integration}). The distance measure and AI exposure thus appear to capture different constructs. On 2024 out-of-period data, the distance-based conditional logit outperforms a historical-baseline specification ($\Delta \text{LL} = +23{,}879$).
 
 
 \subsection{Pre/Post COVID Stability}
@@ -373,7 +373,7 @@ We find suggestive heterogeneity by teleworkability. Interacting task distance w
 \[
 U_{kj} = \alpha \cdot (-d_{\mathrm{sem}}) + \beta \cdot (-d_{\mathrm{inst}}) + \delta_3 \cdot (-d_{\mathrm{sem}} \times \mathrm{Telework}_j) + \delta_4 \cdot (-d_{\mathrm{sem}} \times \mathrm{Telework}_j \times \mathrm{Post}) + \varepsilon_{kj}
 \]
-yields $\delta_4 = -0.086$ ($p = 0.010$): the task-distance penalty for teleworkable destinations increased post-COVID. The coefficient is robust to excluding 2022 ($\delta_4 = -0.097$, $p = 0.016$) and to using centroid distance. One possible interpretation, following \citet{ModestinoShoagBallance2020}, is that remote work expansion increased applicant pools for teleworkable jobs, enabling more selective hiring on skill match \citep{HsuTambe2022,EmanuelHarrington2024}. However, we cannot rule out that remote work genuinely changed which tasks these occupations perform.
+yields $\delta_4 = -0.086$ ($p = 0.010$): the task-distance penalty for teleworkable destinations increased post-COVID. The coefficient is robust to excluding 2022 ($\delta_4 = -0.097$, $p = 0.016$). One possible interpretation, following \citet{ModestinoShoagBallance2020}, is that remote work expansion increased applicant pools for teleworkable jobs, enabling more selective hiring on skill match \citep{HsuTambe2022,EmanuelHarrington2024}. However, we cannot rule out that remote work genuinely changed which tasks these occupations perform.
 
 
 \subsection{Aggregate Flow Benchmarking}
@@ -388,16 +388,16 @@ yields $\delta_4 = -0.086$ ($p = 0.010$): the task-distance penalty for telework
 \toprule
 \textbf{Distance Metric} & $\beta_{\mathrm{distance}}$ & $t$-statistic & Partial $R^2$ \\
 \midrule
-Wasserstein (embedding) & $-1.041$ & $-96.2$ & 3.46\% \\
-Cosine (O*NET) & $-1.556$ & $-92.4$ & 3.20\% \\
-Cosine centroid (embedding) & $-0.577$ & $-82.2$ & 2.55\% \\
-Euclidean (O*NET) & $-0.514$ & $-25.3$ & 0.25\% \\
+Embedding $\times$ Centroid & $-0.577$ & $-82.2$ & 2.55\% \\
+Embedding $\times$ Wasserstein & $-1.041$ & $-96.2$ & 3.46\% \\
+O*NET $\times$ Cosine & $-1.556$ & $-92.4$ & 3.20\% \\
+O*NET $\times$ Euclidean & $-0.514$ & $-25.3$ & 0.25\% \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 
-Task distance explains a modest share of aggregate bilateral flow variation (\cref{tab:gravity-comparison}). The best-performing metric (embedding Wasserstein) achieves partial $R^2 = 3.46\%$ beyond employment mass terms (mass-only $R^2 = 22.06\%$), consistent with the \citet{CortesGallipoli2018} finding that task-related costs account for a small share of total transition costs.
+Task distance explains a modest share of aggregate bilateral flow variation (\cref{tab:gravity-comparison}). The Embedding $\times$ Centroid specification achieves partial $R^2 = 2.55\%$ beyond employment mass terms (mass-only $R^2 = 22.06\%$); Embedding $\times$ Wasserstein achieves 3.46\%. Both are consistent with the \citet{CortesGallipoli2018} finding that task-related costs account for a small share of total transition costs.
 
 Distance metrics rank differently in the gravity model than in the conditional logit: O*NET cosine, worst for individual prediction, is competitive for aggregate flows (partial $R^2 = 3.20\%$). This may reflect extensive-versus-intensive margin differences: individual destination choice among connected occupations benefits from fine-grained similarity, while aggregate flow volumes depend more on whether pairs are connected at all.
 
@@ -410,10 +410,10 @@ Distance metrics rank differently in the gravity model than in the conditional l
 \toprule
 \textbf{Component} & \textbf{Pearson $r$} & \textbf{$p$-value} \\
 \midrule
-RTI (composite) & $-0.052$ & 0.377 \\
-Routine & $-0.058$ & 0.318 \\
-Abstract & $-0.051$ & 0.378 \\
-Manual & $+0.093$ & 0.109 \\
+RTI (composite) & $-0.060$ & 0.303 \\
+Routine & $+0.002$ & 0.978 \\
+Abstract & $+0.088$ & 0.130 \\
+Manual & $+0.090$ & 0.124 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -430,13 +430,13 @@ Finally, the embedding-based distance is essentially orthogonal to the Autor-Dor
 
 \subsection{Scope}
 
-The results establish scope conditions for the proposed measure. First, it is informative about within-origin destination ranking ($\rho \approx 0.13$) but not aggregate allocation. Aggregate inflows are demand-dominated ($\rho = 0.80$); the distance measure does not incorporate vacancy, wage, or geographic information. Applications that require aggregate reallocation forecasts would need to combine distance with demand-side data.
+The results establish scope conditions for the proposed measure. First, it is informative about within-origin destination ranking ($\rho \approx 0.12$) but not aggregate allocation. Aggregate inflows are demand-dominated ($\rho = 0.80$); the distance measure does not incorporate vacancy, wage, or geographic information. Applications that require aggregate reallocation forecasts would need to combine distance with demand-side data.
 
-Second, the measure captures occupational proximity for mobility, not automation susceptibility. It is orthogonal to routine task intensity ($r = -0.05$) and empirically distinct from AI exposure ($r = 0.02$). These are different constructs: exposure measures identify which occupations are affected by technology; distance measures characterize which transitions are skill-compatible.
+Second, the measure captures occupational proximity for mobility, not automation susceptibility. It is orthogonal to routine task intensity ($r = -0.06$) and empirically distinct from AI exposure ($r = -0.02$). These are different constructs: exposure measures identify which occupations are affected by technology; distance measures characterize which transitions are skill-compatible.
 
 Third, estimates are identified from completed transitions. Workers blocked by licensing or credential requirements are absent from the data \citep{Jackson2023,Heckman1979}. The institutional distance coefficient likely understates the true barrier. Using direct licensing data (e.g., the CPS licensing supplement) rather than Job Zone proxies would improve identification of credential-based blocking.
 
-Fourth, in the destination-choice model, centroid averaging slightly outperforms Wasserstein ($\rho = 0.95$ correlation between the two distance matrices). Optimal transport is not needed for the main choice-model result; the predictive gain comes from the embedding representation, not from the aggregation method. (In the gravity model of aggregate flows, Wasserstein performs best among all metrics; see \cref{tab:gravity-comparison}.)
+Fourth, in the destination-choice model, centroid averaging slightly outperforms Wasserstein ($\rho = 0.95$). Optimal transport is not needed for the main choice-model result; the predictive gain comes from the embedding representation, not from the aggregation method. (In the gravity model of aggregate flows, Wasserstein performs best among all metrics; see \cref{tab:gravity-comparison}.)
 
 
 \subsection{Limitations}
@@ -488,7 +488,7 @@ where $d_{\mathrm{sem}}$ is semantic distance and $d_{\mathrm{inst}}$ is institu
 
 Endogenous switching cost identification was attempted and failed: adding destination wages to the conditional logit yields negative coefficients ($\beta_{\mathrm{wage}} = -0.063$, $t = -6.7$), indicating that occupation-mean wages do not capture entry wages for switchers. Structural estimation following \citet{Traiberman2019} requires individual-level wages at transition.
 
-As an interim approach, we anchor externally to \citet{DixCarneiro2014}'s median sectoral switching cost of 2.0 wage-years. With median Wasserstein distance 0.521, this implies 3.84 wage-years per unit distance. US estimates in the literature range from 0.5$\times$ to 6.5$\times$ annual wages; ordinal rankings of transition difficulty are invariant across this range by construction (the calibration is linear). This calibration uses the Wasserstein distance scale; because centroid and Wasserstein distances are rank-correlated ($\rho = 0.95$), ordinal rankings of transition difficulty are preserved under either metric. These magnitudes should be treated as rough planning numbers, not identified structural parameters.
+As an interim approach, we anchor externally to \citet{DixCarneiro2014}'s median sectoral switching cost of 2.0 wage-years. With median centroid distance 0.229, this implies 8.74 wage-years per unit centroid distance; equivalently, with median Wasserstein distance 0.521, 3.84 wage-years per unit Wasserstein distance. US estimates in the literature range from 0.5$\times$ to 6.5$\times$ annual wages; ordinal rankings of transition difficulty are invariant across this range by construction (the calibration is linear). These magnitudes should be treated as rough planning numbers, not identified structural parameters.
 
 
 \section{Directional Asymmetry of Institutional Barriers}
