@@ -1,0 +1,16 @@
+{
+  "experiment": "per_origin_model_prob_centroid_v07126",
+  "timestamp": "2026-03-12T18:19:16.077551+00:00",
+  "distance_metric": "cosine_embed (centroid)",
+  "alpha": 7.404,
+  "beta": 0.139,
+  "methodology": "model_probability_per_origin_all_destinations",
+  "mean_spearman": 0.118103,
+  "median_spearman": 0.117312,
+  "std_spearman": 0.063385,
+  "n_origins_evaluated": 233,
+  "comparison_to_wasserstein": {
+    "wasserstein_mean_spearman": 0.128,
+    "source": "run_methodology_audit_v0703c.py / paper Table"
+  }
+}
