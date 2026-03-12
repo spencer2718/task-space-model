@@ -1,0 +1,12 @@
+{
+  "experiment": "table4_correlations_v07127",
+  "timestamp": "2026-03-12T18:33:51.874739+00:00",
+  "reference_matrix": "cosine_embed (centroid)",
+  "correlations": {
+    "centroid_vs_wasserstein": 0.952745,
+    "centroid_vs_wasserstein_identity": 0.352976,
+    "centroid_vs_euclidean_onet": 0.228283,
+    "centroid_vs_cosine_onet": 0.466567
+  },
+  "n_pairs": 99681
+}

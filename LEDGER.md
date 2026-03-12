@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.12.6
+**Current Version:** 0.7.12.7
 **Last Updated:** 2026-03-12
 **Paper Draft:** `paper/main.tex`
 
@@ -763,6 +763,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.12.7 | 2026-03-12 | Table 4 centroid correlations — centroid vs Wasserstein 0.9527, vs identity 0.3530, vs O*NET Euclidean 0.2283, vs O*NET cosine 0.4667. |
 | 0.7.12.6 | 2026-03-12 | Per-origin model-probability Spearman on centroid — ρ = 0.118 (n = 233), replacing Wasserstein-based 0.128 (n = 233). |
 | 0.7.12.5 | 2026-03-12 | Centroid replication batch — AIOE r=-0.016, RTI r=-0.060, demand decomp (demand ρ=0.798, per-origin ρ=0.299, aggregate ρ=-0.000), OOP ΔLL=+23,879, gravity partial R²=2.55%. All on centroid spec. |
 | 0.7.12.0 | 2026-03-12 | Distance matrix audit — added load_centroid_census() to mobility IO, verified centroid matrix clean (zero diagonal, no NaN), computed post-diagonal Spearman ρ = 0.9527 between centroid and Wasserstein. |
