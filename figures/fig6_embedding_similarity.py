@@ -51,7 +51,7 @@ ax1.annotate(f'Budget\u2013Credit: {d_onet_pair:.2f}',
              xytext=(-15, 30), textcoords='offset points',
              fontsize=FONT_TICK, color=DARK, fontweight='bold', ha='right',
              arrowprops=dict(arrowstyle='->', color=DARK, lw=0.8))
-ax1.set_title("O*NET Cosine Distance", fontsize=FONT_TITLE, color=DARK, pad=6)
+ax1.set_title("O*NET \u00d7 Cosine Distance", fontsize=FONT_TITLE, color=DARK, pad=6)
 ax1.set_ylabel('Pairs', fontsize=FONT_TICK)
 ax1.set_xlim(0, 1.05)
 format_log_ticks(ax1)
@@ -68,7 +68,7 @@ ax2.annotate(f'Budget\u2013Credit: {d_embed_pair:.2f}',
              xytext=(40, 20), textcoords='offset points',
              fontsize=FONT_TICK, color=DARK, fontweight='bold',
              arrowprops=dict(arrowstyle='->', color=DARK, lw=0.8))
-ax2.set_title("Embedding Centroid Distance", fontsize=FONT_TITLE, color=DARK, pad=6)
+ax2.set_title("Embedding \u00d7 Centroid Distance", fontsize=FONT_TITLE, color=DARK, pad=6)
 ax2.set_ylabel('Pairs', fontsize=FONT_TICK)
 ax2.set_xlabel('Distance', fontsize=FONT_LABEL)
 ax2.set_xlim(0, 1.05)

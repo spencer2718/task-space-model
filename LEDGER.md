@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.12.8
+**Current Version:** 0.7.12.9
 **Last Updated:** 2026-03-12
 **Paper Draft:** `paper/main.tex`
 
@@ -763,6 +763,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.12.9 | 2026-03-13 | Presentation update — fig4 (2 bars, centroid values), fig2/fig6 (× notation), fig5 (DWA counts), deck text (motivation, scope, r values). |
 | 0.7.12.8 | 2026-03-12 | Working paper aligned to centroid — 9 patterns, ~50 edits across paper/main.tex. Per-origin ρ→0.12, AIOE r→-0.02, ΔLL→+23,879, RTI table updated, gravity reordered with × names, switching cost→8.74/centroid, methodology→inverse centroid. |
 | 0.7.12.7 | 2026-03-12 | Table 4 centroid correlations — centroid vs Wasserstein 0.9527, vs identity 0.3530, vs O*NET Euclidean 0.2283, vs O*NET cosine 0.4667. |
 | 0.7.12.6 | 2026-03-12 | Per-origin model-probability Spearman on centroid — ρ = 0.118 (n = 233), replacing Wasserstein-based 0.128 (n = 233). |

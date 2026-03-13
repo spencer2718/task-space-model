@@ -112,11 +112,11 @@ addSlideTitle(slide2, "Motivation");
 addSlideNumber(slide2, 2);
 
 slide2.addText([
-  { text: "AI is reshaping the labor market.", options: { breakLine: true, bold: true } },
+  { text: "Technology is reshaping the task content of work.", options: { breakLine: true, bold: true } },
   { text: "", options: { breakLine: true, fontSize: 8 } },
-  { text: "Many occupations\u2019 core tasks are increasingly saturated by LLM capabilities.", options: { breakLine: true } },
+  { text: "Workforce policy needs a map of the task space: which occupations are nearby, and which transitions between them are feasible.", options: { breakLine: true } },
   { text: "", options: { breakLine: true, fontSize: 8 } },
-  { text: "If your job is disrupted, what can you switch to? We need better tools to measure which occupations are nearby \u2014 and which transitions are realistic.", options: {} },
+  { text: "We propose a way to build that map \u2014 and a test for whether it works.", options: {} },
 ], {
   x: 0.5,
   y: 1.1,
@@ -256,11 +256,11 @@ addSlideNumber(slide7, 8);
 slide7.addText([
   { text: "Supply-side feasibility, not demand.", options: { breakLine: true, bold: true } },
   { text: "", options: { breakLine: true, fontSize: 8 } },
-  { text: "Realized destinations ranked in top quartile (MPR = 0.74).", options: { breakLine: true } },
+  { text: "Realized destinations ranked highly (MPR = 0.74).", options: { breakLine: true } },
   { text: "", options: { breakLine: true, fontSize: 8 } },
   { text: "Aggregate inflows are demand-dominated (\u03c1 = 0.80 with BLS openings).", options: { breakLine: true } },
   { text: "", options: { breakLine: true, fontSize: 8 } },
-  { text: "Orthogonal to AI exposure (r = 0.02) and routine task intensity (r = \u22120.05). Distinct constructs.", options: {} },
+  { text: "Orthogonal to AI exposure (r = \u22120.02) and routine task intensity (r = \u22120.06). Distinct constructs.", options: {} },
 ], {
   x: 0.5,
   y: 1.1,
@@ -318,7 +318,7 @@ slide9.addText([
   { text: "", options: { breakLine: true, fontSize: 8 } },
   { text: "Captures within-origin pathway feasibility, not aggregate allocation.", options: { breakLine: true } },
   { text: "", options: { breakLine: true, fontSize: 8 } },
-  { text: "Orthogonal to AI exposure (r = 0.02) and routine task intensity (r = \u22120.05).", options: { breakLine: true } },
+  { text: "Orthogonal to AI exposure (r = \u22120.02) and routine task intensity (r = \u22120.06).", options: { breakLine: true } },
   { text: "", options: { breakLine: true, fontSize: 8 } },
   { text: "Stable pre/post COVID (\u0394\u03b1 < 1%, p = 0.72)." },
 ], {

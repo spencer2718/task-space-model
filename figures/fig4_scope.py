@@ -11,9 +11,9 @@ from figures.style import (setup, PRIMARY, SECONDARY, DARK, MID, add_subtitle,
 
 font = setup()
 
-labels = ["Demand\n(BLS openings)", "Per-origin\ngeometry", "Aggregate\ngeometry"]
-values = [0.798, 0.128, 0.043]
-colors = [SECONDARY, PRIMARY, PRIMARY]
+labels = ["Demand\n(BLS openings)", "Per-origin\ngeometry"]
+values = [0.798, 0.118]
+colors = [SECONDARY, PRIMARY]
 
 fig, ax = plt.subplots(figsize=(4.0, 3.0))
 
@@ -34,7 +34,7 @@ ax.tick_params(axis='y', labelsize=FONT_TICK)
 ax.tick_params(axis='x', length=0)
 
 plt.tight_layout()
-add_subtitle(fig, 'Geometry ranks destinations correctly (MPR = 0.74)\nbut does not predict aggregate flows', y=-0.02)
+add_subtitle(fig, 'Geometry ranks destinations correctly (MPR = 0.74)', y=-0.02)
 plt.savefig('figures/fig4_scope.png', dpi=300, bbox_inches='tight',
             facecolor='white', edgecolor='none')
 plt.close()

@@ -14,10 +14,10 @@ font = setup()
 
 # === Data (corrected v0.7.7.0+) ===
 specs = [
-    ("Embedding + Centroid",    14.08),
-    ("Embedding + Wasserstein", 13.76),
-    ("O*NET + Cosine",           8.05),
-    ("O*NET + Euclidean",        6.06),
+    ("Embedding \u00d7 Centroid",    14.08),
+    ("Embedding \u00d7 Wasserstein", 13.76),
+    ("O*NET \u00d7 Cosine",           8.05),
+    ("O*NET \u00d7 Euclidean",        6.06),
 ]
 
 # Reverse so best is at top (barh draws bottom-up)

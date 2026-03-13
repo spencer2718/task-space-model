@@ -83,11 +83,11 @@ ax.plot([3.35, 3.35], [sep_bot, sep_top], color=GRID, lw=0.8, ls='--', zorder=0)
 ax.plot([6.65, 6.65], [sep_bot, sep_top], color=GRID, lw=0.8, ls='--', zorder=0)
 
 # Column headers
-ax.text(1.8, 8.35, 'unique', ha='center', va='center',
+ax.text(1.8, 8.35, '7 unique', ha='center', va='center',
         fontsize=FONT_NOTE, color=PRIMARY, fontstyle='italic')
-ax.text(5.0, 8.35, 'shared', ha='center', va='center',
+ax.text(5.0, 8.35, '3 shared', ha='center', va='center',
         fontsize=FONT_NOTE, color=MID, fontstyle='italic')
-ax.text(8.2, 8.35, 'unique', ha='center', va='center',
+ax.text(8.2, 8.35, '9 unique', ha='center', va='center',
         fontsize=FONT_NOTE, color=SECONDARY, fontstyle='italic')
 
 # Vertical ellipses indicating more DWAs exist
