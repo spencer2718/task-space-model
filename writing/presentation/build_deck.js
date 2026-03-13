@@ -324,7 +324,7 @@ slide7.addText([
   { text: "", options: { breakLine: true, fontSize: 8 } },
   { text: "Aggregate inflows are demand-dominated (\u03c1 = 0.80 with BLS openings).", options: { breakLine: true } },
   { text: "", options: { breakLine: true, fontSize: 8 } },
-  { text: "Orthogonal to AI exposure (r = \u22120.02) and routine task intensity (r = \u22120.06). Distinct constructs.", options: {} },
+  { text: "Orthogonal to AI exposure (r = \u22120.02) and routine task intensity (r = \u22120.06).", options: {} },
 ], {
   x: 0.5,
   y: 1.1,
@@ -395,7 +395,7 @@ slide8.addText("Extensions", {
 const pathways = [
   { title: "Demand integration", desc: "Combine with vacancy data to predict\nrealized flows, not just feasibility" },
   { title: "Individual wage data", desc: "Identify switching costs structurally\nrather than calibrating externally" },
-  { title: "Dynamic task content", desc: "Track how occupations\u2019 task profiles\nevolve as technology diffuses" },
+  { title: "Dynamic task content", desc: "Track how occupations\u2019 task profiles\nrecompose as technology diffuses" },
   { title: "Technology shock modeling", desc: "Model AI exposure as a function of\ntask embeddings, not static scores" },
 ];
 
@@ -431,7 +431,7 @@ addSlideNumber(slide9, 10);
 slide9.addText([
   { text: "Embeddings improve transition prediction by 74.9% over O*NET baselines (pseudo-R\u00b2: 14.1% vs. 6\u20138%).", options: { breakLine: true } },
   { text: "", options: { breakLine: true, fontSize: 8 } },
-  { text: "The gain is from the embedding representation, not optimal transport.", options: { breakLine: true } },
+  { text: "The gain is from the embedding representation, not the aggregation method.", options: { breakLine: true } },
   { text: "", options: { breakLine: true, fontSize: 8 } },
   { text: "Captures within-origin pathway feasibility, not aggregate allocation.", options: { breakLine: true } },
   { text: "", options: { breakLine: true, fontSize: 8 } },
