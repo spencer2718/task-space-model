@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.12.11
+**Current Version:** 0.7.12.12
 **Last Updated:** 2026-03-12
 **Paper Draft:** `writing/working-paper/main.tex`
 
@@ -34,7 +34,7 @@ These are inviolable. Agents must not contradict or re-litigate.
 
 | ID | Constraint | Rationale | Locked |
 |----|------------|-----------|--------|
-| HC1 | Centroid is PRIMARY specification; Wasserstein provides theoretical grounding | Centroid marginally outperforms Wasserstein (ρ = 0.95); diagonal correction v0.7.7.0 | v0.7.7.5 |
+| HC1 | Centroid is PRIMARY specification; Wasserstein provides theoretical grounding | Centroid marginally outperforms Wasserstein (ρ = 0.953); diagonal correction v0.7.7.0 | v0.7.7.5 |
 | HC2 | RTI requires 16-element AA composite | Single O*NET element yields R² ≈ 0 | v0.6.5 |
 | HC3 | Kernel bandwidth σ = 0.223 (occupation) | Calibrated to NN median | v0.6.1 |
 | HC4 | Asymmetry is HETEROGENEOUS | Ratio varies 0.06–2.79 by sample | v0.6.8 |
@@ -198,7 +198,7 @@ Deviations implemented without this protocol constitute MS2 (metric definition) 
 | Embedding vs O*NET | cosine_embed (14.1%) vs cosine_onet (8.1%) | +74.9% relative |
 | Distributional vs Simple | cosine_embed (14.1%) vs wasserstein (13.8%) | centroid marginally outperforms |
 
-**Implication:** The embedding choice is the primary driver. Wasserstein vs cosine-on-centroids is marginal for individual choice prediction (ρ = 0.95 correlation between distance matrices).
+**Implication:** The embedding choice is the primary driver. Wasserstein vs cosine-on-centroids is marginal for individual choice prediction (ρ = 0.953 correlation between distance matrices).
 
 **Ground metric validation (v0.7.3.3):** Wasserstein-embedding >> Wasserstein-identity (+83%, corrected v0.7.7.0), confirming semantic task similarity (knowing "operating forklift" ≈ "driving delivery vehicle") is economically meaningful.
 
@@ -224,7 +224,7 @@ Canonical phrasing for key claims. All documents (main.tex, README, CLAUDE.md) m
 | P-E2 | Per-origin pathway ranking: modest signal (ρ ≈ 0.12) | E2 | VALIDATED | main.tex §5.5 |
 | P-E3 | Geometry captures supply-side feasibility; demand dominates aggregate flows | E3 | CONSISTENT | main.tex §5.5, §7 |
 | D-E1 | Demand-only correlation with aggregate inflows: ρ = 0.80 | E1 | VALIDATED | main.tex §5.5 |
-| G-E1 | Gravity model: task distance explains 3.5% partial R², consistent with Cortes-Gallipoli benchmark | E1 | VALIDATED | main.tex §5.6 |
+| G-E1 | Gravity model: task distance explains 2.6% partial R² (centroid), consistent with Cortes-Gallipoli benchmark | E1 | VALIDATED | main.tex §5.6 |
 | G-E3 | Individual choice and aggregate flow prediction respond differently to distance metrics; reflects intensive vs extensive margin dynamics | E3 | CONSISTENT | main.tex §5.6 |
 | COVID-E1 | Task-distance geometry is structurally stable across pre/post COVID (Δα < 1%, LR p = 0.72, n = 89,329) | E1 | VALIDATED | main.tex §5.7 |
 | COVID-E1b | Teleworkable occupations show elevated hiring standards post-COVID (δ₄ = -0.086, p = 0.01) | E1 | VALIDATED | main.tex §5.7 |
@@ -243,7 +243,7 @@ Claims most likely to draw referee scrutiny. Updated as vulnerabilities are iden
 | T-E1 (Wasserstein wins) | "Sensitive to embedding choice" | 81-spec multiverse, 100% win rate | — | ADDRESSED |
 | T-E3 (feasibility mechanism) | "Could be hierarchy, taxonomy artifact, or employer screening" | Reduced-form only | Structural model or IV needed | ACKNOWLEDGED (scope condition) |
 | I-E3 (institutional = non-skill barriers) | "Job Zone reflects skill content; absorption claim too strong" | r = 0.25 correlation | Partial R² by subgroup; interaction with licensing | OPEN |
-| P-E2 (ρ ≈ 0.13 pathway accuracy) | "Too weak to be useful" | Cortes & Gallipoli ~15% benchmark | Add RCM/MPR metrics | IN PROGRESS |
+| P-E2 (ρ ≈ 0.12 pathway accuracy) | "Too weak to be useful" | Cortes & Gallipoli ~15% benchmark | Add RCM/MPR metrics | IN PROGRESS |
 | P-E3 (geometry = feasibility, demand = realization) | "Post-hoc rationalization of weak prediction" | Demand decomposition (ρ = 0.80) | — | CONSISTENT framing only |
 | M-E4 (switching costs) | "External calibration, not identified" | Dix-Carneiro anchor | Sensitivity across 0.75×–6.5× range | ADDRESSED |
 | Selection bias | "Only see completed transitions; gates invisible" | Jackson 2023 (24% blocked) cited | — | ACKNOWLEDGED (scope condition) |
@@ -385,7 +385,7 @@ The MPNet embedding is doing the work. The Wasserstein formulation provides marg
 | Model probability, all destinations | 0.188 | 0.118 | 233 |
 | Raw 1/distance, common destinations | 0.043 | 0.316 | 177 |
 
-**CORRECTION:** Original v0.7.0c reported ρ = 0.43, but this was computed on a **restricted sample** (exposed origins only, n=60). On the full 2024+ out-of-period comparison (n=424 origins), the model probability method yields ρ = 0.128 per-origin.
+**CORRECTION:** Original v0.7.0c reported ρ = 0.43, but this was computed on a **restricted sample** (exposed origins only, n=60). On the full 2024+ out-of-period comparison (n=424 origins), the model probability method yields ρ = 0.118 per-origin (centroid spec).
 
 **Methodology note:** The two per-origin metrics differ because:
 - Model probability evaluates over ALL 447 destinations (including zeros)
@@ -761,6 +761,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.12.12 | 2026-03-13 | Final sweep — 7 stale values across main.tex, CLAUDE.md, LEDGER.md, figures/README.md. HC1 precision (ρ = 0.953). |
 | 0.7.12.11 | 2026-03-13 | Documentation alignment — CLAUDE/README/LEDGER active content updated to centroid values. Sprint version stamps updated. |
 | 0.7.12.10 | 2026-03-13 | Directory reorg — paper/ → writing/ (working-paper/, publishable/, presentation/). SPEC reset to template. All doc path references updated. |
 | 0.7.12.9 | 2026-03-13 | Presentation update — fig4 (2 bars, centroid values), fig2/fig6 (× notation), fig5 (DWA counts), deck text (motivation, scope, r values). |

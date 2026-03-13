@@ -73,7 +73,7 @@ Each document has ONE purpose. No redundancy.
 - **RTI requires 16-element composite** — Single element yields R² ≈ 0 (HC2)
 - **Do not row-normalize kernels** — Destroys signal (HC5)
 - **Institutional barriers are friction, not gates** — γ_inst captures completed transitions only (HC6)
-- **Switching costs require external calibration** — 3.84 wage-years/unit Wasserstein
+- **Switching costs require external calibration** — 8.74 wage-years/unit centroid (3.84/unit Wasserstein)
 - **Always use `get_embeddings()` from artifacts.py** — Never compute embeddings elsewhere
 - **Methodology Standards (MS1-MS10)** — See LEDGER.md for full definitions
 

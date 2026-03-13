@@ -59,7 +59,7 @@ Note: fig numbering is by creation order, not slide order.
 ## fig4 — Supply-Demand Decomposition
 - **Slide:** 8 — What the Measure Captures
 - **Data:** Hardcoded from `outputs/experiments/demand_probe_decomposition_v0703b.json`
-- **Takeaway:** Aggregate inflows are demand-dominated (ρ = 0.80); geometry captures per-origin pathway direction (ρ = 0.13)
+- **Takeaway:** Aggregate inflows are demand-dominated (ρ = 0.80); geometry captures per-origin pathway direction (ρ = 0.12)
 
 ## fig7 — CPS Data Pipeline (Sankey)
 - **Slide:** B1 — Data Pipeline (backup)

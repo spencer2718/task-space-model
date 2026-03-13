@@ -187,7 +187,7 @@ Switching cost estimation spans an order of magnitude in US data. \citet{LeeWolp
 
 \citet{Traiberman2019} represents the structural frontier. Using Danish linked employer-employee data, she estimates switching costs averaging five years of income (IQR: two years) with task-dimension-specific prices. Her methodology requires individual-level wages, complete work histories, and full population coverage---data unavailable in US household surveys. A critical finding: ignoring human capital accumulation biases switching cost estimates upward by a factor of three.
 
-Gravity models of labor flows provide benchmarks for predictive accuracy. \citet{CortesGallipoli2018} use US CPS aggregate flows with DOT task measures, finding task-related costs explain no more than 15\% of total transition costs across most occupation pairs. Our gravity model partial $R^2$ of 3.46\% is consistent with task distance playing a similarly modest role. \citet{SiminiEtAl2021} achieve correlations of 0.3--0.5 for geographic mobility predictions. These benchmarks contextualize our supply-demand decomposition.
+Gravity models of labor flows provide benchmarks for predictive accuracy. \citet{CortesGallipoli2018} use US CPS aggregate flows with DOT task measures, finding task-related costs explain no more than 15\% of total transition costs across most occupation pairs. Our gravity model partial $R^2$ of 2.55\% (centroid) is consistent with task distance playing a similarly modest role. \citet{SiminiEtAl2021} achieve correlations of 0.3--0.5 for geographic mobility predictions. These benchmarks contextualize our supply-demand decomposition.
 
 
 \subsection{Feasibility Versus Realization}
@@ -1087,7 +1087,7 @@ O*NET $\times$ Euclidean & $-0.514$ & $-25.3$ & 0.25\% \\
 
 \textbf{Results:} Task distance explains a modest share of aggregate bilateral flow variation. The Embedding $\times$ Centroid specification achieves partial $R^2 = 2.55\%$; Embedding $\times$ Wasserstein achieves 3.46\%. All distance coefficients are negative and highly significant: greater task distance reduces bilateral flows.
 
-\textbf{Comparison to Cortes-Gallipoli:} Our partial $R^2$ values (0.25\%--3.46\%) are consistent with their finding that task-specific costs account for no more than 15\% of total transition costs across most occupation pairs. The dominant explanatory power in gravity models comes from origin and destination characteristics (captured by employment mass terms), not pairwise task distance.
+\textbf{Comparison to Cortes-Gallipoli:} Our partial $R^2$ values (0.25\%--3.46\%, with Embedding $\times$ Centroid at 2.55\%) are consistent with their finding that task-specific costs account for no more than 15\% of total transition costs across most occupation pairs. The dominant explanatory power in gravity models comes from origin and destination characteristics (captured by employment mass terms), not pairwise task distance.
 
 \textbf{Ranking divergence from conditional logit:} Distance metrics rank differently in gravity than conditional logit. Notably, cosine similarity on sparse O*NET vectors---which performs worst for individual choice prediction---is competitive for aggregate flows (partial $R^2 = 3.20\%$ vs.\ 3.46\% for Wasserstein). This pattern reflects extensive vs.\ intensive margin dynamics.
 
