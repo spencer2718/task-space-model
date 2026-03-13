@@ -2,7 +2,7 @@
 
 Infrastructure for analyzing how task-level technological change propagates to labor market outcomes.
 
-**Version 0.7.10** — Presentation Sprint Complete
+**Version 0.7.12** — Centroid Replication Complete
 
 ---
 
@@ -42,10 +42,10 @@ See `writing/working-paper/main.tex` for formal theory and specifications.
 |--------|--------|----------|
 | **T** (Embedding-informed distance) | ✓ Validated | Centroid pseudo-R² = 14.1%; 74.9% improvement over O*NET baselines |
 | **I** (Institutional distance) | ✓ Validated | β = 0.139, t = 33.7 conditional on T |
-| **S** (Shock integration) | ✓ Validated | ΔLL = +23,119 on out-of-period comparison |
+| **S** (Shock integration) | ✓ Validated | ΔLL = +23,879 on out-of-period comparison |
 | **M** (Switching costs) | ⚠️ Calibrated | External anchor (Dix-Carneiro 2014) |
-| Pathway ranking | ✓ Validated | MPR = 0.74; per-origin ρ ≈ 0.13 |
-| Demand decomposition | ✓ Quantified | Demand ρ = 0.80; geometry ρ = 0.04 |
+| Pathway ranking | ✓ Validated | MPR = 0.74; per-origin ρ ≈ 0.12 |
+| Demand decomposition | ✓ Quantified | Demand ρ = 0.80 |
 | Structural stability | ✓ Validated | Aggregate Δα < 1% (p = 0.72); telework heterogeneity δ₄ = −0.086 (p = 0.01) |
 
 **Scope:** The framework measures structural feasibility (where workers CAN go), not realized reallocation (where they DO go). Empirically: demand dominates aggregate inflows (ρ = 0.80); geometry ranks destinations correctly (MPR = 0.74). Feasibility is the supply-side input to equilibrium analysis.
@@ -58,12 +58,12 @@ See `writing/working-paper/main.tex` for formal theory and specifications.
 
 The 2×2 factorial design isolates the embedding representation as the mechanism. Centroid is the primary specification.
 
-| Representation | Aggregation | α | Pseudo-R² |
-|---------------|-------------|---|-----------|
-| Embedding (MPNet) | Cosine centroid | 7.40 | 14.08% |
-| Embedding (MPNet) | Wasserstein | 8.39 | 13.76% |
-| O*NET importance | Cosine | 4.55 | 8.05% |
-| O*NET importance | Euclidean | 9.76 | 6.06% |
+| Specification | Note | α | Pseudo-R² |
+|--------------|------|---|-----------|
+| Embedding × Centroid | (primary) | 7.40 | 14.08% |
+| Embedding × Wasserstein | | 8.39 | 13.76% |
+| O*NET × Cosine | | 4.55 | 8.05% |
+| O*NET × Euclidean | | 9.76 | 6.06% |
 
 The embedding ground metric improves explanatory power by +83% over an identity ground metric (7.52% → 13.76%). The core mechanism is **semantic task substitutability**: embeddings capture that "operating forklift" ≈ "driving delivery vehicle."
 
@@ -80,8 +80,8 @@ Sample: 89,329 verified CPS transitions (2015–2019, 2022–2024). Estimated wi
 
 | Test | Result |
 |------|--------|
-| AIOE-distance correlation | r = 0.02 |
-| Geometry vs Historical baseline | ΔLL = +23,119 |
+| AIOE-centroid correlation | r = −0.02 |
+| Geometry vs Historical baseline | ΔLL = +23,879 |
 
 AIOE and embedding distance are orthogonal — shock profiles identify exposed occupations, geometry identifies compatible destinations.
 

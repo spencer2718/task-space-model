@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.12.10
+**Current Version:** 0.7.12.11
 **Last Updated:** 2026-03-12
 **Paper Draft:** `writing/working-paper/main.tex`
 
@@ -53,9 +53,9 @@ Critical metrics used throughout validation. Understanding these is essential fo
 |--------|------------|----------------|
 | **Pseudo-R²** | McFadden's pseudo-R² = 1 - (LL_model / LL_null) | Proportion of choice uncertainty resolved by model. 14.1% is strong for discrete choice models; indicates substantial predictive power over random choice. |
 | **MPR** | Mean Percentile Rank of realized destinations in geometry-ranked list | Average position of actual transitions in model's ranking. MPR = 0.74 means realized destinations rank in top 26% on average, confirming model captures feasibility structure. |
-| **ΔLL** | Log-likelihood improvement over baseline model | Absolute improvement in probabilistic fit. ΔLL = +23,119 means geometry substantially outperforms historical transition rates; larger values indicate better prediction. |
+| **ΔLL** | Log-likelihood improvement over baseline model | Absolute improvement in probabilistic fit. ΔLL = +23,879 means geometry substantially outperforms historical transition rates; larger values indicate better prediction. |
 | **Partial R²** | Incremental variance explained by adding distance to gravity model | Measures distance contribution beyond employment size effects. 3.5% for task distance is consistent with Cortes-Gallipoli (15%) given that task costs are one component of total switching costs. |
-| **Spearman ρ** | Rank correlation between predicted and actual flows | Measures ordinal agreement. Per-origin ρ ≈ 0.13 indicates modest but positive signal for ranking destinations within each origin occupation. |
+| **Spearman ρ** | Rank correlation between predicted and actual flows | Measures ordinal agreement. Per-origin ρ ≈ 0.12 indicates modest but positive signal for ranking destinations within each origin occupation. |
 | **N_eff** | Effective number of destinations = exp(entropy) | Captures distribution diffuseness. N_eff = 207 means probability mass spread across ~200 occupations, not concentrated on a few. |
 
 ---
@@ -220,8 +220,8 @@ Canonical phrasing for key claims. All documents (main.tex, README, CLAUDE.md) m
 | T-E3 | Pattern consistent with feasibility/skill-proximity mechanisms | E3 | CONSISTENT | main.tex §5.1 discussion |
 | I-E1 | Institutional distance provides incremental validity over task distance (t = 33.7) | E1 | VALIDATED | main.tex §5.2 |
 | I-E3 | Residual institutional effect interpreted as non-skill barriers | E3 | CONSISTENT | main.tex §5.2 discussion |
-| S-E1 | AIOE integration improves out-of-period LL (ΔLL = +23,119) | E1 | VALIDATED | main.tex §5.3 |
-| P-E2 | Per-origin pathway ranking: modest signal (ρ ≈ 0.13) | E2 | VALIDATED | main.tex §5.5 |
+| S-E1 | AIOE integration improves out-of-period LL (ΔLL = +23,879) | E1 | VALIDATED | main.tex §5.3 |
+| P-E2 | Per-origin pathway ranking: modest signal (ρ ≈ 0.12) | E2 | VALIDATED | main.tex §5.5 |
 | P-E3 | Geometry captures supply-side feasibility; demand dominates aggregate flows | E3 | CONSISTENT | main.tex §5.5, §7 |
 | D-E1 | Demand-only correlation with aggregate inflows: ρ = 0.80 | E1 | VALIDATED | main.tex §5.5 |
 | G-E1 | Gravity model: task distance explains 3.5% partial R², consistent with Cortes-Gallipoli benchmark | E1 | VALIDATED | main.tex §5.6 |
@@ -254,7 +254,7 @@ Claims most likely to draw referee scrutiny. Updated as vulnerabilities are iden
 
 ## Module Validation Checkpoints {#module-checkpoints}
 
-Verified validation results for oracle modules. See `paper/main.tex` Section 5 for full exposition.
+Verified validation results for oracle modules. See `writing/working-paper/main.tex` Section 5 for full exposition.
 
 ### T Module: Geometry Validation (v0.6.7)
 
@@ -369,20 +369,20 @@ The MPNet embedding is doing the work. The Wasserstein formulation provides marg
 
 | Test | Metric | Result |
 |------|--------|--------|
-| Geometry vs Historical | ΔLL | +23,119 |
+| Geometry vs Historical | ΔLL | +23,879 |
 | Geometry vs Uniform | ΔLL | +2,239 |
 | AIOE-Wasserstein correlation | r | 0.020 |
 | Top-5 destination overlap | — | 0.0 |
 
 **Sample:** Train = 97,236 transitions (2015-2019, 2022-2023); Out-of-period = 8,880 transitions (2024)
 
-**Status: VALIDATED.** AIOE and Wasserstein are orthogonal—shock profiles identify exposed occupations, geometry identifies compatible destinations. Out-of-period validation (ΔLL = +23,119) confirms S module integration improves prediction.
+**Status: VALIDATED.** AIOE and embedding centroid are orthogonal—shock profiles identify exposed occupations, geometry identifies compatible destinations. Out-of-period validation (ΔLL = +23,879) confirms S module integration improves prediction.
 
 ### S Module: Pathway Accuracy Audit (v0.7.0.3c)
 
 | Methodology | Aggregate ρ | Per-origin ρ | n origins |
 |-------------|-------------|--------------|-----------|
-| Model probability, all destinations | 0.188 | 0.128 | 233 |
+| Model probability, all destinations | 0.188 | 0.118 | 233 |
 | Raw 1/distance, common destinations | 0.043 | 0.316 | 177 |
 
 **CORRECTION:** Original v0.7.0c reported ρ = 0.43, but this was computed on a **restricted sample** (exposed origins only, n=60). On the full 2024+ out-of-period comparison (n=424 origins), the model probability method yields ρ = 0.128 per-origin.
@@ -397,8 +397,8 @@ The MPNet embedding is doing the work. The Wasserstein formulation provides marg
 
 | Parameter | Value | Source |
 |-----------|-------|--------|
-| SC per unit Wasserstein | 3.84 wage-years | External calibration (Dix-Carneiro 2014) |
-| SC per unit Wasserstein | $276,175 | Using OES 2023 mean wage |
+| SC per unit centroid | 8.74 wage-years | External calibration (Dix-Carneiro 2014) |
+| SC per unit Wasserstein | 3.84 wage-years | Equivalent on Wasserstein scale |
 | Median transition distance | 0.52 | Training sample |
 | Typical transition cost | 2.0 wage-years | By construction (calibration target) |
 
@@ -424,12 +424,10 @@ The MPNet embedding is doing the work. The Wasserstein formulation provides marg
 | Predictor | Spearman ρ | Interpretation |
 |-----------|------------|----------------|
 | Demand-only (openings) | 0.798 | **Dominant** — explains aggregate inflows |
-| Geometry-only (1/distance) | 0.043 | Negligible for aggregate prediction |
-| Full flow (outflow × openings / distance) | 0.791 | Geometry adds nothing to demand |
+| Full flow (outflow × openings / distance) | 0.787 | Geometry adds nothing to demand |
 
 **Per-origin vs aggregate:**
-- Per-origin ρ ≈ **0.13** (rigorous: model probability over all destinations; see v0.7.0.3c)
-- Aggregate ρ = 0.043 (total inflow prediction: rank destinations by sum of inflows)
+- Per-origin ρ ≈ **0.12** (model probability over all destinations; centroid spec)
 
 **Destination characteristics:**
 - Observed top-5 avg openings: 312.8k
@@ -444,9 +442,9 @@ Bilateral flow gravity model: ln(Flow_ij + 1) = α + β₁·ln(Emp_i) + β₂·l
 
 | Metric | β_distance | t-stat | R²_full | Partial R² |
 |--------|------------|--------|---------|------------|
-| wasserstein | -1.041 | -96.2 | 25.52% | **3.46%** |
+| cosine_embed (centroid) | -0.577 | -82.2 | 24.62% | **2.55%** |
+| wasserstein | -1.041 | -96.2 | 25.52% | 3.46% |
 | cosine_onet | -1.556 | -92.4 | 25.27% | 3.20% |
-| cosine_embed | -0.577 | -82.2 | 24.62% | 2.55% |
 | euclidean_dwa | -0.514 | -25.3 | 22.31% | 0.25% |
 
 **Sample:** 199,362 occupation pairs (447 × 446); 12.5% positive flow, 87.5% zeros
@@ -458,7 +456,7 @@ Bilateral flow gravity model: ln(Flow_ij + 1) = α + β₁·ln(Emp_i) + β₂·l
 2. **cosine_onet competitive in gravity:** Its binary "connected/not connected" structure captures aggregate patterns even though it fails in individual choice
 3. **euclidean_dwa nearly zero:** Confirms this metric captures little useful signal
 
-**Cortes-Gallipoli benchmark:** Best partial R² = 3.46%, well below C-G's 15%. Consistent with task-specific costs being a modest share of switching costs.
+**Cortes-Gallipoli benchmark:** Centroid partial R² = 2.55% (Wasserstein = 3.46%). Both consistent with task costs being a modest share of total switching costs.
 
 **Note:** Gravity model (aggregate flows) differs from conditional logit (individual choice). The two tests answer different questions:
 - Conditional logit: "Which destinations do workers choose, given they switch?"
@@ -514,7 +512,7 @@ The embedding Wasserstein matrix has 170/447 nonzero diagonal entries (mean 0.22
 ### Complementary Validations
 
 **RTI Construct Validity (v0.6.8):**
-- Semantic exposure vs RTI: r = -0.052 (p = 0.377)
+- Semantic exposure vs RTI: r = -0.060 (p = 0.303)
 - **Interpretation:** Geometry captures mobility friction, not automation susceptibility—orthogonal to RBTC.
 
 **Automation Prediction (v0.6.5):**
@@ -763,6 +761,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.12.11 | 2026-03-13 | Documentation alignment — CLAUDE/README/LEDGER active content updated to centroid values. Sprint version stamps updated. |
 | 0.7.12.10 | 2026-03-13 | Directory reorg — paper/ → writing/ (working-paper/, publishable/, presentation/). SPEC reset to template. All doc path references updated. |
 | 0.7.12.9 | 2026-03-13 | Presentation update — fig4 (2 bars, centroid values), fig2/fig6 (× notation), fig5 (DWA counts), deck text (motivation, scope, r values). |
 | 0.7.12.8 | 2026-03-12 | Working paper aligned to centroid — 9 patterns, ~50 edits across paper/main.tex. Per-origin ρ→0.12, AIOE r→-0.02, ΔLL→+23,879, RTI table updated, gravity reordered with × names, switching cost→8.74/centroid, methodology→inverse centroid. |

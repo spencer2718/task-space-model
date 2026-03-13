@@ -192,7 +192,7 @@ Experiments run at **x.y.0.z** increments (e.g., 0.7.0.2, 0.7.0.3). After experi
 
 ## Version
 
-**0.7.10.29** — Presentation sprint complete: 9 figures finalized, publishable draft aligned, bibliography audited
+**0.7.12.10** — Centroid replication complete. All supporting analyses on primary spec. Directory reorg to writing/.
 
 ---
 
