@@ -14,10 +14,10 @@ font = setup()
 
 # === Data (corrected v0.7.7.0+) ===
 specs = [
-    ("Embedding \u00d7 Centroid",    14.08),
-    ("Embedding \u00d7 Wasserstein", 13.76),
-    ("O*NET \u00d7 Cosine",           8.05),
-    ("O*NET \u00d7 Euclidean",        6.06),
+    ("Embedding\n(Centroid)",    14.08),
+    ("Embedding\n(Wasserstein)", 13.76),
+    ("O*NET\n(Cosine)",           8.05),
+    ("O*NET\n(Euclidean)",        6.06),
 ]
 
 # Reverse so best is at top (barh draws bottom-up)
@@ -30,7 +30,7 @@ bar_height = 0.55
 positions = [0, 1.0, 2.0, 3.0]
 
 # === Figure ===
-fig, ax = plt.subplots(figsize=(6.0, 4.2))
+fig, ax = plt.subplots(figsize=(6.0, 4.5))
 
 bars = ax.barh(positions, values, color=colors, height=bar_height,
                edgecolor='none', zorder=2)
@@ -117,7 +117,7 @@ if 'top' in label_right_edges and 'bottom' in label_right_edges:
                 ha='left', va='center', fontsize=FONT_LABEL, color=MID,
                 linespacing=1.3)
 
-    ax.set_xlim(0, x_bracket + 4.0)
+    ax.set_xlim(0, x_bracket + 3.0)
 else:
     print("WARNING: Could not find label text extents, bracket not drawn")
 

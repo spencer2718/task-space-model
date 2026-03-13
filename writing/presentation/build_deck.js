@@ -120,7 +120,7 @@ slide2.addText([
 ], {
   x: 0.5,
   y: 1.1,
-  w: 2.2,
+  w: 3.0,
   h: 4.0,
   fontSize: 14,
   fontFace: BODY_FONT,
@@ -129,7 +129,7 @@ slide2.addText([
   valign: "top",
 });
 
-slide2.addImage({ path: "../../figures/fig1_ai_exposure.png", x: 3.3, y: 0.9, w: 5.5, h: 4.0 });
+slide2.addImage({ path: "../../figures/fig1_ai_exposure.png", x: 3.8, y: 0.9, w: 5.5, h: 4.0 });
 
 // ─── SLIDE 3: What is a Sentence Embedding? (NEW) ───
 const slideEmbed = pres.addSlide();
@@ -251,7 +251,7 @@ slide6.addImage({ path: "../../figures/fig2_pseudo_r2.png", x: 0.2, y: 1.0, w: 5
 // Parameter estimates — Embedding × Centroid (primary)
 slide6.addText("Embedding \u00d7 Centroid", {
   x: 6.2,
-  y: 1.1,
+  y: 2.0,
   w: 3.3,
   h: 0.4,
   fontSize: 13,
@@ -284,7 +284,7 @@ const paramData = [
 
 slide6.addTable(paramData, {
   x: 6.2,
-  y: 1.6,
+  y: 2.5,
   w: 3.3,
   h: 1.2,
   colW: [1.4, 0.9, 0.9],
@@ -298,7 +298,7 @@ slide6.addText([
   { text: "Sampled alternatives (J = 11)", options: {} },
 ], {
   x: 6.2,
-  y: 2.9,
+  y: 3.8,
   w: 3.3,
   h: 1.0,
   fontSize: 11,
@@ -308,18 +308,7 @@ slide6.addText([
   lineSpacingMultiple: 1.4,
 });
 
-slide6.addText("Semantic distance dominates.\nInstitutional barriers add\nindependent predictive power.", {
-  x: 6.2,
-  y: 3.8,
-  w: 3.3,
-  h: 1.0,
-  fontSize: 11,
-  fontFace: BODY_FONT,
-  color: CLR_DARK,
-  align: "center",
-  italic: true,
-  lineSpacingMultiple: 1.3,
-});
+
 
 // ─── SLIDE 8: Scope ───
 const slide7 = pres.addSlide();
