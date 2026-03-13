@@ -347,7 +347,7 @@ addSlideTitle(slide8, "Future Pathways");
 addSlideNumber(slide8, 9);
 
 // === Left column: "This Paper" ===
-slide8.addText("This Paper", {
+slide8.addText("Results", {
   x: 0.5, y: 1.2, w: 2.6, h: 0.4,
   fontSize: 14, fontFace: BODY_FONT, bold: true, color: CLR_DARK, align: "center",
 });
@@ -360,10 +360,10 @@ const validatedItems = [
 ];
 
 validatedItems.forEach((item, i) => {
-  const yPos = 1.8 + i * 1.0;
+  const yPos = 1.8 + i * 1.15;
   // Box
   slide8.addShape(pres.shapes.ROUNDED_RECTANGLE, {
-    x: 0.5, y: yPos, w: 2.6, h: 0.75,
+    x: 0.5, y: yPos, w: 2.6, h: 0.9,
     fill: { color: "E8F0F8" },
     line: { color: CLR_ACCENT, width: 1.2 },
     rectRadius: 0.08,
@@ -375,14 +375,14 @@ validatedItems.forEach((item, i) => {
   });
   // Detail
   slide8.addText(item.detail, {
-    x: 0.5, y: yPos + 0.38, w: 2.6, h: 0.3,
+    x: 0.5, y: yPos + 0.45, w: 2.6, h: 0.3,
     fontSize: 10, fontFace: BODY_FONT, color: CLR_SECONDARY, align: "center",
   });
 });
 
 // === Connector arrow from left stack to right pathways ===
 slide8.addShape(pres.shapes.LINE, {
-  x: 3.2, y: 2.75, w: 0.6, h: 0,
+  x: 3.2, y: 3.4, w: 0.6, h: 0,
   line: { color: CLR_ACCENT, width: 1.5, dashType: "solid", endArrowType: "triangle" },
 });
 
