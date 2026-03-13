@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.12.12
+**Current Version:** 0.7.12.13
 **Last Updated:** 2026-03-12
 **Paper Draft:** `writing/working-paper/main.tex`
 
@@ -54,7 +54,7 @@ Critical metrics used throughout validation. Understanding these is essential fo
 | **Pseudo-R²** | McFadden's pseudo-R² = 1 - (LL_model / LL_null) | Proportion of choice uncertainty resolved by model. 14.1% is strong for discrete choice models; indicates substantial predictive power over random choice. |
 | **MPR** | Mean Percentile Rank of realized destinations in geometry-ranked list | Average position of actual transitions in model's ranking. MPR = 0.74 means realized destinations rank in top 26% on average, confirming model captures feasibility structure. |
 | **ΔLL** | Log-likelihood improvement over baseline model | Absolute improvement in probabilistic fit. ΔLL = +23,879 means geometry substantially outperforms historical transition rates; larger values indicate better prediction. |
-| **Partial R²** | Incremental variance explained by adding distance to gravity model | Measures distance contribution beyond employment size effects. 3.5% for task distance is consistent with Cortes-Gallipoli (15%) given that task costs are one component of total switching costs. |
+| **Partial R²** | Incremental variance explained by adding distance to gravity model | Measures distance contribution beyond employment size effects. 2.6% for task distance is consistent with Cortes-Gallipoli (15%) given that task costs are one component of total switching costs. |
 | **Spearman ρ** | Rank correlation between predicted and actual flows | Measures ordinal agreement. Per-origin ρ ≈ 0.12 indicates modest but positive signal for ranking destinations within each origin occupation. |
 | **N_eff** | Effective number of destinations = exp(entropy) | Captures distribution diffuseness. N_eff = 207 means probability mass spread across ~200 occupations, not concentrated on a few. |
 
@@ -761,6 +761,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.12.13 | 2026-03-13 | Metrics glossary partial R² example updated (3.5% → 2.6%). |
 | 0.7.12.12 | 2026-03-13 | Final sweep — 7 stale values across main.tex, CLAUDE.md, LEDGER.md, figures/README.md. HC1 precision (ρ = 0.953). |
 | 0.7.12.11 | 2026-03-13 | Documentation alignment — CLAUDE/README/LEDGER active content updated to centroid values. Sprint version stamps updated. |
 | 0.7.12.10 | 2026-03-13 | Directory reorg — paper/ → writing/ (working-paper/, publishable/, presentation/). SPEC reset to template. All doc path references updated. |
