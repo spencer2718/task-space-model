@@ -32,7 +32,7 @@ n = len(categories)
 y = np.arange(n)
 bar_h = 0.35
 
-fig, ax = plt.subplots(figsize=(5.0, 3.8))
+fig, ax = plt.subplots(figsize=(5.5, 3.5))
 
 # With invert_yaxis(), y - offset is visually ABOVE y + offset
 # Theoretical (larger) on top, observed (smaller) below

@@ -1,16 +1,18 @@
 """
-Logit equation — rendered via matplotlib mathtext
+Logit equation — rendered via matplotlib mathtext (Computer Modern)
 Target: Slide 6 (What Drives the Improvement?)
 """
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
+import matplotlib
+matplotlib.rcParams['mathtext.fontset'] = 'cm'
 import matplotlib.pyplot as plt
 from figures.style import setup, DARK
 
 font = setup()
 
-fig, ax = plt.subplots(figsize=(7.0, 0.5))
+fig, ax = plt.subplots(figsize=(7.0, 0.7))
 ax.axis('off')
 
 ax.text(0.5, 0.5,

@@ -116,7 +116,7 @@ slide2.addText([
   { text: "", options: { breakLine: true, fontSize: 8 } },
   { text: "If your job is disrupted, what can you switch to?", options: { breakLine: true } },
   { text: "", options: { breakLine: true, fontSize: 8 } },
-  { text: "We propose a way to answer that question \u2014 and a test for whether it works.", options: {} },
+  { text: "We propose a way to answer that question, and a test for whether it works.", options: {} },
 ], {
   x: 0.5,
   y: 1.1,
@@ -129,7 +129,7 @@ slide2.addText([
   valign: "top",
 });
 
-slide2.addImage({ path: "../../figures/fig1_ai_exposure.png", x: 3.0, y: 0.9, w: 6.2, h: 4.0 });
+slide2.addImage({ path: "../../figures/fig1_ai_exposure.png", x: 3.3, y: 0.9, w: 5.5, h: 4.0 });
 
 // ─── SLIDE 3: What is a Sentence Embedding? (NEW) ───
 const slideEmbed = pres.addSlide();
@@ -227,11 +227,11 @@ slide5.addTable(tableData, {
   rowH: [0.5, 0.5, 0.5],
 });
 
-slide5.addImage({ path: "../../figures/fig_logit_eq.png", x: 1.5, y: 3.6, w: 7.0, h: 0.5 });
+slide5.addImage({ path: "../../figures/fig_logit_eq.png", x: 2.0, y: 3.6, w: 6.0, h: 0.88 });
 
-slide5.addText("Validation: 89,329 verified transitions from the CPS. Primary metric: McFadden\u2019s pseudo-R\u00b2.", {
+slide5.addText("Conditional logit: each worker chooses among destinations weighted by semantic task similarity (\u03b1) and institutional proximity (\u03b2).", {
   x: 0.5,
-  y: 4.5,
+  y: 4.6,
   w: 9.0,
   h: 0.5,
   fontSize: 14,

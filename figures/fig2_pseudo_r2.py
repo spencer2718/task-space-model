@@ -90,8 +90,8 @@ for child in ax.get_children():
     except Exception:
         continue
 
-gap = 0.4       # small gap between label text and start of horizontal tick
-bracket_ext = 1.5  # how far the vertical line extends beyond the top label
+gap = 0.8       # padding between label text and start of horizontal tick
+bracket_ext = 1.1  # how far the vertical line extends beyond the top label
 
 if 'top' in label_right_edges and 'bottom' in label_right_edges:
     y_bottom = bracket_bars['bottom']
@@ -117,7 +117,7 @@ if 'top' in label_right_edges and 'bottom' in label_right_edges:
                 ha='left', va='center', fontsize=FONT_LABEL, color=MID,
                 linespacing=1.3)
 
-    ax.set_xlim(0, x_bracket + 6.5)
+    ax.set_xlim(0, x_bracket + 4.0)
 else:
     print("WARNING: Could not find label text extents, bracket not drawn")
 
