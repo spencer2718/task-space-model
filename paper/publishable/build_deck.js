@@ -112,11 +112,11 @@ addSlideTitle(slide2, "Motivation");
 addSlideNumber(slide2, 2);
 
 slide2.addText([
-  { text: "Technology is reshaping the task content of work.", options: { breakLine: true, bold: true } },
+  { text: "New technology is reshaping the labor market.", options: { breakLine: true, bold: true } },
   { text: "", options: { breakLine: true, fontSize: 8 } },
-  { text: "Workforce policy needs a map of the task space: which occupations are nearby, and which transitions between them are feasible.", options: { breakLine: true } },
+  { text: "If your job is disrupted, what can you switch to?", options: { breakLine: true } },
   { text: "", options: { breakLine: true, fontSize: 8 } },
-  { text: "We propose a way to build that map \u2014 and a test for whether it works.", options: {} },
+  { text: "We propose a way to answer that question \u2014 and a test for whether it works.", options: {} },
 ], {
   x: 0.5,
   y: 1.1,
