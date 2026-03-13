@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.12.19
+**Current Version:** 0.7.12.20
 **Last Updated:** 2026-03-12
 **Paper Draft:** `writing/working-paper/main.tex`
 
@@ -761,6 +761,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.12.20 | 2026-03-13 | Slide 9 replaced — "Limitations and Scope" → "Future Pathways" with validated core + four research extensions. |
 | 0.7.12.19 | 2026-03-13 | Slide 8 layout — widen text (w: 4.2), shrink/reposition fig4 scope chart. |
 | 0.7.12.18 | 2026-03-13 | Presentation fix 3 — slide 2 text width restored, fig2 two-line labels + aspect ratio, slide 7 right side centered. |
 | 0.7.12.17 | 2026-03-13 | Presentation fix pass 2 — fig1/fig2 aspect ratios, CM equation, bracket padding, slide 6 logit context text. |

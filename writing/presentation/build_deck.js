@@ -339,31 +339,86 @@ slide7.addText([
 
 slide7.addImage({ path: "../../figures/fig4_scope.png", x: 5.0, y: 1.2, w: 4.3, h: 3.5 });
 
-// ─── SLIDE 9: Limitations ───
+// ─── SLIDE 9: Future Pathways ───
 const slide8 = pres.addSlide();
 slide8.background = { color: "FFFFFF" };
 addTopRule(slide8);
-addSlideTitle(slide8, "Limitations and Scope");
+addSlideTitle(slide8, "Future Pathways");
 addSlideNumber(slide8, 9);
 
-slide8.addText([
-  { text: "Completed transitions only \u2014 workers blocked by licensing are absent.", options: { breakLine: true } },
-  { text: "", options: { breakLine: true, fontSize: 8 } },
-{ text: "Single embedding model (MPNet). Domain-specific models could differ.", options: { breakLine: true } },
-  { text: "", options: { breakLine: true, fontSize: 8 } },
-  { text: "Cross-sectional \u2014 task content treated as static.", options: { breakLine: true } },
-  { text: "", options: { breakLine: true, fontSize: 8 } },
-  { text: "Reallocation forecasts need vacancy, wage, geographic, and institutional data." },
-], {
-  x: 0.5,
-  y: 1.1,
-  w: 9.0,
-  h: 4.0,
-  fontSize: 14,
-  fontFace: BODY_FONT,
-  color: CLR_DARK,
-  lineSpacingMultiple: 1.3,
-  valign: "top",
+// === Left column: "This Paper" ===
+slide8.addText("This Paper", {
+  x: 0.5, y: 1.2, w: 2.6, h: 0.4,
+  fontSize: 14, fontFace: BODY_FONT, bold: true, color: CLR_DARK, align: "center",
+});
+
+// Validated items — stacked boxes
+const validatedItems = [
+  { text: "Embedding distance", detail: "pseudo-R\u00b2 = 14.1%" },
+  { text: "Institutional barriers", detail: "t = 33.7" },
+  { text: "Stable across COVID", detail: "p = 0.72" },
+];
+
+validatedItems.forEach((item, i) => {
+  const yPos = 1.8 + i * 1.0;
+  // Box
+  slide8.addShape(pres.shapes.ROUNDED_RECTANGLE, {
+    x: 0.5, y: yPos, w: 2.6, h: 0.75,
+    fill: { color: "E8F0F8" },
+    line: { color: CLR_ACCENT, width: 1.2 },
+    rectRadius: 0.08,
+  });
+  // Label
+  slide8.addText(item.text, {
+    x: 0.5, y: yPos + 0.05, w: 2.6, h: 0.4,
+    fontSize: 11, fontFace: BODY_FONT, bold: true, color: CLR_DARK, align: "center",
+  });
+  // Detail
+  slide8.addText(item.detail, {
+    x: 0.5, y: yPos + 0.38, w: 2.6, h: 0.3,
+    fontSize: 10, fontFace: BODY_FONT, color: CLR_SECONDARY, align: "center",
+  });
+});
+
+// === Connector arrow from left stack to right pathways ===
+slide8.addShape(pres.shapes.LINE, {
+  x: 3.2, y: 2.75, w: 0.6, h: 0,
+  line: { color: CLR_ACCENT, width: 1.5, dashType: "solid", endArrowType: "triangle" },
+});
+
+// === Right column: "Future Pathways" ===
+slide8.addText("Future Pathways", {
+  x: 4.0, y: 1.2, w: 5.3, h: 0.4,
+  fontSize: 14, fontFace: BODY_FONT, bold: true, color: CLR_DARK, align: "center",
+});
+
+const pathways = [
+  { title: "Demand integration", desc: "Combine with vacancy data to predict\nrealized flows, not just feasibility" },
+  { title: "Individual wage data", desc: "Identify switching costs structurally\nrather than calibrating externally" },
+  { title: "Dynamic task content", desc: "Track how occupations\u2019 task profiles\nevolve as technology diffuses" },
+  { title: "Technology shock modeling", desc: "Model AI exposure as a function of\ntask embeddings, not static scores" },
+];
+
+pathways.forEach((pw, i) => {
+  const yPos = 1.8 + i * 0.85;
+  // Box — outline style (not filled)
+  slide8.addShape(pres.shapes.ROUNDED_RECTANGLE, {
+    x: 4.0, y: yPos, w: 5.3, h: 0.7,
+    fill: { color: "FAFAFA" },
+    line: { color: "CCCCCC", width: 0.8, dashType: "dash" },
+    rectRadius: 0.08,
+  });
+  // Title
+  slide8.addText(pw.title, {
+    x: 4.15, y: yPos + 0.05, w: 1.8, h: 0.6,
+    fontSize: 11, fontFace: BODY_FONT, bold: true, color: CLR_DARK, valign: "middle",
+  });
+  // Description
+  slide8.addText(pw.desc, {
+    x: 6.0, y: yPos + 0.05, w: 3.2, h: 0.6,
+    fontSize: 10, fontFace: BODY_FONT, color: CLR_SECONDARY, valign: "middle",
+    lineSpacingMultiple: 1.2,
+  });
 });
 
 // ─── SLIDE 10: Takeaways ───
