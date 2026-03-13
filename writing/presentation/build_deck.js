@@ -386,8 +386,8 @@ slide8.addShape(pres.shapes.LINE, {
   line: { color: CLR_ACCENT, width: 1.5, dashType: "solid", endArrowType: "triangle" },
 });
 
-// === Right column: "Future Pathways" ===
-slide8.addText("Future Pathways", {
+// === Right column: "Extensions" ===
+slide8.addText("Extensions", {
   x: 4.0, y: 1.2, w: 5.3, h: 0.4,
   fontSize: 14, fontFace: BODY_FONT, bold: true, color: CLR_DARK, align: "center",
 });
