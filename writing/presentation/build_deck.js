@@ -328,7 +328,7 @@ slide7.addText([
 ], {
   x: 0.5,
   y: 1.1,
-  w: 3.5,
+  w: 4.2,
   h: 4.0,
   fontSize: 14,
   fontFace: BODY_FONT,
@@ -337,7 +337,7 @@ slide7.addText([
   valign: "top",
 });
 
-slide7.addImage({ path: "../../figures/fig4_scope.png", x: 4.5, y: 1.0, w: 4.9, h: 4.0 });
+slide7.addImage({ path: "../../figures/fig4_scope.png", x: 5.0, y: 1.2, w: 4.3, h: 3.5 });
 
 // ─── SLIDE 9: Limitations ───
 const slide8 = pres.addSlide();
