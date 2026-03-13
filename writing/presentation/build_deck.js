@@ -285,9 +285,7 @@ addSlideNumber(slide8, 9);
 slide8.addText([
   { text: "Completed transitions only \u2014 workers blocked by licensing are absent.", options: { breakLine: true } },
   { text: "", options: { breakLine: true, fontSize: 8 } },
-  { text: "Switching cost identification failed: occupation-mean wages \u2260 entry wages.", options: { breakLine: true } },
-  { text: "", options: { breakLine: true, fontSize: 8 } },
-  { text: "Single embedding model (MPNet). Domain-specific models could differ.", options: { breakLine: true } },
+{ text: "Single embedding model (MPNet). Domain-specific models could differ.", options: { breakLine: true } },
   { text: "", options: { breakLine: true, fontSize: 8 } },
   { text: "Cross-sectional \u2014 task content treated as static.", options: { breakLine: true } },
   { text: "", options: { breakLine: true, fontSize: 8 } },
