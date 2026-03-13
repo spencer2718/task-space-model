@@ -227,6 +227,17 @@ slide5.addTable(tableData, {
   rowH: [0.5, 0.5, 0.5],
 });
 
+slide5.addText("P(j | i)  \u221d  exp( \u2212\u03b1 \u00b7 d_sem(i,j)  \u2212  \u03b2 \u00b7 d_inst(i,j) )", {
+  x: 1.0,
+  y: 3.4,
+  w: 8.0,
+  h: 0.5,
+  fontSize: 16,
+  fontFace: "Courier New",
+  color: CLR_DARK,
+  align: "center",
+});
+
 slide5.addText("Validation: 89,329 verified transitions from the CPS. Primary metric: McFadden\u2019s pseudo-R\u00b2.", {
   x: 0.5,
   y: 4.0,
@@ -244,7 +255,80 @@ addTopRule(slide6);
 addSlideTitle(slide6, "Main Result: Embeddings Dominate");
 addSlideNumber(slide6, 7);
 
-slide6.addImage({ path: "../../figures/fig2_pseudo_r2.png", x: 0.5, y: 1.0, w: 9.0, h: 4.1 });
+slide6.addImage({ path: "../../figures/fig2_pseudo_r2.png", x: 0.2, y: 1.0, w: 5.8, h: 4.1 });
+
+// Parameter estimates — Embedding × Centroid (primary)
+slide6.addText("Embedding \u00d7 Centroid", {
+  x: 6.2,
+  y: 1.1,
+  w: 3.3,
+  h: 0.4,
+  fontSize: 13,
+  fontFace: BODY_FONT,
+  bold: true,
+  color: CLR_DARK,
+  align: "center",
+});
+
+const paramHeaderOpts = { fill: { color: CLR_ACCENT }, color: "FFFFFF", bold: true, align: "center", valign: "middle", fontSize: 11, fontFace: BODY_FONT };
+const paramCellOpts = { fill: { color: "F8F8F8" }, color: CLR_DARK, align: "center", valign: "middle", fontSize: 12, fontFace: BODY_FONT };
+
+const paramData = [
+  [
+    { text: "Parameter", options: { ...paramHeaderOpts } },
+    { text: "Estimate", options: { ...paramHeaderOpts } },
+    { text: "t-stat", options: { ...paramHeaderOpts } },
+  ],
+  [
+    { text: "\u03b1 (semantic)", options: { ...paramCellOpts } },
+    { text: "7.404", options: { ...paramCellOpts, bold: true } },
+    { text: "204.0", options: { ...paramCellOpts } },
+  ],
+  [
+    { text: "\u03b2 (institutional)", options: { ...paramCellOpts } },
+    { text: "0.139", options: { ...paramCellOpts, bold: true } },
+    { text: "33.7", options: { ...paramCellOpts } },
+  ],
+];
+
+slide6.addTable(paramData, {
+  x: 6.2,
+  y: 1.6,
+  w: 3.3,
+  h: 1.2,
+  colW: [1.4, 0.9, 0.9],
+  border: { pt: 0.5, color: "DDDDDD" },
+  rowH: [0.35, 0.35, 0.35],
+});
+
+slide6.addText([
+  { text: "N = 89,329 transitions", options: { breakLine: true } },
+  { text: "Pseudo-R\u00b2 = 14.08%", options: { breakLine: true } },
+  { text: "Sampled alternatives (J = 11)", options: {} },
+], {
+  x: 6.2,
+  y: 2.9,
+  w: 3.3,
+  h: 1.0,
+  fontSize: 11,
+  fontFace: BODY_FONT,
+  color: CLR_SECONDARY,
+  align: "center",
+  lineSpacingMultiple: 1.4,
+});
+
+slide6.addText("Semantic distance dominates.\nInstitutional barriers add\nindependent predictive power.", {
+  x: 6.2,
+  y: 3.8,
+  w: 3.3,
+  h: 1.0,
+  fontSize: 11,
+  fontFace: BODY_FONT,
+  color: CLR_DARK,
+  align: "center",
+  italic: true,
+  lineSpacingMultiple: 1.3,
+});
 
 // ─── SLIDE 8: Scope ───
 const slide7 = pres.addSlide();
