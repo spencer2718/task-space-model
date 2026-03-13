@@ -120,7 +120,7 @@ slide2.addText([
 ], {
   x: 0.5,
   y: 1.1,
-  w: 3.0,
+  w: 2.2,
   h: 4.0,
   fontSize: 14,
   fontFace: BODY_FONT,
@@ -129,7 +129,7 @@ slide2.addText([
   valign: "top",
 });
 
-slide2.addImage({ path: "../../figures/fig1_ai_exposure.png", x: 3.8, y: 0.9, w: 5.4, h: 4.0 });
+slide2.addImage({ path: "../../figures/fig1_ai_exposure.png", x: 3.0, y: 0.9, w: 6.2, h: 4.0 });
 
 // ─── SLIDE 3: What is a Sentence Embedding? (NEW) ───
 const slideEmbed = pres.addSlide();
@@ -227,20 +227,11 @@ slide5.addTable(tableData, {
   rowH: [0.5, 0.5, 0.5],
 });
 
-slide5.addText("P(j | i)  \u221d  exp( \u2212\u03b1 \u00b7 d_sem(i,j)  \u2212  \u03b2 \u00b7 d_inst(i,j) )", {
-  x: 1.0,
-  y: 3.4,
-  w: 8.0,
-  h: 0.5,
-  fontSize: 16,
-  fontFace: "Courier New",
-  color: CLR_DARK,
-  align: "center",
-});
+slide5.addImage({ path: "../../figures/fig_logit_eq.png", x: 1.5, y: 3.6, w: 7.0, h: 0.5 });
 
 slide5.addText("Validation: 89,329 verified transitions from the CPS. Primary metric: McFadden\u2019s pseudo-R\u00b2.", {
   x: 0.5,
-  y: 4.0,
+  y: 4.5,
   w: 9.0,
   h: 0.5,
   fontSize: 14,

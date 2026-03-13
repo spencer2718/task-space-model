@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.12.15
+**Current Version:** 0.7.12.16
 **Last Updated:** 2026-03-12
 **Paper Draft:** `writing/working-paper/main.tex`
 
@@ -761,6 +761,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.12.16 | 2026-03-13 | Presentation fixes — fig1 bar order + palette, slide 2 layout, LaTeX equation render, fig2 aspect ratio for 60/40 split. |
 | 0.7.12.15 | 2026-03-13 | Presentation — fig1 replaced with theoretical vs observed AI exposure (Massenkoff & McCrory 2026). Slide 6: logit spec added. Slide 7: compressed bar chart + parameter table. |
 | 0.7.12.13 | 2026-03-13 | Metrics glossary partial R² example updated (3.5% → 2.6%). |
 | 0.7.12.12 | 2026-03-13 | Final sweep — 7 stale values across main.tex, CLAUDE.md, LEDGER.md, figures/README.md. HC1 precision (ρ = 0.953). |

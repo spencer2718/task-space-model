@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 import matplotlib.pyplot as plt
 import numpy as np
-from figures.style import setup, PRIMARY, SECONDARY, DARK, MID, FONT_TITLE, FONT_LABEL, FONT_TICK, FONT_NOTE
+from figures.style import setup, lighten, PRIMARY, SECONDARY, DARK, MID, FONT_TITLE, FONT_LABEL, FONT_TICK, FONT_NOTE
 
 font = setup()
 
@@ -34,17 +34,18 @@ bar_h = 0.35
 
 fig, ax = plt.subplots(figsize=(5.0, 3.8))
 
-# Theoretical (blue/secondary) behind, observed (red/primary) in front
-bars_t = ax.barh(y + bar_h/2, theoretical, bar_h, color=SECONDARY, alpha=0.5,
+# With invert_yaxis(), y - offset is visually ABOVE y + offset
+# Theoretical (larger) on top, observed (smaller) below
+bars_t = ax.barh(y - bar_h/2, theoretical, bar_h, color=lighten(SECONDARY, 0.4),
                  edgecolor='none', label='Theoretical capability', zorder=2)
-bars_o = ax.barh(y - bar_h/2, observed, bar_h, color=PRIMARY,
+bars_o = ax.barh(y + bar_h/2, observed, bar_h, color=PRIMARY,
                  edgecolor='none', label='Observed usage', zorder=2)
 
 # Value labels
 for i, (t, o) in enumerate(zip(theoretical, observed)):
-    ax.text(t + 1.5, i + bar_h/2, f'{t}%', va='center', fontsize=FONT_TICK,
+    ax.text(t + 1.5, i - bar_h/2, f'{t}%', va='center', fontsize=FONT_TICK,
             color=SECONDARY, fontweight='bold')
-    ax.text(o + 1.5, i - bar_h/2, f'{o}%', va='center', fontsize=FONT_TICK,
+    ax.text(o + 1.5, i + bar_h/2, f'{o}%', va='center', fontsize=FONT_TICK,
             color=PRIMARY, fontweight='bold')
 
 ax.set_yticks(y)

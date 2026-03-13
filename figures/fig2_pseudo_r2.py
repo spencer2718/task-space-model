@@ -30,7 +30,7 @@ bar_height = 0.55
 positions = [0, 1.0, 2.0, 3.0]
 
 # === Figure ===
-fig, ax = plt.subplots(figsize=(9.0, 4.2))
+fig, ax = plt.subplots(figsize=(6.0, 4.2))
 
 bars = ax.barh(positions, values, color=colors, height=bar_height,
                edgecolor='none', zorder=2)
