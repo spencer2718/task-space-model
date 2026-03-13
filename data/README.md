@@ -1,6 +1,6 @@
 # Data Sources
 
-External data required for the task-space oracle. Specifications match `paper/main.tex` (External Data Integration).
+External data required for the task-space oracle. Specifications match `writing/working-paper/main.tex` (External Data Integration).
 
 ---
 
@@ -135,7 +135,7 @@ the current crosswalk file at runtime.
 
 ## Consistency Note
 
-Sample sizes and specifications must match `paper/main.tex` (External Data Integration):
+Sample sizes and specifications must match `writing/working-paper/main.tex` (External Data Integration):
 
 | Specification | Value |
 |--------------|-------|

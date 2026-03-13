@@ -129,7 +129,7 @@ slide2.addText([
   valign: "top",
 });
 
-slide2.addImage({ path: "figures/fig1_ai_exposure.png", x: 3.8, y: 0.9, w: 5.4, h: 4.0 });
+slide2.addImage({ path: "../../figures/fig1_ai_exposure.png", x: 3.8, y: 0.9, w: 5.4, h: 4.0 });
 
 // ─── SLIDE 3: What is a Sentence Embedding? (NEW) ───
 const slideEmbed = pres.addSlide();
@@ -138,8 +138,8 @@ addTopRule(slideEmbed);
 addSlideTitle(slideEmbed, "What is a Sentence Embedding?");
 addSlideNumber(slideEmbed, 3);
 
-slideEmbed.addImage({ path: "figures/fig8_embedding_flowchart.png", x: 0.5, y: 1.0, w: 3.8, h: 4.0 });
-slideEmbed.addImage({ path: "figures/fig9_word_analogy.png", x: 4.6, y: 1.0, w: 3.9, h: 4.0 });
+slideEmbed.addImage({ path: "../../figures/fig8_embedding_flowchart.png", x: 0.5, y: 1.0, w: 3.8, h: 4.0 });
+slideEmbed.addImage({ path: "../../figures/fig9_word_analogy.png", x: 4.6, y: 1.0, w: 3.9, h: 4.0 });
 
 // ─── SLIDE 4: Tasks in Semantic Space ───
 const slide3 = pres.addSlide();
@@ -166,7 +166,7 @@ slide3.addText([
   valign: "top",
 });
 
-slide3.addImage({ path: "figures/fig3_task_scatter.png", x: 3.5, y: 1.0, w: 5.5, h: 4.0 });
+slide3.addImage({ path: "../../figures/fig3_task_scatter.png", x: 3.5, y: 1.0, w: 5.5, h: 4.0 });
 
 // ─── SLIDE 5: Example: Why Embeddings Matter (NEW) ───
 const slideExample = pres.addSlide();
@@ -175,8 +175,8 @@ addTopRule(slideExample);
 addSlideTitle(slideExample, "Example: Why Embeddings Matter");
 addSlideNumber(slideExample, 5);
 
-slideExample.addImage({ path: "figures/fig5_shared_dwas.png", x: 0.5, y: 1.0, w: 3.9, h: 4.0 });
-slideExample.addImage({ path: "figures/fig6_embedding_similarity.png", x: 4.7, y: 1.0, w: 4.8, h: 4.0 });
+slideExample.addImage({ path: "../../figures/fig5_shared_dwas.png", x: 0.5, y: 1.0, w: 3.9, h: 4.0 });
+slideExample.addImage({ path: "../../figures/fig6_embedding_similarity.png", x: 4.7, y: 1.0, w: 4.8, h: 4.0 });
 
 // ─── SLIDE 6: What Drives the Improvement? ───
 const slide5 = pres.addSlide();
@@ -244,7 +244,7 @@ addTopRule(slide6);
 addSlideTitle(slide6, "Main Result: Embeddings Dominate");
 addSlideNumber(slide6, 7);
 
-slide6.addImage({ path: "figures/fig2_pseudo_r2.png", x: 0.5, y: 1.0, w: 9.0, h: 4.1 });
+slide6.addImage({ path: "../../figures/fig2_pseudo_r2.png", x: 0.5, y: 1.0, w: 9.0, h: 4.1 });
 
 // ─── SLIDE 8: Scope ───
 const slide7 = pres.addSlide();
@@ -273,7 +273,7 @@ slide7.addText([
   valign: "top",
 });
 
-slide7.addImage({ path: "figures/fig4_scope.png", x: 4.5, y: 1.0, w: 4.9, h: 4.0 });
+slide7.addImage({ path: "../../figures/fig4_scope.png", x: 4.5, y: 1.0, w: 4.9, h: 4.0 });
 
 // ─── SLIDE 9: Limitations ───
 const slide8 = pres.addSlide();
@@ -390,7 +390,7 @@ addTopRule(slideBackup);
 addSlideTitle(slideBackup, "Data Pipeline");
 addSlideNumber(slideBackup, "B1");
 
-slideBackup.addImage({ path: "figures/fig7_sankey_pipeline.png", x: 0.5, y: 1.0, w: 9.0, h: 4.2 });
+slideBackup.addImage({ path: "../../figures/fig7_sankey_pipeline.png", x: 0.5, y: 1.0, w: 9.0, h: 4.2 });
 
 // ─── Write file ───
 pres.writeFile({ fileName: "task_embeddings_deck.pptx" })

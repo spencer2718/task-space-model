@@ -10,7 +10,7 @@ Infrastructure for analyzing how task-level technological change propagates to l
 
 | If you want to... | Start here |
 |-------------------|------------|
-| Understand the research | `paper/main.tex` (full theory) |
+| Understand the research | `writing/working-paper/main.tex` (full theory) |
 | Reproduce key tables | `scripts/reproduce_tables.py` |
 | Understand distance metrics | `src/task_space/similarity/DISTANCE_GUIDE.md` |
 | See current scientific state | `LEDGER.md` |
@@ -32,7 +32,7 @@ From task representation, institutional structure, shock profiles, and adjustmen
 
 This is a research program, not a finished model. The paper establishes that the architecture is viable and validates initial module specifications.
 
-See `paper/main.tex` for formal theory and specifications.
+See `writing/working-paper/main.tex` for formal theory and specifications.
 
 ---
 
@@ -127,10 +127,15 @@ src/task_space/              # Core implementation
     validation/              # Regression, diagnostics, reallocation
     mobility/                # CPS mobility validation
 
-paper/
-    main.tex                 # Working paper (full theory + results)
-    publishable/main.tex     # Condensed publishable draft
-    publishable/build_deck.js # pptxgenjs presentation script
+writing/
+    working-paper/
+        main.tex             # Working paper (full theory + results)
+        references.bib       # Bibliography (working paper)
+    publishable/
+        main.tex             # Condensed publishable paper
+        references.bib       # Bibliography (publishable, 33 entries)
+    presentation/
+        build_deck.js        # pptxgenjs presentation script
 
 figures/
     fig[1-9]_*.py            # Presentation figures (9 total)

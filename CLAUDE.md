@@ -1,6 +1,6 @@
 # CLAUDE.md — Agent Context
 
-**You are the Engineer.** You implement experiments, write code, and update `LEDGER.md`. The Lead Researcher designs specs and guides version updates. The Writer updates `paper/main.tex`.
+**You are the Engineer.** You implement experiments, write code, and update `LEDGER.md`. The Lead Researcher designs specs and guides version updates. The Writer updates `writing/working-paper/main.tex`.
 
 ---
 
@@ -36,7 +36,7 @@ Each document has ONE purpose. No redundancy.
 | `SPEC.md` | Current sprint planning | Lead Researcher |
 | `README.md` | Public-facing overview | Lead Researcher (at v0.x.y) |
 | `data/README.md` | Data acquisition | Engineer (when sources change) |
-| `paper/main.tex` | Authoritative theory & claims | Lead Researcher |
+| `writing/working-paper/main.tex` | Authoritative theory & claims | Lead Researcher |
 
 **Principle:** Progressive disclosure. This file is minimal; detail lives in referenced docs.
 
@@ -44,9 +44,9 @@ Each document has ONE purpose. No redundancy.
 
 | Path | Owner | Edit authority |
 |------|-------|---------------|
-| paper/publishable/ | Lead Researcher | Engineer MUST NOT edit without explicit Lead instruction |
-| paper/publishable/build_deck.js | Lead Researcher | Engineer MUST NOT edit without explicit Lead instruction |
-| paper/main.tex | Lead Researcher | Engineer edits only to align with publishable, at Lead direction |
+| writing/publishable/ | Lead Researcher | Engineer MUST NOT edit without explicit Lead instruction |
+| writing/presentation/build_deck.js | Lead Researcher | Engineer MUST NOT edit without explicit Lead instruction |
+| writing/working-paper/main.tex | Lead Researcher | Engineer edits only to align with publishable, at Lead direction |
 | LEDGER.md | Lead Researcher | Engineer updates version header/history only |
 | CLAUDE.md | Lead Researcher | Engineer MUST NOT edit without explicit Lead instruction |
 | figures/*.py | Engineer | Lead provides specs |
@@ -59,7 +59,7 @@ Each document has ONE purpose. No redundancy.
 | File | Purpose |
 |------|---------|
 | `LEDGER.md` | Scientific state — **READ FIRST** |
-| `paper/main.tex` | Theory, specifications, results |
+| `writing/working-paper/main.tex` | Theory, specifications, results |
 | `data/README.md` | External data sources — **read before data work** |
 | `.cache/artifacts/v1/` | Distance matrices, embeddings |
 | `outputs/experiments/` | Versioned experiment results |
@@ -98,7 +98,7 @@ Our delta: the factorial decomposition + choice-model framework + scale (89K US 
 
 **Diagonal correction (v0.7.7.0):** Embedding Wasserstein matrix had 170/447 nonzero diagonal entries from SOC→Census aggregation. Correcting this reduces pseudo-R² from 14.5% to 13.8% and flips the ranking: centroid (14.1%) now outperforms Wasserstein (13.8%). All published numbers use corrected values.
 
-**Presentation (v0.7.10.x):** 9 figures across 11 slides + 1 backup. All figures finalized. Deck script: paper/publishable/build_deck.js.
+**Presentation (v0.7.10.x):** 9 figures across 11 slides + 1 backup. All figures finalized. Deck script: writing/presentation/build_deck.js.
 
 ---
 
@@ -184,7 +184,7 @@ tests/
 
 Experiments run at **x.y.0.z** increments (e.g., 0.7.0.2, 0.7.0.3). After experiment batch completes, paper updates to **x.y.1** and codebase to **x.y.1.0**.
 
-**During experiments:** Only `LEDGER.md` tracks results. Do not update `README.md`, `CLAUDE.md`, or `paper/main.tex`.
+**During experiments:** Only `LEDGER.md` tracks results. Do not update `README.md`, `CLAUDE.md`, or `writing/working-paper/main.tex`.
 
 **Upon confirmation:** Paper consolidates validated findings; `README.md` and `CLAUDE.md` update alongside the paper. Not at engineer discretion.
 
