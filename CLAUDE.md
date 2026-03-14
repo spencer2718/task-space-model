@@ -98,7 +98,7 @@ Our delta: the factorial decomposition + choice-model framework + scale (89K US 
 
 **Diagonal correction (v0.7.7.0):** Embedding Wasserstein matrix had 170/447 nonzero diagonal entries from SOC→Census aggregation. Correcting this reduces pseudo-R² from 14.5% to 13.8% and flips the ranking: centroid (14.1%) now outperforms Wasserstein (13.8%). All published numbers use corrected values.
 
-**Presentation (v0.7.10.x):** 9 figures across 11 slides + 1 backup. All figures finalized. Deck script: writing/presentation/build_deck.js.
+**Presentation (v0.7.12.x):** 10 figures across 11 slides + 1 backup. Slide 2: Massenkoff & McCrory (2026) observed exposure. Slides 6–7: logit spec + parameter table. Slide 9: Future Pathways (pptxgenjs shapes, no figure). Deck script: writing/presentation/build_deck.js.
 
 ---
 
@@ -192,7 +192,7 @@ Experiments run at **x.y.0.z** increments (e.g., 0.7.0.2, 0.7.0.3). After experi
 
 ## Version
 
-**0.7.12.10** — Centroid replication complete. All supporting analyses on primary spec. Directory reorg to writing/.
+**0.7.13.1** — Centroid replication + presentation complete. Practice talk ready.
 
 ---
 

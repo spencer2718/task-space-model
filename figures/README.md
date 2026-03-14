@@ -1,24 +1,25 @@
 # Presentation Figures
 
-| File | Slide | Size | Status |
-|------|-------|------|--------|
-| fig1_ai_exposure.png | 2 — Motivation | 9.0″ × 6.5″ | ✅ Done |
-| fig8_embedding_flowchart.png | 3 — What is a Sentence Embedding? (left) | 3.8″ × 4.0″ | ✅ Done |
-| fig9_word_analogy.png | 3 — What is a Sentence Embedding? (right) | 4.5″ × 4.0″ | ✅ Done |
-| fig3_task_scatter.png | 4 — Tasks in Semantic Space | 6.0″ × 4.0″ | ✅ Done |
-| fig5_shared_dwas.png | 5 — Example: Why Embeddings Matter (left) | 4.1″ × 4.2″ | ✅ Done |
-| fig6_embedding_similarity.png | 5 — Example: Why Embeddings Matter (right) | 4.7″ × 4.0″ | ✅ Done |
-| fig2_pseudo_r2.png | 7 — Main Result | 9.2″ × 4.2″ | ✅ Done |
-| fig4_scope.png | 8 — What the Measure Captures | 4.2″ × 3.4″ | ✅ Done |
-| fig7_sankey_pipeline.png | B1 — Data Pipeline (backup) | 9.0″ × 4.2″ | ✅ Done |
+| File | Slide | Status |
+|------|-------|--------|
+| fig1_ai_exposure.png | 2 — Motivation (theoretical vs observed AI exposure) | ✅ Done |
+| fig8_embedding_flowchart.png | 3 — What is a Sentence Embedding? (left) | ✅ Done |
+| fig9_word_analogy.png | 3 — What is a Sentence Embedding? (right) | ✅ Done |
+| fig3_task_scatter.png | 4 — Tasks in Semantic Space | ✅ Done |
+| fig5_shared_dwas.png | 5 — Example: Why Embeddings Matter (left) | ✅ Done |
+| fig6_embedding_similarity.png | 5 — Example: Why Embeddings Matter (right) | ✅ Done |
+| fig_logit_eq.png | 6 — What Drives the Improvement? | ✅ Done |
+| fig2_pseudo_r2.png | 7 — Main Result | ✅ Done |
+| fig4_scope.png | 8 — What the Measure Captures | ✅ Done |
+| fig7_sankey_pipeline.png | B1 — Data Pipeline (backup) | ✅ Done |
 
 Note: fig numbering is by creation order, not slide order.
 
-## fig1 — AI Task Exposure
+## fig1 — AI Exposure: Theoretical vs Observed
 - **Slide:** 2 — Motivation
-- **Data:** Eloundou et al. (2023) γ = E1 + E2, averaged to 2-digit SOC
-- **Source:** `data/external/eloundou/occ_level.csv`
-- **Takeaway:** 12–97% of tasks theoretically feasible across occupation groups
+- **Data:** Massenkoff & McCrory (2026), Fig. 2; values estimated from published radial chart (occupation-level CSV not yet released)
+- **Categories:** 8 SOC major groups, sorted by theoretical exposure
+- **Takeaway:** AI capability far exceeds observed deployment — Computer & Math: 94% theoretical, 33% observed
 
 ## fig8 — Embedding Flowchart
 - **Slide:** 3 — What is a Sentence Embedding? (left)
@@ -52,14 +53,21 @@ Note: fig numbering is by creation order, not slide order.
 - **Takeaway:** Embedding distance = 0.07 (1.3rd percentile) vs O*NET = 0.71 — embeddings detect similarity that O*NET misses
 
 ## fig2 — Distance Metric Comparison
-- **Slide:** 7 — Main Result
+- **Slide:** 7 — Main Result (left panel, 60/40 split with parameter table)
 - **Data:** Hardcoded from `outputs/experiments/distance_head_to_head_v0732.json`
+- **Labels:** Two-line format: "Embedding\n(Centroid)" etc.
 - **Takeaway:** Embedding-based measures achieve 13.8–14.1% pseudo-R² vs 6–8% for O*NET — 74.9% improvement
 
 ## fig4 — Supply-Demand Decomposition
 - **Slide:** 8 — What the Measure Captures
 - **Data:** Hardcoded from `outputs/experiments/demand_probe_decomposition_v0703b.json`
 - **Takeaway:** Aggregate inflows are demand-dominated (ρ = 0.80); geometry captures per-origin pathway direction (ρ = 0.12)
+
+## fig_logit_eq — Conditional Logit Equation
+- **Slide:** 6 — What Drives the Improvement?
+- **Data:** None (equation render)
+- **Method:** matplotlib mathtext with Computer Modern fontset
+- **Takeaway:** P(j|i) ∝ exp(−α·d_sem − β·d_inst) — destination choice weighted by semantic and institutional distance
 
 ## fig7 — CPS Data Pipeline (Sankey)
 - **Slide:** B1 — Data Pipeline (backup)

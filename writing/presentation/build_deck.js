@@ -202,17 +202,17 @@ const starOpts = { fill: { color: "E8F0F8" }, color: CLR_DARK, align: "center", 
 const tableData = [
   [
     { text: "", options: { ...headerOpts } },
-    { text: "Simple average", options: { ...headerOpts } },
-    { text: "Optimal transport", options: { ...headerOpts } },
+    { text: "Centroid", options: { ...headerOpts } },
+    { text: "Distributional", options: { ...headerOpts } },
   ],
   [
-    { text: "O*NET ratings", options: { ...headerOpts } },
-    { text: "Baseline", options: { ...cellOpts } },
-    { text: "Identity control", options: { ...cellOpts } },
+    { text: "O*NET weights", options: { ...headerOpts } },
+    { text: "Cosine", options: { ...cellOpts } },
+    { text: "Euclidean", options: { ...cellOpts } },
   ],
   [
     { text: "Text embeddings", options: { ...headerOpts } },
-    { text: "Centroid (primary)", options: { ...starOpts } },
+    { text: "Centroid \u2605", options: { ...starOpts } },
     { text: "Wasserstein", options: { ...starOpts } },
   ],
 ];
@@ -225,6 +225,16 @@ slide5.addTable(tableData, {
   colW: [2.2, 2.9, 2.9],
   border: { pt: 0.5, color: "DDDDDD" },
   rowH: [0.5, 0.5, 0.5],
+});
+
+slide5.addText("Aggregation \u2192", {
+  x: 3.6, y: 1.5, w: 5.0, h: 0.3,
+  fontSize: 11, fontFace: BODY_FONT, italic: true, color: CLR_SECONDARY, align: "center",
+});
+
+slide5.addText("Representation \u2193", {
+  x: 0.3, y: 1.5, w: 2.0, h: 0.3,
+  fontSize: 11, fontFace: BODY_FONT, italic: true, color: CLR_SECONDARY, align: "center",
 });
 
 slide5.addImage({ path: "../../figures/fig_logit_eq.png", x: 2.0, y: 3.6, w: 6.0, h: 0.88 });
@@ -394,7 +404,7 @@ slide8.addText("Extensions", {
 
 const pathways = [
   { title: "Demand integration", desc: "Combine with vacancy data to predict\nrealized flows, not just feasibility" },
-  { title: "Individual wage data", desc: "Identify switching costs structurally\nrather than calibrating externally" },
+  { title: "Individual wage data", desc: "Measure actual wage penalties for\nswitchers with individual-level data" },
   { title: "Dynamic task content", desc: "Track how occupations\u2019 task profiles\nrecompose as technology diffuses" },
   { title: "Technology shock modeling", desc: "Model AI exposure as a function of\ntask embeddings, not static scores" },
 ];

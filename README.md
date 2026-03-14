@@ -2,7 +2,7 @@
 
 Infrastructure for analyzing how task-level technological change propagates to labor market outcomes.
 
-**Version 0.7.12** — Centroid Replication Complete
+**Version 0.7.13** — Centroid Replication + Presentation Complete
 
 ---
 
