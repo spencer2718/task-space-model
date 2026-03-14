@@ -201,7 +201,7 @@ const starOpts = { fill: { color: "E8F0F8" }, color: CLR_DARK, align: "center", 
 
 const tableData = [
   [
-    { text: "Representation \u2193\nAggregation \u2192", options: { ...headerOpts, fontSize: 9, italic: true } },
+    { text: "Aggregation \u2192\nRepresentation \u2193", options: { ...headerOpts, fontSize: 9, italic: true } },
     { text: "Centroid", options: { ...headerOpts } },
     { text: "Distributional", options: { ...headerOpts } },
   ],
@@ -287,7 +287,7 @@ slide6.addTable(paramData, {
   y: 2.5,
   w: 3.3,
   h: 1.2,
-  colW: [1.4, 0.9, 0.9],
+  colW: [1.3, 1.0, 0.9],
   border: { pt: 0.5, color: "DDDDDD" },
   rowH: [0.35, 0.35, 0.35],
 });

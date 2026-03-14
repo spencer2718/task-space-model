@@ -68,7 +68,7 @@ for i, (label, count, pct) in enumerate(stages):
     # Arrow between stages
     if i < len(stages) - 1:
         ax.annotate('', xy=(x + 0.55, y_center), xytext=(x + 0.45, y_center),
-                     arrowprops=dict(arrowstyle='->', color=GRID, lw=1.5))
+                     arrowprops=dict(arrowstyle='simple,head_width=3,head_length=2', fc=GRID, ec='none'))
 
 # Final count highlight
 final_x = len(stages) - 1
