@@ -201,7 +201,7 @@ const starOpts = { fill: { color: "E8F0F8" }, color: CLR_DARK, align: "center", 
 
 const tableData = [
   [
-    { text: "", options: { ...headerOpts } },
+    { text: "Representation \u2193\nAggregation \u2192", options: { ...headerOpts, fontSize: 9, italic: true } },
     { text: "Centroid", options: { ...headerOpts } },
     { text: "Distributional", options: { ...headerOpts } },
   ],
@@ -225,16 +225,6 @@ slide5.addTable(tableData, {
   colW: [2.2, 2.9, 2.9],
   border: { pt: 0.5, color: "DDDDDD" },
   rowH: [0.5, 0.5, 0.5],
-});
-
-slide5.addText("Aggregation \u2192", {
-  x: 3.6, y: 1.5, w: 5.0, h: 0.3,
-  fontSize: 11, fontFace: BODY_FONT, italic: true, color: CLR_SECONDARY, align: "center",
-});
-
-slide5.addText("Representation \u2193", {
-  x: 0.3, y: 1.5, w: 2.0, h: 0.3,
-  fontSize: 11, fontFace: BODY_FONT, italic: true, color: CLR_SECONDARY, align: "center",
 });
 
 slide5.addImage({ path: "../../figures/fig_logit_eq.png", x: 2.0, y: 3.6, w: 6.0, h: 0.88 });
