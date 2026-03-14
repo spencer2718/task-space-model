@@ -61,6 +61,9 @@ killshot/mobility_feasibility/data/crosswalks/*.xls
 killshot/mobility_feasibility/data/crosswalks/*.xlsx
 killshot/mobility_feasibility/outputs/*.npz
 
+# Node
+node_modules/
+
 # IDE
 .idea/
 .vscode/
