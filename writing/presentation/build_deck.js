@@ -287,7 +287,7 @@ slide6.addTable(paramData, {
   y: 2.5,
   w: 3.3,
   h: 1.2,
-  colW: [1.3, 1.0, 0.9],
+  colW: [1.4, 1.05, 0.85],
   border: { pt: 0.5, color: "DDDDDD" },
   rowH: [0.35, 0.35, 0.35],
 });
