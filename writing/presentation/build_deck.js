@@ -421,40 +421,11 @@ pathways.forEach((pw, i) => {
   });
 });
 
-// ─── SLIDE 10: Takeaways ───
-const slide9 = pres.addSlide();
-slide9.background = { color: "FFFFFF" };
-addTopRule(slide9);
-addSlideTitle(slide9, "Takeaways");
-addSlideNumber(slide9, 10);
-
-slide9.addText([
-  { text: "Embeddings improve transition prediction by 74.9% over O*NET baselines (pseudo-R\u00b2: 14.1% vs. 6\u20138%).", options: { breakLine: true } },
-  { text: "", options: { breakLine: true, fontSize: 8 } },
-  { text: "The gain is from the embedding representation, not the aggregation method.", options: { breakLine: true } },
-  { text: "", options: { breakLine: true, fontSize: 8 } },
-  { text: "Captures within-origin pathway feasibility, not aggregate allocation.", options: { breakLine: true } },
-  { text: "", options: { breakLine: true, fontSize: 8 } },
-  { text: "Orthogonal to AI exposure (r = \u22120.02) and routine task intensity (r = \u22120.06).", options: { breakLine: true } },
-  { text: "", options: { breakLine: true, fontSize: 8 } },
-  { text: "Stable pre/post COVID (\u0394\u03b1 < 1%, p = 0.72)." },
-], {
-  x: 0.5,
-  y: 1.1,
-  w: 9.0,
-  h: 4.2,
-  fontSize: 15,
-  fontFace: BODY_FONT,
-  color: CLR_DARK,
-  lineSpacingMultiple: 1.3,
-  valign: "top",
-});
-
-// ─── SLIDE 11: Thank You ───
+// ─── SLIDE 10: Questions? ───
 const slide10 = pres.addSlide();
 slide10.background = { color: "FFFFFF" };
 
-slide10.addText("Thank You", {
+slide10.addText("Questions?", {
   x: 0.5,
   y: 1.8,
   w: 9.0,
