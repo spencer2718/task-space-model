@@ -77,6 +77,10 @@ cmap = mcolors.LinearSegmentedColormap.from_list(
 
 im = ax.imshow(sim_matrix, cmap=cmap, vmin=0, vmax=1, aspect='equal')
 
+cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04, shrink=0.85)
+cbar.set_label('Cosine similarity', fontsize=FONT_LABEL, color=MID)
+cbar.ax.tick_params(labelsize=FONT_TICK, colors=MID)
+
 # Annotate cells with similarity values — uniform font size
 for i in range(len(LABELS)):
     for j in range(len(LABELS)):
@@ -96,9 +100,9 @@ ax.xaxis.set_ticks_position('top')
 ax.xaxis.set_label_position('top')
 ax.set_xticks(range(len(LABELS)))
 ax.set_xticklabels(LABELS, fontsize=FONT_LABEL, color=DARK,
-                   rotation=45, ha='left', rotation_mode='anchor')
+                   rotation=45, ha='left', rotation_mode='anchor', fontweight='bold')
 ax.set_yticks(range(len(LABELS)))
-ax.set_yticklabels(LABELS, fontsize=FONT_LABEL, color=DARK)
+ax.set_yticklabels(LABELS, fontsize=FONT_LABEL, color=DARK, fontweight='bold')
 
 # Color individual tick labels by domain
 for i, label in enumerate(ax.get_yticklabels()):
@@ -136,17 +140,5 @@ plt.tight_layout()
 outpath = os.path.join(os.path.dirname(__file__), 'fig10_similarity_heatmap.png')
 fig.savefig(outpath, dpi=300, bbox_inches='tight', pad_inches=0.1)
 
-# Post-save: pad to match fig9_word_analogy aspect ratio (0.984)
-from PIL import Image
-TARGET_RATIO = 0.984
-img = Image.open(outpath)
-w, h = img.size
-current = w / h
-if current > TARGET_RATIO:
-    new_h = int(w / TARGET_RATIO)
-    padded = Image.new('RGB', (w, new_h), (255, 255, 255))
-    padded.paste(img, (0, 0))
-    padded.save(outpath)
-    print(f"Padded {w}x{h} -> {w}x{new_h}  ratio={w/new_h:.3f}")
 print(f"\nSaved: {outpath}")
 plt.close()
