@@ -139,7 +139,7 @@ addSlideTitle(slideEmbed, "What is a Sentence Embedding?");
 addSlideNumber(slideEmbed, 3);
 
 slideEmbed.addImage({ path: "../../figures/fig8_embedding_flowchart.png", x: 0.3, y: 1.0, w: 3.6, h: 4.0 });
-slideEmbed.addImage({ path: "../../figures/fig10_similarity_heatmap.png", x: 4.1, y: 1.0, w: 5.2, h: 4.35 });
+slideEmbed.addImage({ path: "../../figures/fig10_similarity_heatmap.png", x: 4.1, y: 1.0, w: 5.2, h: 3.63 });
 
 // ─── SLIDE 4: Tasks in Semantic Space ───
 const slide3 = pres.addSlide();

@@ -33,6 +33,7 @@ TASKS = [
 
 # Short display labels — full text for both axes
 LABELS = [t.rstrip('.') for t in TASKS]
+COL_LABELS = ['Fin. data', 'Receipts', 'Presc. meds', 'Feed pts.', 'Mortar', 'Cut glass']
 
 # Domain grouping — colors match fig3_task_scatter CLUSTER_COLORS via style.py
 DOMAINS = [
@@ -77,7 +78,7 @@ cmap = mcolors.LinearSegmentedColormap.from_list(
 
 im = ax.imshow(sim_matrix, cmap=cmap, vmin=0, vmax=1, aspect='equal')
 
-cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04, shrink=0.85)
+cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.08, shrink=0.85)
 cbar.set_label('Cosine similarity', fontsize=FONT_LABEL, color=MID)
 cbar.ax.tick_params(labelsize=FONT_TICK, colors=MID)
 
@@ -99,7 +100,7 @@ for domain_name, color, i_start, i_end in DOMAINS:
 ax.xaxis.set_ticks_position('top')
 ax.xaxis.set_label_position('top')
 ax.set_xticks(range(len(LABELS)))
-ax.set_xticklabels(LABELS, fontsize=FONT_LABEL, color=DARK,
+ax.set_xticklabels(COL_LABELS, fontsize=FONT_LABEL, color=DARK,
                    rotation=45, ha='left', rotation_mode='anchor', fontweight='bold')
 ax.set_yticks(range(len(LABELS)))
 ax.set_yticklabels(LABELS, fontsize=FONT_LABEL, color=DARK, fontweight='bold')
