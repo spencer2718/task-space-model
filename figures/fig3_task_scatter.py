@@ -184,7 +184,7 @@ for theme in CLUSTER_COLORS:
 fig, ax = plt.subplots(figsize=(6.0, 4.0))
 
 # Background cloud — ALL DWAs
-ax.scatter(all_x, all_y, s=3, c='#E0E0E0', alpha=0.3,
+ax.scatter(all_x, all_y, s=5, c='#D0D0D0', alpha=0.4,
            edgecolors='none', zorder=0, rasterized=True)
 
 # Zero-crossing reference lines
