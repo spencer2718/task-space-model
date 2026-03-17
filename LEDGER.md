@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.13.1
+**Current Version:** 0.7.13.4
 **Last Updated:** 2026-03-14
 **Paper Draft:** `writing/working-paper/main.tex`
 
@@ -761,6 +761,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.13.4 | 2026-03-14 | Slide 3 — word analogy figure replaced with cosine similarity heatmap (6 DWAs, block diagonal). |
 | 0.7.13.1 | 2026-03-14 | Sprint close + advisor feedback — doc version stamps aligned, figures/README updated, slide 2 AI labels, slide 6 clean 2×2 (four real specs), slide 9 switching cost wording. |
 | 0.7.12.21 | 2026-03-13 | Slide 9 tweaks — "Results" label, matched column heights, centered arrow. |
 | 0.7.12.20 | 2026-03-13 | Slide 9 replaced — "Limitations and Scope" → "Future Pathways" with validated core + four research extensions. |

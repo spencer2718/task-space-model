@@ -4,7 +4,8 @@
 |------|-------|--------|
 | fig1_ai_exposure.png | 2 — Motivation (theoretical vs observed AI exposure) | ✅ Done |
 | fig8_embedding_flowchart.png | 3 — What is a Sentence Embedding? (left) | ✅ Done |
-| fig9_word_analogy.png | 3 — What is a Sentence Embedding? (right) | ✅ Done |
+| fig9_word_analogy.png | (archived) | Replaced by fig10 |
+| fig10_similarity_heatmap.png | 3 — What is a Sentence Embedding? (right) | ✅ Done |
 | fig3_task_scatter.png | 4 — Tasks in Semantic Space | ✅ Done |
 | fig5_shared_dwas.png | 5 — Example: Why Embeddings Matter (left) | ✅ Done |
 | fig6_embedding_similarity.png | 5 — Example: Why Embeddings Matter (right) | ✅ Done |
@@ -27,10 +28,14 @@ Note: fig numbering is by creation order, not slide order.
 - **Example sentence:** "Analyze business or financial data." (DWA from O*NET)
 - **Takeaway:** A sentence goes in, a 768-dimensional vector comes out
 
-## fig9 — Word Analogy (Atlanta-Denver)
+## fig9 — Word Analogy (ARCHIVED)
+- **Status:** Replaced by fig10 at v0.7.13.4. File retained in repo.
+
+## fig10 — Cosine Similarity Heatmap
 - **Slide:** 3 — What is a Sentence Embedding? (right)
-- **Data:** Illustrative positions (not computed) — Mikolov et al. (2013) analogy
-- **Takeaway:** Directions in embedding space encode semantic relationships
+- **Data:** 6 hand-picked O*NET DWAs (2 each: Quantitative, Healthcare, Construction), embedded with MPNet
+- **Colors:** Domain colors match fig3 scatter (Quantitative=PRIMARY, Healthcare=RED, Construction=SECONDARY)
+- **Takeaway:** Similar tasks embed to similar vectors — block diagonal structure shows semantic clustering
 
 ## fig3 — Tasks in Semantic Space
 - **Slide:** 4 — Tasks in Semantic Space
