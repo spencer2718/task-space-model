@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 import matplotlib.pyplot as plt
 import numpy as np
-from figures.style import setup, PRIMARY, SECONDARY, DARK, MID, FONT_TITLE, FONT_LABEL, FONT_TICK, FONT_NOTE
+from figures.style import setup, lighten, PRIMARY, SECONDARY, DARK, MID, FONT_TITLE, FONT_LABEL, FONT_TICK, FONT_NOTE
 
 font = setup()
 
@@ -36,7 +36,7 @@ fig, ax = plt.subplots(figsize=(5.5, 3.5))
 
 # With invert_yaxis(), y - offset is visually ABOVE y + offset
 # Theoretical (larger) on top, observed (smaller) below
-bars_t = ax.barh(y - bar_h/2, theoretical, bar_h, color=SECONDARY,
+bars_t = ax.barh(y - bar_h/2, theoretical, bar_h, color=lighten(SECONDARY, 0.4),
                  edgecolor='none', label='Theoretical AI capability', zorder=2)
 bars_o = ax.barh(y + bar_h/2, observed, bar_h, color=PRIMARY,
                  edgecolor='none', label='Observed AI usage (Claude)', zorder=2)

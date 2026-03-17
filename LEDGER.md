@@ -1,6 +1,6 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.13.8
+**Current Version:** 0.7.13.9
 **Last Updated:** 2026-03-14
 **Paper Draft:** `writing/working-paper/main.tex`
 
@@ -761,6 +761,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.13.9 | 2026-03-17 | Revert fig1 to lightened SECONDARY — full opacity too heavy for paired bars. |
 | 0.7.13.8 | 2026-03-17 | Color consistency — fig1 SECONDARY at full opacity, fig3 background cloud visible. |
 | 0.7.13.7 | 2026-03-17 | Slide 3 — heatmap cell font size 10, bold labels, remove 768d from footnote. |
 | 0.7.13.6 | 2026-03-14 | Slide 3 — short column labels, colorbar pad. |
