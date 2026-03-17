@@ -192,7 +192,7 @@ Experiments run at **x.y.0.z** increments (e.g., 0.7.0.2, 0.7.0.3). After experi
 
 ## Version
 
-**0.7.13.1** — Centroid replication + presentation complete. Practice talk ready.
+**0.7.13.4** — Centroid replication + presentation complete.
 
 ---
 
