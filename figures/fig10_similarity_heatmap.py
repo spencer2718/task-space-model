@@ -88,7 +88,7 @@ for i in range(len(LABELS)):
         val = sim_matrix[i, j]
         text_color = '#FFFFFF' if val > 0.55 else DARK
         ax.text(j, i, f'{val:.2f}', ha='center', va='center',
-                fontsize=FONT_TITLE, color=text_color)
+                fontsize=10, color=text_color)
 
 # Map task index to domain color
 TASK_COLORS = {}
@@ -133,7 +133,7 @@ for _, color, i_start, i_end in DOMAINS:
 # No colorbar needed — values annotated directly in cells
 
 # Subtitle positioned relative to axes — stays close to matrix
-ax.text(0.5, -0.10, '6 O*NET DWAs embedded with MPNet (768d)',
+ax.text(0.5, -0.10, '6 O*NET DWAs embedded with MPNet',
         transform=ax.transAxes, ha='center', fontsize=FONT_NOTE,
         color=MID, fontstyle='italic')
 
