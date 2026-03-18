@@ -425,7 +425,7 @@ pathways.forEach((pw, i) => {
 const slide10 = pres.addSlide();
 slide10.background = { color: "FFFFFF" };
 
-slide10.addText("Questions?", {
+slide10.addText("The End", {
   x: 0.5,
   y: 1.8,
   w: 9.0,
