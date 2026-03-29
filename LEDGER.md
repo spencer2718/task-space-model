@@ -1,7 +1,7 @@
 # LEDGER.md — Task-Space Oracle Research State
 
-**Current Version:** 0.7.13.11
-**Last Updated:** 2026-03-14
+**Current Version:** 0.7.13.12
+**Last Updated:** 2026-03-17
 **Paper Draft:** `writing/working-paper/main.tex`
 
 ---
@@ -284,6 +284,8 @@ MS8-compliant metrics for the baseline Wasserstein specification:
 **Top-k appropriateness:** NOT reported. N_eff/J = 0.46 > 0.30 threshold. Mean effective consideration set = 207 destinations. Top-k overlap is structurally inappropriate for diffuse distributions.
 
 **Interpretation:** The model ranks realized destinations highly (MPR >> 0.5) despite distributing probability mass across ~207 effective destinations. This confirms the model captures feasibility structure without artificially concentrating on a small set.
+
+**TODO (pre-distillation):** Run `exploration/onet_894/mpr_all_specs.py` to compute MPR across all four distance specifications (currently only computed for Wasserstein). Script is ready; needs local execution. Log results here and update paper Table if warranted.
 
 ### T Module: 2×2 Methodology Comparison (v0.7.3.2)
 
@@ -761,6 +763,7 @@ Deprecated approaches. Do not retry.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.7.13.12 | 2026-03-17 | MPR all-specs marked as TODO. Distillation branch created. |
 | 0.7.13.11 | 2026-03-17 | Final slide title → "The End". |
 | 0.7.13.10 | 2026-03-17 | Remove Takeaways slide, rename Thank You → Questions?. |
 | 0.7.13.9 | 2026-03-17 | Revert fig1 to lightened SECONDARY — full opacity too heavy for paired bars. |
